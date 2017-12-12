@@ -4,11 +4,11 @@
  "http://www.freedesktop.org/standards/PolicyKit/1.0/policyconfig.dtd">
 
 <policyconfig>
-  <vendor>The MATE Project</vendor>
-  <vendor_url>http://www.mate-desktop.org/</vendor_url>
-  <icon_name>mate-panel-clock</icon_name>
+  <vendor>The UKUI Project</vendor>
+  <vendor_url>http://www.ukui-desktop.org/</vendor_url>
+  <icon_name>ukui-panel-clock</icon_name>
 
-  <action id="org.mate.settingsdaemon.datetimemechanism.settimezone">
+  <action id="org.ukui.settingsdaemon.datetimemechanism.settimezone">
     <_description>Change system time zone</_description>
     <_message>Privileges are required to change the system time zone.</_message>
     <defaults>
@@ -17,7 +17,7 @@
     </defaults>
   </action>
 
-  <action id="org.mate.settingsdaemon.datetimemechanism.settime">
+  <action id="org.ukui.settingsdaemon.datetimemechanism.settime">
     <_description>Change system time</_description>
     <_message>Privileges are required to change the system time.</_message>
     <defaults>
@@ -26,7 +26,7 @@
     </defaults>
   </action>
 
-  <action id="org.mate.settingsdaemon.datetimemechanism.configurehwclock">
+  <action id="org.ukui.settingsdaemon.datetimemechanism.configurehwclock">
     <_description>Configure hardware clock</_description>
     <_message>Privileges are required to configure the hardware clock.</_message>
     <defaults>

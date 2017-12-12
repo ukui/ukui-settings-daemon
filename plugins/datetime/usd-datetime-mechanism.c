@@ -41,8 +41,8 @@
 
 #include "system-timezone.h"
 
-#include "msd-datetime-mechanism.h"
-#include "msd-datetime-mechanism-glue.h"
+#include "usd-datetime-mechanism.h"
+#include "usd-datetime-mechanism-glue.h"
 
 static gboolean
 do_exit (gpointer user_data)
@@ -64,26 +64,26 @@ reset_killtimer (void)
         timer_id = g_timeout_add_seconds (30, do_exit, NULL);
 }
 
-struct MsdDatetimeMechanismPrivate
+struct UsdDatetimeMechanismPrivate
 {
         DBusGConnection *system_bus_connection;
         DBusGProxy      *system_bus_proxy;
         PolkitAuthority *auth;
 };
 
-static void     msd_datetime_mechanism_finalize    (GObject     *object);
+static void     usd_datetime_mechanism_finalize    (GObject     *object);
 
-G_DEFINE_TYPE (MsdDatetimeMechanism, msd_datetime_mechanism, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdDatetimeMechanism, usd_datetime_mechanism, G_TYPE_OBJECT)
 
-#define MSD_DATETIME_MECHANISM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_DATETIME_TYPE_MECHANISM, MsdDatetimeMechanismPrivate))
+#define USD_DATETIME_MECHANISM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_DATETIME_TYPE_MECHANISM, UsdDatetimeMechanismPrivate))
 
 GQuark
-msd_datetime_mechanism_error_quark (void)
+usd_datetime_mechanism_error_quark (void)
 {
         static GQuark ret = 0;
 
         if (ret == 0) {
-                ret = g_quark_from_static_string ("msd_datetime_mechanism_error");
+                ret = g_quark_from_static_string ("usd_datetime_mechanism_error");
         }
 
         return ret;
@@ -93,7 +93,7 @@ msd_datetime_mechanism_error_quark (void)
 #define ENUM_ENTRY(NAME, DESC) { NAME, "" #NAME "", DESC }
 
 GType
-msd_datetime_mechanism_error_get_type (void)
+usd_datetime_mechanism_error_get_type (void)
 {
         static GType etype = 0;
         
@@ -101,15 +101,15 @@ msd_datetime_mechanism_error_get_type (void)
         {
                 static const GEnumValue values[] =
                         {
-                                ENUM_ENTRY (MSD_DATETIME_MECHANISM_ERROR_GENERAL, "GeneralError"),
-                                ENUM_ENTRY (MSD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED, "NotPrivileged"),
-                                ENUM_ENTRY (MSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE, "InvalidTimezoneFile"),
+                                ENUM_ENTRY (USD_DATETIME_MECHANISM_ERROR_GENERAL, "GeneralError"),
+                                ENUM_ENTRY (USD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED, "NotPrivileged"),
+                                ENUM_ENTRY (USD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE, "InvalidTimezoneFile"),
                                 { 0, 0, 0 }
                         };
                 
-                g_assert (MSD_DATETIME_MECHANISM_NUM_ERRORS == G_N_ELEMENTS (values) - 1);
+                g_assert (USD_DATETIME_MECHANISM_NUM_ERRORS == G_N_ELEMENTS (values) - 1);
                 
-                etype = g_enum_register_static ("MsdDatetimeMechanismError", values);
+                etype = g_enum_register_static ("UsdDatetimeMechanismError", values);
         }
         
         return etype;
@@ -117,13 +117,13 @@ msd_datetime_mechanism_error_get_type (void)
 
 
 static GObject *
-msd_datetime_mechanism_constructor (GType                  type,
+usd_datetime_mechanism_constructor (GType                  type,
                                     guint                  n_construct_properties,
                                     GObjectConstructParam *construct_properties)
 {
-        MsdDatetimeMechanism      *mechanism;
+        UsdDatetimeMechanism      *mechanism;
 
-        mechanism = MSD_DATETIME_MECHANISM (G_OBJECT_CLASS (msd_datetime_mechanism_parent_class)->constructor (
+        mechanism = USD_DATETIME_MECHANISM (G_OBJECT_CLASS (usd_datetime_mechanism_parent_class)->constructor (
                                                 type,
                                                 n_construct_properties,
                                                 construct_properties));
@@ -132,47 +132,47 @@ msd_datetime_mechanism_constructor (GType                  type,
 }
 
 static void
-msd_datetime_mechanism_class_init (MsdDatetimeMechanismClass *klass)
+usd_datetime_mechanism_class_init (UsdDatetimeMechanismClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->constructor = msd_datetime_mechanism_constructor;
-        object_class->finalize = msd_datetime_mechanism_finalize;
+        object_class->constructor = usd_datetime_mechanism_constructor;
+        object_class->finalize = usd_datetime_mechanism_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdDatetimeMechanismPrivate));
+        g_type_class_add_private (klass, sizeof (UsdDatetimeMechanismPrivate));
 
-        dbus_g_object_type_install_info (MSD_DATETIME_TYPE_MECHANISM, &dbus_glib_msd_datetime_mechanism_object_info);
+        dbus_g_object_type_install_info (USD_DATETIME_TYPE_MECHANISM, &dbus_glib_usd_datetime_mechanism_object_info);
 
-        dbus_g_error_domain_register (MSD_DATETIME_MECHANISM_ERROR, NULL, MSD_DATETIME_MECHANISM_TYPE_ERROR);
-
-}
-
-static void
-msd_datetime_mechanism_init (MsdDatetimeMechanism *mechanism)
-{
-        mechanism->priv = MSD_DATETIME_MECHANISM_GET_PRIVATE (mechanism);
+        dbus_g_error_domain_register (USD_DATETIME_MECHANISM_ERROR, NULL, USD_DATETIME_MECHANISM_TYPE_ERROR);
 
 }
 
 static void
-msd_datetime_mechanism_finalize (GObject *object)
+usd_datetime_mechanism_init (UsdDatetimeMechanism *mechanism)
 {
-        MsdDatetimeMechanism *mechanism;
+        mechanism->priv = USD_DATETIME_MECHANISM_GET_PRIVATE (mechanism);
+
+}
+
+static void
+usd_datetime_mechanism_finalize (GObject *object)
+{
+        UsdDatetimeMechanism *mechanism;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_DATETIME_IS_MECHANISM (object));
+        g_return_if_fail (USD_DATETIME_IS_MECHANISM (object));
 
-        mechanism = MSD_DATETIME_MECHANISM (object);
+        mechanism = USD_DATETIME_MECHANISM (object);
 
         g_return_if_fail (mechanism->priv != NULL);
 
         g_object_unref (mechanism->priv->system_bus_proxy);
 
-        G_OBJECT_CLASS (msd_datetime_mechanism_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_datetime_mechanism_parent_class)->finalize (object);
 }
 
 static gboolean
-register_mechanism (MsdDatetimeMechanism *mechanism)
+register_mechanism (UsdDatetimeMechanism *mechanism)
 {
         GError *error = NULL;
 
@@ -211,25 +211,25 @@ error:
 }
 
 
-MsdDatetimeMechanism *
-msd_datetime_mechanism_new (void)
+UsdDatetimeMechanism *
+usd_datetime_mechanism_new (void)
 {
         GObject *object;
         gboolean res;
 
-        object = g_object_new (MSD_DATETIME_TYPE_MECHANISM, NULL);
+        object = g_object_new (USD_DATETIME_TYPE_MECHANISM, NULL);
 
-        res = register_mechanism (MSD_DATETIME_MECHANISM (object));
+        res = register_mechanism (USD_DATETIME_MECHANISM (object));
         if (! res) {
                 g_object_unref (object);
                 return NULL;
         }
 
-        return MSD_DATETIME_MECHANISM (object);
+        return USD_DATETIME_MECHANISM (object);
 }
 
 static gboolean
-_check_polkit_for_action (MsdDatetimeMechanism *mechanism, DBusGMethodInvocation *context, const char *action)
+_check_polkit_for_action (UsdDatetimeMechanism *mechanism, DBusGMethodInvocation *context, const char *action)
 {
         const char *sender;
         GError *error;
@@ -258,8 +258,8 @@ _check_polkit_for_action (MsdDatetimeMechanism *mechanism, DBusGMethodInvocation
         }
 
         if (!polkit_authorization_result_get_is_authorized (result)) {
-                error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                     MSD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED,
+                error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                     USD_DATETIME_MECHANISM_ERROR_NOT_PRIVILEGED,
                                      "Not Authorized for action %s", action);
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);
@@ -275,18 +275,18 @@ _check_polkit_for_action (MsdDatetimeMechanism *mechanism, DBusGMethodInvocation
 
 
 static gboolean
-_set_time (MsdDatetimeMechanism  *mechanism,
+_set_time (UsdDatetimeMechanism  *mechanism,
            const struct timeval  *tv,
            DBusGMethodInvocation *context)
 {
         GError *error;
 
-        if (!_check_polkit_for_action (mechanism, context, "org.mate.settingsdaemon.datetimemechanism.settime"))
+        if (!_check_polkit_for_action (mechanism, context, "org.ukui.settingsdaemon.datetimemechanism.settime"))
                 return FALSE;
 
         if (settimeofday (tv, NULL) != 0) {
-                error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                     MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                     USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                      "Error calling settimeofday({%lld,%lld}): %s", 
                                      (gint64) tv->tv_sec, (gint64) tv->tv_usec,
                                      strerror (errno));
@@ -300,8 +300,8 @@ _set_time (MsdDatetimeMechanism  *mechanism,
                 int exit_status;
                 if (!g_spawn_command_line_sync ("/sbin/hwclock --systohc", NULL, NULL, &exit_status, &error)) {
                         GError *error2;
-                        error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                              MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                        error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                              USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                               "Error spawning /sbin/hwclock: %s", error->message);
                         g_error_free (error);
                         dbus_g_method_return_error (context, error2);
@@ -309,8 +309,8 @@ _set_time (MsdDatetimeMechanism  *mechanism,
                         return FALSE;
                 }
                 if (WEXITSTATUS (exit_status) != 0) {
-                        error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                             MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                        error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                             USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                              "/sbin/hwclock returned %d", exit_status);
                         dbus_g_method_return_error (context, error);
                         g_error_free (error);
@@ -338,8 +338,8 @@ _rh_update_etc_sysconfig_clock (DBusGMethodInvocation *context, const char *key,
 
                 if (!g_file_get_contents ("/etc/sysconfig/clock", &data, &len, &error)) {
                         GError *error2;
-                        error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                              MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                        error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                              USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                               "Error reading /etc/sysconfig/clock file: %s", error->message);
                         g_error_free (error);
                         dbus_g_method_return_error (context, error2);
@@ -370,8 +370,8 @@ _rh_update_etc_sysconfig_clock (DBusGMethodInvocation *context, const char *key,
                         len = strlen (data);
                         if (!g_file_set_contents ("/etc/sysconfig/clock", data, len, &error)) {
                                 GError *error2;
-                                error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                                      MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                                error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                                      USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                                       "Error updating /etc/sysconfig/clock: %s", error->message);
                                 g_error_free (error);
                                 dbus_g_method_return_error (context, error2);
@@ -390,7 +390,7 @@ _rh_update_etc_sysconfig_clock (DBusGMethodInvocation *context, const char *key,
 /* exported methods */
 
 gboolean
-msd_datetime_mechanism_set_time (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_set_time (UsdDatetimeMechanism  *mechanism,
                                  gint64                 seconds_since_epoch,
                                  DBusGMethodInvocation *context)
 {
@@ -405,7 +405,7 @@ msd_datetime_mechanism_set_time (MsdDatetimeMechanism  *mechanism,
 }
 
 gboolean
-msd_datetime_mechanism_adjust_time (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_adjust_time (UsdDatetimeMechanism  *mechanism,
                                     gint64                 seconds_to_add,
                                     DBusGMethodInvocation *context)
 {
@@ -416,8 +416,8 @@ msd_datetime_mechanism_adjust_time (MsdDatetimeMechanism  *mechanism,
 
         if (gettimeofday (&tv, NULL) != 0) {
                 GError *error;
-                error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                     MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                     USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                      "Error calling gettimeofday(): %s", strerror (errno));
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);
@@ -430,7 +430,7 @@ msd_datetime_mechanism_adjust_time (MsdDatetimeMechanism  *mechanism,
 
 
 gboolean
-msd_datetime_mechanism_set_timezone (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_set_timezone (UsdDatetimeMechanism  *mechanism,
                                      const char            *zone_file,
                                      DBusGMethodInvocation *context)
 {
@@ -439,7 +439,7 @@ msd_datetime_mechanism_set_timezone (MsdDatetimeMechanism  *mechanism,
         reset_killtimer ();
         g_debug ("SetTimezone('%s') called", zone_file);
 
-        if (!_check_polkit_for_action (mechanism, context, "org.mate.settingsdaemon.datetimemechanism.settimezone"))
+        if (!_check_polkit_for_action (mechanism, context, "org.ukui.settingsdaemon.datetimemechanism.settimezone"))
                 return FALSE;
 
         error = NULL;
@@ -449,11 +449,11 @@ msd_datetime_mechanism_set_timezone (MsdDatetimeMechanism  *mechanism,
                 int     code;
 
                 if (error->code == SYSTEM_TIMEZONE_ERROR_INVALID_TIMEZONE_FILE)
-                        code = MSD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE;
+                        code = USD_DATETIME_MECHANISM_ERROR_INVALID_TIMEZONE_FILE;
                 else 
-                        code = MSD_DATETIME_MECHANISM_ERROR_GENERAL;
+                        code = USD_DATETIME_MECHANISM_ERROR_GENERAL;
 
-                error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
+                error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
                                       code, "%s", error->message);
 
                 g_error_free (error);
@@ -470,7 +470,7 @@ msd_datetime_mechanism_set_timezone (MsdDatetimeMechanism  *mechanism,
 
 
 gboolean
-msd_datetime_mechanism_get_timezone (MsdDatetimeMechanism   *mechism,
+usd_datetime_mechanism_get_timezone (UsdDatetimeMechanism   *mechism,
                                      DBusGMethodInvocation  *context)
 {
   gchar *timezone;
@@ -485,7 +485,7 @@ msd_datetime_mechanism_get_timezone (MsdDatetimeMechanism   *mechism,
 }
 
 gboolean
-msd_datetime_mechanism_get_hardware_clock_using_utc (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_get_hardware_clock_using_utc (UsdDatetimeMechanism  *mechanism,
                                                      DBusGMethodInvocation *context)
 {
         char **lines;
@@ -498,8 +498,8 @@ msd_datetime_mechanism_get_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
 
         if (!g_file_get_contents ("/etc/adjtime", &data, &len, &error)) {
                 GError *error2;
-                error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                      MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                      USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                       "Error reading /etc/adjtime file: %s", error->message);
                 g_error_free (error);
                 dbus_g_method_return_error (context, error2);
@@ -511,8 +511,8 @@ msd_datetime_mechanism_get_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
         g_free (data);
 
         if (g_strv_length (lines) < 3) {
-                error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                     MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                     USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                      "Cannot parse /etc/adjtime");
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);
@@ -525,8 +525,8 @@ msd_datetime_mechanism_get_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
         } else if (strcmp (lines[2], "LOCAL") == 0) {
                 is_utc = FALSE;
         } else {
-                error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                     MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                     USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                      "Expected UTC or LOCAL at line 3 of /etc/adjtime; found '%s'", lines[2]);
                 dbus_g_method_return_error (context, error);
                 g_error_free (error);
@@ -539,7 +539,7 @@ msd_datetime_mechanism_get_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
 }
 
 gboolean
-msd_datetime_mechanism_set_hardware_clock_using_utc (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_set_hardware_clock_using_utc (UsdDatetimeMechanism  *mechanism,
                                                      gboolean               using_utc,
                                                      DBusGMethodInvocation *context)
 {
@@ -548,7 +548,7 @@ msd_datetime_mechanism_set_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
         error = NULL;
 
         if (!_check_polkit_for_action (mechanism, context,
-                                       "org.mate.settingsdaemon.datetimemechanism.configurehwclock"))
+                                       "org.ukui.settingsdaemon.datetimemechanism.configurehwclock"))
                 return FALSE;
 
         if (g_file_test ("/sbin/hwclock", 
@@ -558,8 +558,8 @@ msd_datetime_mechanism_set_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
                 cmd = g_strdup_printf ("/sbin/hwclock %s --systohc", using_utc ? "--utc" : "--localtime");
                 if (!g_spawn_command_line_sync (cmd, NULL, NULL, &exit_status, &error)) {
                         GError *error2;
-                        error2 = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                              MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                        error2 = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                              USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                               "Error spawning /sbin/hwclock: %s", error->message);
                         g_error_free (error);
                         dbus_g_method_return_error (context, error2);
@@ -569,8 +569,8 @@ msd_datetime_mechanism_set_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
                 }
                 g_free (cmd);
                 if (WEXITSTATUS (exit_status) != 0) {
-                        error = g_error_new (MSD_DATETIME_MECHANISM_ERROR,
-                                             MSD_DATETIME_MECHANISM_ERROR_GENERAL,
+                        error = g_error_new (USD_DATETIME_MECHANISM_ERROR,
+                                             USD_DATETIME_MECHANISM_ERROR_GENERAL,
                                              "/sbin/hwclock returned %d", exit_status);
                         dbus_g_method_return_error (context, error);
                         g_error_free (error);
@@ -586,7 +586,7 @@ msd_datetime_mechanism_set_hardware_clock_using_utc (MsdDatetimeMechanism  *mech
 }
 
 static void
-check_can_do (MsdDatetimeMechanism  *mechanism,
+check_can_do (UsdDatetimeMechanism  *mechanism,
               const char            *action,
               DBusGMethodInvocation *context)
 {
@@ -630,22 +630,22 @@ check_can_do (MsdDatetimeMechanism  *mechanism,
 
 
 gboolean
-msd_datetime_mechanism_can_set_time (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_can_set_time (UsdDatetimeMechanism  *mechanism,
                                      DBusGMethodInvocation *context)
 {
         check_can_do (mechanism,
-                      "org.mate.settingsdaemon.datetimemechanism.settime",
+                      "org.ukui.settingsdaemon.datetimemechanism.settime",
                       context);
 
         return TRUE;
 }
 
 gboolean
-msd_datetime_mechanism_can_set_timezone (MsdDatetimeMechanism  *mechanism,
+usd_datetime_mechanism_can_set_timezone (UsdDatetimeMechanism  *mechanism,
                                          DBusGMethodInvocation *context)
 {
         check_can_do (mechanism,
-                      "org.mate.settingsdaemon.datetimemechanism.settimezone",
+                      "org.ukui.settingsdaemon.datetimemechanism.settimezone",
                       context);
 
         return TRUE;

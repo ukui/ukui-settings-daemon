@@ -39,7 +39,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 
 
-#include "msd-datetime-mechanism.h"
+#include "usd-datetime-mechanism.h"
 
 static DBusGProxy *
 get_bus_proxy (DBusGConnection *connection)
@@ -53,7 +53,7 @@ get_bus_proxy (DBusGConnection *connection)
         return bus_proxy;
 }
 
-#define BUS_NAME "org.mate.SettingsDaemon.DateTimeMechanism"
+#define BUS_NAME "org.ukui.SettingsDaemon.DateTimeMechanism"
 
 static gboolean
 acquire_name_on_proxy (DBusGProxy *bus_proxy)
@@ -123,7 +123,7 @@ int
 main (int argc, char **argv)
 {
         GMainLoop             *loop;
-        MsdDatetimeMechanism  *mechanism;
+        UsdDatetimeMechanism  *mechanism;
         DBusGProxy            *bus_proxy;
         DBusGConnection       *connection;
         int                    ret;
@@ -148,7 +148,7 @@ main (int argc, char **argv)
                 goto out;
         }
 
-        mechanism = msd_datetime_mechanism_new ();
+        mechanism = usd_datetime_mechanism_new ();
 
         if (mechanism == NULL) {
                 goto out;

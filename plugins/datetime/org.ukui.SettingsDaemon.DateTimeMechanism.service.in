@@ -1,0 +1,4 @@
+[D-BUS Service]
+Name=org.ukui.SettingsDaemon.DateTimeMechanism
+Exec=@LIBEXECDIR@/usd-datetime-mechanism
+User=root
