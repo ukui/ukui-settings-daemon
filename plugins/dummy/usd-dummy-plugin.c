@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-dummy-plugin.h"
-#include "msd-dummy-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-dummy-plugin.h"
+#include "usd-dummy-manager.h"
 
-struct MsdDummyPluginPrivate {
-        MsdDummyManager *manager;
+struct UsdDummyPluginPrivate {
+        UsdDummyManager *manager;
 };
 
-#define MSD_DUMMY_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_DUMMY_PLUGIN, MsdDummyPluginPrivate))
+#define USD_DUMMY_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_DUMMY_PLUGIN, UsdDummyPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdDummyPlugin, msd_dummy_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdDummyPlugin, usd_dummy_plugin)
 
 static void
-msd_dummy_plugin_init (MsdDummyPlugin *plugin)
+usd_dummy_plugin_init (UsdDummyPlugin *plugin)
 {
-        plugin->priv = MSD_DUMMY_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_DUMMY_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdDummyPlugin initializing");
+        g_debug ("UsdDummyPlugin initializing");
 
-        plugin->priv->manager = msd_dummy_manager_new ();
+        plugin->priv->manager = usd_dummy_manager_new ();
 }
 
 static void
-msd_dummy_plugin_finalize (GObject *object)
+usd_dummy_plugin_finalize (GObject *object)
 {
-        MsdDummyPlugin *plugin;
+        UsdDummyPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_DUMMY_PLUGIN (object));
+        g_return_if_fail (USD_IS_DUMMY_PLUGIN (object));
 
-        g_debug ("MsdDummyPlugin finalizing");
+        g_debug ("UsdDummyPlugin finalizing");
 
-        plugin = MSD_DUMMY_PLUGIN (object);
+        plugin = USD_DUMMY_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_dummy_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_dummy_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_dummy_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating dummy plugin");
 
         error = NULL;
-        res = msd_dummy_manager_start (MSD_DUMMY_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_dummy_manager_start (USD_DUMMY_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start dummy manager: %s", error->message);
                 g_error_free (error);
@@ -83,27 +83,27 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating dummy plugin");
-        msd_dummy_manager_stop (MSD_DUMMY_PLUGIN (plugin)->priv->manager);
+        usd_dummy_manager_stop (USD_DUMMY_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_dummy_plugin_class_init (MsdDummyPluginClass *klass)
+usd_dummy_plugin_class_init (UsdDummyPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_dummy_plugin_finalize;
+        object_class->finalize = usd_dummy_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdDummyPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdDummyPluginPrivate));
 }
 
 static void
-msd_dummy_plugin_class_finalize (MsdDummyPluginClass *klass)
+usd_dummy_plugin_class_finalize (UsdDummyPluginClass *klass)
 {
 }
