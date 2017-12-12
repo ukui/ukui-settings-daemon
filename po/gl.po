@@ -1,0 +1,1238 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Antón Méixome <meixome@mancomun.org>, 2009
+# Fran Diéguez <frandieguez@ubuntu.com>, 2010
+# Ignacio Casal Quinteiro <icq@svn.gnome.org>, 2007-2008
+# Ignacio Casal Quinteiro <nacho.resa@gmail.com>, 2005-2006
+# Mancomún - Centro de Referencia e Servizos de Software Libre <g11n@mancomun.org>, 2009
+# Manuel A. Fernández Montecelo <manuel@sindominio.net>, 2002
+# Miguel Anxo Bouzada <mbouzada@gmail.com>, 2013
+# Rubén López Gómez <ryo@mundivia.es>, 1999,, 2000
+# Suso Baleato <suso.baleato@xunta.es>, 2009
+# Xabi García <xabigf@gmx.net>, 2002
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"PO-Revision-Date: 2016-12-05 22:04+0000\n"
+"Last-Translator: monsta <monsta@inbox.ru>\n"
+"Language-Team: Galician (http://www.transifex.com/mate/MATE/language/gl/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: gl\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/50-accessibility.xml.in.h:1
+msgid "Accessibility"
+msgstr "Accesibilidade"
+
+#: ../data/50-accessibility.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+msgid "Toggle magnifier"
+msgstr "Alternar a lupa"
+
+#: ../data/50-accessibility.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+msgid "Toggle screen reader"
+msgstr "Alternar o lector de pantalla"
+
+#: ../data/50-accessibility.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+msgid "Toggle on-screen keyboard"
+msgstr "Alternar o teclado en pantalla"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:1
+msgid "On-screen keyboard"
+msgstr "Teclado en pantalla"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:2
+msgid "Whether the on-screen keyboard is turned on."
+msgstr "Indica se está activado o teclado en pantalla."
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:3
+msgid "Screen magnifier"
+msgstr "Lupa de pantalla"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:4
+msgid "Whether the screen magnifier is turned on."
+msgstr "Indica se está activada a lupa da pantalla."
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:5
+msgid "Screen reader"
+msgstr "Lector de pantalla"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:6
+msgid "Whether the screen reader is turned on."
+msgstr "Indica se está activado o lector de pantalla."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:1
+msgid "DPI"
+msgstr "PPP"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:2
+msgid ""
+"The resolution used for converting font sizes to pixel sizes, in dots per "
+"inch."
+msgstr "A resolución que se usa para converter os tamaños dos tipos de letra en puntos por polgada."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:3
+msgid "Antialiasing"
+msgstr "Suavizado"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:4
+msgid ""
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
+"antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
+msgstr "O tipo de suavizado que usar ao renderizar os tipos de letra. Os valores posíbeis son: «ningún» para usar ningún suavizado, «escala de grises» para o suavizado estándar de escala de grises e «rgba» para o suavizado de subpíxeles (só para pantallas LCD)."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:5
+msgid "Hinting"
+msgstr "Optimización"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:6
+msgid ""
+"The type of hinting to use when rendering fonts. Possible values are: "
+"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
+"\"full\" for maximum hinting (may cause distortion of letter forms)."
+msgstr "O tipo de suavizado que usar para renderizar os tipos de letras. Os valores posíbeis son: «ningún» para non usar ningún suavizado, «lixeiro» para o básico, «medio» para o moderado e «total» para o suavizado máximo (pode distorsionar as formas das letras)."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:7
+msgid "RGBA order"
+msgstr "Orde RGBA"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:8
+msgid ""
+"The order of subpixel elements on an LCD screen; only used when antialiasing"
+" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
+" on bottom."
+msgstr "A orde dos elementos de subpíxeles nunha pantalla LCD; só se usa cando o suavizado se define como «rgba». Os valores posíbeis son: «rgb» para o vermello na esquerda (o máis común), «bgr» para o azul na esquerda, «vrgb» para o vermello arriba, «vbgr» para o vermello abaixo."
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:1
+msgid "Smartcard removal action"
+msgstr "Acción ao extraer a tarxeta intelixente"
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:2
+msgid ""
+"Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
+"action will get performed when the smartcard used for log in is removed."
+msgstr "Estabelecer isto a «ningún», «bloquear pantalla» ou «forzar saída». A acción levarase a cabo cando a tarxeta intelixente usada para iniciar a sesión se extraia."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:1
+msgid "Disable touchpad while typing"
+msgstr "Desactivar a superficie táctil mentres se escribe"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:2
+msgid ""
+"Set this to TRUE if you have problems with accidentally hitting the touchpad"
+" while typing."
+msgstr "Estabeleza isto como VERDADEIRO se ten problemas cos saltos accidentais na superficie táctil mentres escribe."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:3
+msgid "Enable mouse clicks with touchpad"
+msgstr "Activar os clics do rato coa superficie táctil"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:4
+msgid ""
+"Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
+msgstr "Estabeleza isto como VERDADEIRO para poder enviar clics de rato dando toques na superficie táctil."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:5
+msgid "Enable vertical edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:6
+msgid "Set this to TRUE to allow vertical edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:7
+msgid "Enable horizontal edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:8
+msgid "Set this to TRUE to allow horizontal edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:9
+msgid "Enable vertical two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:10
+msgid "Set this to TRUE to allow vertical two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:11
+msgid "Enable horizontal two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:12
+msgid "Set this to TRUE to allow horizontal two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:13
+msgid "Natural scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:14
+msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:15
+msgid "Enable touchpad"
+msgstr "Activar o touchpad"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:16
+msgid "Set this to TRUE to enable all touchpads."
+msgstr "Estabeleza isto como VERDADEIRO para activar todos os touchpads."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:17
+msgid "Enabled two-finger button-click emulation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:18
+msgid "0 thru 3, 0 is inactive, 1-3 is button to emulate"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:19
+msgid "Enable three-finger button-click emulation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:20
+msgid "One finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:21
+msgid ""
+"Select the button mapping for one-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:22
+msgid "Two finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:23
+msgid ""
+"Select the button mapping for two-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:24
+msgid "Three finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:25
+msgid ""
+"Select the button mapping for three-finger tap. Supported values are: 1: "
+"left mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:26
+msgid "Touchpad button orientation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:27
+msgid ""
+"Swap left and right buttons for left-handed touchpads with 'left', 'right' "
+"for right-handed, 'mouse' to follow the mouse setting."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:28
+msgid "Motion Acceleration"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:29
+msgid ""
+"Acceleration multiplier for touchpad motion. A value of -1 is the system "
+"default."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:30
+msgid "Motion Threshold"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:31
+msgid ""
+"Distance in pixels the pointer must move before accelerated touchpad motion "
+"is activated. A value of -1 is the system default."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:1
+msgid "Activation of this plugin"
+msgstr "Activación deste engadido"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated by mate-settings-daemon or not"
+msgstr "Indica se mate-settings-daemon activará este complemento ou non"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:5
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:3
+msgid "Priority to use for this plugin"
+msgstr "Prioridade de uso deste engadido"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:6
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
+msgid "Priority to use for this plugin in mate-settings-daemon startup queue"
+msgstr "Prioridade que usar para este engadido na cola de inicio de mate-settings-daemon"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
+msgid "Free percentage notify threshold"
+msgstr "Limiar de notificación de porcentaxe libre"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
+msgid ""
+"Percentage free space threshold for initial warning of low disk space. If "
+"the percentage free space drops below this, a warning will be shown."
+msgstr "Limiar de porcentaxe de espazo libre para iniciar o aviso de pouco espazo en disco. Se a porcentaxe de espazo libre cae por baixo del, amosarase un aviso."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
+msgid "Subsequent free percentage notify threshold"
+msgstr "Limiar de notificación de porcentaxe libre subsecuente"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
+msgid ""
+"Specify the percentage that the free disk space should reduce by before "
+"issuing a subsequent warning."
+msgstr "Especificar a porcentaxe do espazo libre que se debería reducir antes de producir o aviso subsecuente"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
+msgid "Free space no notify threshold"
+msgstr "Limiar de non notificación de espazo libre"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
+msgid ""
+"Specify an amount in GB. If the amount of free space is more than this, no "
+"warning will be shown."
+msgstr "Especificar unha cantidade en GB. Se a cantidade de espazo libre é maior ca esta, non se amosará ningún aviso."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
+msgid "Minimum notify period for repeated warnings"
+msgstr "Período mínimo de notificación para avisos repetidos"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:12
+msgid ""
+"Specify a time in minutes. Subsequent warnings for a volume will not appear "
+"more often than this period."
+msgstr "Especificar tempo en minutos. Os avisos subsecuentes para un volume non se repetirán máis a miúdo que ese período."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
+msgid "Mount paths to ignore"
+msgstr "Montar as rutas para ignorar"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
+msgid "Specify a list of mount paths to ignore when they run low on space."
+msgstr "Especificar unha lista de rutas de montaxe para ignorar cando estean baixos de espazo."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
+msgid "Show OSD notification"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
+msgid "Whether an OSD notification is shown to notify about changes"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
+msgid "Volume step"
+msgstr "Paso de volume"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:8
+msgid "Volume step as percentage of volume."
+msgstr "Paso de volume como porcentaxe de volume."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:9
+msgid "Toggle touchpad"
+msgstr "Alternar o touchpad"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:10
+msgid "Binding to enable or disable the touchpad."
+msgstr "Combinación para activar ou desactivar o touchpad."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:11
+msgid "Volume mute"
+msgstr "Sen volume"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:12
+msgid "Binding to mute the system volume."
+msgstr "Combinación para silenciar o son do sistema."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:13
+msgid "Volume down"
+msgstr "Baixar o volume"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:14
+msgid "Binding to lower the system volume."
+msgstr "Combinación para baixar o volume do sistema."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:15
+msgid "Volume up"
+msgstr "Subir o volume"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:16
+msgid "Binding to raise the system volume."
+msgstr "Combinación para subir o volume do sistema."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:17
+msgid "Shut down"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:18
+msgid "Binding to shut down."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
+msgid "Log out"
+msgstr "Terminar a sesión"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
+msgid "Binding to log out."
+msgstr "Combinación para saír da sesión."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:21
+msgid "Eject"
+msgstr "Expulsar"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:22
+msgid "Binding to eject an optical disc."
+msgstr "Ligazón para expulsar un disco óptico."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:23
+msgid "Home folder"
+msgstr "Cartafol persoal"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:24
+msgid "Binding to open the Home folder."
+msgstr "Combinación para abrir o cartafol persoal."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:25
+msgid "Search"
+msgstr "Buscar"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:26
+msgid "Binding to launch the search tool."
+msgstr "Combinación para iniciar a ferramenta de busca."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:27
+msgid "Launch email client"
+msgstr "Iniciar o cliente de correo electrónico"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:28
+msgid "Binding to launch the email client."
+msgstr "Combinación para iniciar o cliente de correo electrónico."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:29
+msgid "Lock screen"
+msgstr "Bloquear a pantalla"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:30
+msgid "Binding to lock the screen."
+msgstr "Combinación para bloquear a pantalla."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+msgid "Launch help browser"
+msgstr "Iniciar o navegador de axuda"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+msgid "Binding to launch the help browser."
+msgstr "Combinación para iniciar o navegador de axuda."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Launch calculator"
+msgstr "Iniciar a calculadora"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+msgid "Binding to launch the calculator."
+msgstr "Combinación para iniciar a calculadora."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+msgid "Launch web browser"
+msgstr "Iniciar o navegador web"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+msgid "Binding to launch the web browser."
+msgstr "Combinación para iniciar o navegador web."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+msgid "Launch media player"
+msgstr "Iniciar o reprodutor de son"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+msgid "Binding to launch the media player."
+msgstr "Combinación para iniciar o reprodutor multimedia."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+msgid "Play (or play/pause)"
+msgstr "Reproducir (ou reproducir/deter)"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+msgid "Binding to start playback (or toggle play/pause)."
+msgstr "Combinación para comezar a reprodución (ou alternar entre reproducir e deter)."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+msgid "Pause playback"
+msgstr "Deter a reprodución"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+msgid "Binding to pause playback."
+msgstr "Combinación para deter a reprodución."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+msgid "Stop playback"
+msgstr "Deter a reprodución"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+msgid "Binding to stop playback."
+msgstr "Combinación para deter a reprodución."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+msgid "Previous track"
+msgstr "Pista anterior"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+msgid "Binding to skip to previous track."
+msgstr "Combinación para saltar á pista anterior."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+msgid "Next track"
+msgstr "Pista seguinte"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+msgid "Binding to skip to next track."
+msgstr "Combinación para pasar á pista seguinte."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+msgid "Binding to show the screen magnifier"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+msgid "Binding to start the screen reader"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+msgid "Binding to show the on-screen keyboard"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
+msgid "Show Displays in Notification Area"
+msgstr "Amosar as pantallas na área de notificación"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:6
+msgid ""
+"Whether a notification icon with display-related things should be shown in "
+"the panel."
+msgstr "Indica se debería amosarse no panel unha icona de notificación con elementos relacionados coa pantalla."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
+msgid "Do not touch monitor configuration"
+msgstr "Non modificar a configuración do monitor"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:8
+msgid ""
+"Usually, mate-settings-daemon configures internal and external monitors "
+"according to the turn_on_external_monitors_at_startup and "
+"turn_on_laptop_monitor_at_startup settings and determines an appropriate "
+"cloning/side-by-side mode. Setting this key to True disables this, and the "
+"monitor settings are not touched at all (unless there is an explicit user "
+"configuration)."
+msgstr "Normalmente, mate-settings-daemon configura os monitores internos e externos conforme as opcións «acender os monitores externos ao arrincar» e «acender o monitor do portátil ao arrincar» na configuración de inicio e determina o modo máis axeitado clonado/cara-a-cara. Ao estabelecer esta clave a «verdadeiro» desactiva isto, e a configuración do monitor non é modificada (a non ser que haxa unha configuración explícita do usuario)."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
+msgid "Turn on external monitor after system boot"
+msgstr "Acender o monitor externo despois de arrincar o sistema"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
+msgid ""
+"Turn on external monitor after system boot if user plugs in external monitor"
+" on system boot."
+msgstr "Acender o monitor externo despois de arrincar o sistema se o usuario conecta o monitor externo cando o sistema arrinca."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
+msgid "Turn on laptop monitor after system boot"
+msgstr "Acender o monitor do portátil despois de arrincar o sistema"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
+msgid ""
+"Turn on laptop monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr "Acender o monitor do portátil despois de arrincar o sistema se o usuario conecta o monitor externo cando o sistema arrinca."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
+msgid "File for default configuration for RandR"
+msgstr "Ficheiro de configuración predeterminado para RandR"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:14
+msgid ""
+"The XRandR plugin will look for a default configuration in the file "
+"specified by this key. This is similar to the ~/.config/monitors.xml that "
+"normally gets stored in users' home directories. If a user does not have "
+"such a file, or has one that does not match the user's setup of monitors, "
+"then the file specified by this key will be used instead."
+msgstr "O engadido XRANDR buscará pola configuración predeterminada no ficheiro especificado por esta chave. É semellante ao ~/.config/monitors.xml que normalmente almacenase no cartafol persoal dos usuarios. Se un usuario non ten dito ficheiro ou non ten unha configuración de usuario dos monitores, usarase no seu canto o ficheiro especificado nesta chave."
+
+#: ../data/mate-settings-daemon.desktop.in.in.h:1
+msgid "MATE Settings Daemon"
+msgstr "Servizo de configuracións do MATE"
+
+#: ../mate-settings-daemon/main.c:65
+msgid "Enable debugging code"
+msgstr "Activar o código de depuración"
+
+#: ../mate-settings-daemon/main.c:66
+msgid "Replace the current daemon"
+msgstr "Substituír o servizo actual"
+
+#: ../mate-settings-daemon/main.c:67
+msgid "Don't become a daemon"
+msgstr "Non converter nun servizo"
+
+#: ../mate-settings-daemon/main.c:68
+msgid "Exit after a time (for debugging)"
+msgstr "Saír despois de tempo (para depurar)"
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:1
+msgid "Accessibility Keyboard"
+msgstr "Accesibilidade do teclado"
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:2
+msgid "Accessibility keyboard plugin"
+msgstr "Engadido de accesibilidade do teclado"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Produciuse un erro ao amosar a axuda: %s"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+msgid "Do you want to activate Slow Keys?"
+msgstr "Quere activar a opción Teclas lentas?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+msgid "Do you want to deactivate Slow Keys?"
+msgstr "Quere desactivar a opción Teclas lentas?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+msgid ""
+"You just held down the Shift key for 8 seconds.  This is the shortcut for "
+"the Slow Keys feature, which affects the way your keyboard works."
+msgstr "Ven de premer a tecla Maiús durante oito segundos. Este é o atallo de teclado para a opción Teclas lentas que afecta á forma en que funciona o seu teclado."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't activate"
+msgstr "Non activar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't deactivate"
+msgstr "Non desactivar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Activate"
+msgstr "Activar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Deactivate"
+msgstr "Desactivar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't activate"
+msgstr "_Non activar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't deactivate"
+msgstr "_Non desactivar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Activate"
+msgstr "_Activar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Deactivate"
+msgstr "_Desactivar"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+msgid "Slow Keys Alert"
+msgstr "Ton de aviso para Teclas lentas"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+msgid "Do you want to activate Sticky Keys?"
+msgstr "Quere activar a opción Teclas persistentes?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+msgid "Do you want to deactivate Sticky Keys?"
+msgstr "Quere desactivar a opción Teclas persistentes?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+msgid ""
+"You just pressed the Shift key 5 times in a row.  This is the shortcut for "
+"the Sticky Keys feature, which affects the way your keyboard works."
+msgstr "Ven de premer a tecla Maiús cinco veces seguidas. Este é o atallo de teclado para a opción Teclas persistentes que afecta á forma en que funciona o seu teclado."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+msgid ""
+"You just pressed two keys at once, or pressed the Shift key 5 times in a "
+"row.  This turns off the Sticky Keys feature, which affects the way your "
+"keyboard works."
+msgstr "Ven de premer dúas teclas ao mesmo tempo ou premeu a tecla Maiús cinco veces seguidas. Isto desactivará a opción Teclas persistentes que afecta á forma en que funciona o seu teclado."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+msgid "Sticky Keys Alert"
+msgstr "Ton de aviso para Teclas persistentes"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+msgid "Universal Access Preferences"
+msgstr "Preferencias de acceso universal"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+msgid "Use on-screen _keyboard"
+msgstr "Usar o tecla_do en pantalla"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+msgid "Use screen _reader"
+msgstr "Usar o _lector de pantalla"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+msgid "Use screen _magnifier"
+msgstr "Usar a l_upa da pantalla"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+msgid "Enhance _contrast in colors"
+msgstr "Mellorar o _contraste nas cores"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+msgid "Make _text larger and easier to read"
+msgstr "Aumentar o tamaño do _texto para facilitar a lectura"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
+msgstr "_Premer os atallos de teclado unha tecla de cada vez (teclas persistentes)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "_Ignorar a pulsación duplicada de teclas (teclas de rebote)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+msgid "Press and _hold keys to accept them (Slow Keys)"
+msgstr "Premer e _manter as teclas para aceptalas (Teclas lentas)"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:1
+msgid "Background"
+msgstr "Fondo"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:2
+msgid "Background plugin"
+msgstr "Engadido de fondo"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:1
+msgid "Clipboard"
+msgstr "Portapapeis"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:2
+msgid "Clipboard plugin"
+msgstr "Engadido de portapapeis"
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:1
+msgid "Dummy"
+msgstr "Simulación"
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:2
+msgid "Dummy plugin"
+msgstr "Engadido de simulación"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+msgid "Don't show any warnings again for this file system"
+msgstr "Non amosar ningún aviso outra vez para este sistema de ficheiros"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+msgid "Don't show any warnings again"
+msgstr "Non amosar as mensaxes outra vez"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#, c-format
+msgid "The volume \"%s\" has only %s disk space remaining."
+msgstr "Ao volume «%s» só lle queda %s espazo de disco."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#, c-format
+msgid "This computer has only %s disk space remaining."
+msgstr "A este computador só lle queda %s espazo de disco."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to another disk or partition."
+msgstr "Pode liberar espazo de disco baleirando o cesto do lixo, eliminando programas ou ficheiros que non use, ou movendo ficheiros a outro disco ou partición."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to another disk or partition."
+msgstr "Pode liberar espazo de disco eliminando programas ou ficheiros que non use, ou movendo ficheiros a outro disco ou partición."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to an external disk."
+msgstr "Pode liberar espazo de disco baleirando o cesto do lixo, eliminando programas ou ficheiros que non use, ou movendo ficheiros a un disco externo."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to an external disk."
+msgstr "Pode liberar espazo de disco eliminando programas ou ficheiros que non use, ou movendo ficheiros a un disco externo."
+
+#. Set up all the window stuff here
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+msgid "Low Disk Space"
+msgstr "O espazo no disco é baixo"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+msgid "Empty Trash"
+msgstr "Baleirar o cesto do lixo"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+msgid "Examine…"
+msgstr "Examinar..."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+msgid "Ignore"
+msgstr "Ignorar"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#, c-format
+msgid "Removing item %lu of %lu"
+msgstr "Retirando o elemento %lu de %lu"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#, c-format
+msgid "Removing: %s"
+msgstr "Retirando: %s"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+msgid "Emptying the trash"
+msgstr "Baleirando o cesto do lixo"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+msgid "Preparing to empty trash…"
+msgstr "Preparándose para baleirar o lixo..."
+
+#. Translators: "Emptying trash from <device>"
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+msgid "From: "
+msgstr "Desde: "
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+msgid "Empty all of the items from the trash?"
+msgstr "Quere eliminar todos os elementos do lixo?"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+msgid ""
+"If you choose to empty the trash, all items in it will be permanently lost. "
+"Please note that you can also delete them separately."
+msgstr "Se escolle baleirar o cesto do lixo, todos os elementos nel perdéranse de xeito permanente. Teña en conta que tamén pode eliminalos por separado."
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+msgid "_Empty Trash"
+msgstr "_Baleirar o cesto do lixo"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#, c-format
+msgid "Key binding (%s) is invalid"
+msgstr "A combinación de teclas (%s) é incorrecta"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#, c-format
+msgid "Key binding (%s) is incomplete"
+msgstr "A combinación de teclas (%s) está incompleta"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#, c-format
+msgid ""
+"Error while trying to run (%s)\n"
+"which is linked to the key (%s)"
+msgstr "Produciuse un erro ao tentar executar (%s)\nque está ligado á chave (%s)"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:1
+msgid "Keybindings"
+msgstr "Combinacións de teclas"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:2
+msgid "Keybindings plugin"
+msgstr "Engadido de combinacións de teclas"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:1
+msgid "Keyboard"
+msgstr "Teclado"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:2
+msgid "Keyboard plugin"
+msgstr "Engadido do teclado"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#, c-format
+msgid ""
+"Error activating XKB configuration.\n"
+"It can happen under various circumstances:\n"
+" • a bug in libxklavier library\n"
+" • a bug in X server (xkbcomp, xmodmap utilities)\n"
+" • X server with incompatible libxkbfile implementation\n"
+"\n"
+"X server version data:\n"
+"%s\n"
+"%d\n"
+"If you report this situation as a bug, please include:\n"
+" • The result of <b>%s</b>\n"
+" • The result of <b>%s</b>"
+msgstr ""
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+msgid "_Layouts"
+msgstr "_Disposicións"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+msgid "Keyboard _Preferences"
+msgstr "Preferencias do _teclado"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+msgid "Show _Current Layout"
+msgstr "Amosar a _disposición actual"
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:186
+msgid ""
+"Could not get default terminal. Verify that your default terminal command is"
+" set and points to a valid application."
+msgstr "Non foi posíbel obter o terminal predeterminado. Verifique que a orde do seu terminal predeterminado está definida e que apunta a un aplicativo correcto."
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this is a valid command."
+msgstr "Non é posíbel executar a orde: %s\nVerifique que esta é unha orde válida."
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:1
+msgid "Media keys"
+msgstr "Teclas multimedia"
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:2
+msgid "Media keys plugin"
+msgstr "Engadido das teclas multimedia"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1021
+msgid "Could not enable mouse accessibility features"
+msgstr "Non foi posíbel activar as opcións de accesibilidade do rato"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1023
+msgid ""
+"Mouse accessibility requires Mousetweaks to be installed on your system."
+msgstr "A accesibilidade de rato require ter instalado mousetweaks no seu sistema."
+
+#: ../plugins/mouse/msd-mouse-manager.c:1026
+msgid "Mouse Preferences"
+msgstr "Preferencias do rato"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:1
+msgid "Mouse"
+msgstr "Rato"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:2
+msgid "Mouse plugin"
+msgstr "Engadido do rato"
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:1
+msgid "Mpris"
+msgstr "Mpris"
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:2
+msgid "Mpris plugin"
+msgstr "Engadido Mpris"
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:1
+msgid "Typing Break"
+msgstr "Descanso de escritura"
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:2
+msgid "Typing break plugin"
+msgstr "Engadido do descanso de escritura"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:1
+msgid "XRandR"
+msgstr "XRandR"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:2
+msgid "Set up screen size and rotation settings"
+msgstr "Definir o tamaño da pantalla e as configuracións de rotación"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:373
+msgid "Could not switch the monitor configuration"
+msgstr "Non foi posíbel cambiar a configuración da pantalla"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:397
+msgid "Could not restore the display's configuration"
+msgstr "Non foi posíbel restaurar a configuración de pantalla"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:422
+msgid "Could not restore the display's configuration from a backup"
+msgstr "Non foi posíbel restaurar a configuración de pantalla desde a copia de seguranza"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#, c-format
+msgid "The display will be reset to its previous configuration in %d second"
+msgid_plural ""
+"The display will be reset to its previous configuration in %d seconds"
+msgstr[0] "Restabelecerase a configuración de pantalla anterior en %d segundo"
+msgstr[1] "Restabelecerase a configuración de pantalla anterior en %d segundos"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:492
+msgid "Does the display look OK?"
+msgstr "Vese correctamente a pantalla?"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:499
+msgid "_Restore Previous Configuration"
+msgstr "_Restabelecer a configuración anterior"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:500
+msgid "_Keep This Configuration"
+msgstr "_Manter esta configuración"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:581
+msgid "The selected configuration for displays could not be applied"
+msgstr "Non é posíbel aplicar a configuración seleccionada para as pantallas"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#, c-format
+msgid "Could not refresh the screen information: %s"
+msgstr "Non foi posíbel actualizar a información de pantalla: %s"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+msgid "Trying to switch the monitor configuration anyway."
+msgstr "Tentando mudar a configuración da pantalla de todas formas."
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+msgid "Rotation not supported"
+msgstr "A rotación non está permitida"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+msgid "Could not save monitor configuration"
+msgstr "Non foi posíbel gardar a configuración do monitor"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+msgid "Normal"
+msgstr "Normal"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+msgid "Left"
+msgstr "Esquerda"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+msgid "Right"
+msgstr "Dereita"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+msgid "Upside Down"
+msgstr "Inverter"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+msgid "_Configure Display Settings…"
+msgstr "_Configurar as opcións da pantalla…"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+msgid "Configure display settings"
+msgstr "Configurar as características da pantalla"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+msgid "Could not apply the stored configuration for monitors"
+msgstr "Non se lle puido aplicar a configuración almacenada aos monitores"
+
+#: ../plugins/xrdb/msd-xrdb-manager.c:253
+#: ../plugins/xrdb/msd-xrdb-manager.c:322
+msgid "Cannot determine user's home directory"
+msgstr "Non é posíbel determinar o cartafol persoal do usuario"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:1
+msgid "X Resource Database"
+msgstr "Base de datos de recursos de X"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:2
+msgid "Manage the X resource database"
+msgstr "Xestionar a base de datos de recursos de X"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:1
+msgid "X Settings"
+msgstr "Configuracións de X"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:2
+msgid "Manage X Settings"
+msgstr "Xestionar as configuracións de X"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:167
+msgid "Module Path"
+msgstr "Ruta ao módulo"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:168
+msgid "path to smartcard PKCS #11 driver"
+msgstr "ruta ao controlador PKCS #11 da tarxeta intelixente"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:496
+msgid "received error or hang up from event source"
+msgstr "recibiuse un erro ou un bloqueo desde o evento orixe"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "Non foi posíbel inicializar o sistema de seguranza NSS"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "non foi posíbel atopar o controlador da tarxeta intelixente axeitado"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "non foi posíbel cargar o controlador «%s» da tarxeta intelixente"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "non foi posíbel supervisar as accións entrantes de tarxetas - %s"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "atopáronse erros non agardados ao agardar polas accións da tarxeta intelixente"
+
+#: ../plugins/smartcard/msd-smartcard.c:154
+msgid "Slot ID"
+msgstr "ID da rañura"
+
+#: ../plugins/smartcard/msd-smartcard.c:155
+msgid "The slot the card is in"
+msgstr "A rañura onde está a tarxeta"
+
+#: ../plugins/smartcard/msd-smartcard.c:161
+msgid "Slot Series"
+msgstr "Serie da rañura"
+
+#: ../plugins/smartcard/msd-smartcard.c:162
+msgid "per-slot card identifier"
+msgstr "identificador de tarxeta por rañura"
+
+#: ../plugins/smartcard/msd-smartcard.c:168
+#: ../plugins/smartcard/msd-smartcard.c:169
+msgid "name"
+msgstr "nome"
+
+#: ../plugins/smartcard/msd-smartcard.c:173
+msgid "Module"
+msgstr "Módulo"
+
+#: ../plugins/smartcard/msd-smartcard.c:174
+msgid "smartcard driver"
+msgstr "controlador da tarxeta intelixente"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:1
+msgid "Change system time zone"
+msgstr "Cambiar o fuso horario do sistema"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:2
+msgid "Privileges are required to change the system time zone."
+msgstr "Requírense privilexios para cambiar o fuso horario do sistema."
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:3
+msgid "Change system time"
+msgstr "Cambiar a hora do sistema"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:4
+msgid "Privileges are required to change the system time."
+msgstr "Requírense privilexios para cambiar o hora do sistema."
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:5
+msgid "Configure hardware clock"
+msgstr "Configurar o reloxo do sistema"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:6
+msgid "Privileges are required to configure the hardware clock."
+msgstr "Requírense privilexios para cambiar o reloxo do sistema"

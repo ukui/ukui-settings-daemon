@@ -1,0 +1,1230 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Manoj Kumar Giri <giri.manojkr@gmail.com>, 2009, 2010
+# Subhransu Behera <arya_subhransu@yahoo.co.in>, 2006
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"PO-Revision-Date: 2016-12-05 22:04+0000\n"
+"Last-Translator: monsta <monsta@inbox.ru>\n"
+"Language-Team: Oriya (http://www.transifex.com/mate/MATE/language/or/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: or\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/50-accessibility.xml.in.h:1
+msgid "Accessibility"
+msgstr "ଅଭିଗମ୍ଯତା"
+
+#: ../data/50-accessibility.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+msgid "Toggle magnifier"
+msgstr "ଆଗପଛ ଆବର୍ଦ୍ଧକ"
+
+#: ../data/50-accessibility.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+msgid "Toggle screen reader"
+msgstr "ପରଦା ପାଠକକୁ ଆଗପଛ କରନ୍ତୁ"
+
+#: ../data/50-accessibility.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+msgid "Toggle on-screen keyboard"
+msgstr "ଅନ-ସ୍କ୍ରିନ କି-ବୋର୍ଡକୁ ଆଗପଛ କରନ୍ତୁ"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:1
+msgid "On-screen keyboard"
+msgstr "ଅନ-ସ୍କ୍ରିନ କି-ବୋର୍ଡ"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:2
+msgid "Whether the on-screen keyboard is turned on."
+msgstr "ଅନସ୍କ୍ରିନ କିବୋର୍ଡକୁ ଅନ କରାଯାଇଛି କି ନାହିଁ।"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:3
+msgid "Screen magnifier"
+msgstr "ପରଦା ଆବର୍ଦ୍ଧକ"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:4
+msgid "Whether the screen magnifier is turned on."
+msgstr "ପରଦା ଆବର୍ଦ୍ଧକକୁ ଅନ କରାଯାଇଛି କି ନାହିଁ।"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:5
+msgid "Screen reader"
+msgstr "ପରଦା ପାଠକ"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:6
+msgid "Whether the screen reader is turned on."
+msgstr "ପରଦା ପାଠକଟି ଅନ ଅଛି କି ନାହିଁ।"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:1
+msgid "DPI"
+msgstr "DPI"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:2
+msgid ""
+"The resolution used for converting font sizes to pixel sizes, in dots per "
+"inch."
+msgstr "ଅକ୍ଷରରୂପକୁ ପିକସେଲ ଆକାରରେ ପରିବର୍ତ୍ତନ କରିବା ପାଇଁ ବ୍ୟବହୃତ ବିଭେଦନ, ଇଞ୍ଚ ପ୍ରତି ଡଟଗୁଡ଼ିକ।"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:3
+msgid "Antialiasing"
+msgstr "ଛବିମଶୃଣକରଣ"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:4
+msgid ""
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
+"antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
+msgstr "ଅକ୍ଷରରୂପ ଚିତ୍ରଣରେ ବ୍ୟବହାର କରିବାକୁ ଉପନାନକରଣ ନକିରବାର ପ୍ରକାର। ସମ୍ଭାବ୍ୟ ମୂଲ୍ୟଗୁଡ଼ିକ ହେଉଛି: \"none\" ଉପନାମକରଣ ନକରିବା ପାଇଁ, \"grayscale\" ମାନକ grayscale ଉପନାମକରଣ, ଏବଂ \"rgba\" ଉପପିକସେଲ ଉପନାମକରଣ ପାଇଁ (କେବଳ LCD ପରଦା)।"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:5
+msgid "Hinting"
+msgstr "ସଙ୍କେତ ଦେଉଅଛି"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:6
+msgid ""
+"The type of hinting to use when rendering fonts. Possible values are: "
+"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
+"\"full\" for maximum hinting (may cause distortion of letter forms)."
+msgstr "ଅକ୍ଷରରୂପ ଚିତ୍ରଣକୁ ବ୍ୟବହାର କରିବା ପାଇଁ ସୂଚନା ପ୍ରକାର। ସମ୍ଭାବ୍ୟ ମୂଲ୍ୟଗୁଡ଼ିକ ହେଉଛି: \"none\" ସୂଚନା ନଥିବା ପାଇଁ, \"slight\" ମୌଳିକ ସୂଚନା ପାଇଁ, \"medium\" ମଧ୍ଯମ ସୂଚନା ପାଇଁ, ଏବଂ \"full\" ସର୍ବାଧିକ ସୂଚନା ପାଇଁ (ପରବର୍ତ୍ତୀ ଫର୍ମର ବିକୃତି ହୋଇପାରେ)।"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:7
+msgid "RGBA order"
+msgstr "RGBA କ୍ରମ"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:8
+msgid ""
+"The order of subpixel elements on an LCD screen; only used when antialiasing"
+" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
+" on bottom."
+msgstr "LCD ପରଦାରେ ଉପପିକସେଲ ଉପାଦାନଗୁଡ଼ିକର କ୍ରମ; କେବଳ ଉପନାମକରଣ ନକିରବା ପାଇଁ ବ୍ୟବହୃତ ହୋଇଥାଏ \"rgba\"। ସମ୍ଭାବ୍ୟ ମୂଲ୍ୟଗୁଡ଼ିକ ହେଉଛି: \"rgb\" ବାମପଟେ ଲାଲିପାଇଁ (ସାଧାରଣତଃ), \"bgr\" ବାମରେ ନିଳ ପାଇଁ, \"vrgb\" ଉପରେ ଲାଲି ପାଇଁ, \"vbgr\" ତଳେ ଲାଲି ପାଇଁ।"
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:1
+msgid "Smartcard removal action"
+msgstr ""
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:2
+msgid ""
+"Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
+"action will get performed when the smartcard used for log in is removed."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:1
+msgid "Disable touchpad while typing"
+msgstr "ଟାଇପ କରିବା ସମୟରେ ଟଚପ୍ୟାଡ଼କୁ ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:2
+msgid ""
+"Set this to TRUE if you have problems with accidentally hitting the touchpad"
+" while typing."
+msgstr "ଏହାକୁ TRUE ସେଟ କରନ୍ତୁ ଯଦି ଆପଣଙ୍କର ଟାଇପ କରିବା ସମୟରେ ଟଚପ୍ୟାଡକୁ ହଠାତ ଆଘାତ କରିବାରେ ସମସ୍ୟା ଅଛି।"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:3
+msgid "Enable mouse clicks with touchpad"
+msgstr "ଟଚପ୍ୟାଡ଼ ସହିତ ମାଉସ କ୍ଲିକକୁ ସକ୍ରିୟ କରନ୍ତୁ"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:4
+msgid ""
+"Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
+msgstr "ଟଚପ୍ୟାଡ ଉପରେ ଟ୍ୟାପ କରିବା ଦ୍ୱାରା ମାଉସ କ୍ଲିକଗୁଡ଼ିକୁ ପଠାଇବା ପାଇଁ ସମର୍ଥ କରିବାକୁ ଏହାକୁ TRUE ସେଟ କରନ୍ତୁ।"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:5
+msgid "Enable vertical edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:6
+msgid "Set this to TRUE to allow vertical edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:7
+msgid "Enable horizontal edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:8
+msgid "Set this to TRUE to allow horizontal edge scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:9
+msgid "Enable vertical two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:10
+msgid "Set this to TRUE to allow vertical two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:11
+msgid "Enable horizontal two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:12
+msgid "Set this to TRUE to allow horizontal two-finger scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:13
+msgid "Natural scrolling"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:14
+msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:15
+msgid "Enable touchpad"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:16
+msgid "Set this to TRUE to enable all touchpads."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:17
+msgid "Enabled two-finger button-click emulation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:18
+msgid "0 thru 3, 0 is inactive, 1-3 is button to emulate"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:19
+msgid "Enable three-finger button-click emulation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:20
+msgid "One finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:21
+msgid ""
+"Select the button mapping for one-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:22
+msgid "Two finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:23
+msgid ""
+"Select the button mapping for two-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:24
+msgid "Three finger tap button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:25
+msgid ""
+"Select the button mapping for three-finger tap. Supported values are: 1: "
+"left mouse button 2: middle mouse button 3: right mouse button"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:26
+msgid "Touchpad button orientation"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:27
+msgid ""
+"Swap left and right buttons for left-handed touchpads with 'left', 'right' "
+"for right-handed, 'mouse' to follow the mouse setting."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:28
+msgid "Motion Acceleration"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:29
+msgid ""
+"Acceleration multiplier for touchpad motion. A value of -1 is the system "
+"default."
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:30
+msgid "Motion Threshold"
+msgstr ""
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:31
+msgid ""
+"Distance in pixels the pointer must move before accelerated touchpad motion "
+"is activated. A value of -1 is the system default."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:1
+msgid "Activation of this plugin"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated by mate-settings-daemon or not"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:5
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:3
+msgid "Priority to use for this plugin"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:6
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
+msgid "Priority to use for this plugin in mate-settings-daemon startup queue"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
+msgid "Free percentage notify threshold"
+msgstr "ମୁକ୍ତ ପ୍ରତିଶତ ବିଜ୍ଞପ୍ତି"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
+msgid ""
+"Percentage free space threshold for initial warning of low disk space. If "
+"the percentage free space drops below this, a warning will be shown."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
+msgid "Subsequent free percentage notify threshold"
+msgstr "ପରବର୍ତ୍ତୀ ମୁକ୍ତ ପ୍ରତିଶତ ବିଜ୍ଞପ୍ତି ଦ୍ୱାର"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
+msgid ""
+"Specify the percentage that the free disk space should reduce by before "
+"issuing a subsequent warning."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
+msgid "Free space no notify threshold"
+msgstr "ମୁକ୍ତ ସ୍ଥାନ କୌଣସି ବିଜ୍ଞପ୍ତି ନାହିଁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
+msgid ""
+"Specify an amount in GB. If the amount of free space is more than this, no "
+"warning will be shown."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
+msgid "Minimum notify period for repeated warnings"
+msgstr "ପୁନଃପୌନିକ ଚେତାବନୀ ପାଇଁ ସର୍ବନିମ୍ନ ବିଜ୍ଞପ୍ତି ଅବଧି"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:12
+msgid ""
+"Specify a time in minutes. Subsequent warnings for a volume will not appear "
+"more often than this period."
+msgstr "ମିନଟରେ ସମୟ ଉଲ୍ଲେଖ କରନ୍ତୁ। ଏହି ଅବଧି ଅପେକ୍ଷା ଭଲ୍ୟୁମ ପାଇଁ ପାଖାପାଖି ଚେତାବନୀ ଦୃଶ୍ୟମାନ ହୋଇନଥାଏ।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
+msgid "Mount paths to ignore"
+msgstr "ଅଗ୍ରହଣୀୟ କରିବା ପାଇଁ ପଥଗୁଡ଼ିକୁ ସ୍ଥାପନ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
+msgid "Specify a list of mount paths to ignore when they run low on space."
+msgstr "ସ୍ଥାପନ ପଥର ଗୋଟିଏ ତାଲିକା ଉଲ୍ଲେଖ କରନ୍ତୁ ଯେତେବେଳେ ସେମାନେ ସ୍ଥାନ ଅଭାବରେ ଚାଲିଥାନ୍ତି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
+msgid "Show OSD notification"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
+msgid "Whether an OSD notification is shown to notify about changes"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
+msgid "Volume step"
+msgstr "ଭଲ୍ଯୁମ ସୋପାନ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:8
+msgid "Volume step as percentage of volume."
+msgstr "ଭଲ୍ଯୁମ ସୋପାନ ଭଲ୍ୟୁମର ଶତକଡା ପରି"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:9
+msgid "Toggle touchpad"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:10
+msgid "Binding to enable or disable the touchpad."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:11
+msgid "Volume mute"
+msgstr "ଭଲ୍ଯୁମକୁ ନୀରବରେ ରଖ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:12
+msgid "Binding to mute the system volume."
+msgstr "ତନ୍ତ୍ର ଧ୍ୱନି ପ୍ରବଳତାକୁ ମୁକ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:13
+msgid "Volume down"
+msgstr "ପ୍ରବଳତା ହ୍ରାସ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:14
+msgid "Binding to lower the system volume."
+msgstr "ତନ୍ତ୍ର ଆକାରକୁ କମ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:15
+msgid "Volume up"
+msgstr "ଧ୍ବନି ପ୍ରବଳତା ବ୍ରୁଦ୍ଧି କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:16
+msgid "Binding to raise the system volume."
+msgstr "ତନ୍ତ୍ର ଧ୍ୱନି ପ୍ରବଳତାକୁ ବୃଦ୍ଧି କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:17
+msgid "Shut down"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:18
+msgid "Binding to shut down."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
+msgid "Log out"
+msgstr "ଲଗଆଉଟ୍"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
+msgid "Binding to log out."
+msgstr "ଲଗଆଉଟ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:21
+msgid "Eject"
+msgstr "ନିଷ୍କାସିତ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:22
+msgid "Binding to eject an optical disc."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:23
+msgid "Home folder"
+msgstr "ହୋମ ଫୋଲ୍ଡର"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:24
+msgid "Binding to open the Home folder."
+msgstr "ମୂଳ ସ୍ଥାନ ଫୋଲଡରକୁ ଖଓଲିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:25
+msgid "Search"
+msgstr "ଖୋଜନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:26
+msgid "Binding to launch the search tool."
+msgstr "ସନ୍ଧାନ ଉପକରଣକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:27
+msgid "Launch email client"
+msgstr "ଇମେଲ ଗ୍ରାହକଙ୍କୁ ପ୍ରଚାଳନ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:28
+msgid "Binding to launch the email client."
+msgstr "ଇମେଲ ଗ୍ରାହକଙ୍କୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:29
+msgid "Lock screen"
+msgstr "ସ୍କ୍ରିନ ତାଲାବନ୍ଦ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:30
+msgid "Binding to lock the screen."
+msgstr "ପରଦାକୁ ଅପରିବର୍ତ୍ତନୀୟ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+msgid "Launch help browser"
+msgstr "ସାହାୟ୍ଯ ବ୍ରାଉଜର ପ୍ରାରମ୍ଭ କର"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+msgid "Binding to launch the help browser."
+msgstr "ସହାୟତା ବ୍ରାଉଜରକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Launch calculator"
+msgstr "କାଲକୁଲେଟରକୁ ପ୍ରଚାଳନ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+msgid "Binding to launch the calculator."
+msgstr "କାଲକୁଲେଟରକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+msgid "Launch web browser"
+msgstr "ଉଏବ ବ୍ରାଉଜର ପ୍ରାରମ୍ଭ କର"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+msgid "Binding to launch the web browser."
+msgstr "ୱେବ ବ୍ରାଉଜରକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+msgid "Launch media player"
+msgstr "ମେଡ଼ିଆ ଚାଲକଙ୍କୁ ପ୍ରଚାଳନ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+msgid "Binding to launch the media player."
+msgstr "ମେଡ଼ିଆ ଚାଳକକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+msgid "Play (or play/pause)"
+msgstr "ଚଲାଅ( କିମ୍ବା ବିରାମ/ଚଲାଅ)"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+msgid "Binding to start playback (or toggle play/pause)."
+msgstr "ପଛଚଲାକୁ ଆରମ୍ଭ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି (ଅଥବା ଚଲାନ୍ତୁ/ବିରାମ ଦିଅନ୍ତୁକୁ ଅଲଟପାଲଟ କରନ୍ତୁ)।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+msgid "Pause playback"
+msgstr "ପଛଚଲାକୁ ବିରାମ ଦିଅନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+msgid "Binding to pause playback."
+msgstr "ପଛଚଲାକୁ ସ୍ଥିର କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+msgid "Stop playback"
+msgstr "ପଛକୁ ଚଲାଇବା ବନ୍ଦ କରନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+msgid "Binding to stop playback."
+msgstr "ପଛଚଲାକୁ ବନ୍ଦ କରିବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+msgid "Previous track"
+msgstr "ପୂର୍ବବର୍ତ୍ତୀ ଟ୍ରାକ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+msgid "Binding to skip to previous track."
+msgstr "ପୂର୍ବବର୍ତ୍ତି ଟ୍ରାକକୁ ଏଡ଼ାଇବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+msgid "Next track"
+msgstr "ପରବର୍ତ୍ତୀ ଟ୍ରାକ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+msgid "Binding to skip to next track."
+msgstr "ପରବର୍ତ୍ତି ଟ୍ରାକକୁ ଏଡ଼ାଇବା ପାଇଁ ବାନ୍ଧୁଅଛି।"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+msgid "Binding to show the screen magnifier"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+msgid "Binding to start the screen reader"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+msgid "Binding to show the on-screen keyboard"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
+msgid "Show Displays in Notification Area"
+msgstr "ବିଜ୍ଞପ୍ତି କ୍ଷେତ୍ରରେ ପ୍ରଦର୍ଶିକା ଦର୍ଶାନ୍ତୁ"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:6
+msgid ""
+"Whether a notification icon with display-related things should be shown in "
+"the panel."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
+msgid "Do not touch monitor configuration"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:8
+msgid ""
+"Usually, mate-settings-daemon configures internal and external monitors "
+"according to the turn_on_external_monitors_at_startup and "
+"turn_on_laptop_monitor_at_startup settings and determines an appropriate "
+"cloning/side-by-side mode. Setting this key to True disables this, and the "
+"monitor settings are not touched at all (unless there is an explicit user "
+"configuration)."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
+msgid "Turn on external monitor after system boot"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
+msgid ""
+"Turn on external monitor after system boot if user plugs in external monitor"
+" on system boot."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
+msgid "Turn on laptop monitor after system boot"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
+msgid ""
+"Turn on laptop monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
+msgid "File for default configuration for RandR"
+msgstr ""
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:14
+msgid ""
+"The XRandR plugin will look for a default configuration in the file "
+"specified by this key. This is similar to the ~/.config/monitors.xml that "
+"normally gets stored in users' home directories. If a user does not have "
+"such a file, or has one that does not match the user's setup of monitors, "
+"then the file specified by this key will be used instead."
+msgstr ""
+
+#: ../data/mate-settings-daemon.desktop.in.in.h:1
+msgid "MATE Settings Daemon"
+msgstr "MATE ବିନ୍ୟାସ ଡେମନ"
+
+#: ../mate-settings-daemon/main.c:65
+msgid "Enable debugging code"
+msgstr "ତ୍ରୁଟି ନିବାରଣ ସଂକେତକୁ ସକ୍ରିୟ କରନ୍ତୁ"
+
+#: ../mate-settings-daemon/main.c:66
+msgid "Replace the current daemon"
+msgstr ""
+
+#: ../mate-settings-daemon/main.c:67
+msgid "Don't become a daemon"
+msgstr "ଗୋଟିଏ ଡିମୋନ ହୁଅ ନାହିଁ"
+
+#: ../mate-settings-daemon/main.c:68
+msgid "Exit after a time (for debugging)"
+msgstr ""
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:1
+msgid "Accessibility Keyboard"
+msgstr "ଅଭିଗମ୍ଯତା କିବୋର୍ଡ"
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:2
+msgid "Accessibility keyboard plugin"
+msgstr "ଅଭିଗମ୍ୟତା କିବୋର୍ଡ ପ୍ଲଗଇନ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "ସହାୟତା ଦେଖାଇବାରେ ତୃଟି: %s"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+msgid "Do you want to activate Slow Keys?"
+msgstr "ଆପଣ ଧୀର କିଗୁଡିକୁ ସକ୍ରିଯ କରିବାକୁ ଚାହାଁନ୍ତି କି ?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+msgid "Do you want to deactivate Slow Keys?"
+msgstr "ଆପଣ ଧୀର କିଗୁଡିକୁ ନିଷ୍କ୍ରିଯ କରିବାକୁ ଚାହାଁନ୍ତି କି ?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+msgid ""
+"You just held down the Shift key for 8 seconds.  This is the shortcut for "
+"the Slow Keys feature, which affects the way your keyboard works."
+msgstr "ଆପଣ ସିଫ୍ଟ କିକୁ ମାତ୍ର ୮ ସେକେଣ୍ଡ ଧରି ରଖନ୍ତୁ। ଏହା ଧୀର କି ବିଶେଷତାର ସର୍ଟକଟ କି ଅଟେ, ୟାହାକି ଆପଣଙ୍କର କିବୋର୍ଡ କାର୍ୟ୍ଯକୁ ପ୍ରଭାବିତ କରେ।"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't activate"
+msgstr "ସକ୍ରିୟ କରନ୍ତୁ ନାହିଁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't deactivate"
+msgstr "ନିଷ୍କ୍ରିୟ କରନ୍ତୁ ନାହିଁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Activate"
+msgstr "ସକ୍ରିୟ କରନ୍ତୁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Deactivate"
+msgstr "ନିଷ୍କ୍ରିୟ କରନ୍ତୁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't activate"
+msgstr "ସକ୍ରିଯ_କର ନାହିଁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't deactivate"
+msgstr "ନିଷ୍କ୍ରିଯ_କରନାହିଁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Activate"
+msgstr "ସକ୍ରିୟ କରନ୍ତୁ (_A)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Deactivate"
+msgstr "ନିଷ୍କ୍ରିୟ କରନ୍ତୁ (_D)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+msgid "Slow Keys Alert"
+msgstr "ଧୀର କିଗୁଡିକ ଚେତାବନୀ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+msgid "Do you want to activate Sticky Keys?"
+msgstr "ଆପଣ ଷ୍ଟିକି କି କୁ ସକ୍ରିଯ କରିବାକୁ ଚାହାଁନ୍ତି କି? "
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+msgid "Do you want to deactivate Sticky Keys?"
+msgstr "ଆପଣ ଷ୍ଟିକି କିକୁ ନିଷ୍କ୍ରିଯ କରିବାକୁ ଚାହାଁନ୍ତି କି ?"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+msgid ""
+"You just pressed the Shift key 5 times in a row.  This is the shortcut for "
+"the Sticky Keys feature, which affects the way your keyboard works."
+msgstr "ଆପଣ ସିଫ୍ଟ କିକୁ ଧାଡିରେ ୫ ଥର ଦବାନ୍ତୁ। ଏହା ଷ୍ଟିକି କି ବିଶେଷତାର ସର୍ଟକଟ କି ଅଟେ, ୟାହାକି ଆପଣଙ୍କର କିବୋର୍ଡ କେମିତି କାର୍ୟ୍ଯ କରିବ ତାଉପରେ ପ୍ରଭାବ ପକାଏ।"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+msgid ""
+"You just pressed two keys at once, or pressed the Shift key 5 times in a "
+"row.  This turns off the Sticky Keys feature, which affects the way your "
+"keyboard works."
+msgstr "ଆପଣ ଦୁଇଟି କି କୁ ଏକା ସହିତ ଦବାନ୍ତୁ, କିମ୍ବା ସିଫ୍ଟ କିକୁ ଧାଡିରେ ପାଞ୍ଚଥର ଦବାନ୍ତୁ। ଏହା ଷ୍ଟିକି କି ବିଶେଷତାକୁ ବନ୍ଦ କରିଦିଏ, ୟାହାକି ଆପଣଙ୍କର କିବୋର୍ଡର କାର୍ୟ୍ଯ କରିବା ପଦ୍ଧତିକୁ ପ୍ରଭାବିତ କରେ।"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+msgid "Sticky Keys Alert"
+msgstr "ଷ୍ଟିକି କିଗୁଡିକ ଚେତାବନୀ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+msgid "Universal Access Preferences"
+msgstr "ଜାଗତିକ ଅଭିଗମ୍ୟତା ପସନ୍ଦଗୁଡ଼ିକ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+msgid "Use on-screen _keyboard"
+msgstr "ଅନ-ସ୍କ୍ରିନ କି-ବୋର୍ଡକୁ ବ୍ୟବହାର କରନ୍ତୁ"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+msgid "Use screen _reader"
+msgstr "ପରଦା ପାଠକଙ୍କୁ ବ୍ୟବହାର କରନ୍ତୁ (_r)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+msgid "Use screen _magnifier"
+msgstr "ପରଦା ଆବର୍ଦ୍ଧକକୁ ବ୍ୟବହାର କରନ୍ତୁ (_m)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+msgid "Enhance _contrast in colors"
+msgstr "ରଙ୍ଗଗୁଡ଼ିକରେ ବୈଷମ୍ୟ ବୃଦ୍ଧି କରନ୍ତୁ (_c)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+msgid "Make _text larger and easier to read"
+msgstr "ପାଠ୍ୟକୁ ପଢ଼ିବା ପାଇଁ ସହଜମୟ କରିବାକୁ ଆକାର ବୃହତାକାର କରନ୍ତୁ (_t)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
+msgstr "ଏକ ସମୟରେ ଗୋଟିଏ କିବୋର୍ଡ ସଂକ୍ଷିପ୍ତ ପଥକୁ ଦବାନ୍ତୁ (ଷ୍ଟିକି କିଗୁଡ଼ିକ) (_P)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "ନକଲି କି ଚାପକୁ ଅଗ୍ରାହ୍ୟ କରନ୍ତୁ (ବାଉନ୍ସ କିଗୁଡ଼ିକ) (_I)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+msgid "Press and _hold keys to accept them (Slow Keys)"
+msgstr "ସେମାନଙ୍କୁ ଗ୍ରହଣ କରିବା ପାଇଁ ଦବାନ୍ତୁ ଏବଂ ଧରିରଖନ୍ତୁ (_h) (ମନ୍ଥର କିଗୁଡ଼ିକ)"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:1
+msgid "Background"
+msgstr "ପ୍ରୁଷ୍ଠଭୂମି"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:2
+msgid "Background plugin"
+msgstr "ପୃଷ୍ଠଭୂମି ପ୍ଲଗଇନ"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:1
+msgid "Clipboard"
+msgstr "କର୍ତ୍ତନପଟ୍ଟ"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:2
+msgid "Clipboard plugin"
+msgstr "କ୍ଲିପବୋର୍ଡ ପ୍ଲଗ୍ଇନ "
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:1
+msgid "Dummy"
+msgstr "ନକଲି"
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:2
+msgid "Dummy plugin"
+msgstr "ନକଲି ପ୍ଲଗଇନ"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+msgid "Don't show any warnings again for this file system"
+msgstr ""
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+msgid "Don't show any warnings again"
+msgstr "ପୁଣିଥରେ କୌଣସି ଚେତାବନୀ ଦର୍ଶାନ୍ତୁ ନାହିଁ"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#, c-format
+msgid "The volume \"%s\" has only %s disk space remaining."
+msgstr "ସ୍ଥାନ \"%s\" ରେ କେବଳ %s ଡିସ୍କ ସ୍ଥାନ ବଳିଛି।"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#, c-format
+msgid "This computer has only %s disk space remaining."
+msgstr "ଏହି କମ୍ପୁଟରରେ କେବଳ %s ଡିସ୍କ ସ୍ଥାନ ବଳିଛି।"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to another disk or partition."
+msgstr "ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲିକରି ଆପଣ ଡିସ୍କ ସ୍ଥାନକୁ ମୁକ୍ତ କରିପାରିବେ, ଅବ୍ୟବହୃତ ପ୍ରଗ୍ରାମ ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ କାଢ଼ିକରି, ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ ଅନ୍ୟ ଡିସ୍କ ଅଥବା ବିଭାଜନ ମଧ୍ଯକୁ ଗତି କରାଇ।"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to another disk or partition."
+msgstr "ଅବ୍ୟବହୃତ ପ୍ରଗ୍ରାମ ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ କାଢ଼ିକରି ଆପଣ ଡିସ୍କ ସ୍ଥାନକୁ ମୁକ୍ତ କରିପାରିବେ, ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ ଅନ୍ୟ ଡିସ୍କ ଅଥବା ବିଭାଜନ ମଧ୍ଯକୁ ଗତି କରାଇ।"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to an external disk."
+msgstr "ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲିକରି ଆପଣ ଡିସ୍କ ସ୍ଥାନକୁ ମୁକ୍ତ କରିପାରିବେ, ଅବ୍ୟବହୃତ ପ୍ରଗ୍ରାମ ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ କାଢ଼ିକରି, ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ ଅନ୍ୟ ଏକ ବାହ୍ୟ ଡିସ୍କ ମଧ୍ଯକୁ ଗତି କରାଇ।"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to an external disk."
+msgstr "ଅବ୍ୟବହୃତ ପ୍ରଗ୍ରାମ ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ କାଢ଼ିକରି ଆପଣ ଡିସ୍କ ସ୍ଥାନକୁ ମୁକ୍ତ କରିପାରିବେ, ଅଥବା ଫାଇଲଗୁଡ଼ିକୁ ଅନ୍ୟ ଏକ ବାହ୍ୟ ଡିସ୍କ ମଧ୍ଯକୁ ଗତି କରାଇ।"
+
+#. Set up all the window stuff here
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+msgid "Low Disk Space"
+msgstr "କମ ଡିସ୍କସ୍ଥାନ"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+msgid "Empty Trash"
+msgstr "ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲି କରନ୍ତୁ"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+msgid "Examine…"
+msgstr ""
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+msgid "Ignore"
+msgstr "ଆଗ୍ରହ୍ଯ କରିଦିଅନ୍ତୁ"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#, c-format
+msgid "Removing item %lu of %lu"
+msgstr "ବସ୍ତୁ %lu ର %lu କୁ କାଢ଼ୁଅଛି"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#, c-format
+msgid "Removing: %s"
+msgstr ""
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+msgid "Emptying the trash"
+msgstr "ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲି କରୁଅଛି"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+msgid "Preparing to empty trash…"
+msgstr ""
+
+#. Translators: "Emptying trash from <device>"
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+msgid "From: "
+msgstr "ଠାରୁ: "
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+msgid "Empty all of the items from the trash?"
+msgstr "ଆବର୍ଜନା ପାତ୍ରରୁ ସମସ୍ତ ବସ୍ତୁକୁ ଖାଲି କରନ୍ତୁ?"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+msgid ""
+"If you choose to empty the trash, all items in it will be permanently lost. "
+"Please note that you can also delete them separately."
+msgstr "ଯଦି ଆପଣ ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲି କରିବାକୁ ଚାହୁଁଛନ୍ତି, ତେବେ ତାହା ମଧ୍ଯରେ ଥିବା ସମସ୍ତ ବସ୍ତୁ ସବୁଦିନ ପାଇଁ ନଷ୍ଟ ହୋଇଯିବ। ଦୟାକରି ମନେରଖନ୍ତୁ ଯେ ଆପଣ ସେମାନଙ୍କୁ ପୃଥକ ଭାବରେ ଅପସାରଣ କରିପାରିବେ।"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+msgid "_Empty Trash"
+msgstr "ଆବର୍ଜନା ପାତ୍ରକୁ ଖାଲି କରନ୍ତୁ (_E)"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#, c-format
+msgid "Key binding (%s) is invalid"
+msgstr "କି ବନ୍ଧନ (%s) ଟି ଅବୈଧ ଅଟେ"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#, c-format
+msgid "Key binding (%s) is incomplete"
+msgstr "କି ବନ୍ଧନ (%s) ଟି ଅସମ୍ପୂର୍ଣ୍ଣ ଅଛି"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#, c-format
+msgid ""
+"Error while trying to run (%s)\n"
+"which is linked to the key (%s)"
+msgstr "ଚଲାଇବାକୁ ଚେଷ୍ଟା କରିବା ବେଳେ ତ୍ରୁଟି (%s)\nୟାହାକି କି ସହିତ ଲିଙ୍କ ଅଛି (%s)"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:1
+msgid "Keybindings"
+msgstr "କି ବନ୍ଧନଗୁଡ଼ିକ"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:2
+msgid "Keybindings plugin"
+msgstr "କି ବନ୍ଧନ ପ୍ଲଗଇନଗୁଡ଼ିକ"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:1
+msgid "Keyboard"
+msgstr "କି-ବୋର୍ଡ"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:2
+msgid "Keyboard plugin"
+msgstr "କି-ବୋର୍ଡ ପ୍ଲଗଇନ"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#, c-format
+msgid ""
+"Error activating XKB configuration.\n"
+"It can happen under various circumstances:\n"
+" • a bug in libxklavier library\n"
+" • a bug in X server (xkbcomp, xmodmap utilities)\n"
+" • X server with incompatible libxkbfile implementation\n"
+"\n"
+"X server version data:\n"
+"%s\n"
+"%d\n"
+"If you report this situation as a bug, please include:\n"
+" • The result of <b>%s</b>\n"
+" • The result of <b>%s</b>"
+msgstr ""
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+msgid "_Layouts"
+msgstr ""
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+msgid "Keyboard _Preferences"
+msgstr ""
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+msgid "Show _Current Layout"
+msgstr ""
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:186
+msgid ""
+"Could not get default terminal. Verify that your default terminal command is"
+" set and points to a valid application."
+msgstr "ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଟର୍ମିନାଲ ପାଇଲା ନାହିଁ। ଆପଣଙ୍କର ପୂର୍ବନିର୍ଦ୍ଧାରିତ ଟର୍ମିନାଲ ନିର୍ଦ୍ଦେଶକୁ ସେଟ କରାହୋଇଛି କି ନାହିଁ ଏବଂ ଗୋଟିଏ ବୈଧ ପ୍ରୟୋଗକୁ ସୂଚାଉଅଛି କି ନାହିଁ ତାହା ଯାଞ୍ଚ କରନ୍ତୁ।"
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this is a valid command."
+msgstr "ନିର୍ଦ୍ଦେଶକୁ ନିଷ୍ପାଦନ କରିପାରିଲା ନାହିଁ: %s\nଏହା ଗୋଟିଏ ବୈଧ ନିର୍ଦ୍ଦେଶ ବୋଲି ଯାଞ୍ଚ କରନ୍ତୁ।"
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:1
+msgid "Media keys"
+msgstr "ମେଡିଆ କିଗୁଡ଼ିକ"
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:2
+msgid "Media keys plugin"
+msgstr "ମେଡ଼ିଆ କିଗୁଡ଼ିକର ପ୍ଲଗଇନ"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1021
+msgid "Could not enable mouse accessibility features"
+msgstr "ମାଉସ ଅଭିଗମ୍ଯତା ଗୁଣଧର୍ମକୁ ସକ୍ରିୟ କରିପାରିଲା ନାହିଁ"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1023
+msgid ""
+"Mouse accessibility requires Mousetweaks to be installed on your system."
+msgstr ""
+
+#: ../plugins/mouse/msd-mouse-manager.c:1026
+msgid "Mouse Preferences"
+msgstr "ମାଉସ ପସନ୍ଦ"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:1
+msgid "Mouse"
+msgstr "ମାଉସ"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:2
+msgid "Mouse plugin"
+msgstr "ମାଉସ ପ୍ଲଗଇନ"
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:1
+msgid "Mpris"
+msgstr ""
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:2
+msgid "Mpris plugin"
+msgstr ""
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:1
+msgid "Typing Break"
+msgstr "ଟାଇପ କରିବା ଭଙ୍ଗ"
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:2
+msgid "Typing break plugin"
+msgstr "ଟାଇପ ଭଙ୍ଗ ପ୍ଲଗଇନ"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:1
+msgid "XRandR"
+msgstr "XRandR"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:2
+msgid "Set up screen size and rotation settings"
+msgstr "ପରଦା ଆକାର ଏବଂ ଆବର୍ତ୍ତନ ବିନ୍ୟାସ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:373
+msgid "Could not switch the monitor configuration"
+msgstr "ପ୍ରଦର୍ଶିକା ସଂରଚନାକୁ ବଦଳାଇ ହେଲା ନାହିଁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:397
+msgid "Could not restore the display's configuration"
+msgstr "ପ୍ରଦର୍ଶନ ବିନ୍ୟାସକୁ ସ୍ଥାପନ କରିପାରିଲା ନାହିଁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:422
+msgid "Could not restore the display's configuration from a backup"
+msgstr "ପ୍ରଦର୍ଶନ ବିନ୍ୟାସକୁ ନକଲ ସଂରକ୍ଷଣରୁ ସ୍ଥାପନ କରିପାରିଲା ନାହିଁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#, c-format
+msgid "The display will be reset to its previous configuration in %d second"
+msgid_plural ""
+"The display will be reset to its previous configuration in %d seconds"
+msgstr[0] "ପ୍ରଦର୍ଶନୀକୁ ତାହାର ପୂର୍ବ ସଂରଚନାକୁ %d ସେକଣ୍ଡରେ ପୁନସ୍ଥାପନ କରିହେବ"
+msgstr[1] "ପ୍ରଦର୍ଶନୀକୁ ତାହାର ପୂର୍ବ ସଂରଚନାକୁ %d ସେକଣ୍ଡରେ ପୁନସ୍ଥାପନ କରିହେବ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:492
+msgid "Does the display look OK?"
+msgstr "ପ୍ରଦର୍ଶନଟି ଠିକ ଦେଖାଯାଉଛି କି?"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:499
+msgid "_Restore Previous Configuration"
+msgstr "ପୂର୍ବ ବିନ୍ୟାସକୁ ପୁନଃସ୍ଥାପନ କରନ୍ତୁ (_R)"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:500
+msgid "_Keep This Configuration"
+msgstr "ଏହି ବିନ୍ୟାସକୁ ରଖନ୍ତୁ (_K)"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:581
+msgid "The selected configuration for displays could not be applied"
+msgstr "ପ୍ରଦର୍ଶନ ପାଇଁ ବଚ୍ଛିତ ବିନ୍ୟାସକୁ ପ୍ରୟୋଗ କରିହେଲା ନାହିଁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#, c-format
+msgid "Could not refresh the screen information: %s"
+msgstr "ପରଦା ସୂଚନାକୁ ସତେଜନ କରିହେଲା ନାହିଁ: %s"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+msgid "Trying to switch the monitor configuration anyway."
+msgstr "ତନ୍ତ୍ର ପ୍ରଦର୍ଶିକାକୁ ଯେକୌଣସି ଉପାୟରେ ବଦଳାଇବା ପାଇଁ ଟାଇପ କରୁଅଛି।"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+msgid "Rotation not supported"
+msgstr ""
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+msgid "Could not save monitor configuration"
+msgstr "ପ୍ରଦର୍ଶିକା ବିନ୍ୟାସକୁ ସଂରକ୍ଷଣ କରିପାରିଲା ନାହିଁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+msgid "Normal"
+msgstr "ସାଧାରଣ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+msgid "Left"
+msgstr "ବାମ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+msgid "Right"
+msgstr "ଡାହାଣ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+msgid "Upside Down"
+msgstr "ଉପରୁ ତଳକୁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+msgid "_Configure Display Settings…"
+msgstr ""
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+msgid "Configure display settings"
+msgstr "ପ୍ରଦର୍ଶିକା ସଂରଚନାକୁ ବିନ୍ୟାସ କରନ୍ତୁ"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+msgid "Could not apply the stored configuration for monitors"
+msgstr "ପ୍ରଦର୍ଶିକା ପାଇଁ ସଂରକ୍ଷିତ ବିନ୍ୟାସରେ ପ୍ରୟୋଗ କରିପାରିଲା ନାହିଁ"
+
+#: ../plugins/xrdb/msd-xrdb-manager.c:253
+#: ../plugins/xrdb/msd-xrdb-manager.c:322
+msgid "Cannot determine user's home directory"
+msgstr "ଉପୟୋଗକର୍ତ୍ତାଙ୍କ ହୋମ ବିବରଣୀପଞ୍ଜିକାକୁ ନିର୍ଧାରଣ କରିପାରିବ ନାହିଁ"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:1
+msgid "X Resource Database"
+msgstr "X ଉତ୍ସ ତଥ୍ୟାଧାର"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:2
+msgid "Manage the X resource database"
+msgstr "X ଉତ୍ସ ତଥ୍ୟାଧାରକୁ ପରିଚାଳନା କରନ୍ତୁ"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:1
+msgid "X Settings"
+msgstr "X ବିନ୍ୟାସ"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:2
+msgid "Manage X Settings"
+msgstr "X ବିନ୍ୟାସକୁ ପରିଚାଳନା କରନ୍ତୁ"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:167
+msgid "Module Path"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:168
+msgid "path to smartcard PKCS #11 driver"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:496
+msgid "received error or hang up from event source"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:154
+msgid "Slot ID"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:155
+msgid "The slot the card is in"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:161
+msgid "Slot Series"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:162
+msgid "per-slot card identifier"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:168
+#: ../plugins/smartcard/msd-smartcard.c:169
+msgid "name"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:173
+msgid "Module"
+msgstr ""
+
+#: ../plugins/smartcard/msd-smartcard.c:174
+msgid "smartcard driver"
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:1
+msgid "Change system time zone"
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:2
+msgid "Privileges are required to change the system time zone."
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:3
+msgid "Change system time"
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:4
+msgid "Privileges are required to change the system time."
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:5
+msgid "Configure hardware clock"
+msgstr ""
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:6
+msgid "Privileges are required to configure the hardware clock."
+msgstr ""

@@ -1,0 +1,14 @@
+<schemalist>
+  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.mate.SettingsDaemon.plugins.a11y-settings" path="/org/mate/settings-daemon/plugins/a11y-settings/">
+    <key name="active" type="b">
+      <default>false</default>
+      <summary>Activation of this plugin</summary>
+      <description>Whether this plugin would be activated by mate-settings-daemon or not</description>
+    </key>
+    <key name="priority" type="i">
+      <default>7</default>
+      <summary>Priority to use for this plugin</summary>
+      <description>Priority to use for this plugin in mate-settings-daemon startup queue</description>
+    </key>
+  </schema>
+</schemalist>

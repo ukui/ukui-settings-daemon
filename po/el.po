@@ -1,0 +1,1242 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# 
+# Translators:
+# Efstathios Iosifidis <iefstathios@gmail.com>, 2016
+# Efstathios Iosifidis <iosifidis@opensuse.org>, 2013
+# Fotis Tsamis <ftsamis@gmail.com>, 2009
+# Petros Freris (Πέτρος Φρέρης) <petrosfreris@gmail.com>, 2013
+# Jennie Petoumenou <epetoumenou@gmail.com>, 2009
+# Kostas Papadimas <pkst@gnome.org>, 2002-2007
+# Nikos Charonitakis <charosn@her.forthnet.gr>, 2002-2005
+# Petros Freris (Πέτρος Φρέρης) <petrosfreris@gmail.com>, 2013
+# Simos Xenitellis <simos74@gmx.net>, 2004
+# Simos Xenitellis <simos@gnome.org>, 2006
+# Simos Xenitellis <simos@hellug.gr>, 2000-2002
+# Spiros Papadimitriou <spapadim+@cs.cmu.edu>, 2000
+# Γιώργος Μηντζιλώνης, 2017
+# Τα πάντα ρει <ta_panta_rei@flashmail.com>, 2002
+msgid ""
+msgstr ""
+"Project-Id-Version: MATE Desktop Environment\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"PO-Revision-Date: 2017-02-07 20:15+0000\n"
+"Last-Translator: Αλέξανδρος Καπετάνιος <alexandros@gnugr.org>\n"
+"Language-Team: Greek (http://www.transifex.com/mate/MATE/language/el/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: el\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: ../data/50-accessibility.xml.in.h:1
+msgid "Accessibility"
+msgstr "Προσιτότητα"
+
+#: ../data/50-accessibility.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+msgid "Toggle magnifier"
+msgstr "Εναλλαγή μεγεθυντή"
+
+#: ../data/50-accessibility.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+msgid "Toggle screen reader"
+msgstr "Εναλλαγή αναγνώστη οθόνης"
+
+#: ../data/50-accessibility.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+msgid "Toggle on-screen keyboard"
+msgstr "Εναλλαγή πληκτρολογίου οθόνης "
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:1
+msgid "On-screen keyboard"
+msgstr "Πληκτρολόγιο Οθόνης"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:2
+msgid "Whether the on-screen keyboard is turned on."
+msgstr "Αν θα είναι ενεργοποιημένο το πληκτρολόγιο οθόνης."
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:3
+msgid "Screen magnifier"
+msgstr "Μεγεθυντής οθόνης"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:4
+msgid "Whether the screen magnifier is turned on."
+msgstr "Αν θα είναι ενεργοποιημένος ο μεγεθυντής οθόνης."
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:5
+msgid "Screen reader"
+msgstr "Αναγνώστης οθόνης"
+
+#: ../data/org.mate.applications-at.gschema.xml.in.h:6
+msgid "Whether the screen reader is turned on."
+msgstr "Αν θα είναι ενεργοποιημένος ο αναγνώστης οθόνης."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:1
+msgid "DPI"
+msgstr "DPI"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:2
+msgid ""
+"The resolution used for converting font sizes to pixel sizes, in dots per "
+"inch."
+msgstr "Η ανάλυση που χρησιμοποιείται για μετατροπή μεγεθών γραμματοσειράς σε μέγεθος εικονοστοιχείων, σε κουκίδες ανά ίντσα."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:3
+msgid "Antialiasing"
+msgstr "Antialiasing"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:4
+msgid ""
+"The type of antialiasing to use when rendering fonts. Possible values are: "
+"\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
+"antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
+msgstr "Ο τύπος του antialiasing που χρησιμοποιείται για την εμφάνιση των γραμματοσειρών. Οι πιθανές τιμές είναι: \"none\" για καθόλου antialiasing, \"grayscale\" για κανονική κλίμακα του γκρι, και \"rgba\" για subpixel antialiasing (μόνο για οθόνες LCD )."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:5
+msgid "Hinting"
+msgstr "Εξομάλυνση"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:6
+msgid ""
+"The type of hinting to use when rendering fonts. Possible values are: "
+"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
+"\"full\" for maximum hinting (may cause distortion of letter forms)."
+msgstr "Ο τύπος του hinting που χρησιμοποιείται για την εμφάνιση των γραμματοσειρών. Οι πιθανές τιμές είναι: \"none\" για καθόλου hinting,  \"slight\" για βασικό, \"medium\" για μέτριο, και \"full\" για μέγιστο hinting (πιθανόν να προκαλέσει παραμόρφωση στις φόρμες των γραμμάτων)."
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:7
+msgid "RGBA order"
+msgstr "Σειρά RGBA"
+
+#: ../data/org.mate.font-rendering.gschema.xml.in.h:8
+msgid ""
+"The order of subpixel elements on an LCD screen; only used when antialiasing"
+" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
+" on bottom."
+msgstr "Η σειρά των στοιχείων subpixel σε μια οθόνη LCD. Χρησιμοποιείται μόνο όταν η το antialiasing έχει ορισθεί σε \"rgba\". Οι πιθανές τιμές είναι: \"rgb\" για κόκκινο στα αριστερά (το πιο κοινό), \"bgr\" για μπλε στα αριστερά, \"vrgb\" για κόκκινο στο άνω μέρος, \"vbgr\" για κόκκινο κάτω."
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:1
+msgid "Smartcard removal action"
+msgstr "Ενέργεια κατά την αφαίρεση της έξυπνης κάρτας (smartcard)"
+
+#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:2
+msgid ""
+"Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
+"action will get performed when the smartcard used for log in is removed."
+msgstr "Ορίστε αυτό σε  \"none\", \"lock_screen\", or \"force_logout\". Η ενέργεια αυτή θα πραγματοποιηθεί όταν η κάρτα που χρησιμοποιήθηκε για τη σύνδεση αφαιρεθεί."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:1
+msgid "Disable touchpad while typing"
+msgstr "Απενεργοποίηση πινακίδας αφής κατά την πληκτρολόγηση"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:2
+msgid ""
+"Set this to TRUE if you have problems with accidentally hitting the touchpad"
+" while typing."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή αν πατάτε κατά λάθος το touchpad κατά την πληκτρολόγηση."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:3
+msgid "Enable mouse clicks with touchpad"
+msgstr "Ενεργοποίηση κλικ ποντικιού με την πινακίδα αφής"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:4
+msgid ""
+"Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
+msgstr "Ενεργοποιήστε αυτήν την επιλογή για να μπορείτε να κάνετε κλικ μέσω του touchpad."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:5
+msgid "Enable vertical edge scrolling"
+msgstr "Ενεργοποίηση κάθετης κύλισης άκρών"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:6
+msgid "Set this to TRUE to allow vertical edge scrolling"
+msgstr "Ορίστε το σε αληθές για να επιτρέψετε την κάθετη κύλιση ακρών"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:7
+msgid "Enable horizontal edge scrolling"
+msgstr "Ενεργοποίηση οριζόντιας κύλισης ακρών"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:8
+msgid "Set this to TRUE to allow horizontal edge scrolling"
+msgstr "Ορίστε το σε αληθές για να επιτρέψετε την οριζόντια κύλιση ακρών"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:9
+msgid "Enable vertical two-finger scrolling"
+msgstr "Ενεργοποίηση κάθετης κύλισης με δυο δάκτυλα"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:10
+msgid "Set this to TRUE to allow vertical two-finger scrolling"
+msgstr "Ορίστε το σε αληθές για να επιτρέψετε την κάθετη κύλιση με δύο δάκτηλα"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:11
+msgid "Enable horizontal two-finger scrolling"
+msgstr "Ενεργοποίηση οριζόντιας κύλισης με δυο δάκτυλα"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:12
+msgid "Set this to TRUE to allow horizontal two-finger scrolling"
+msgstr "Ορίστε το σε αληθές για να επιτρέψετε την οριζόντια κύλιση με δύο δάκτηλα"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:13
+msgid "Natural scrolling"
+msgstr "Φυσική κύλιση"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:14
+msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
+msgstr "Ορίστε το σε αληθές για να ενεργοποιήσετε τη φυσική (αντίστροφο) κύλιση για χειριστήρια αφής"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:15
+msgid "Enable touchpad"
+msgstr "Ενεργοποιήση πινακίδας αφής"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:16
+msgid "Set this to TRUE to enable all touchpads."
+msgstr "Ορίστε το σε ΑΛΗΘΗΣ για να ενεργοποιήσετε όλες της πινακίδες αφής"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:17
+msgid "Enabled two-finger button-click emulation"
+msgstr "Ενεργοποιήθηκε το κουμπί εξομοίωση δύο δακτύλων"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:18
+msgid "0 thru 3, 0 is inactive, 1-3 is button to emulate"
+msgstr "ο έως 3, 0 είναι αδρανή, 1-3 είναι κουμπί προς εξομοίωση"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:19
+msgid "Enable three-finger button-click emulation"
+msgstr "Ενεργοποίηση κουμπιού εξομοίωσης τριών δακτύλων "
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:20
+msgid "One finger tap button"
+msgstr "Κουμπί πατήματος ενός δακτύλου "
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:21
+msgid ""
+"Select the button mapping for one-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr "Επιλέξτε το πλήκτρο χαρτογράφησης για πάτημα με ένα δάχτυλο. Υποστηριζόμενες τιμές είναι: 1: αριστερό πλήκτρο ποντικιού 2: μεσαίο πλήκτρο του ποντικιού 3: δεξί πλήκτρο του ποντικιού"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:22
+msgid "Two finger tap button"
+msgstr "Πλήκτρο πατήματος δύο δακτύλων "
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:23
+msgid ""
+"Select the button mapping for two-finger tap. Supported values are: 1: left "
+"mouse button 2: middle mouse button 3: right mouse button"
+msgstr "Επιλέξτε το πλήκτρο χαρτογράφησης για πάτημα με δύο δάχτυλα. Υποστηριζόμενες τιμές είναι: 1: αριστερό πλήκτρο ποντικιού 2: μεσαίο πλήκτρο του ποντικιού 3: δεξί πλήκτρο του ποντικιού"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:24
+msgid "Three finger tap button"
+msgstr "Πλήκτρο πατήματος τριών δακτύλων "
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:25
+msgid ""
+"Select the button mapping for three-finger tap. Supported values are: 1: "
+"left mouse button 2: middle mouse button 3: right mouse button"
+msgstr "Επιλέξτε το πλήκτρο χαρτογράφησης για πάτημα με τρία δάχτυλα. Υποστηριζόμενες τιμές είναι: 1: αριστερό πλήκτρο ποντικιού 2: μεσαίο πλήκτρο του ποντικιού 3: δεξί πλήκτρο του ποντικιού"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:26
+msgid "Touchpad button orientation"
+msgstr "Πλήκτρο προσανατολισμού χειρισμού αφής"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:27
+msgid ""
+"Swap left and right buttons for left-handed touchpads with 'left', 'right' "
+"for right-handed, 'mouse' to follow the mouse setting."
+msgstr "Εναλλαγή αριστερών και δεξιών πλήκτρων για αριστερόχειρες χειρισμούς αφής με \"αριστερό\", \"δεξί\" για δεξιόχειρες, \"ποντίκι\" για να ακολουθήσει τη ρύθμιση του ποντικιού."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:28
+msgid "Motion Acceleration"
+msgstr "Επιτάχυνση κίνησης"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:29
+msgid ""
+"Acceleration multiplier for touchpad motion. A value of -1 is the system "
+"default."
+msgstr "Πολλαπλασιαστής επιτάχυνσης για τη κίνηση του χειρισμού αφής. Η τιμή -1 είναι η προεπιλεγμένη από το σύστημα."
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:30
+msgid "Motion Threshold"
+msgstr "Κατώφλι κίνησης"
+
+#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:31
+msgid ""
+"Distance in pixels the pointer must move before accelerated touchpad motion "
+"is activated. A value of -1 is the system default."
+msgstr "Απόσταση σε εικονοστοιχεία την οποία θα πρέπει να διανύσει ο δρομέας πριν την επιτάχυνση της κίνησης του χειρισμού αφής. Η τιμή -1 είναι η προεπιλεγμένη από το σύστημα."
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:1
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:1
+msgid "Activation of this plugin"
+msgstr "Ενεργοποίηση του πρόσθετου"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated by mate-settings-daemon or not"
+msgstr "Εάν αυτό το πρόσθετο θα ενεργοποιείται ή όχι από το mate-settings-daemon"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:5
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:3
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:3
+msgid "Priority to use for this plugin"
+msgstr "Προτεραιότητα για αυτό το πρόσθετο"
+
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:6
+#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
+#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
+msgid "Priority to use for this plugin in mate-settings-daemon startup queue"
+msgstr "Προτεραιότητα για αυτό το πρόσθετο στην σειρά έναρξης στο mate-settings-daemon"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
+msgid "Free percentage notify threshold"
+msgstr "Κατώφλι ενημέρωσης για ελεύθερο χώρο σε ποσοστό"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
+msgid ""
+"Percentage free space threshold for initial warning of low disk space. If "
+"the percentage free space drops below this, a warning will be shown."
+msgstr "Το κατώτατο όριο του ποσοστού ελεύθερου χώρου στον δίσκο για την πρώτη προειδοποίηση εξάντλησης του χώρου στον δίσκο. Εάν το ποσοστό του ελεύθερου χώρου πέσει κάτω από αυτό, θα εμφανιστεί μια προειδοποίηση."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
+msgid "Subsequent free percentage notify threshold"
+msgstr "Το επόμενο ελεύθερο όριο σε ποσοστό για ενημέρωση"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
+msgid ""
+"Specify the percentage that the free disk space should reduce by before "
+"issuing a subsequent warning."
+msgstr "Καθορίστε το ποσοστό που ο ελεύθερος χώρος του δίσκου θα πρέπει να μειωθεί πριν εκδοθεί η επόμενη προειδοποίηση."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
+msgid "Free space no notify threshold"
+msgstr "Κατώφλι μη ενημέρωσης για ελεύθερο χώρο"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
+msgid ""
+"Specify an amount in GB. If the amount of free space is more than this, no "
+"warning will be shown."
+msgstr "Ορίστε ένα μέγεθος σε GB. Αν το μέγεθος του ελεύθερου χώρου είναι μεγαλύτερο από αυτό, δεν θα εμφανιστεί καμία προειδοποίηση."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
+msgid "Minimum notify period for repeated warnings"
+msgstr "Η ελάχιστη περίοδος ενημέρωσης για τις επαναλαμβανόμενες προειδοποιήσεις"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:12
+msgid ""
+"Specify a time in minutes. Subsequent warnings for a volume will not appear "
+"more often than this period."
+msgstr "Καθορίστε τον χρόνο σε λεπτά. Οι επόμενες προειδοποιήσεις για έναν τόμο δεν θα εμφανίζωνται συχνότερα από αυτήν την περίοδο."
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
+msgid "Mount paths to ignore"
+msgstr "Διαδρομές προσάρτησης για παράλειψη"
+
+#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
+msgid "Specify a list of mount paths to ignore when they run low on space."
+msgstr "Ορίστε μια λίστα διαδρομών προσάρτησης για παράλειψη όταν λιγοστεύει ο χώρος τους."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
+msgid "Show OSD notification"
+msgstr "Εμφάνιση ειδοποιήσεων OSD"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
+msgid "Whether an OSD notification is shown to notify about changes"
+msgstr "Αν μια ειδοποίηση OSD εμφανιστεί για ειδοποίηση σχετικά με αλλαγές"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
+msgid "Volume step"
+msgstr "Βήμα ήχου"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:8
+msgid "Volume step as percentage of volume."
+msgstr "Βήμα ήχου ως ποσοστό της έντασης."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:9
+msgid "Toggle touchpad"
+msgstr "Εναλλαγή  της πινακίδας αφής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:10
+msgid "Binding to enable or disable the touchpad."
+msgstr "Συνδυασμός για την ενεργοποίηση ή την απενεργοποίηση της πινακίδας αφής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:11
+msgid "Volume mute"
+msgstr "Σίγαση ήχου"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:12
+msgid "Binding to mute the system volume."
+msgstr "Συνδυασμός για την σίγαση του ήχου συστήματος."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:13
+msgid "Volume down"
+msgstr "Μείωση έντασης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:14
+msgid "Binding to lower the system volume."
+msgstr "Συνδυασμός για την μείωση του ήχου συστήματος."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:15
+msgid "Volume up"
+msgstr "Αύξηση έντασης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:16
+msgid "Binding to raise the system volume."
+msgstr "Συνδυασμός για την αύξηση της έντασης του ήχου συστήματος"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:17
+msgid "Shut down"
+msgstr "Κλείσιμο"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:18
+msgid "Binding to shut down."
+msgstr "Συνδυασμός για τερματισμό λειτουργίας"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
+msgid "Log out"
+msgstr "Αποσύνδεση"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
+msgid "Binding to log out."
+msgstr "Συνδυασμός για την αποσύνδεση χρήστη."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:21
+msgid "Eject"
+msgstr "Εξαγωγή"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:22
+msgid "Binding to eject an optical disc."
+msgstr "Συνδυασμός για αποβολή ενός οπτικού δίσκου."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:23
+msgid "Home folder"
+msgstr "Αρχικός φάκελος"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:24
+msgid "Binding to open the Home folder."
+msgstr "Συνδυασμός για το άνοιγμα του Αρχικού καταλόγου"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:25
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:26
+msgid "Binding to launch the search tool."
+msgstr "Συνδυασμός για την εκκίνηση του εργαλείου αναζήτησης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:27
+msgid "Launch email client"
+msgstr "Εκκίνηση εφαρμογής ηλ.αλληλογραφίας"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:28
+msgid "Binding to launch the email client."
+msgstr "Συνδυασμός για την εκκίνηση της εφαρμογής ηλ.αλληλογραφίας"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:29
+msgid "Lock screen"
+msgstr "Κλείδωμα οθόνης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:30
+msgid "Binding to lock the screen."
+msgstr "Συνδυασμός για το κλείδωμα της οθόνης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+msgid "Launch help browser"
+msgstr "Εκκίνηση περιηγητή βοήθειας"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+msgid "Binding to launch the help browser."
+msgstr "Συνδυασμός για εκκίνηση περιηγητή βοήθειας"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Launch calculator"
+msgstr "Εκκίνηση αριθμομηχανής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+msgid "Binding to launch the calculator."
+msgstr "Συνδυασμός για εκκίνηση αριθμομηχανής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+msgid "Launch web browser"
+msgstr "Εκκίνηση περιηγητή ιστοσελίδων"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+msgid "Binding to launch the web browser."
+msgstr "Συνδυασμός για εκκίνηση περιηγητή ιστοσελίδων"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+msgid "Launch media player"
+msgstr "Εκκίνηση Media player"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+msgid "Binding to launch the media player."
+msgstr "Συνδυασμός για την εκκίνηση του media player."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+msgid "Play (or play/pause)"
+msgstr "Αναπαραγωγή (ή αναπαραγωγή/παύση)"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+msgid "Binding to start playback (or toggle play/pause)."
+msgstr "Συνδυασμός για την εκκίνηση της αναπαραγωγής (ή εναλλαγή ανάμεσα σε αναπαραγωγή/παύση)."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+msgid "Pause playback"
+msgstr "Παύση αναπαραγωγής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+msgid "Binding to pause playback."
+msgstr "Συνδυασμός για την παύση αναπαραγωγής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+msgid "Stop playback"
+msgstr "Διακοπή αναπαραγωγής"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+msgid "Binding to stop playback."
+msgstr "Συνδυασμός για την παύση της αναπαραγωγής "
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+msgid "Previous track"
+msgstr "Προηγούμενο κομμάτι"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+msgid "Binding to skip to previous track."
+msgstr "Συνδυασμός για παράκαμψη σε προηγούμενο κομμάτι"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+msgid "Next track"
+msgstr "Επόμενο κομμάτι"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+msgid "Binding to skip to next track."
+msgstr "Συνδυασμός για παράκαμψη σε επόμενο κομμάτι"
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+msgid "Binding to show the screen magnifier"
+msgstr "Συνδυασμός για εμφάνιση του μεγεθυντή."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+msgid "Binding to start the screen reader"
+msgstr "Συνδυασμός για εκκίνηση του αναγνώστη οθόνης."
+
+#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+msgid "Binding to show the on-screen keyboard"
+msgstr "Συνδυασμός εμφάνισης του πληκτρολογίου οθόνης."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
+msgid "Show Displays in Notification Area"
+msgstr "Προβολή οθονών στην περιοχή ειδοποίησης"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:6
+msgid ""
+"Whether a notification icon with display-related things should be shown in "
+"the panel."
+msgstr "Αν ένα εικονίδιο ειδοποίησης με μηνύματα σχετικά με την οθόνη θα εμφανίζεται στο πίνακα εφαρμογών."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
+msgid "Do not touch monitor configuration"
+msgstr "Μην πειράξετε τις ρυθμίσεις οθονών"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:8
+msgid ""
+"Usually, mate-settings-daemon configures internal and external monitors "
+"according to the turn_on_external_monitors_at_startup and "
+"turn_on_laptop_monitor_at_startup settings and determines an appropriate "
+"cloning/side-by-side mode. Setting this key to True disables this, and the "
+"monitor settings are not touched at all (unless there is an explicit user "
+"configuration)."
+msgstr "Συνήθως, το mate-settings-daemon ρυθμίζει εσωτερικές και εξωτερικές οθόνες σύμφωνα με τις ρυθμίσεις των turn_on_external_monitors_at_startup και turn_on_laptop_monitor_at_startup και καθορίζει την κατάλληλη λειτουργία κλωνοποίηση/δίπλα-δίπλα. Εάν ορίσετε αυτό το κλειδί σε Αληθές, το απενεργοποιεί, και οι ρυθμίσεις οθόνης δεν αλλάζουν (εκτός εάν υπάρχουν σαφές ρυθμίσεις χρήστη)."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
+msgid "Turn on external monitor after system boot"
+msgstr "Ενεργοποίηση της εξωτερικής οθόνης μετά την εκκίνηση του συστήματος"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
+msgid ""
+"Turn on external monitor after system boot if user plugs in external monitor"
+" on system boot."
+msgstr "Ενεργοποίηση της εξωτερικής οθόνης μετά την εκκίνηση του συστήματος αν ο χρήστης συνδέσει εξωτερική οθόνη κατά την εκκίνηση του συστήματος."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
+msgid "Turn on laptop monitor after system boot"
+msgstr "Ενεργοποίηση της οθόνης του φορητού μετά την εκκίνηση του συστήματος"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
+msgid ""
+"Turn on laptop monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr "Ενεργοποίηση της οθόνης του φορητού μετά την εκκίνηση του συστήματος αν ο χρήστης συνδέσει εξωτερική οθόνη κατά την εκκίνηση του συστήματος."
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
+msgid "File for default configuration for RandR"
+msgstr "Αρχείο προεπιλεγμένης διαμόρφωσης του RandR"
+
+#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:14
+msgid ""
+"The XRandR plugin will look for a default configuration in the file "
+"specified by this key. This is similar to the ~/.config/monitors.xml that "
+"normally gets stored in users' home directories. If a user does not have "
+"such a file, or has one that does not match the user's setup of monitors, "
+"then the file specified by this key will be used instead."
+msgstr "Το πρόσθετο XRandR θα ψάξει για προεπιλεγμνη διαμόρφωση στο αρχείο που καθορίζεται σε αυτό το κλειδί. Αυτό είναι παρόμοιο με το ~/.config/monitors.xml που κανονικά είναι αποθηκευμένο στους προσωπικούς καταλόγους του χρήστη. Αν κάποιος χρήστης δεν έχει τέτοιο αρχείο ή έχει ένα που δεν ταιριάζει με τη διαμόρφωση των οθονών του, τότε θα χρησιμοποιηθεί το αρχείο που καθορίζεται σε αυτό το κλειδί."
+
+#: ../data/mate-settings-daemon.desktop.in.in.h:1
+msgid "MATE Settings Daemon"
+msgstr "Δαίμονας ρυθμίσεων MATE"
+
+#: ../mate-settings-daemon/main.c:65
+msgid "Enable debugging code"
+msgstr "Ενεργοποίηση κώδικα εκσφαλμάτωσης"
+
+#: ../mate-settings-daemon/main.c:66
+msgid "Replace the current daemon"
+msgstr "Αντικατάσταση τρέχουσας υπηρεσίας"
+
+#: ../mate-settings-daemon/main.c:67
+msgid "Don't become a daemon"
+msgstr "Να μην γίνει daemon"
+
+#: ../mate-settings-daemon/main.c:68
+msgid "Exit after a time (for debugging)"
+msgstr "Έξοδος μετά από ένα χρονικό διάστημα (για αποσφαλμάτωση)"
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:1
+msgid "Accessibility Keyboard"
+msgstr "Προσιτότητα πληκτρολογίου"
+
+#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:2
+msgid "Accessibility keyboard plugin"
+msgstr "Πρόσθετη λειτουργία προσιτότητας πληκτρολογίου"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#, c-format
+msgid "There was an error displaying help: %s"
+msgstr "Σφάλμα προβολής βοήθειας: %s "
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+msgid "Do you want to activate Slow Keys?"
+msgstr "Θέλετε να ενεργοποίησετε τα Αργά πλήκτρα;"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+msgid "Do you want to deactivate Slow Keys?"
+msgstr "Θέλετε να απενεργοποιήσετε τα Αργά πλήκτρα;"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+msgid ""
+"You just held down the Shift key for 8 seconds.  This is the shortcut for "
+"the Slow Keys feature, which affects the way your keyboard works."
+msgstr "Πατήσατε το πλήκτρο Shift για 8 δευτερόλεπτα. Αυτή είναι η συντόμευση για τη λειτουργία Αργά πλήκτρα, που επηρεάζει τον τρόπο λειτουργίας του πληκτρολογίου σας."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't activate"
+msgstr "Να μην γίνει ενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+msgid "Don't deactivate"
+msgstr "Να μην γίνει απενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Activate"
+msgstr "Ενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+msgid "Deactivate"
+msgstr "Απενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't activate"
+msgstr "Να _μην γίνει ενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+msgid "Do_n't deactivate"
+msgstr "Να _μην γίνει απενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Activate"
+msgstr "Ε_νεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+msgid "_Deactivate"
+msgstr "Α_πενεργοποίηση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+msgid "Slow Keys Alert"
+msgstr "Ειδοποίηση Αργών πλήκτρων"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+msgid "Do you want to activate Sticky Keys?"
+msgstr "Θέλετε να ενεργοποιήσετε τα Sticky Keys;"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+msgid "Do you want to deactivate Sticky Keys?"
+msgstr "Θέλετε να απενεργοποιήσετε τα Sticky Keys;"
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+msgid ""
+"You just pressed the Shift key 5 times in a row.  This is the shortcut for "
+"the Sticky Keys feature, which affects the way your keyboard works."
+msgstr "Πατήσατε το πλήκτρο Shift 5 φορές στη σειρά. Αυτό είναι μια συντόμευση για τη λειτουργία Sticky Keys, που επηρεάζει τον τρόπο λειτουργίας του πληκτρολογίου σας."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+msgid ""
+"You just pressed two keys at once, or pressed the Shift key 5 times in a "
+"row.  This turns off the Sticky Keys feature, which affects the way your "
+"keyboard works."
+msgstr "Πατήσατε 2 πλήκτρα με μιάς, ή πατήσατε το πλήκτρο Shift 5 φορές στη σειρά . Αυτό είναι μια συντόμευση για τη λειτουργία Sticky Keys, που επηρεάζει τον τρόπο λειτουργίας του πληκτρολογίου σας."
+
+#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+msgid "Sticky Keys Alert"
+msgstr "Ειδοποίηση Sticky Keys"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+msgid "Universal Access Preferences"
+msgstr "Προτιμήσεις καθολικής πρόσβασης"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+msgid "Use on-screen _keyboard"
+msgstr "Χρήση _πληκτρολογίου οθόνης "
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+msgid "Use screen _reader"
+msgstr "Χρήση _αναγνώστη οθόνης"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+msgid "Use screen _magnifier"
+msgstr "Χρήση μεγε_θυντή οθόνης"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+msgid "Enhance _contrast in colors"
+msgstr "Αύξηση αντί_θεσης στα χρώματα"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+msgid "Make _text larger and easier to read"
+msgstr "Μεγέθυνση _κειμένου για εύκολη ανάγνωση"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
+msgstr "_Πατήστε ένα πλήκτρο την φορά στις συντομεύσεις πληκτρολογίου (Κολλημένα πλήκτρα)"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+msgid "_Ignore duplicate keypresses (Bounce Keys)"
+msgstr "Να α_γνοούνται τα διπλά πατήματα πλήκτρων:"
+
+#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+msgid "Press and _hold keys to accept them (Slow Keys)"
+msgstr "Πατήστε και _κρατήστε τα πλήκτρα πατημένα για αποδοχή (Αργά πλήκτρα)"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:1
+msgid "Background"
+msgstr "Παρασκήνιο"
+
+#: ../plugins/background/background.mate-settings-plugin.in.h:2
+msgid "Background plugin"
+msgstr "Πρόσθετη λειτουργία παρασκηνίου"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:1
+msgid "Clipboard"
+msgstr "Πρόχειρο"
+
+#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:2
+msgid "Clipboard plugin"
+msgstr "Πρόσθετη λειτουργία προχείρου"
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:1
+msgid "Dummy"
+msgstr "Ψεύτικη"
+
+#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:2
+msgid "Dummy plugin"
+msgstr "Ψεύτικη πρόσθετη λειτουργία"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+msgid "Don't show any warnings again for this file system"
+msgstr "Να μην εμφανιστούν ξανά προειδοποιήσεις για αυτό το σύστημα αρχείων"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+msgid "Don't show any warnings again"
+msgstr "Να μην εμφανιστούν ξανά προειδοποιήσεις"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#, c-format
+msgid "The volume \"%s\" has only %s disk space remaining."
+msgstr "Ο τόμος \"%s\" έχει μόνο %s ελεύθερο χώρο."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#, c-format
+msgid "This computer has only %s disk space remaining."
+msgstr "Αυτός ο υπολογιστής έχει μόνο %s ελεύθερο χώρο στο δίσκο."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to another disk or partition."
+msgstr "Μπορείτε να ελευθερώσετε χώρο στον δίσκο αδειάζοντας τα Απορρίμματα, διαγράφοντας προγράμματα ή αρχεία που δεν χρησιμοποιείτε, ή μετακινώντας αρχεία σε έναν άλλο δίσκο ή κατάτμηση."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to another disk or partition."
+msgstr "Μπορείτε να ελευθερώσετε χώρο στον δίσκο διαγράφοντας προγράμματα ή αρχεία που δεν χρησιμοποιείτε, ή μετακινώντας αρχεία σε έναν άλλο δίσκο ή κατάτμηση."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+msgid ""
+"You can free up disk space by emptying the Trash, removing unused programs "
+"or files, or moving files to an external disk."
+msgstr "Μπορείτε να ελευθερώσετε χώρο στον δίσκο αδειάζοντας τα Απορρίμματα, διαγράφοντας προγράμματα ή αρχεία που δεν χρησιμοποιείτε, ή μετακινώντας αρχεία σε έναν εξωτερικό δίσκο."
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+msgid ""
+"You can free up disk space by removing unused programs or files, or by "
+"moving files to an external disk."
+msgstr "Μπορείτε να ελευθερώσετε χώρο στον δίσκο διαγράφοντας προγράμματα ή αρχεία που δεν χρησιμοποιείτε, ή μετακινώντας αρχεία σε έναν εξωτερικό δίσκο."
+
+#. Set up all the window stuff here
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+msgid "Low Disk Space"
+msgstr "Λίγος χώρος στο δίσκο"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+msgid "Empty Trash"
+msgstr "Άδειασμα απορριμάτων"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+msgid "Examine…"
+msgstr "Εξέταση…"
+
+#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+msgid "Ignore"
+msgstr "Αγνόηση"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#, c-format
+msgid "Removing item %lu of %lu"
+msgstr "Διαγραφή αντικειμένου %lu από %lu"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#, c-format
+msgid "Removing: %s"
+msgstr "Διαγραφή: %s"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+msgid "Emptying the trash"
+msgstr "Άδειασμα των απορριμμάτων"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+msgid "Preparing to empty trash…"
+msgstr "Προετοιμασία για άδειασμα απορριμμάτων…"
+
+#. Translators: "Emptying trash from <device>"
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+msgid "From: "
+msgstr "Από: "
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+msgid "Empty all of the items from the trash?"
+msgstr "Άδειασμα όλων των αντικειμένων από τα απορρίμματα;"
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+msgid ""
+"If you choose to empty the trash, all items in it will be permanently lost. "
+"Please note that you can also delete them separately."
+msgstr "Αν επιλέξετε να αδειάσετε τα απορρίμματα, όλα τα αντικείμενα που βρίσκονται στον κάδο θα χαθούν οριστικά. Παρακαλούμε σημειώστε πως μπορείτε επίσης να τα διαγράψετε επιλεκτικά."
+
+#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+msgid "_Empty Trash"
+msgstr "Άδ_ειασμα απορριμμάτων"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#, c-format
+msgid "Key binding (%s) is invalid"
+msgstr "Ο συνδυασμός πλήκτρων (%s) δεν είναι έγκυρος"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#, c-format
+msgid "Key binding (%s) is incomplete"
+msgstr "Ο συνδυασμός πλήκτρων (%s) δεν είναι ολοκληρωμένος"
+
+#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#, c-format
+msgid ""
+"Error while trying to run (%s)\n"
+"which is linked to the key (%s)"
+msgstr "Σφάλμα κατα την προσπάθεια εκτέλεσης (%s)\nπου συνδέεται με το κλειδί (%s)"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:1
+msgid "Keybindings"
+msgstr "Συνδυασμοί πλήκτρων"
+
+#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:2
+msgid "Keybindings plugin"
+msgstr "Πρόσθετη λειτουργία συνδυασμού πλήκτρων"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:1
+msgid "Keyboard"
+msgstr "Πληκτρολόγιο"
+
+#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:2
+msgid "Keyboard plugin"
+msgstr "Πρόσθετη λειτουργία πληκτρολογίου"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#, c-format
+msgid ""
+"Error activating XKB configuration.\n"
+"It can happen under various circumstances:\n"
+" • a bug in libxklavier library\n"
+" • a bug in X server (xkbcomp, xmodmap utilities)\n"
+" • X server with incompatible libxkbfile implementation\n"
+"\n"
+"X server version data:\n"
+"%s\n"
+"%d\n"
+"If you report this situation as a bug, please include:\n"
+" • The result of <b>%s</b>\n"
+" • The result of <b>%s</b>"
+msgstr "Σφάλμα στην ενεργοποίηση των ρυθμίσεων του XKB.\nΜπορεί να συμβεί κάτω από διάφορες περιστάσεις:\n- κάποιο σφάλμα στη βιβλιοθήκη libxklavier\n- κάποιο σφάλμα στον κώδικα διακομιστή X (xkbcomp, xmodmap utilities)\n- διακομιστής X με ασύμβατη υλοποίηση του libxkbfile\n\nστοιχεία έκδοσης του διακομιστή X:\n%s\n%d\nΕάν αναφέρεται αυτήν την κατάσταση ως σφάλμα κώδικα, παρακαλώ συμπεριλάβετε και τα εξής:\n- Το αποτέλεσμα του <b>%s</b>\n- Το αποτέλεσμα του <b>%s</b>"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+msgid "_Layouts"
+msgstr "_Διατάξεις"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+msgid "Keyboard _Preferences"
+msgstr "Προτιμήσεις πληκτρολογίου"
+
+#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+msgid "Show _Current Layout"
+msgstr "Προβολή _τρέχουσας διάταξης"
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:186
+msgid ""
+"Could not get default terminal. Verify that your default terminal command is"
+" set and points to a valid application."
+msgstr "Αδυναμία λήψης προεπιλεγμένου τερματικού. Βεβαιωθείτε ότι έχει ορισθεί η εντολή προεπιλεγμένου τερματικού και ότι δείχνει σε έγκυρη εφαρμογή."
+
+#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#, c-format
+msgid ""
+"Couldn't execute command: %s\n"
+"Verify that this is a valid command."
+msgstr "Αδυναμία εκτέλεσης εντολής: %s\nΒεβαιωθείτε ότι είναι μια έγκυρη εντολή."
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:1
+msgid "Media keys"
+msgstr "Πλήκτρα πολυμέσων"
+
+#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:2
+msgid "Media keys plugin"
+msgstr "Πρόσθετη λειτουργία πλήκτρων πολυμέσων"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1021
+msgid "Could not enable mouse accessibility features"
+msgstr "Αδυναμία ενεργοποίησης χαρακτηριστικών προσιτότητας ποντικιού"
+
+#: ../plugins/mouse/msd-mouse-manager.c:1023
+msgid ""
+"Mouse accessibility requires Mousetweaks to be installed on your system."
+msgstr "Η προσιτότητα ποντικιού απαιτεί το mousetweaks να είναι εγκατεστημένο στο σύστημα σας."
+
+#: ../plugins/mouse/msd-mouse-manager.c:1026
+msgid "Mouse Preferences"
+msgstr "Προτιμήσεις ποντικιού"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:1
+msgid "Mouse"
+msgstr "Ποντίκι"
+
+#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:2
+msgid "Mouse plugin"
+msgstr "Πρόσθετη λειτουργία ποντικιού"
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:1
+msgid "Mpris"
+msgstr "Mpris"
+
+#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:2
+msgid "Mpris plugin"
+msgstr "Πρόσθετο Mpris"
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:1
+msgid "Typing Break"
+msgstr "Διάλειμμα πληκτρολόγησης"
+
+#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:2
+msgid "Typing break plugin"
+msgstr "Πρόσθετη λειτουργία διαλείμματος πληκτρολόγησης"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:1
+msgid "XRandR"
+msgstr "XRandR"
+
+#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:2
+msgid "Set up screen size and rotation settings"
+msgstr "Ρύθμιση μεγέθους οθόνης και περιστροφής"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:373
+msgid "Could not switch the monitor configuration"
+msgstr "Αδυναμία αλλαγής των ρυθμίσεων της οθόνης"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:397
+msgid "Could not restore the display's configuration"
+msgstr "Αδυναμία επαναφοράς των ρυθμίσεων της οθόνης"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:422
+msgid "Could not restore the display's configuration from a backup"
+msgstr "Αδυναμία επαναφοράς των ρυθμίσεων της οθόνης από αντίγραφο ασφαλείας"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#, c-format
+msgid "The display will be reset to its previous configuration in %d second"
+msgid_plural ""
+"The display will be reset to its previous configuration in %d seconds"
+msgstr[0] "Οι προηγούμενες ρυθμίσεις της οθόνης θα επαναφερθούν σε %d δευτερόλεπτο"
+msgstr[1] "Οι προηγούμενες ρυθμίσεις της οθόνης θα επαναφερθούν σε %d δευτερόλεπτα"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:492
+msgid "Does the display look OK?"
+msgstr "Είναι ικανοποιητική η εμφάνιση της οθόνης;"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:499
+msgid "_Restore Previous Configuration"
+msgstr "Επαναφο_ρά προηγούμενων ρυθμίσεων"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:500
+msgid "_Keep This Configuration"
+msgstr "_Διατήρηση αυτών των ρυθμίσεων"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:581
+msgid "The selected configuration for displays could not be applied"
+msgstr "Αδυναμία εφαρμογής των επιλεγμένων ρυθμίσεων στις οθόνες"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#, c-format
+msgid "Could not refresh the screen information: %s"
+msgstr "Αδυναμία ανανέωσης των πληροφοριών οθόνης: %s"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+msgid "Trying to switch the monitor configuration anyway."
+msgstr "Γίνεται παρόλα αυτά προσπάθεια αλλαγής των ρυθμίσεων της οθόνης."
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+msgid "Rotation not supported"
+msgstr "Η περιστροφή δεν υποστηρίζεται"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+msgid "Could not save monitor configuration"
+msgstr "Αδυναμία αποθήκευσης των ρυθμίσεων της οθόνης"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+msgid "Normal"
+msgstr "Κανονική"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+msgid "Left"
+msgstr "Αριστερά"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+msgid "Right"
+msgstr "Δεξιά"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+msgid "Upside Down"
+msgstr "Αντιστροφή"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+msgid "_Configure Display Settings…"
+msgstr "_Ρύθμιση οθόνης…"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+msgid "Configure display settings"
+msgstr "Ρύθμιση οθόνης"
+
+#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+msgid "Could not apply the stored configuration for monitors"
+msgstr "Αδυναμία εφαρμογής των αποθηκευμένων ρυθμίσεων για τις οθόνες"
+
+#: ../plugins/xrdb/msd-xrdb-manager.c:253
+#: ../plugins/xrdb/msd-xrdb-manager.c:322
+msgid "Cannot determine user's home directory"
+msgstr "Δεν είναι δυνατός ο εντοπισμός του αρχικού καταλόγου χρήστη"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:1
+msgid "X Resource Database"
+msgstr "Βάση δεδομένων πόρων X"
+
+#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:2
+msgid "Manage the X resource database"
+msgstr "Διαχείριση της βάσης δεδομένων πόρων X"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:1
+msgid "X Settings"
+msgstr "Ρυθμίσεις X"
+
+#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:2
+msgid "Manage X Settings"
+msgstr "Διαχείριση ρυθμίσεων X"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:167
+msgid "Module Path"
+msgstr "Διαδρομή αρθρώματος"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:168
+msgid "path to smartcard PKCS #11 driver"
+msgstr "διαδρομή για τον οδηγό έξυπνης κάρτας PKCS #11"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:496
+msgid "received error or hang up from event source"
+msgstr "ελήφθη σφάλμα ή αποσύνδεση από την πηγή του γεγονότος"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#, c-format
+msgid "NSS security system could not be initialized"
+msgstr "Αδυναμία αρχικοποίησης του συστήματος ασφαλείας NSS"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#, c-format
+msgid "no suitable smartcard driver could be found"
+msgstr "δεν βρέθηκε κατάλληλος οδηγός έξυπνης κάρτας"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#, c-format
+msgid "smartcard driver '%s' could not be loaded"
+msgstr "αδυναμία φόρτωσης του οδηγού έξυπνης κάρτας «%s»"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#, c-format
+msgid "could not watch for incoming card events - %s"
+msgstr "αδυναμία παρακολούθησης εισερχομένων γεγονότων κάρτας - %s"
+
+#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#, c-format
+msgid "encountered unexpected error while waiting for smartcard events"
+msgstr "συνέβη μη αναμενόμενο σφάλμα κατά την αναμονή γεγονότων έξυπνης κάρτας"
+
+#: ../plugins/smartcard/msd-smartcard.c:154
+msgid "Slot ID"
+msgstr "ID υποδοχής κάρτας"
+
+#: ../plugins/smartcard/msd-smartcard.c:155
+msgid "The slot the card is in"
+msgstr "Η υποδοχή στην οποία βρίσκεται η κάρτα"
+
+#: ../plugins/smartcard/msd-smartcard.c:161
+msgid "Slot Series"
+msgstr "Σειρά υποδοχής"
+
+#: ../plugins/smartcard/msd-smartcard.c:162
+msgid "per-slot card identifier"
+msgstr "ταυτοποιητής κάρτας ανά υποδοχή"
+
+#: ../plugins/smartcard/msd-smartcard.c:168
+#: ../plugins/smartcard/msd-smartcard.c:169
+msgid "name"
+msgstr "όνομα"
+
+#: ../plugins/smartcard/msd-smartcard.c:173
+msgid "Module"
+msgstr "Άρθρωμα"
+
+#: ../plugins/smartcard/msd-smartcard.c:174
+msgid "smartcard driver"
+msgstr "οδηγός έξυπνης κάρτας"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:1
+msgid "Change system time zone"
+msgstr "Αλλαγή χρονικής ζώνης συστήματος"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:2
+msgid "Privileges are required to change the system time zone."
+msgstr "Απαιτούνται προνόμια διαχειριστή για να αλλάξει η χρονική ζώνη του συστήματος."
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:3
+msgid "Change system time"
+msgstr "Αλλαγή ώρας συστήματος"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:4
+msgid "Privileges are required to change the system time."
+msgstr "Απαιτούνται προνόμια διαχειριστή για αλλαγή της ώρας του συστήματος."
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:5
+msgid "Configure hardware clock"
+msgstr "Διαμόρφωση ρολογιού υπολογιστή"
+
+#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:6
+msgid "Privileges are required to configure the hardware clock."
+msgstr "Απαιτούνται προνόμια διαχειριστή για διαμόρφωση του ρολογιού του υπολογιστή."

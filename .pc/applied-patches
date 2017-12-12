@@ -1,0 +1,3 @@
+1000_global_menu_support.diff
+1001_request_keyboard_event_from_global_keybindings.diff
+1002_fix-randr-applet-dying-on-restart.patch
