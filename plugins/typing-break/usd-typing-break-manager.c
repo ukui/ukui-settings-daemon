@@ -38,14 +38,14 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#include "mate-settings-profile.h"
-#include "msd-typing-break-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-typing-break-manager.h"
 
-#define MSD_TYPING_BREAK_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_TYPING_BREAK_MANAGER, MsdTypingBreakManagerPrivate))
+#define USD_TYPING_BREAK_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_TYPING_BREAK_MANAGER, UsdTypingBreakManagerPrivate))
 
-#define MATE_BREAK_SCHEMA "org.mate.typing-break"
+#define UKUI_BREAK_SCHEMA "org.mate.typing-break"
 
-struct MsdTypingBreakManagerPrivate
+struct UsdTypingBreakManagerPrivate
 {
         GPid  typing_monitor_pid;
         guint typing_monitor_idle_id;
@@ -54,16 +54,16 @@ struct MsdTypingBreakManagerPrivate
         GSettings *settings;
 };
 
-static void     msd_typing_break_manager_class_init  (MsdTypingBreakManagerClass *klass);
-static void     msd_typing_break_manager_init        (MsdTypingBreakManager      *typing_break_manager);
-static void     msd_typing_break_manager_finalize    (GObject             *object);
+static void     usd_typing_break_manager_class_init  (UsdTypingBreakManagerClass *klass);
+static void     usd_typing_break_manager_init        (UsdTypingBreakManager      *typing_break_manager);
+static void     usd_typing_break_manager_finalize    (GObject             *object);
 
-G_DEFINE_TYPE (MsdTypingBreakManager, msd_typing_break_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdTypingBreakManager, usd_typing_break_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
 static gboolean
-typing_break_timeout (MsdTypingBreakManager *manager)
+typing_break_timeout (UsdTypingBreakManager *manager)
 {
         if (manager->priv->typing_monitor_pid > 0) {
                 kill (manager->priv->typing_monitor_pid, SIGKILL);
@@ -77,7 +77,7 @@ typing_break_timeout (MsdTypingBreakManager *manager)
 static void
 child_watch (GPid                   pid,
              int                    status,
-             MsdTypingBreakManager *manager)
+             UsdTypingBreakManager *manager)
 {
         if (pid == manager->priv->typing_monitor_pid) {
                 manager->priv->typing_monitor_pid = 0;
@@ -86,10 +86,10 @@ child_watch (GPid                   pid,
 }
 
 static void
-setup_typing_break (MsdTypingBreakManager *manager,
+setup_typing_break (UsdTypingBreakManager *manager,
                     gboolean               enabled)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         if (! enabled) {
                 if (manager->priv->typing_monitor_pid != 0) {
@@ -133,19 +133,19 @@ setup_typing_break (MsdTypingBreakManager *manager,
                                                                    manager);
         }
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static void
 typing_break_enabled_callback (GSettings             *settings,
                                gchar                 *key,
-                               MsdTypingBreakManager *manager)
+                               UsdTypingBreakManager *manager)
 {
         setup_typing_break (manager, g_settings_get_boolean (settings, key));
 }
 
 static gboolean
-really_setup_typing_break (MsdTypingBreakManager *manager)
+really_setup_typing_break (UsdTypingBreakManager *manager)
 {
         setup_typing_break (manager, TRUE);
         manager->priv->setup_id = 0;
@@ -153,15 +153,15 @@ really_setup_typing_break (MsdTypingBreakManager *manager)
 }
 
 gboolean
-msd_typing_break_manager_start (MsdTypingBreakManager *manager,
+usd_typing_break_manager_start (UsdTypingBreakManager *manager,
                                 GError               **error)
 {
         gboolean     enabled;
 
         g_debug ("Starting typing_break manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
-        manager->priv->settings = g_settings_new (MATE_BREAK_SCHEMA);
+        manager->priv->settings = g_settings_new (UKUI_BREAK_SCHEMA);
 
         g_signal_connect (manager->priv->settings,
                           "changed::enabled",
@@ -177,15 +177,15 @@ msd_typing_break_manager_start (MsdTypingBreakManager *manager,
                                                manager);
         }
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_typing_break_manager_stop (MsdTypingBreakManager *manager)
+usd_typing_break_manager_stop (UsdTypingBreakManager *manager)
 {
-        MsdTypingBreakManagerPrivate *p = manager->priv;
+        UsdTypingBreakManagerPrivate *p = manager->priv;
 
         g_debug ("Stopping typing_break manager");
 
@@ -216,47 +216,47 @@ msd_typing_break_manager_stop (MsdTypingBreakManager *manager)
 }
 
 static void
-msd_typing_break_manager_class_init (MsdTypingBreakManagerClass *klass)
+usd_typing_break_manager_class_init (UsdTypingBreakManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_typing_break_manager_finalize;
+        object_class->finalize = usd_typing_break_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdTypingBreakManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdTypingBreakManagerPrivate));
 }
 
 static void
-msd_typing_break_manager_init (MsdTypingBreakManager *manager)
+usd_typing_break_manager_init (UsdTypingBreakManager *manager)
 {
-        manager->priv = MSD_TYPING_BREAK_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_TYPING_BREAK_MANAGER_GET_PRIVATE (manager);
 
 }
 
 static void
-msd_typing_break_manager_finalize (GObject *object)
+usd_typing_break_manager_finalize (GObject *object)
 {
-        MsdTypingBreakManager *typing_break_manager;
+        UsdTypingBreakManager *typing_break_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_TYPING_BREAK_MANAGER (object));
+        g_return_if_fail (USD_IS_TYPING_BREAK_MANAGER (object));
 
-        typing_break_manager = MSD_TYPING_BREAK_MANAGER (object);
+        typing_break_manager = USD_TYPING_BREAK_MANAGER (object);
 
         g_return_if_fail (typing_break_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_typing_break_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_typing_break_manager_parent_class)->finalize (object);
 }
 
-MsdTypingBreakManager *
-msd_typing_break_manager_new (void)
+UsdTypingBreakManager *
+usd_typing_break_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_TYPING_BREAK_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_TYPING_BREAK_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_TYPING_BREAK_MANAGER (manager_object);
+        return USD_TYPING_BREAK_MANAGER (manager_object);
 }

@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-typing-break-plugin.h"
-#include "msd-typing-break-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-typing-break-plugin.h"
+#include "usd-typing-break-manager.h"
 
-struct MsdTypingBreakPluginPrivate {
-        MsdTypingBreakManager *manager;
+struct UsdTypingBreakPluginPrivate {
+        UsdTypingBreakManager *manager;
 };
 
-#define MSD_TYPING_BREAK_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_TYPING_BREAK_PLUGIN, MsdTypingBreakPluginPrivate))
+#define USD_TYPING_BREAK_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_TYPING_BREAK_PLUGIN, UsdTypingBreakPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdTypingBreakPlugin, msd_typing_break_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdTypingBreakPlugin, usd_typing_break_plugin)
 
 static void
-msd_typing_break_plugin_init (MsdTypingBreakPlugin *plugin)
+usd_typing_break_plugin_init (UsdTypingBreakPlugin *plugin)
 {
-        plugin->priv = MSD_TYPING_BREAK_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_TYPING_BREAK_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdTypingBreakPlugin initializing");
+        g_debug ("UsdTypingBreakPlugin initializing");
 
-        plugin->priv->manager = msd_typing_break_manager_new ();
+        plugin->priv->manager = usd_typing_break_manager_new ();
 }
 
 static void
-msd_typing_break_plugin_finalize (GObject *object)
+usd_typing_break_plugin_finalize (GObject *object)
 {
-        MsdTypingBreakPlugin *plugin;
+        UsdTypingBreakPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_TYPING_BREAK_PLUGIN (object));
+        g_return_if_fail (USD_IS_TYPING_BREAK_PLUGIN (object));
 
-        g_debug ("MsdTypingBreakPlugin finalizing");
+        g_debug ("UsdTypingBreakPlugin finalizing");
 
-        plugin = MSD_TYPING_BREAK_PLUGIN (object);
+        plugin = USD_TYPING_BREAK_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_typing_break_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_typing_break_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_typing_break_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating typing_break plugin");
 
         error = NULL;
-        res = msd_typing_break_manager_start (MSD_TYPING_BREAK_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_typing_break_manager_start (USD_TYPING_BREAK_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start typing_break manager: %s", error->message);
                 g_error_free (error);
@@ -83,27 +83,27 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating typing_break plugin");
-        msd_typing_break_manager_stop (MSD_TYPING_BREAK_PLUGIN (plugin)->priv->manager);
+        usd_typing_break_manager_stop (USD_TYPING_BREAK_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_typing_break_plugin_class_init (MsdTypingBreakPluginClass *klass)
+usd_typing_break_plugin_class_init (UsdTypingBreakPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_typing_break_plugin_finalize;
+        object_class->finalize = usd_typing_break_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdTypingBreakPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdTypingBreakPluginPrivate));
 }
 
 static void
-msd_typing_break_plugin_class_finalize (MsdTypingBreakPluginClass *klass)
+usd_typing_break_plugin_class_finalize (UsdTypingBreakPluginClass *klass)
 {
 }

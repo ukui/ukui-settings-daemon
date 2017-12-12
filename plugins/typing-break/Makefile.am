@@ -5,15 +5,15 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 libtyping_break_la_SOURCES = 		\
-	msd-typing-break-plugin.h	\
-	msd-typing-break-plugin.c	\
-	msd-typing-break-manager.h	\
-	msd-typing-break-manager.c	\
+	usd-typing-break-plugin.h	\
+	usd-typing-break-plugin.c	\
+	usd-typing-break-manager.h	\
+	usd-typing-break-manager.c	\
 	$(NULL)
 
 libtyping_break_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libtyping_break_la_CFLAGS = \
@@ -21,7 +21,7 @@ libtyping_break_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libtyping_break_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)	\
+	$(USD_PLUGIN_LDFLAGS)	\
 	$(NULL)
 
 libtyping_break_la_LIBADD  = 		\
@@ -29,10 +29,10 @@ libtyping_break_la_LIBADD  = 		\
 	$(NULL)
 
 plugin_in_files = 		\
-	typing-break.mate-settings-plugin.in	\
+	typing-break.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -46,4 +46,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
