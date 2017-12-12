@@ -23,84 +23,84 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-sound-plugin.h"
-#include "msd-sound-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-sound-plugin.h"
+#include "usd-sound-manager.h"
 
-struct MsdSoundPluginPrivate {
-        MsdSoundManager *manager;
+struct UsdSoundPluginPrivate {
+        UsdSoundManager *manager;
 };
 
-#define MSD_SOUND_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_SOUND_PLUGIN, MsdSoundPluginPrivate))
+#define USD_SOUND_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_SOUND_PLUGIN, UsdSoundPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdSoundPlugin, msd_sound_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdSoundPlugin, usd_sound_plugin)
 
 static void
-msd_sound_plugin_init (MsdSoundPlugin *plugin)
+usd_sound_plugin_init (UsdSoundPlugin *plugin)
 {
-        plugin->priv = MSD_SOUND_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_SOUND_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdSoundPlugin initializing");
+        g_debug ("UsdSoundPlugin initializing");
 
-        plugin->priv->manager = msd_sound_manager_new ();
+        plugin->priv->manager = usd_sound_manager_new ();
 }
 
 static void
-msd_sound_plugin_finalize (GObject *object)
+usd_sound_plugin_finalize (GObject *object)
 {
-        MsdSoundPlugin *plugin;
+        UsdSoundPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_SOUND_PLUGIN (object));
+        g_return_if_fail (USD_IS_SOUND_PLUGIN (object));
 
-        g_debug ("MsdSoundPlugin finalizing");
+        g_debug ("UsdSoundPlugin finalizing");
 
-        plugin = MSD_SOUND_PLUGIN (object);
+        plugin = USD_SOUND_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
         if (plugin->priv->manager != NULL)
                 g_object_unref (plugin->priv->manager);
 
-        G_OBJECT_CLASS (msd_sound_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_sound_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         GError *error = NULL;
 
         g_debug ("Activating sound plugin");
 
-        if (!msd_sound_manager_start (MSD_SOUND_PLUGIN (plugin)->priv->manager, &error)) {
+        if (!usd_sound_manager_start (USD_SOUND_PLUGIN (plugin)->priv->manager, &error)) {
                 g_warning ("Unable to start sound manager: %s", error->message);
                 g_error_free (error);
         }
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating sound plugin");
-        msd_sound_manager_stop (MSD_SOUND_PLUGIN (plugin)->priv->manager);
+        usd_sound_manager_stop (USD_SOUND_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_sound_plugin_class_init (MsdSoundPluginClass *klass)
+usd_sound_plugin_class_init (UsdSoundPluginClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_sound_plugin_finalize;
+        object_class->finalize = usd_sound_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdSoundPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdSoundPluginPrivate));
 }
 
 static void
-msd_sound_plugin_class_finalize (MsdSoundPluginClass *klass)
+usd_sound_plugin_class_finalize (UsdSoundPluginClass *klass)
 {
 }
 

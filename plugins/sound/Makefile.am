@@ -2,33 +2,33 @@ plugin_LTLIBRARIES = \
 	libsound.la
 
 libsound_la_SOURCES = \
-	msd-sound-plugin.h \
-	msd-sound-plugin.c \
-	msd-sound-manager.h \
-	msd-sound-manager.c
+	usd-sound-plugin.h \
+	usd-sound-plugin.c \
+	usd-sound-manager.h \
+	usd-sound-manager.c
 
 libsound_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon \
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon \
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libsound_la_CFLAGS = \
 	$(SETTINGS_PLUGIN_CFLAGS) \
-	$(MATE_CFLAGS)	\
+	$(UKUI_CFLAGS)	\
 	$(PULSE_CFLAGS)	\
 	$(AM_CFLAGS)
 
 libsound_la_LDFLAGS = \
-	$(MSD_PLUGIN_LDFLAGS)
+	$(USD_PLUGIN_LDFLAGS)
 
 libsound_la_LIBADD = \
 	$(SETTINGS_PLUGIN_LIBS)	\
 	$(PULSE_LIBS)
 
 plugin_in_files = \
-	sound.mate-settings-plugin.in
+	sound.ukui-settings-plugin.in
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = \
 	$(plugin_in_files)
@@ -39,4 +39,4 @@ CLEANFILES = \
 DISTCLEANFILES = \
 	$(plugin_DATA)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
