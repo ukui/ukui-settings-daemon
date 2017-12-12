@@ -4,14 +4,14 @@ plugin_LTLIBRARIES = \
 	liba11y-settings.la
 
 liba11y_settings_la_SOURCES = 		\
-	msd-a11y-settings-manager.c	\
-	msd-a11y-settings-manager.h	\
-	msd-a11y-settings-plugin.c	\
-	msd-a11y-settings-plugin.h
+	usd-a11y-settings-manager.c	\
+	usd-a11y-settings-manager.h	\
+	usd-a11y-settings-plugin.c	\
+	usd-a11y-settings-plugin.h
 
 liba11y_settings_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 liba11y_settings_la_CFLAGS = \
@@ -20,15 +20,15 @@ liba11y_settings_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 liba11y_settings_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)
+	$(USD_PLUGIN_LDFLAGS)
 
 liba11y_settings_la_LIBADD  = 		\
 	$(SETTINGS_PLUGIN_LIBS)
 
 plugin_in_files = 		\
-	a11y-settings.mate-settings-plugin.in
+	a11y-settings.ukui-settings-plugin.in
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)
@@ -39,4 +39,4 @@ CLEANFILES = 			\
 DISTCLEANFILES =		\
 	$(plugin_DATA)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@

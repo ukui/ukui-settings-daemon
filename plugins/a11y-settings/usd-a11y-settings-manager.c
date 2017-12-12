@@ -34,12 +34,12 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include "mate-settings-profile.h"
-#include "msd-a11y-settings-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-a11y-settings-manager.h"
 
-#define MSD_A11Y_SETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_A11Y_SETTINGS_MANAGER, MsdA11ySettingsManagerPrivate))
+#define USD_A11Y_SETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_A11Y_SETTINGS_MANAGER, UsdA11ySettingsManagerPrivate))
 
-struct MsdA11ySettingsManagerPrivate
+struct UsdA11ySettingsManagerPrivate
 {
         GSettings *interface_settings;
         GSettings *a11y_apps_settings;
@@ -49,18 +49,18 @@ enum {
         PROP_0,
 };
 
-static void     msd_a11y_settings_manager_class_init  (MsdA11ySettingsManagerClass *klass);
-static void     msd_a11y_settings_manager_init        (MsdA11ySettingsManager      *a11y_settings_manager);
-static void     msd_a11y_settings_manager_finalize    (GObject                     *object);
+static void     usd_a11y_settings_manager_class_init  (UsdA11ySettingsManagerClass *klass);
+static void     usd_a11y_settings_manager_init        (UsdA11ySettingsManager      *a11y_settings_manager);
+static void     usd_a11y_settings_manager_finalize    (GObject                     *object);
 
-G_DEFINE_TYPE (MsdA11ySettingsManager, msd_a11y_settings_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdA11ySettingsManager, usd_a11y_settings_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
 static void
 apps_settings_changed (GSettings              *settings,
 		       const char             *key,
-		       MsdA11ySettingsManager *manager)
+		       UsdA11ySettingsManager *manager)
 {
 	gboolean screen_reader, keyboard;
 
@@ -83,13 +83,13 @@ apps_settings_changed (GSettings              *settings,
 }
 
 gboolean
-msd_a11y_settings_manager_start (MsdA11ySettingsManager *manager,
+usd_a11y_settings_manager_start (UsdA11ySettingsManager *manager,
                                  GError                **error)
 {
         g_debug ("Starting a11y_settings manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
-	manager->priv->interface_settings = g_settings_new ("org.mate.interface");
+	manager->priv->interface_settings = g_settings_new ("org.ukui.interface");
 	manager->priv->a11y_apps_settings = g_settings_new ("org.gnome.desktop.a11y.applications");
 
 	g_signal_connect (G_OBJECT (manager->priv->a11y_apps_settings), "changed",
@@ -103,12 +103,12 @@ msd_a11y_settings_manager_start (MsdA11ySettingsManager *manager,
 	    g_settings_get_boolean (manager->priv->a11y_apps_settings, "screen-reader-enabled"))
 		g_settings_set_boolean (manager->priv->interface_settings, "accessibility", TRUE);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
         return TRUE;
 }
 
 void
-msd_a11y_settings_manager_stop (MsdA11ySettingsManager *manager)
+usd_a11y_settings_manager_stop (UsdA11ySettingsManager *manager)
 {
 	if (manager->priv->interface_settings) {
 		g_object_unref (manager->priv->interface_settings);
@@ -122,13 +122,13 @@ msd_a11y_settings_manager_stop (MsdA11ySettingsManager *manager)
 }
 
 static GObject *
-msd_a11y_settings_manager_constructor (GType                  type,
+usd_a11y_settings_manager_constructor (GType                  type,
                                        guint                  n_construct_properties,
                                        GObjectConstructParam *construct_properties)
 {
-        MsdA11ySettingsManager      *a11y_settings_manager;
+        UsdA11ySettingsManager      *a11y_settings_manager;
 
-        a11y_settings_manager = MSD_A11Y_SETTINGS_MANAGER (G_OBJECT_CLASS (msd_a11y_settings_manager_parent_class)->constructor (type,
+        a11y_settings_manager = USD_A11Y_SETTINGS_MANAGER (G_OBJECT_CLASS (usd_a11y_settings_manager_parent_class)->constructor (type,
                                                                                                                                  n_construct_properties,
                                                                                                                                  construct_properties));
 
@@ -136,55 +136,55 @@ msd_a11y_settings_manager_constructor (GType                  type,
 }
 
 static void
-msd_a11y_settings_manager_dispose (GObject *object)
+usd_a11y_settings_manager_dispose (GObject *object)
 {
-        G_OBJECT_CLASS (msd_a11y_settings_manager_parent_class)->dispose (object);
+        G_OBJECT_CLASS (usd_a11y_settings_manager_parent_class)->dispose (object);
 }
 
 static void
-msd_a11y_settings_manager_class_init (MsdA11ySettingsManagerClass *klass)
+usd_a11y_settings_manager_class_init (UsdA11ySettingsManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->constructor = msd_a11y_settings_manager_constructor;
-        object_class->dispose = msd_a11y_settings_manager_dispose;
-        object_class->finalize = msd_a11y_settings_manager_finalize;
+        object_class->constructor = usd_a11y_settings_manager_constructor;
+        object_class->dispose = usd_a11y_settings_manager_dispose;
+        object_class->finalize = usd_a11y_settings_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdA11ySettingsManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdA11ySettingsManagerPrivate));
 }
 
 static void
-msd_a11y_settings_manager_init (MsdA11ySettingsManager *manager)
+usd_a11y_settings_manager_init (UsdA11ySettingsManager *manager)
 {
-        manager->priv = MSD_A11Y_SETTINGS_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_A11Y_SETTINGS_MANAGER_GET_PRIVATE (manager);
 
 }
 
 static void
-msd_a11y_settings_manager_finalize (GObject *object)
+usd_a11y_settings_manager_finalize (GObject *object)
 {
-        MsdA11ySettingsManager *a11y_settings_manager;
+        UsdA11ySettingsManager *a11y_settings_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_A11Y_SETTINGS_MANAGER (object));
+        g_return_if_fail (USD_IS_A11Y_SETTINGS_MANAGER (object));
 
-        a11y_settings_manager = MSD_A11Y_SETTINGS_MANAGER (object);
+        a11y_settings_manager = USD_A11Y_SETTINGS_MANAGER (object);
 
         g_return_if_fail (a11y_settings_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_a11y_settings_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_a11y_settings_manager_parent_class)->finalize (object);
 }
 
-MsdA11ySettingsManager *
-msd_a11y_settings_manager_new (void)
+UsdA11ySettingsManager *
+usd_a11y_settings_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_A11Y_SETTINGS_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_A11Y_SETTINGS_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_A11Y_SETTINGS_MANAGER (manager_object);
+        return USD_A11Y_SETTINGS_MANAGER (manager_object);
 }
