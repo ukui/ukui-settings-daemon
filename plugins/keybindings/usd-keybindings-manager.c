@@ -39,17 +39,17 @@
 #include <gio/gio.h>
 #include <dconf.h>
 
-#include "mate-settings-profile.h"
-#include "msd-keybindings-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-keybindings-manager.h"
 #include "dconf-util.h"
 
-#include "msd-keygrab.h"
+#include "usd-keygrab.h"
 #include "eggaccelerators.h"
 
-#define GSETTINGS_KEYBINDINGS_DIR "/org/mate/desktop/keybindings/"
-#define CUSTOM_KEYBINDING_SCHEMA "org.mate.control-center.keybinding"
+#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
+#define CUSTOM_KEYBINDING_SCHEMA "org.ukui.control-center.keybinding"
 
-#define MSD_KEYBINDINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_KEYBINDINGS_MANAGER, MsdKeybindingsManagerPrivate))
+#define USD_KEYBINDINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_KEYBINDINGS_MANAGER, UsdKeybindingsManagerPrivate))
 
 typedef struct {
         char *binding_str;
@@ -59,18 +59,18 @@ typedef struct {
         Key   previous_key;
 } Binding;
 
-struct MsdKeybindingsManagerPrivate
+struct UsdKeybindingsManagerPrivate
 {
         DConfClient *client;
         GSList      *binding_list;
         GSList      *screens;
 };
 
-static void     msd_keybindings_manager_class_init  (MsdKeybindingsManagerClass *klass);
-static void     msd_keybindings_manager_init        (MsdKeybindingsManager      *keybindings_manager);
-static void     msd_keybindings_manager_finalize    (GObject             *object);
+static void     usd_keybindings_manager_class_init  (UsdKeybindingsManagerClass *klass);
+static void     usd_keybindings_manager_init        (UsdKeybindingsManager      *keybindings_manager);
+static void     usd_keybindings_manager_finalize    (GObject             *object);
 
-G_DEFINE_TYPE (MsdKeybindingsManager, msd_keybindings_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdKeybindingsManager, usd_keybindings_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
@@ -142,7 +142,7 @@ compare_bindings (gconstpointer a,
 }
 
 static gboolean
-bindings_get_entry (MsdKeybindingsManager *manager,
+bindings_get_entry (UsdKeybindingsManager *manager,
                     const char            *settings_path)
 {
         GSettings *settings;
@@ -211,9 +211,9 @@ bindings_get_entry (MsdKeybindingsManager *manager,
 }
 
 static void
-bindings_clear (MsdKeybindingsManager *manager)
+bindings_clear (UsdKeybindingsManager *manager)
 {
-        MsdKeybindingsManagerPrivate *p = manager->priv;
+        UsdKeybindingsManagerPrivate *p = manager->priv;
         GSList *l;
 
         if (p->binding_list != NULL)
@@ -233,7 +233,7 @@ bindings_clear (MsdKeybindingsManager *manager)
 }
 
 static void
-bindings_get_entries (MsdKeybindingsManager *manager)
+bindings_get_entries (UsdKeybindingsManager *manager)
 {
         gchar **custom_list = NULL;
         gint i;
@@ -293,7 +293,7 @@ same_key (const Key *key, const Key *other)
 }
 
 static gboolean
-key_already_used (MsdKeybindingsManager *manager,
+key_already_used (UsdKeybindingsManager *manager,
                   Binding               *binding)
 {
         GSList *li;
@@ -312,7 +312,7 @@ key_already_used (MsdKeybindingsManager *manager,
 }
 
 static void
-binding_unregister_keys (MsdKeybindingsManager *manager)
+binding_unregister_keys (UsdKeybindingsManager *manager)
 {
         GSList *li;
         gboolean need_flush = FALSE;
@@ -335,7 +335,7 @@ binding_unregister_keys (MsdKeybindingsManager *manager)
 }
 
 static void
-binding_register_keys (MsdKeybindingsManager *manager)
+binding_register_keys (UsdKeybindingsManager *manager)
 {
         GSList *li;
         gboolean need_flush = FALSE;
@@ -413,7 +413,7 @@ screen_exec_display_string (GdkScreen *screen)
  * %NULL on error. Use g_strfreev() to free it.
  *
  * mainly ripped from egg_screen_exec_display_string in
- * mate-panel/egg-screen-exec.c
+ * ukui-panel/egg-screen-exec.c
  **/
 static char **
 get_exec_environment (XEvent *xevent)
@@ -458,7 +458,7 @@ get_exec_environment (XEvent *xevent)
 static GdkFilterReturn
 keybindings_filter (GdkXEvent             *gdk_xevent,
                     GdkEvent              *event,
-                    MsdKeybindingsManager *manager)
+                    UsdKeybindingsManager *manager)
 {
         XEvent *xevent = (XEvent *) gdk_xevent;
         GSList *li;
@@ -521,7 +521,7 @@ bindings_callback (DConfClient           *client,
                    gchar                 *prefix,
                    GStrv                  changes,
                    gchar                 *tag,
-                   MsdKeybindingsManager *manager)
+                   UsdKeybindingsManager *manager)
 {
         g_debug ("keybindings: received 'changed' signal from dconf");
 
@@ -533,7 +533,7 @@ bindings_callback (DConfClient           *client,
 }
 
 gboolean
-msd_keybindings_manager_start (MsdKeybindingsManager *manager,
+usd_keybindings_manager_start (UsdKeybindingsManager *manager,
                                GError               **error)
 {
         GdkDisplay  *dpy;
@@ -546,7 +546,7 @@ msd_keybindings_manager_start (MsdKeybindingsManager *manager,
         XWindowAttributes atts;
 
         g_debug ("Starting keybindings manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         dpy = gdk_display_get_default ();
         xdpy = GDK_DISPLAY_XDISPLAY (dpy);
@@ -577,15 +577,15 @@ msd_keybindings_manager_start (MsdKeybindingsManager *manager,
         dconf_client_watch_fast (manager->priv->client, GSETTINGS_KEYBINDINGS_DIR);
         g_signal_connect (manager->priv->client, "changed", G_CALLBACK (bindings_callback), manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_keybindings_manager_stop (MsdKeybindingsManager *manager)
+usd_keybindings_manager_stop (UsdKeybindingsManager *manager)
 {
-        MsdKeybindingsManagerPrivate *p = manager->priv;
+        UsdKeybindingsManagerPrivate *p = manager->priv;
         GSList *l;
 
         g_debug ("Stopping keybindings manager");
@@ -610,47 +610,47 @@ msd_keybindings_manager_stop (MsdKeybindingsManager *manager)
 }
 
 static void
-msd_keybindings_manager_class_init (MsdKeybindingsManagerClass *klass)
+usd_keybindings_manager_class_init (UsdKeybindingsManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_keybindings_manager_finalize;
+        object_class->finalize = usd_keybindings_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdKeybindingsManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdKeybindingsManagerPrivate));
 }
 
 static void
-msd_keybindings_manager_init (MsdKeybindingsManager *manager)
+usd_keybindings_manager_init (UsdKeybindingsManager *manager)
 {
-        manager->priv = MSD_KEYBINDINGS_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_KEYBINDINGS_MANAGER_GET_PRIVATE (manager);
 
 }
 
 static void
-msd_keybindings_manager_finalize (GObject *object)
+usd_keybindings_manager_finalize (GObject *object)
 {
-        MsdKeybindingsManager *keybindings_manager;
+        UsdKeybindingsManager *keybindings_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_KEYBINDINGS_MANAGER (object));
+        g_return_if_fail (USD_IS_KEYBINDINGS_MANAGER (object));
 
-        keybindings_manager = MSD_KEYBINDINGS_MANAGER (object);
+        keybindings_manager = USD_KEYBINDINGS_MANAGER (object);
 
         g_return_if_fail (keybindings_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_keybindings_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_keybindings_manager_parent_class)->finalize (object);
 }
 
-MsdKeybindingsManager *
-msd_keybindings_manager_new (void)
+UsdKeybindingsManager *
+usd_keybindings_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_KEYBINDINGS_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_KEYBINDINGS_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_KEYBINDINGS_MANAGER (manager_object);
+        return USD_KEYBINDINGS_MANAGER (manager_object);
 }

@@ -7,16 +7,16 @@ plugin_LTLIBRARIES = \
 libkeybindings_la_SOURCES = 		\
 	dconf-util.h				\
 	dconf-util.c				\
-	msd-keybindings-plugin.h	\
-	msd-keybindings-plugin.c	\
-	msd-keybindings-manager.h	\
-	msd-keybindings-manager.c	\
+	usd-keybindings-plugin.h	\
+	usd-keybindings-plugin.c	\
+	usd-keybindings-manager.h	\
+	usd-keybindings-manager.c	\
 	$(NULL)
 
 libkeybindings_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
+	-I$(top_srcdir)/ukui-settings-daemon		\
 	-I$(top_srcdir)/plugins/common			\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libkeybindings_la_CFLAGS = \
@@ -25,7 +25,7 @@ libkeybindings_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libkeybindings_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)	\
+	$(USD_PLUGIN_LDFLAGS)	\
 	$(NULL)
 
 libkeybindings_la_LIBADD  = 		\
@@ -35,10 +35,10 @@ libkeybindings_la_LIBADD  = 		\
 	$(NULL)
 
 plugin_in_files = 		\
-	keybindings.mate-settings-plugin.in	\
+	keybindings.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -52,4 +52,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
