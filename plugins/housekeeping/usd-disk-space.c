@@ -21,7 +21,7 @@
  *
  */
 
-/* gcc -DHAVE_LIBNOTIFY -DTEST -Wall `pkg-config --cflags --libs gobject-2.0 gio-unix-2.0 glib-2.0 gtk+-2.0 libnotify` -o msd-disk-space-test msd-disk-space.c */
+/* gcc -DHAVE_LIBNOTIFY -DTEST -Wall `pkg-config --cflags --libs gobject-2.0 gio-unix-2.0 glib-2.0 gtk+-2.0 libnotify` -o usd-disk-space-test usd-disk-space.c */
 
 #include "config.h"
 
@@ -36,18 +36,18 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include "msd-disk-space.h"
-#include "msd-ldsm-dialog.h"
-#include "msd-ldsm-trash-empty.h"
+#include "usd-disk-space.h"
+#include "usd-ldsm-dialog.h"
+#include "usd-ldsm-trash-empty.h"
 
 
 #define GIGABYTE                   1024 * 1024 * 1024
 
 #define CHECK_EVERY_X_SECONDS      60
 
-#define DISK_SPACE_ANALYZER        "mate-disk-usage-analyzer"
+#define DISK_SPACE_ANALYZER        "ukui-disk-usage-analyzer"
 
-#define SETTINGS_HOUSEKEEPING_SCHEMA      "org.mate.SettingsDaemon.plugins.housekeeping"
+#define SETTINGS_HOUSEKEEPING_SCHEMA      "org.ukui.SettingsDaemon.plugins.housekeeping"
 #define SETTINGS_FREE_PC_NOTIFY_KEY       "free-percent-notify"
 #define SETTINGS_FREE_PC_NOTIFY_AGAIN_KEY "free-percent-notify-again"
 #define SETTINGS_FREE_SIZE_NO_NOTIFY      "free-size-gb-no-notify"
@@ -70,7 +70,7 @@ static unsigned int       free_size_gb_no_notify = 2;
 static unsigned int       min_notify_period = 10;
 static GSList            *ignore_paths = NULL;
 static GSettings         *settings = NULL;
-static MsdLdsmDialog     *dialog = NULL;
+static UsdLdsmDialog     *dialog = NULL;
 static guint64           *time_read;
 
 static gchar*
@@ -194,7 +194,7 @@ ldsm_notify_for_mount (LdsmMountInfo *mount,
         has_disk_analyzer = (program != NULL);
         g_free (program);
 
-        dialog = msd_ldsm_dialog_new (other_usable_volumes,
+        dialog = usd_ldsm_dialog_new (other_usable_volumes,
                                       multiple_volumes,
                                       has_disk_analyzer,
                                       has_trash,
@@ -214,13 +214,13 @@ ldsm_notify_for_mount (LdsmMountInfo *mount,
         case GTK_RESPONSE_CANCEL:
                 retval = FALSE;
                 break;
-        case MSD_LDSM_DIALOG_RESPONSE_ANALYZE:
+        case USD_LDSM_DIALOG_RESPONSE_ANALYZE:
                 retval = FALSE;
                 ldsm_analyze_path (path);
                 break;
-        case MSD_LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
+        case USD_LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
                 retval = TRUE;
-                msd_ldsm_trash_empty ();
+                usd_ldsm_trash_empty ();
                 break;
         case GTK_RESPONSE_NONE:
         case GTK_RESPONSE_DELETE_EVENT:
@@ -584,7 +584,7 @@ ldsm_is_hash_item_in_ignore_paths (gpointer key,
 }
 
 static void
-msd_ldsm_get_config ()
+usd_ldsm_get_config ()
 {
         gchar **settings_list;
 
@@ -636,15 +636,15 @@ msd_ldsm_get_config ()
 }
 
 static void
-msd_ldsm_update_config (GSettings *settings,
+usd_ldsm_update_config (GSettings *settings,
                         gchar *key,
                         gpointer user_data)
 {
-        msd_ldsm_get_config ();
+        usd_ldsm_get_config ();
 }
 
 void
-msd_ldsm_setup (gboolean check_now)
+usd_ldsm_setup (gboolean check_now)
 {
         if (ldsm_notified_hash || ldsm_timeout_id || ldsm_monitor) {
                 g_warning ("Low disk space monitor already initialized.");
@@ -656,8 +656,8 @@ msd_ldsm_setup (gboolean check_now)
                                                     ldsm_free_mount_info);
 
         settings = g_settings_new (SETTINGS_HOUSEKEEPING_SCHEMA);
-        msd_ldsm_get_config ();
-        g_signal_connect (settings, "changed", G_CALLBACK (msd_ldsm_update_config), NULL);
+        usd_ldsm_get_config ();
+        g_signal_connect (settings, "changed", G_CALLBACK (usd_ldsm_update_config), NULL);
 
 #if GLIB_CHECK_VERSION (2, 44, 0)
         ldsm_monitor = g_unix_mount_monitor_get ();
@@ -677,7 +677,7 @@ msd_ldsm_setup (gboolean check_now)
 }
 
 void
-msd_ldsm_clean (void)
+usd_ldsm_clean (void)
 {
         if (ldsm_timeout_id)
                 g_source_remove (ldsm_timeout_id);
@@ -717,11 +717,11 @@ main (int    argc,
 
         loop = g_main_loop_new (NULL, FALSE);
 
-        msd_ldsm_setup (TRUE);
+        usd_ldsm_setup (TRUE);
 
         g_main_loop_run (loop);
 
-        msd_ldsm_clean ();
+        usd_ldsm_clean ();
         g_main_loop_unref (loop);
 
         return 0;

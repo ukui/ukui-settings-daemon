@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-housekeeping-plugin.h"
-#include "msd-housekeeping-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-housekeeping-plugin.h"
+#include "usd-housekeeping-manager.h"
 
-struct MsdHousekeepingPluginPrivate {
-        MsdHousekeepingManager *manager;
+struct UsdHousekeepingPluginPrivate {
+        UsdHousekeepingManager *manager;
 };
 
-#define MSD_HOUSEKEEPING_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_HOUSEKEEPING_PLUGIN, MsdHousekeepingPluginPrivate))
+#define USD_HOUSEKEEPING_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_HOUSEKEEPING_PLUGIN, UsdHousekeepingPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdHousekeepingPlugin, msd_housekeeping_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdHousekeepingPlugin, usd_housekeeping_plugin)
 
 static void
-msd_housekeeping_plugin_init (MsdHousekeepingPlugin *plugin)
+usd_housekeeping_plugin_init (UsdHousekeepingPlugin *plugin)
 {
-        plugin->priv = MSD_HOUSEKEEPING_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_HOUSEKEEPING_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdHousekeepingPlugin initializing");
+        g_debug ("UsdHousekeepingPlugin initializing");
 
-        plugin->priv->manager = msd_housekeeping_manager_new ();
+        plugin->priv->manager = usd_housekeeping_manager_new ();
 }
 
 static void
-msd_housekeeping_plugin_finalize (GObject *object)
+usd_housekeeping_plugin_finalize (GObject *object)
 {
-        MsdHousekeepingPlugin *plugin;
+        UsdHousekeepingPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_HOUSEKEEPING_PLUGIN (object));
+        g_return_if_fail (USD_IS_HOUSEKEEPING_PLUGIN (object));
 
-        g_debug ("MsdHousekeepingPlugin finalizing");
+        g_debug ("UsdHousekeepingPlugin finalizing");
 
-        plugin = MSD_HOUSEKEEPING_PLUGIN (object);
+        plugin = USD_HOUSEKEEPING_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_housekeeping_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_housekeeping_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_housekeeping_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating housekeeping plugin");
 
         error = NULL;
-        res = msd_housekeeping_manager_start (MSD_HOUSEKEEPING_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_housekeeping_manager_start (USD_HOUSEKEEPING_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start housekeeping manager: %s", error->message);
                 g_error_free (error);
@@ -83,28 +83,28 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating housekeeping plugin");
-        msd_housekeeping_manager_stop (MSD_HOUSEKEEPING_PLUGIN (plugin)->priv->manager);
+        usd_housekeeping_manager_stop (USD_HOUSEKEEPING_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_housekeeping_plugin_class_init (MsdHousekeepingPluginClass *klass)
+usd_housekeeping_plugin_class_init (UsdHousekeepingPluginClass *klass)
 {
         GObjectClass             *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_housekeeping_plugin_finalize;
+        object_class->finalize = usd_housekeeping_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdHousekeepingPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdHousekeepingPluginPrivate));
 }
 
 static void
-msd_housekeeping_plugin_class_finalize (MsdHousekeepingPluginClass *klass)
+usd_housekeeping_plugin_class_finalize (UsdHousekeepingPluginClass *klass)
 {
 }
 

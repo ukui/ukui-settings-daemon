@@ -1,15 +1,15 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * msd-ldsm-trash-empty.c
+ * usd-ldsm-trash-empty.c
  * Copyright (C) Chris Coulson 2009 <chrisccoulson@googlemail.com>
  *	     (C) Ryan Lortie 2008
  *
- * msd-ldsm-trash-empty.c is free software: you can redistribute it and/or modify it
+ * usd-ldsm-trash-empty.c is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  *
- * msd-ldsm-trash-empty.c is distributed in the hope that it will be useful, but
+ * usd-ldsm-trash-empty.c is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU General Public License for more details.
@@ -21,9 +21,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include "msd-ldsm-trash-empty.h"
+#include "usd-ldsm-trash-empty.h"
 
-#define CAJA_PREFS_SCHEMA "org.mate.caja.preferences"
+#define CAJA_PREFS_SCHEMA "org.ukui.caja.preferences"
 #define CAJA_CONFIRM_TRASH_KEY "confirm-trash"
 
 /* Some of this code has been borrowed from the trash-applet, courtesy of Ryan Lortie */
@@ -398,7 +398,7 @@ trash_empty_show_confirmation_dialog ()
 }
 
 void
-msd_ldsm_trash_empty (void)
+usd_ldsm_trash_empty (void)
 {
         if (trash_empty_confirm_dialog)
                 gtk_window_present (GTK_WINDOW (trash_empty_confirm_dialog));

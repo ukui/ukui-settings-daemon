@@ -24,9 +24,9 @@
 #include <glib/gstdio.h>
 #include <string.h>
 
-#include "mate-settings-profile.h"
-#include "msd-housekeeping-manager.h"
-#include "msd-disk-space.h"
+#include "ukui-settings-profile.h"
+#include "usd-housekeeping-manager.h"
+#include "usd-disk-space.h"
 
 
 /* General */
@@ -34,22 +34,22 @@
 #define INTERVAL_TWO_MINUTES 2*60
 
 /* Thumbnail cleaner */
-#define THUMB_CACHE_SCHEMA	"org.mate.thumbnail-cache"
+#define THUMB_CACHE_SCHEMA	"org.ukui.thumbnail-cache"
 #define THUMB_CACHE_KEY_AGE	"maximum-age"
 #define THUMB_CACHE_KEY_SIZE	"maximum-size"
 
-struct MsdHousekeepingManagerPrivate {
+struct UsdHousekeepingManagerPrivate {
         guint long_term_cb;
         guint short_term_cb;
         GSettings *settings;
 };
 
-#define MSD_HOUSEKEEPING_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_HOUSEKEEPING_MANAGER, MsdHousekeepingManagerPrivate))
+#define USD_HOUSEKEEPING_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_HOUSEKEEPING_MANAGER, UsdHousekeepingManagerPrivate))
 
-static void     msd_housekeeping_manager_class_init  (MsdHousekeepingManagerClass *klass);
-static void     msd_housekeeping_manager_init        (MsdHousekeepingManager      *housekeeping_manager);
+static void     usd_housekeeping_manager_class_init  (UsdHousekeepingManagerClass *klass);
+static void     usd_housekeeping_manager_init        (UsdHousekeepingManager      *housekeeping_manager);
 
-G_DEFINE_TYPE (MsdHousekeepingManager, msd_housekeeping_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdHousekeepingManager, usd_housekeeping_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
@@ -147,7 +147,7 @@ sort_file_mtime (ThumbData *file1, ThumbData *file2)
 }
 
 static void
-purge_thumbnail_cache (MsdHousekeepingManager *manager)
+purge_thumbnail_cache (UsdHousekeepingManager *manager)
 {
 
         char      *path;
@@ -181,7 +181,7 @@ purge_thumbnail_cache (MsdHousekeepingManager *manager)
         path = g_build_filename (g_get_user_cache_dir (),
                                  "thumbnails",
                                  "fail",
-                                 "mate-thumbnail-factory",
+                                 "ukui-thumbnail-factory",
                                  NULL);
         files = read_dir_for_purge (path, files);
         g_free (path);
@@ -209,14 +209,14 @@ purge_thumbnail_cache (MsdHousekeepingManager *manager)
 }
 
 static gboolean
-do_cleanup (MsdHousekeepingManager *manager)
+do_cleanup (UsdHousekeepingManager *manager)
 {
         purge_thumbnail_cache (manager);
         return TRUE;
 }
 
 static gboolean
-do_cleanup_once (MsdHousekeepingManager *manager)
+do_cleanup_once (UsdHousekeepingManager *manager)
 {
         do_cleanup (manager);
         manager->priv->short_term_cb = 0;
@@ -224,7 +224,7 @@ do_cleanup_once (MsdHousekeepingManager *manager)
 }
 
 static void
-do_cleanup_soon (MsdHousekeepingManager *manager)
+do_cleanup_soon (UsdHousekeepingManager *manager)
 {
         if (manager->priv->short_term_cb == 0) {
                 g_debug ("housekeeping: will tidy up in 2 minutes");
@@ -237,19 +237,19 @@ do_cleanup_soon (MsdHousekeepingManager *manager)
 static void
 settings_changed_callback (GSettings              *settings,
 			   const char             *key,
-			   MsdHousekeepingManager *manager)
+			   UsdHousekeepingManager *manager)
 {
         do_cleanup_soon (manager);
 }
 
 gboolean
-msd_housekeeping_manager_start (MsdHousekeepingManager *manager,
+usd_housekeeping_manager_start (UsdHousekeepingManager *manager,
                                 GError                **error)
 {
         g_debug ("Starting housekeeping manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
-        msd_ldsm_setup (FALSE);
+        usd_ldsm_setup (FALSE);
 
         manager->priv->settings = g_settings_new (THUMB_CACHE_SCHEMA);
 
@@ -263,15 +263,15 @@ msd_housekeeping_manager_start (MsdHousekeepingManager *manager,
         manager->priv->long_term_cb = g_timeout_add_seconds (INTERVAL_ONCE_A_DAY,
                                       (GSourceFunc) do_cleanup,
                                       manager);
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_housekeeping_manager_stop (MsdHousekeepingManager *manager)
+usd_housekeeping_manager_stop (UsdHousekeepingManager *manager)
 {
-        MsdHousekeepingManagerPrivate *p = manager->priv;
+        UsdHousekeepingManagerPrivate *p = manager->priv;
 
         g_debug ("Stopping housekeeping manager");
 
@@ -296,31 +296,31 @@ msd_housekeeping_manager_stop (MsdHousekeepingManager *manager)
        	g_object_unref (p->settings);
        	p->settings = NULL;
 
-        msd_ldsm_clean ();
+        usd_ldsm_clean ();
 }
 
 static void
-msd_housekeeping_manager_class_init (MsdHousekeepingManagerClass *klass)
+usd_housekeeping_manager_class_init (UsdHousekeepingManagerClass *klass)
 {
-        g_type_class_add_private (klass, sizeof (MsdHousekeepingManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdHousekeepingManagerPrivate));
 }
 
 static void
-msd_housekeeping_manager_init (MsdHousekeepingManager *manager)
+usd_housekeeping_manager_init (UsdHousekeepingManager *manager)
 {
-        manager->priv = MSD_HOUSEKEEPING_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_HOUSEKEEPING_MANAGER_GET_PRIVATE (manager);
 }
 
-MsdHousekeepingManager *
-msd_housekeeping_manager_new (void)
+UsdHousekeepingManager *
+usd_housekeeping_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_HOUSEKEEPING_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_HOUSEKEEPING_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_HOUSEKEEPING_MANAGER (manager_object);
+        return USD_HOUSEKEEPING_MANAGER (manager_object);
 }
