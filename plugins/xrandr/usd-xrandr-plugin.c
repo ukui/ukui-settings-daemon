@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-xrandr-plugin.h"
-#include "msd-xrandr-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-xrandr-plugin.h"
+#include "usd-xrandr-manager.h"
 
-struct MsdXrandrPluginPrivate {
-        MsdXrandrManager *manager;
+struct UsdXrandrPluginPrivate {
+        UsdXrandrManager *manager;
 };
 
-#define MSD_XRANDR_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_XRANDR_PLUGIN, MsdXrandrPluginPrivate))
+#define USD_XRANDR_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_XRANDR_PLUGIN, UsdXrandrPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdXrandrPlugin, msd_xrandr_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdXrandrPlugin, usd_xrandr_plugin)
 
 static void
-msd_xrandr_plugin_init (MsdXrandrPlugin *plugin)
+usd_xrandr_plugin_init (UsdXrandrPlugin *plugin)
 {
-        plugin->priv = MSD_XRANDR_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_XRANDR_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdXrandrPlugin initializing");
+        g_debug ("UsdXrandrPlugin initializing");
 
-        plugin->priv->manager = msd_xrandr_manager_new ();
+        plugin->priv->manager = usd_xrandr_manager_new ();
 }
 
 static void
-msd_xrandr_plugin_finalize (GObject *object)
+usd_xrandr_plugin_finalize (GObject *object)
 {
-        MsdXrandrPlugin *plugin;
+        UsdXrandrPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_XRANDR_PLUGIN (object));
+        g_return_if_fail (USD_IS_XRANDR_PLUGIN (object));
 
-        g_debug ("MsdXrandrPlugin finalizing");
+        g_debug ("UsdXrandrPlugin finalizing");
 
-        plugin = MSD_XRANDR_PLUGIN (object);
+        plugin = USD_XRANDR_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_xrandr_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_xrandr_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_xrandr_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating xrandr plugin");
 
         error = NULL;
-        res = msd_xrandr_manager_start (MSD_XRANDR_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_xrandr_manager_start (USD_XRANDR_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start xrandr manager: %s", error->message);
                 g_error_free (error);
@@ -83,28 +83,28 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating xrandr plugin");
-        msd_xrandr_manager_stop (MSD_XRANDR_PLUGIN (plugin)->priv->manager);
+        usd_xrandr_manager_stop (USD_XRANDR_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_xrandr_plugin_class_init (MsdXrandrPluginClass *klass)
+usd_xrandr_plugin_class_init (UsdXrandrPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_xrandr_plugin_finalize;
+        object_class->finalize = usd_xrandr_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdXrandrPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdXrandrPluginPrivate));
 }
 
 static void
-msd_xrandr_plugin_class_finalize (MsdXrandrPluginClass *klass)
+usd_xrandr_plugin_class_finalize (UsdXrandrPluginClass *klass)
 {
 }
 

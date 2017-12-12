@@ -50,12 +50,12 @@
 #include <libnotify/notify.h>
 #endif
 
-#include "mate-settings-profile.h"
-#include "msd-xrandr-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-xrandr-manager.h"
 
-#define MSD_XRANDR_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_XRANDR_MANAGER, MsdXrandrManagerPrivate))
+#define USD_XRANDR_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_XRANDR_MANAGER, UsdXrandrManagerPrivate))
 
-#define CONF_SCHEMA                                    "org.mate.SettingsDaemon.plugins.xrandr"
+#define CONF_SCHEMA                                    "org.ukui.SettingsDaemon.plugins.xrandr"
 #define CONF_KEY_SHOW_NOTIFICATION_ICON                "show-notification-icon"
 #define CONF_KEY_USE_XORG_MONITOR_SETTINGS             "use-xorg-monitor-settings"
 #define CONF_KEY_TURN_ON_EXTERNAL_MONITORS_AT_STARTUP  "turn-on-external-monitors-at-startup"
@@ -70,18 +70,18 @@
  */
 #define CONFIRMATION_DIALOG_SECONDS 30
 
-/* name of the icon files (msd-xrandr.svg, etc.) */
-#define MSD_XRANDR_ICON_NAME "msd-xrandr"
+/* name of the icon files (usd-xrandr.svg, etc.) */
+#define USD_XRANDR_ICON_NAME "usd-xrandr"
 
 /* executable of the control center's display configuration capplet */
-#define MSD_XRANDR_DISPLAY_CAPPLET "mate-display-properties"
+#define USD_XRANDR_DISPLAY_CAPPLET "mate-display-properties"
 
-#define MSD_DBUS_PATH "/org/mate/SettingsDaemon"
-#define MSD_DBUS_NAME "org.mate.SettingsDaemon"
-#define MSD_XRANDR_DBUS_PATH MSD_DBUS_PATH "/XRANDR"
-#define MSD_XRANDR_DBUS_NAME MSD_DBUS_NAME ".XRANDR"
+#define USD_DBUS_PATH "/org/ukui/SettingsDaemon"
+#define USD_DBUS_NAME "org.ukui.SettingsDaemon"
+#define USD_XRANDR_DBUS_PATH USD_DBUS_PATH "/XRANDR"
+#define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
 
-struct MsdXrandrManagerPrivate
+struct UsdXrandrManagerPrivate
 {
         DBusGConnection *dbus_connection;
 
@@ -116,13 +116,13 @@ static const MateRRRotation possible_rotations[] = {
         /* We don't allow REFLECT_X or REFLECT_Y for now, as mate-display-properties doesn't allow them, either */
 };
 
-static void     msd_xrandr_manager_class_init  (MsdXrandrManagerClass *klass);
-static void     msd_xrandr_manager_init        (MsdXrandrManager      *xrandr_manager);
-static void     msd_xrandr_manager_finalize    (GObject             *object);
+static void     usd_xrandr_manager_class_init  (UsdXrandrManagerClass *klass);
+static void     usd_xrandr_manager_init        (UsdXrandrManager      *xrandr_manager);
+static void     usd_xrandr_manager_finalize    (GObject             *object);
 
-static void error_message (MsdXrandrManager *mgr, const char *primary_text, GError *error_to_display, const char *secondary_text);
+static void error_message (UsdXrandrManager *mgr, const char *primary_text, GError *error_to_display, const char *secondary_text);
 
-static void status_icon_popup_menu (MsdXrandrManager *manager, guint button, guint32 timestamp);
+static void status_icon_popup_menu (UsdXrandrManager *manager, guint button, guint32 timestamp);
 static void run_display_capplet (GtkWidget *widget);
 static void get_allowed_rotations_for_output (MateRRConfig *config,
                                               MateRRScreen *rr_screen,
@@ -130,7 +130,7 @@ static void get_allowed_rotations_for_output (MateRRConfig *config,
                                               int *out_num_rotations,
                                               MateRRRotation *out_rotations);
 
-G_DEFINE_TYPE (MsdXrandrManager, msd_xrandr_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdXrandrManager, usd_xrandr_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
@@ -146,8 +146,8 @@ log_open (void)
         if (log_file)
                 return;
 
-        toggle_filename = g_build_filename (g_get_home_dir (), "msd-debug-randr", NULL);
-        log_filename = g_build_filename (g_get_home_dir (), "msd-debug-randr.log", NULL);
+        toggle_filename = g_build_filename (g_get_home_dir (), "usd-debug-randr", NULL);
+        log_filename = g_build_filename (g_get_home_dir (), "usd-debug-randr.log", NULL);
 
         if (stat (toggle_filename, &st) != 0)
                 goto out;
@@ -155,7 +155,7 @@ log_open (void)
         log_file = fopen (log_filename, "a");
 
         if (log_file && ftell (log_file) == 0)
-                fprintf (log_file, "To keep this log from being created, please rm ~/msd-debug-randr\n");
+                fprintf (log_file, "To keep this log from being created, please rm ~/usd-debug-randr\n");
 
 out:
         g_free (toggle_filename);
@@ -284,12 +284,12 @@ log_configurations (MateRRConfig **configs)
 }
 
 static void
-show_timestamps_dialog (MsdXrandrManager *manager, const char *msg)
+show_timestamps_dialog (UsdXrandrManager *manager, const char *msg)
 {
 #if 1
         return;
 #else
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         GtkWidget *dialog;
         guint32 change_timestamp, config_timestamp;
         static int serial;
@@ -317,13 +317,13 @@ show_timestamps_dialog (MsdXrandrManager *manager, const char *msg)
  * mate_rr_config_apply_from_filename_with_time(), since that is not usually an error.
  */
 static gboolean
-apply_configuration_from_filename (MsdXrandrManager *manager,
+apply_configuration_from_filename (UsdXrandrManager *manager,
                                    const char       *filename,
                                    gboolean          no_matching_config_is_an_error,
                                    guint32           timestamp,
                                    GError          **error)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         GError *my_error;
         gboolean success;
         char *str;
@@ -359,9 +359,9 @@ fail:
  * We just return whether setting the configuration succeeded.
  */
 static gboolean
-apply_configuration_and_display_error (MsdXrandrManager *manager, MateRRConfig *config, guint32 timestamp)
+apply_configuration_and_display_error (UsdXrandrManager *manager, MateRRConfig *config, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManagerPrivate *priv = manager->priv;
         GError *error;
         gboolean success;
 
@@ -385,7 +385,7 @@ restore_backup_configuration_without_messages (const char *backup_filename, cons
 }
 
 static void
-restore_backup_configuration (MsdXrandrManager *manager, const char *backup_filename, const char *intended_filename, guint32 timestamp)
+restore_backup_configuration (UsdXrandrManager *manager, const char *backup_filename, const char *intended_filename, guint32 timestamp)
 {
         int saved_errno;
 
@@ -429,7 +429,7 @@ restore_backup_configuration (MsdXrandrManager *manager, const char *backup_file
 }
 
 typedef struct {
-        MsdXrandrManager *manager;
+        UsdXrandrManager *manager;
         GtkWidget *dialog;
 
         int countdown;
@@ -478,7 +478,7 @@ timeout_response_cb (GtkDialog *dialog, int response_id, gpointer data)
 }
 
 static gboolean
-user_says_things_are_ok (MsdXrandrManager *manager, GdkWindow *parent_window)
+user_says_things_are_ok (UsdXrandrManager *manager, GdkWindow *parent_window)
 {
         TimeoutDialog timeout;
         guint timeout_id;
@@ -526,7 +526,7 @@ user_says_things_are_ok (MsdXrandrManager *manager, GdkWindow *parent_window)
 }
 
 struct confirmation {
-        MsdXrandrManager *manager;
+        UsdXrandrManager *manager;
         GdkWindow *parent_window;
         guint32 timestamp;
 };
@@ -552,7 +552,7 @@ confirm_with_user_idle_cb (gpointer data)
 }
 
 static void
-queue_confirmation_by_user (MsdXrandrManager *manager, GdkWindow *parent_window, guint32 timestamp)
+queue_confirmation_by_user (UsdXrandrManager *manager, GdkWindow *parent_window, guint32 timestamp)
 {
         struct confirmation *confirmation;
 
@@ -565,7 +565,7 @@ queue_confirmation_by_user (MsdXrandrManager *manager, GdkWindow *parent_window,
 }
 
 static gboolean
-try_to_apply_intended_configuration (MsdXrandrManager *manager, GdkWindow *parent_window, guint32 timestamp, GError **error)
+try_to_apply_intended_configuration (UsdXrandrManager *manager, GdkWindow *parent_window, guint32 timestamp, GError **error)
 {
         char *backup_filename;
         char *intended_filename;
@@ -598,17 +598,17 @@ out:
         return result;
 }
 
-/* DBus method for org.mate.SettingsDaemon.XRANDR ApplyConfiguration; see msd-xrandr-manager.xml for the interface definition */
+/* DBus method for org.ukui.SettingsDaemon.XRANDR ApplyConfiguration; see usd-xrandr-manager.xml for the interface definition */
 static gboolean
-msd_xrandr_manager_apply_configuration (MsdXrandrManager *manager,
+usd_xrandr_manager_apply_configuration (UsdXrandrManager *manager,
                                         GError          **error)
 {
         return try_to_apply_intended_configuration (manager, NULL, GDK_CURRENT_TIME, error);
 }
 
-/* DBus method for org.mate.SettingsDaemon.XRANDR_2 ApplyConfiguration; see msd-xrandr-manager.xml for the interface definition */
+/* DBus method for org.ukui.SettingsDaemon.XRANDR_2 ApplyConfiguration; see usd-xrandr-manager.xml for the interface definition */
 static gboolean
-msd_xrandr_manager_2_apply_configuration (MsdXrandrManager *manager,
+usd_xrandr_manager_2_apply_configuration (UsdXrandrManager *manager,
                                           gint64            parent_window_id,
                                           gint64            timestamp,
                                           GError          **error)
@@ -629,8 +629,8 @@ msd_xrandr_manager_2_apply_configuration (MsdXrandrManager *manager,
         return result;
 }
 
-/* We include this after the definition of msd_xrandr_manager_apply_configuration() so the prototype will already exist */
-#include "msd-xrandr-manager-glue.h"
+/* We include this after the definition of usd_xrandr_manager_apply_configuration() so the prototype will already exist */
+#include "usd-xrandr-manager-glue.h"
 
 static gboolean
 is_laptop (MateRRScreen *screen, MateRROutputInfo *output)
@@ -969,7 +969,7 @@ make_other_setup (MateRRScreen *screen)
 }
 
 static GPtrArray *
-sanitize (MsdXrandrManager *manager, GPtrArray *array)
+sanitize (UsdXrandrManager *manager, GPtrArray *array)
 {
         int i;
         GPtrArray *new;
@@ -1056,7 +1056,7 @@ sanitize (MsdXrandrManager *manager, GPtrArray *array)
 }
 
 static void
-generate_fn_f7_configs (MsdXrandrManager *mgr)
+generate_fn_f7_configs (UsdXrandrManager *mgr)
 {
         GPtrArray *array = g_ptr_array_new ();
         MateRRScreen *screen = mgr->priv->rw_screen;
@@ -1090,10 +1090,10 @@ generate_fn_f7_configs (MsdXrandrManager *mgr)
 }
 
 static void
-error_message (MsdXrandrManager *mgr, const char *primary_text, GError *error_to_display, const char *secondary_text)
+error_message (UsdXrandrManager *mgr, const char *primary_text, GError *error_to_display, const char *secondary_text)
 {
 #ifdef HAVE_LIBNOTIFY
-        MsdXrandrManagerPrivate *priv = mgr->priv;
+        UsdXrandrManagerPrivate *priv = mgr->priv;
         NotifyNotification *notification;
 
         g_assert (error_to_display == NULL || secondary_text == NULL);
@@ -1105,7 +1105,7 @@ error_message (MsdXrandrManager *mgr, const char *primary_text, GError *error_to
         else
                 notification = notify_notification_new (primary_text,
                                                         error_to_display ? error_to_display->message : secondary_text,
-                                                        MSD_XRANDR_ICON_NAME);
+                                                        USD_XRANDR_ICON_NAME);
 
         notify_notification_show (notification, NULL); /* NULL-GError */
 #else
@@ -1122,9 +1122,9 @@ error_message (MsdXrandrManager *mgr, const char *primary_text, GError *error_to
 }
 
 static void
-handle_fn_f7 (MsdXrandrManager *mgr, guint32 timestamp)
+handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = mgr->priv;
+        UsdXrandrManagerPrivate *priv = mgr->priv;
         MateRRScreen *screen = priv->rw_screen;
         MateRRConfig *current;
         GError *error;
@@ -1289,9 +1289,9 @@ get_next_rotation (MateRRRotation allowed_rotations, MateRRRotation current_rota
  * easily.
  */
 static void
-handle_rotate_windows (MsdXrandrManager *mgr, guint32 timestamp)
+handle_rotate_windows (UsdXrandrManager *mgr, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = mgr->priv;
+        UsdXrandrManagerPrivate *priv = mgr->priv;
         MateRRScreen *screen = priv->rw_screen;
         MateRRConfig *current;
         MateRROutputInfo *rotatable_output_info;
@@ -1336,7 +1336,7 @@ event_filter (GdkXEvent           *xevent,
               GdkEvent            *event,
               gpointer             data)
 {
-        MsdXrandrManager *manager = data;
+        UsdXrandrManager *manager = data;
         XEvent *xev = (XEvent *) xevent;
 
         if (!manager->priv->running)
@@ -1359,9 +1359,9 @@ event_filter (GdkXEvent           *xevent,
 }
 
 static void
-refresh_tray_icon_menu_if_active (MsdXrandrManager *manager, guint32 timestamp)
+refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManagerPrivate *priv = manager->priv;
 
         if (priv->popup_menu) {
                 gtk_menu_shell_cancel (GTK_MENU_SHELL (priv->popup_menu)); /* status_icon_popup_menu_selection_done_cb() will free everything */
@@ -1370,9 +1370,9 @@ refresh_tray_icon_menu_if_active (MsdXrandrManager *manager, guint32 timestamp)
 }
 
 static void
-auto_configure_outputs (MsdXrandrManager *manager, guint32 timestamp)
+auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManagerPrivate *priv = manager->priv;
         MateRRConfig *config;
         MateRROutputInfo **outputs;
         int i;
@@ -1538,8 +1538,8 @@ apply_color_profiles (void)
 static void
 on_randr_event (MateRRScreen *screen, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
-        MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
+        UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
 
         if (!priv->running)
@@ -1631,7 +1631,7 @@ run_display_capplet (GtkWidget *widget)
                 screen = gdk_screen_get_default ();
 
         error = NULL;
-        if (!mate_gdk_spawn_command_line_on_screen (screen, MSD_XRANDR_DISPLAY_CAPPLET, &error)) {
+        if (!mate_gdk_spawn_command_line_on_screen (screen, USD_XRANDR_DISPLAY_CAPPLET, &error)) {
                 GtkWidget *dialog;
 
                 dialog = gtk_message_dialog_new_with_markup (NULL, 0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
@@ -1655,8 +1655,8 @@ popup_menu_configure_display_cb (GtkMenuItem *item, gpointer data)
 static void
 status_icon_popup_menu_selection_done_cb (GtkMenuShell *menu_shell, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
 
         gtk_widget_destroy (priv->popup_menu);
         priv->popup_menu = NULL;
@@ -1681,8 +1681,8 @@ status_icon_popup_menu_selection_done_cb (GtkMenuShell *menu_shell, gpointer dat
 static gboolean
 output_title_label_draw_cb (GtkWidget *widget, cairo_t *cr, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         MateRROutputInfo *output;
         GdkRGBA color;
         GtkAllocation allocation;
@@ -1782,7 +1782,7 @@ title_item_size_allocate_cb (GtkWidget *widget, GtkAllocation *allocation, gpoin
 }
 
 static GtkWidget *
-make_menu_item_for_output_title (MsdXrandrManager *manager, MateRROutputInfo *output)
+make_menu_item_for_output_title (UsdXrandrManager *manager, MateRROutputInfo *output)
 {
         GtkWidget *item;
         GtkWidget *label;
@@ -1875,9 +1875,9 @@ get_allowed_rotations_for_output (MateRRConfig *config,
 }
 
 static void
-add_unsupported_rotation_item (MsdXrandrManager *manager)
+add_unsupported_rotation_item (UsdXrandrManager *manager)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         GtkWidget *item;
         GtkWidget *label;
         gchar *markup;
@@ -1922,8 +1922,8 @@ ensure_current_configuration_is_saved (void)
 static void
 output_rotation_item_activate_cb (GtkCheckMenuItem *item, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         MateRROutputInfo *output;
         MateRRRotation rotation;
         GError *error;
@@ -1952,7 +1952,7 @@ output_rotation_item_activate_cb (GtkCheckMenuItem *item, gpointer data)
 }
 
 static void
-add_items_for_rotations (MsdXrandrManager *manager, MateRROutputInfo *output, MateRRRotation allowed_rotations)
+add_items_for_rotations (UsdXrandrManager *manager, MateRROutputInfo *output, MateRRRotation allowed_rotations)
 {
         typedef struct {
                 MateRRRotation	rotation;
@@ -1966,7 +1966,7 @@ add_items_for_rotations (MsdXrandrManager *manager, MateRROutputInfo *output, Ma
                 /* We don't allow REFLECT_X or REFLECT_Y for now, as mate-display-properties doesn't allow them, either */
         };
 
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         int i;
         GSList *group;
         GtkWidget *active_item;
@@ -2023,9 +2023,9 @@ add_items_for_rotations (MsdXrandrManager *manager, MateRROutputInfo *output, Ma
 }
 
 static void
-add_rotation_items_for_output (MsdXrandrManager *manager, MateRROutputInfo *output)
+add_rotation_items_for_output (UsdXrandrManager *manager, MateRROutputInfo *output)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         int num_rotations;
         MateRRRotation rotations;
 
@@ -2038,9 +2038,9 @@ add_rotation_items_for_output (MsdXrandrManager *manager, MateRROutputInfo *outp
 }
 
 static void
-add_menu_items_for_output (MsdXrandrManager *manager, MateRROutputInfo *output)
+add_menu_items_for_output (UsdXrandrManager *manager, MateRROutputInfo *output)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         GtkWidget *item;
 
         item = make_menu_item_for_output_title (manager, output);
@@ -2050,9 +2050,9 @@ add_menu_items_for_output (MsdXrandrManager *manager, MateRROutputInfo *output)
 }
 
 static void
-add_menu_items_for_outputs (MsdXrandrManager *manager)
+add_menu_items_for_outputs (UsdXrandrManager *manager)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         int i;
         MateRROutputInfo **outputs;
 
@@ -2064,9 +2064,9 @@ add_menu_items_for_outputs (MsdXrandrManager *manager)
 }
 
 static void
-status_icon_popup_menu (MsdXrandrManager *manager, guint button, guint32 timestamp)
+status_icon_popup_menu (UsdXrandrManager *manager, guint button, guint32 timestamp)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
         GtkWidget *item;
 
         g_assert (priv->configuration == NULL);
@@ -2099,11 +2099,11 @@ status_icon_popup_menu (MsdXrandrManager *manager, guint button, guint32 timesta
         GdkScreen *screen = gtk_widget_get_screen(GTK_WIDGET(toplevel));
         GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
         gtk_widget_set_visual(GTK_WIDGET(toplevel), visual);
-        /*Set up the gtk theme class from mate-panel*/
+        /*Set up the gtk theme class from ukui-panel*/
         GtkStyleContext *context;
         context = gtk_widget_get_style_context (GTK_WIDGET(toplevel));
         gtk_style_context_add_class(context,"gnome-panel-menu-bar");
-        gtk_style_context_add_class(context,"mate-panel-menu-bar");
+        gtk_style_context_add_class(context,"ukui-panel-menu-bar");
 
         gtk_menu_popup (GTK_MENU (priv->popup_menu), NULL, NULL,
                         gtk_status_icon_position_menu,
@@ -2113,7 +2113,7 @@ status_icon_popup_menu (MsdXrandrManager *manager, guint button, guint32 timesta
 static void
 status_icon_activate_cb (GtkStatusIcon *status_icon, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
 
         /* Suck; we don't get a proper button/timestamp */
         status_icon_popup_menu (manager, 0, gtk_get_current_event_time ());
@@ -2122,21 +2122,21 @@ status_icon_activate_cb (GtkStatusIcon *status_icon, gpointer data)
 static void
 status_icon_popup_menu_cb (GtkStatusIcon *status_icon, guint button, guint32 timestamp, gpointer data)
 {
-        MsdXrandrManager *manager = MSD_XRANDR_MANAGER (data);
+        UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
 
         status_icon_popup_menu (manager, button, timestamp);
 }
 
 static void
-status_icon_start (MsdXrandrManager *manager)
+status_icon_start (UsdXrandrManager *manager)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
 
         /* Ideally, we should detect if we are on a tablet and only display
          * the icon in that case.
          */
         if (!priv->status_icon) {
-                priv->status_icon = gtk_status_icon_new_from_icon_name (MSD_XRANDR_ICON_NAME);
+                priv->status_icon = gtk_status_icon_new_from_icon_name (USD_XRANDR_ICON_NAME);
                 gtk_status_icon_set_tooltip_text (priv->status_icon, _("Configure display settings"));
 
                 g_signal_connect (priv->status_icon, "activate",
@@ -2147,9 +2147,9 @@ status_icon_start (MsdXrandrManager *manager)
 }
 
 static void
-status_icon_stop (MsdXrandrManager *manager)
+status_icon_stop (UsdXrandrManager *manager)
 {
-        struct MsdXrandrManagerPrivate *priv = manager->priv;
+        struct UsdXrandrManagerPrivate *priv = manager->priv;
 
         if (priv->status_icon) {
                 g_signal_handlers_disconnect_by_func (
@@ -2166,7 +2166,7 @@ status_icon_stop (MsdXrandrManager *manager)
 }
 
 static void
-start_or_stop_icon (MsdXrandrManager *manager)
+start_or_stop_icon (UsdXrandrManager *manager)
 {
         if (g_settings_get_boolean (manager->priv->settings, CONF_KEY_SHOW_NOTIFICATION_ICON)) {
                 status_icon_start (manager);
@@ -2179,14 +2179,14 @@ start_or_stop_icon (MsdXrandrManager *manager)
 static void
 on_config_changed (GSettings        *settings,
                    gchar            *key,
-                   MsdXrandrManager *manager)
+                   UsdXrandrManager *manager)
 {
         if (g_strcmp0 (key, CONF_KEY_SHOW_NOTIFICATION_ICON) == 0)
                 start_or_stop_icon (manager);
 }
 
 static gboolean
-apply_intended_configuration (MsdXrandrManager *manager, const char *intended_filename, guint32 timestamp)
+apply_intended_configuration (UsdXrandrManager *manager, const char *intended_filename, guint32 timestamp)
 {
         GError *my_error;
         gboolean result;
@@ -2207,9 +2207,9 @@ apply_intended_configuration (MsdXrandrManager *manager, const char *intended_fi
 }
 
 static void
-apply_default_boot_configuration (MsdXrandrManager *mgr, guint32 timestamp)
+apply_default_boot_configuration (UsdXrandrManager *mgr, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = mgr->priv;
+        UsdXrandrManagerPrivate *priv = mgr->priv;
         MateRRScreen *screen = priv->rw_screen;
         MateRRConfig *config;
         gboolean turn_on_external, turn_on_laptop;
@@ -2235,7 +2235,7 @@ apply_default_boot_configuration (MsdXrandrManager *mgr, guint32 timestamp)
 }
 
 static gboolean
-apply_stored_configuration_at_startup (MsdXrandrManager *manager, guint32 timestamp)
+apply_stored_configuration_at_startup (UsdXrandrManager *manager, guint32 timestamp)
 {
         GError *my_error;
         gboolean success;
@@ -2291,9 +2291,9 @@ out:
 }
 
 static gboolean
-apply_default_configuration_from_file (MsdXrandrManager *manager, guint32 timestamp)
+apply_default_configuration_from_file (UsdXrandrManager *manager, guint32 timestamp)
 {
-        MsdXrandrManagerPrivate *priv = manager->priv;
+        UsdXrandrManagerPrivate *priv = manager->priv;
         char *default_config_filename;
         gboolean result;
 
@@ -2308,11 +2308,11 @@ apply_default_configuration_from_file (MsdXrandrManager *manager, guint32 timest
 }
 
 gboolean
-msd_xrandr_manager_start (MsdXrandrManager *manager,
+usd_xrandr_manager_start (UsdXrandrManager *manager,
                           GError          **error)
 {
         g_debug ("Starting xrandr manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         log_open ();
         log_msg ("------------------------------------------------------------\nSTARTING XRANDR PLUGIN\n");
@@ -2381,13 +2381,13 @@ msd_xrandr_manager_start (MsdXrandrManager *manager,
 
         log_close ();
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_xrandr_manager_stop (MsdXrandrManager *manager)
+usd_xrandr_manager_stop (UsdXrandrManager *manager)
 {
         g_debug ("Stopping xrandr manager");
 
@@ -2440,15 +2440,15 @@ msd_xrandr_manager_stop (MsdXrandrManager *manager)
 }
 
 static void
-msd_xrandr_manager_class_init (MsdXrandrManagerClass *klass)
+usd_xrandr_manager_class_init (UsdXrandrManagerClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_xrandr_manager_finalize;
+        object_class->finalize = usd_xrandr_manager_finalize;
 
-        dbus_g_object_type_install_info (MSD_TYPE_XRANDR_MANAGER, &dbus_glib_msd_xrandr_manager_object_info);
+        dbus_g_object_type_install_info (USD_TYPE_XRANDR_MANAGER, &dbus_glib_usd_xrandr_manager_object_info);
 
-        g_type_class_add_private (klass, sizeof (MsdXrandrManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdXrandrManagerPrivate));
 }
 
 static guint
@@ -2464,9 +2464,9 @@ get_keycode_for_keysym_name (const char *name)
 }
 
 static void
-msd_xrandr_manager_init (MsdXrandrManager *manager)
+usd_xrandr_manager_init (UsdXrandrManager *manager)
 {
-        manager->priv = MSD_XRANDR_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_XRANDR_MANAGER_GET_PRIVATE (manager);
 
         manager->priv->switch_video_mode_keycode = get_keycode_for_keysym_name (VIDEO_KEYSYM);
         manager->priv->rotate_windows_keycode = get_keycode_for_keysym_name (ROTATE_KEYSYM);
@@ -2476,22 +2476,22 @@ msd_xrandr_manager_init (MsdXrandrManager *manager)
 }
 
 static void
-msd_xrandr_manager_finalize (GObject *object)
+usd_xrandr_manager_finalize (GObject *object)
 {
-        MsdXrandrManager *xrandr_manager;
+        UsdXrandrManager *xrandr_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_XRANDR_MANAGER (object));
+        g_return_if_fail (USD_IS_XRANDR_MANAGER (object));
 
-        xrandr_manager = MSD_XRANDR_MANAGER (object);
+        xrandr_manager = USD_XRANDR_MANAGER (object);
 
         g_return_if_fail (xrandr_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_xrandr_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_xrandr_manager_parent_class)->finalize (object);
 }
 
 static gboolean
-register_manager_dbus (MsdXrandrManager *manager)
+register_manager_dbus (UsdXrandrManager *manager)
 {
         GError *error = NULL;
 
@@ -2504,19 +2504,19 @@ register_manager_dbus (MsdXrandrManager *manager)
                 return FALSE;
         }
 
-        /* Hmm, should we do this in msd_xrandr_manager_start()? */
-        dbus_g_connection_register_g_object (manager->priv->dbus_connection, MSD_XRANDR_DBUS_PATH, G_OBJECT (manager));
+        /* Hmm, should we do this in usd_xrandr_manager_start()? */
+        dbus_g_connection_register_g_object (manager->priv->dbus_connection, USD_XRANDR_DBUS_PATH, G_OBJECT (manager));
 
         return TRUE;
 }
 
-MsdXrandrManager *
-msd_xrandr_manager_new (void)
+UsdXrandrManager *
+usd_xrandr_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_XRANDR_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_XRANDR_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
 
@@ -2526,5 +2526,5 @@ msd_xrandr_manager_new (void)
                 }
         }
 
-        return MSD_XRANDR_MANAGER (manager_object);
+        return USD_XRANDR_MANAGER (manager_object);
 }
