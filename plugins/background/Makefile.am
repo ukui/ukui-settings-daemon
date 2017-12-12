@@ -6,13 +6,13 @@ noinst_PROGRAMS = 			\
 
 test_background_SOURCES = 		\
 	test-background.c		\
-	msd-background-manager.h	\
-	msd-background-manager.c	\
+	usd-background-manager.h	\
+	usd-background-manager.c	\
 	$(NULL)
 
 test_background_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 test_background_CFLAGS = \
@@ -21,7 +21,7 @@ test_background_CFLAGS = \
 	$(AM_CFLAGS)
 
 test_background_LDADD =		\
-	$(top_builddir)/mate-settings-daemon/libmsd-profile.la	\
+	$(top_builddir)/ukui-settings-daemon/libusd-profile.la	\
 	$(SETTINGS_PLUGIN_LIBS)	\
 	$(MATE_DESKTOP_LIBS)		\
 	$(X11_LIBS) \
@@ -32,16 +32,16 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 libbackground_la_SOURCES = 		\
-	msd-background-plugin.h		\
-	msd-background-plugin.c		\
-	msd-background-manager.h	\
-	msd-background-manager.c	\
+	usd-background-plugin.h		\
+	usd-background-plugin.c		\
+	usd-background-manager.h	\
+	usd-background-manager.c	\
 	$(NULL)
 
 libbackground_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
+	-I$(top_srcdir)/ukui-settings-daemon		\
 	-I$(top_srcdir)/plugins/background/libbackground   \
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libbackground_la_CFLAGS = \
@@ -50,7 +50,7 @@ libbackground_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libbackground_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)		\
+	$(USD_PLUGIN_LDFLAGS)		\
 	$(NULL)
 
 libbackground_la_LIBADD  = 		\
@@ -59,10 +59,10 @@ libbackground_la_LIBADD  = 		\
 	$(NULL)
 
 plugin_in_files = 		\
-	background.mate-settings-plugin.in	\
+	background.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -76,4 +76,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@

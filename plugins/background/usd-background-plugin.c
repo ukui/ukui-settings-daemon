@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-background-plugin.h"
-#include "msd-background-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-background-plugin.h"
+#include "usd-background-manager.h"
 
-struct MsdBackgroundPluginPrivate {
-	MsdBackgroundManager* manager;
+struct UsdBackgroundPluginPrivate {
+	UsdBackgroundManager* manager;
 };
 
-#define MSD_BACKGROUND_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE((object), MSD_TYPE_BACKGROUND_PLUGIN, MsdBackgroundPluginPrivate))
+#define USD_BACKGROUND_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE((object), USD_TYPE_BACKGROUND_PLUGIN, UsdBackgroundPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER(MsdBackgroundPlugin, msd_background_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER(UsdBackgroundPlugin, usd_background_plugin)
 
 static void
-msd_background_plugin_init (MsdBackgroundPlugin* plugin)
+usd_background_plugin_init (UsdBackgroundPlugin* plugin)
 {
-	plugin->priv = MSD_BACKGROUND_PLUGIN_GET_PRIVATE(plugin);
+	plugin->priv = USD_BACKGROUND_PLUGIN_GET_PRIVATE(plugin);
 
-	g_debug("MsdBackgroundPlugin initializing");
+	g_debug("UsdBackgroundPlugin initializing");
 
-	plugin->priv->manager = msd_background_manager_new();
+	plugin->priv->manager = usd_background_manager_new();
 }
 
 static void
-msd_background_plugin_finalize (GObject* object)
+usd_background_plugin_finalize (GObject* object)
 {
-	MsdBackgroundPlugin* plugin;
+	UsdBackgroundPlugin* plugin;
 
 	g_return_if_fail(object != NULL);
-	g_return_if_fail(MSD_IS_BACKGROUND_PLUGIN(object));
+	g_return_if_fail(USD_IS_BACKGROUND_PLUGIN(object));
 
-	g_debug("MsdBackgroundPlugin finalizing");
+	g_debug("UsdBackgroundPlugin finalizing");
 
-	plugin = MSD_BACKGROUND_PLUGIN(object);
+	plugin = USD_BACKGROUND_PLUGIN(object);
 
 	g_return_if_fail(plugin->priv != NULL);
 
@@ -64,11 +64,11 @@ msd_background_plugin_finalize (GObject* object)
 		g_object_unref (plugin->priv->manager);
 	}
 
-	G_OBJECT_CLASS(msd_background_plugin_parent_class)->finalize(object);
+	G_OBJECT_CLASS(usd_background_plugin_parent_class)->finalize(object);
 }
 
 static void
-impl_activate (MateSettingsPlugin* plugin)
+impl_activate (UkuiSettingsPlugin* plugin)
 {
 	gboolean res;
 	GError* error;
@@ -76,7 +76,7 @@ impl_activate (MateSettingsPlugin* plugin)
 	g_debug("Activating background plugin");
 
 	error = NULL;
-	res = msd_background_manager_start(MSD_BACKGROUND_PLUGIN(plugin)->priv->manager, &error);
+	res = usd_background_manager_start(USD_BACKGROUND_PLUGIN(plugin)->priv->manager, &error);
 
 	if (!res)
 	{
@@ -86,29 +86,29 @@ impl_activate (MateSettingsPlugin* plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin* plugin)
+impl_deactivate (UkuiSettingsPlugin* plugin)
 {
 	g_debug("Deactivating background plugin");
 
-	msd_background_manager_stop(MSD_BACKGROUND_PLUGIN(plugin)->priv->manager);
+	usd_background_manager_stop(USD_BACKGROUND_PLUGIN(plugin)->priv->manager);
 }
 
 static void
-msd_background_plugin_class_init (MsdBackgroundPluginClass* klass)
+usd_background_plugin_class_init (UsdBackgroundPluginClass* klass)
 {
 	GObjectClass* object_class = G_OBJECT_CLASS(klass);
-	MateSettingsPluginClass* plugin_class = MATE_SETTINGS_PLUGIN_CLASS(klass);
+	UkuiSettingsPluginClass* plugin_class = UKUI_SETTINGS_PLUGIN_CLASS(klass);
 
-	object_class->finalize = msd_background_plugin_finalize;
+	object_class->finalize = usd_background_plugin_finalize;
 
 	plugin_class->activate = impl_activate;
 	plugin_class->deactivate = impl_deactivate;
 
-	g_type_class_add_private(klass, sizeof(MsdBackgroundPluginPrivate));
+	g_type_class_add_private(klass, sizeof(UsdBackgroundPluginPrivate));
 }
 
 static void
-msd_background_plugin_class_finalize (MsdBackgroundPluginClass *klass)
+usd_background_plugin_class_finalize (UsdBackgroundPluginClass *klass)
 {
 }
 
