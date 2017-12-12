@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-xrdb-plugin.h"
-#include "msd-xrdb-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-xrdb-plugin.h"
+#include "usd-xrdb-manager.h"
 
-struct MsdXrdbPluginPrivate {
-        MsdXrdbManager *manager;
+struct UsdXrdbPluginPrivate {
+        UsdXrdbManager *manager;
 };
 
-#define MSD_XRDB_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_XRDB_PLUGIN, MsdXrdbPluginPrivate))
+#define USD_XRDB_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_XRDB_PLUGIN, UsdXrdbPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdXrdbPlugin, msd_xrdb_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdXrdbPlugin, usd_xrdb_plugin)
 
 static void
-msd_xrdb_plugin_init (MsdXrdbPlugin *plugin)
+usd_xrdb_plugin_init (UsdXrdbPlugin *plugin)
 {
-        plugin->priv = MSD_XRDB_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_XRDB_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdXrdbPlugin initializing");
+        g_debug ("UsdXrdbPlugin initializing");
 
-        plugin->priv->manager = msd_xrdb_manager_new ();
+        plugin->priv->manager = usd_xrdb_manager_new ();
 }
 
 static void
-msd_xrdb_plugin_finalize (GObject *object)
+usd_xrdb_plugin_finalize (GObject *object)
 {
-        MsdXrdbPlugin *plugin;
+        UsdXrdbPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_XRDB_PLUGIN (object));
+        g_return_if_fail (USD_IS_XRDB_PLUGIN (object));
 
-        g_debug ("MsdXrdbPlugin finalizing");
+        g_debug ("UsdXrdbPlugin finalizing");
 
-        plugin = MSD_XRDB_PLUGIN (object);
+        plugin = USD_XRDB_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_xrdb_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_xrdb_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_xrdb_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating xrdb plugin");
 
         error = NULL;
-        res = msd_xrdb_manager_start (MSD_XRDB_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_xrdb_manager_start (USD_XRDB_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start xrdb manager: %s", error->message);
                 g_error_free (error);
@@ -83,28 +83,28 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating xrdb plugin");
-        msd_xrdb_manager_stop (MSD_XRDB_PLUGIN (plugin)->priv->manager);
+        usd_xrdb_manager_stop (USD_XRDB_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_xrdb_plugin_class_init (MsdXrdbPluginClass *klass)
+usd_xrdb_plugin_class_init (UsdXrdbPluginClass *klass)
 {
         GObjectClass             *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_xrdb_plugin_finalize;
+        object_class->finalize = usd_xrdb_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdXrdbPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdXrdbPluginPrivate));
 }
 
 static void
-msd_xrdb_plugin_class_finalize (MsdXrdbPluginClass *klass)
+usd_xrdb_plugin_class_finalize (UsdXrdbPluginClass *klass)
 {
 }
 

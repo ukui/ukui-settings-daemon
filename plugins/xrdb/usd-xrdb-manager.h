@@ -18,8 +18,8 @@
  *
  */
 
-#ifndef __MSD_XRDB_MANAGER_H
-#define __MSD_XRDB_MANAGER_H
+#ifndef __USD_XRDB_MANAGER_H
+#define __USD_XRDB_MANAGER_H
 
 #include <glib-object.h>
 
@@ -27,35 +27,35 @@
 extern "C" {
 #endif
 
-#define MSD_TYPE_XRDB_MANAGER         (msd_xrdb_manager_get_type ())
-#define MSD_XRDB_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), MSD_TYPE_XRDB_MANAGER, MsdXrdbManager))
-#define MSD_XRDB_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), MSD_TYPE_XRDB_MANAGER, MsdXrdbManagerClass))
-#define MSD_IS_XRDB_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), MSD_TYPE_XRDB_MANAGER))
-#define MSD_IS_XRDB_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), MSD_TYPE_XRDB_MANAGER))
-#define MSD_XRDB_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), MSD_TYPE_XRDB_MANAGER, MsdXrdbManagerClass))
+#define USD_TYPE_XRDB_MANAGER         (usd_xrdb_manager_get_type ())
+#define USD_XRDB_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), USD_TYPE_XRDB_MANAGER, UsdXrdbManager))
+#define USD_XRDB_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), USD_TYPE_XRDB_MANAGER, UsdXrdbManagerClass))
+#define USD_IS_XRDB_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), USD_TYPE_XRDB_MANAGER))
+#define USD_IS_XRDB_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), USD_TYPE_XRDB_MANAGER))
+#define USD_XRDB_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), USD_TYPE_XRDB_MANAGER, UsdXrdbManagerClass))
 
-typedef struct MsdXrdbManagerPrivate MsdXrdbManagerPrivate;
+typedef struct UsdXrdbManagerPrivate UsdXrdbManagerPrivate;
 
 typedef struct
 {
         GObject                     parent;
-        MsdXrdbManagerPrivate *priv;
-} MsdXrdbManager;
+        UsdXrdbManagerPrivate *priv;
+} UsdXrdbManager;
 
 typedef struct
 {
         GObjectClass   parent_class;
-} MsdXrdbManagerClass;
+} UsdXrdbManagerClass;
 
-GType                   msd_xrdb_manager_get_type            (void);
+GType                   usd_xrdb_manager_get_type            (void);
 
-MsdXrdbManager *        msd_xrdb_manager_new                 (void);
-gboolean                msd_xrdb_manager_start               (MsdXrdbManager *manager,
+UsdXrdbManager *        usd_xrdb_manager_new                 (void);
+gboolean                usd_xrdb_manager_start               (UsdXrdbManager *manager,
                                                               GError        **error);
-void                    msd_xrdb_manager_stop                (MsdXrdbManager *manager);
+void                    usd_xrdb_manager_stop                (UsdXrdbManager *manager);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MSD_XRDB_MANAGER_H */
+#endif /* __USD_XRDB_MANAGER_H */

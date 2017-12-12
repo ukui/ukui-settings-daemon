@@ -37,27 +37,27 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include "mate-settings-profile.h"
-#include "msd-xrdb-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-xrdb-manager.h"
 
-#define MSD_XRDB_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_XRDB_MANAGER, MsdXrdbManagerPrivate))
+#define USD_XRDB_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_XRDB_MANAGER, UsdXrdbManagerPrivate))
 
 #define SYSTEM_AD_DIR    SYSCONFDIR "/xrdb"
 #define GENERAL_AD       SYSTEM_AD_DIR "/General.ad"
-#define USER_AD_DIR      ".config/mate/xrdb"
+#define USER_AD_DIR      ".config/ukui/xrdb"
 #define USER_X_RESOURCES ".Xresources"
 #define USER_X_DEFAULTS  ".Xdefaults"
 
 
-struct MsdXrdbManagerPrivate {
+struct UsdXrdbManagerPrivate {
 	GtkWidget* widget;
 };
 
-static void     msd_xrdb_manager_class_init  (MsdXrdbManagerClass *klass);
-static void     msd_xrdb_manager_init        (MsdXrdbManager      *xrdb_manager);
-static void     msd_xrdb_manager_finalize    (GObject             *object);
+static void     usd_xrdb_manager_class_init  (UsdXrdbManagerClass *klass);
+static void     usd_xrdb_manager_init        (UsdXrdbManager      *xrdb_manager);
+static void     usd_xrdb_manager_finalize    (GObject             *object);
 
-G_DEFINE_TYPE (MsdXrdbManager, msd_xrdb_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdXrdbManager, usd_xrdb_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 static void
@@ -206,7 +206,7 @@ compare_basenames (gconstpointer a,
  * right order for processing.
  */
 static GSList*
-scan_for_files (MsdXrdbManager *manager,
+scan_for_files (UsdXrdbManager *manager,
                 GError        **error)
 {
         const char *home_dir;
@@ -419,7 +419,7 @@ spawn_with_input (const char *command,
 }
 
 static void
-apply_settings (MsdXrdbManager *manager,
+apply_settings (UsdXrdbManager *manager,
                 GtkStyle       *style)
 {
         const char *command;
@@ -428,7 +428,7 @@ apply_settings (MsdXrdbManager *manager,
         GSList     *p;
         GError     *error;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         command = "xrdb -merge -quiet";
 
@@ -471,7 +471,7 @@ apply_settings (MsdXrdbManager *manager,
         spawn_with_input (command, string->str);
         g_string_free (string, TRUE);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return;
 }
@@ -479,21 +479,21 @@ apply_settings (MsdXrdbManager *manager,
 static void
 theme_changed (GtkSettings    *settings,
                GParamSpec     *pspec,
-               MsdXrdbManager *manager)
+               UsdXrdbManager *manager)
 {
         apply_settings (manager, gtk_widget_get_style (manager->priv->widget));
 }
 
 gboolean
-msd_xrdb_manager_start (MsdXrdbManager *manager,
+usd_xrdb_manager_start (UsdXrdbManager *manager,
                         GError        **error)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         /* the initialization is done here otherwise
-           mate_settings_xsettings_load would generate
+           ukui_settings_xsettings_load would generate
            false hit as gtk-theme-name is set to Default in
-           mate_settings_xsettings_init */
+           ukui_settings_xsettings_init */
         g_signal_connect (gtk_settings_get_default (),
                           "notify::gtk-theme-name",
                           G_CALLBACK (theme_changed),
@@ -502,15 +502,15 @@ msd_xrdb_manager_start (MsdXrdbManager *manager,
         manager->priv->widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
         gtk_widget_ensure_style (manager->priv->widget);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_xrdb_manager_stop (MsdXrdbManager *manager)
+usd_xrdb_manager_stop (UsdXrdbManager *manager)
 {
-        MsdXrdbManagerPrivate *p = manager->priv;
+        UsdXrdbManagerPrivate *p = manager->priv;
 
         g_debug ("Stopping xrdb manager");
 
@@ -525,47 +525,47 @@ msd_xrdb_manager_stop (MsdXrdbManager *manager)
 }
 
 static void
-msd_xrdb_manager_class_init (MsdXrdbManagerClass *klass)
+usd_xrdb_manager_class_init (UsdXrdbManagerClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_xrdb_manager_finalize;
+        object_class->finalize = usd_xrdb_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdXrdbManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdXrdbManagerPrivate));
 }
 
 static void
-msd_xrdb_manager_init (MsdXrdbManager *manager)
+usd_xrdb_manager_init (UsdXrdbManager *manager)
 {
-        manager->priv = MSD_XRDB_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_XRDB_MANAGER_GET_PRIVATE (manager);
 
 }
 
 static void
-msd_xrdb_manager_finalize (GObject *object)
+usd_xrdb_manager_finalize (GObject *object)
 {
-        MsdXrdbManager *xrdb_manager;
+        UsdXrdbManager *xrdb_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_XRDB_MANAGER (object));
+        g_return_if_fail (USD_IS_XRDB_MANAGER (object));
 
-        xrdb_manager = MSD_XRDB_MANAGER (object);
+        xrdb_manager = USD_XRDB_MANAGER (object);
 
         g_return_if_fail (xrdb_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_xrdb_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_xrdb_manager_parent_class)->finalize (object);
 }
 
-MsdXrdbManager *
-msd_xrdb_manager_new (void)
+UsdXrdbManager *
+usd_xrdb_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_XRDB_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_XRDB_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_XRDB_MANAGER (manager_object);
+        return USD_XRDB_MANAGER (manager_object);
 }

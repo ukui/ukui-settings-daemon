@@ -9,16 +9,16 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 libxrdb_la_SOURCES = 		\
-	msd-xrdb-plugin.h	\
-	msd-xrdb-plugin.c	\
-	msd-xrdb-manager.h	\
-	msd-xrdb-manager.c	\
+	usd-xrdb-plugin.h	\
+	usd-xrdb-plugin.c	\
+	usd-xrdb-manager.h	\
+	usd-xrdb-manager.c	\
 	$(NULL)
 
 libxrdb_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
+	-I$(top_srcdir)/ukui-settings-daemon		\
 	-DSYSCONFDIR=\""$(sysconfdir)"\"	\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libxrdb_la_CFLAGS = \
@@ -26,7 +26,7 @@ libxrdb_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libxrdb_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)	\
+	$(USD_PLUGIN_LDFLAGS)	\
 	$(NULL)
 
 libxrdb_la_LIBADD  = 		\
@@ -34,10 +34,10 @@ libxrdb_la_LIBADD  = 		\
 	$(NULL)
 
 plugin_in_files = 		\
-	xrdb.mate-settings-plugin.in	\
+	xrdb.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -51,4 +51,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
