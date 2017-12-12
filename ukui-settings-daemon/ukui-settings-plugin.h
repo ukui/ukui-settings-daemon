@@ -19,8 +19,8 @@
  * MA  02110-1301, USA.
  */
 
-#ifndef __MATE_SETTINGS_PLUGIN_H__
-#define __MATE_SETTINGS_PLUGIN_H__
+#ifndef __UKUI_SETTINGS_PLUGIN_H__
+#define __UKUI_SETTINGS_PLUGIN_H__
 
 #include <glib-object.h>
 #include <gmodule.h>
@@ -28,44 +28,44 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-#define MATE_TYPE_SETTINGS_PLUGIN              (mate_settings_plugin_get_type())
-#define MATE_SETTINGS_PLUGIN(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), MATE_TYPE_SETTINGS_PLUGIN, MateSettingsPlugin))
-#define MATE_SETTINGS_PLUGIN_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass),  MATE_TYPE_SETTINGS_PLUGIN, MateSettingsPluginClass))
-#define MATE_IS_SETTINGS_PLUGIN(obj)           (G_TYPE_CHECK_INSTANCE_TYPE((obj), MATE_TYPE_SETTINGS_PLUGIN))
-#define MATE_IS_SETTINGS_PLUGIN_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), MATE_TYPE_SETTINGS_PLUGIN))
-#define MATE_SETTINGS_PLUGIN_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj),  MATE_TYPE_SETTINGS_PLUGIN, MateSettingsPluginClass))
+#define UKUI_TYPE_SETTINGS_PLUGIN              (ukui_settings_plugin_get_type())
+#define UKUI_SETTINGS_PLUGIN(obj)              (G_TYPE_CHECK_INSTANCE_CAST((obj), UKUI_TYPE_SETTINGS_PLUGIN, UkuiSettingsPlugin))
+#define UKUI_SETTINGS_PLUGIN_CLASS(klass)      (G_TYPE_CHECK_CLASS_CAST((klass),  UKUI_TYPE_SETTINGS_PLUGIN, UkuiSettingsPluginClass))
+#define UKUI_IS_SETTINGS_PLUGIN(obj)           (G_TYPE_CHECK_INSTANCE_TYPE((obj), UKUI_TYPE_SETTINGS_PLUGIN))
+#define UKUI_IS_SETTINGS_PLUGIN_CLASS(klass)   (G_TYPE_CHECK_CLASS_TYPE ((klass), UKUI_TYPE_SETTINGS_PLUGIN))
+#define UKUI_SETTINGS_PLUGIN_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS((obj),  UKUI_TYPE_SETTINGS_PLUGIN, UkuiSettingsPluginClass))
 
 typedef struct
 {
         GObject parent;
-} MateSettingsPlugin;
+} UkuiSettingsPlugin;
 
 typedef struct
 {
         GObjectClass parent_class;
 
         /* Virtual public methods */
-        void            (*activate)                     (MateSettingsPlugin *plugin);
-        void            (*deactivate)                   (MateSettingsPlugin *plugin);
-} MateSettingsPluginClass;
+        void            (*activate)                     (UkuiSettingsPlugin *plugin);
+        void            (*deactivate)                   (UkuiSettingsPlugin *plugin);
+} UkuiSettingsPluginClass;
 
-GType            mate_settings_plugin_get_type           (void) G_GNUC_CONST;
+GType            ukui_settings_plugin_get_type           (void) G_GNUC_CONST;
 
-void             mate_settings_plugin_activate           (MateSettingsPlugin *plugin);
-void             mate_settings_plugin_deactivate         (MateSettingsPlugin *plugin);
+void             ukui_settings_plugin_activate           (UkuiSettingsPlugin *plugin);
+void             ukui_settings_plugin_deactivate         (UkuiSettingsPlugin *plugin);
 
 /*
  * Utility macro used to register plugins
  *
- * use: MATE_SETTINGS_PLUGIN_REGISTER (PluginName, plugin_name)
+ * use: UKUI_SETTINGS_PLUGIN_REGISTER (PluginName, plugin_name)
  */
-#define MATE_SETTINGS_PLUGIN_REGISTER(PluginName, plugin_name)                 \
+#define UKUI_SETTINGS_PLUGIN_REGISTER(PluginName, plugin_name)                 \
         G_DEFINE_DYNAMIC_TYPE (PluginName,                                     \
                                plugin_name,                                    \
-                               MATE_TYPE_SETTINGS_PLUGIN)                      \
+                               UKUI_TYPE_SETTINGS_PLUGIN)                      \
                                                                                \
 G_MODULE_EXPORT GType                                                          \
-register_mate_settings_plugin (GTypeModule *type_module)                       \
+register_ukui_settings_plugin (GTypeModule *type_module)                       \
 {                                                                              \
         plugin_name##_register_type (type_module);                             \
                                                                                \
@@ -76,4 +76,4 @@ register_mate_settings_plugin (GTypeModule *type_module)                       \
 }
 #endif
 
-#endif  /* __MATE_SETTINGS_PLUGIN_H__ */
+#endif  /* __UKUI_SETTINGS_PLUGIN_H__ */

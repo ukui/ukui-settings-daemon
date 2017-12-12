@@ -21,41 +21,41 @@
 
 #include "config.h"
 
-#include "mate-settings-plugin.h"
+#include "ukui-settings-plugin.h"
 
-G_DEFINE_TYPE (MateSettingsPlugin, mate_settings_plugin, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UkuiSettingsPlugin, ukui_settings_plugin, G_TYPE_OBJECT)
 
 static void
-dummy (MateSettingsPlugin *plugin)
+dummy (UkuiSettingsPlugin *plugin)
 {
         /* Empty */
 }
 
 static void
-mate_settings_plugin_class_init (MateSettingsPluginClass *klass)
+ukui_settings_plugin_class_init (UkuiSettingsPluginClass *klass)
 {
         klass->activate = dummy;
         klass->deactivate = dummy;
 }
 
 static void
-mate_settings_plugin_init (MateSettingsPlugin *plugin)
+ukui_settings_plugin_init (UkuiSettingsPlugin *plugin)
 {
         /* Empty */
 }
 
 void
-mate_settings_plugin_activate (MateSettingsPlugin *plugin)
+ukui_settings_plugin_activate (UkuiSettingsPlugin *plugin)
 {
-        g_return_if_fail (MATE_IS_SETTINGS_PLUGIN (plugin));
+        g_return_if_fail (UKUI_IS_SETTINGS_PLUGIN (plugin));
 
-        MATE_SETTINGS_PLUGIN_GET_CLASS (plugin)->activate (plugin);
+        UKUI_SETTINGS_PLUGIN_GET_CLASS (plugin)->activate (plugin);
 }
 
 void
-mate_settings_plugin_deactivate  (MateSettingsPlugin *plugin)
+ukui_settings_plugin_deactivate  (UkuiSettingsPlugin *plugin)
 {
-        g_return_if_fail (MATE_IS_SETTINGS_PLUGIN (plugin));
+        g_return_if_fail (UKUI_IS_SETTINGS_PLUGIN (plugin));
 
-        MATE_SETTINGS_PLUGIN_GET_CLASS (plugin)->deactivate (plugin);
+        UKUI_SETTINGS_PLUGIN_GET_CLASS (plugin)->deactivate (plugin);
 }

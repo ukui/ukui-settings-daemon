@@ -27,19 +27,19 @@
 #include <gmodule.h>
 #include <gio/gio.h>
 
-#include "mate-settings-plugin-info.h"
-#include "mate-settings-module.h"
-#include "mate-settings-plugin.h"
-#include "mate-settings-profile.h"
+#include "ukui-settings-plugin-info.h"
+#include "ukui-settings-module.h"
+#include "ukui-settings-plugin.h"
+#include "ukui-settings-profile.h"
 
-#define MATE_SETTINGS_PLUGIN_INFO_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MATE_TYPE_SETTINGS_PLUGIN_INFO, MateSettingsPluginInfoPrivate))
+#define UKUI_SETTINGS_PLUGIN_INFO_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_SETTINGS_PLUGIN_INFO, UkuiSettingsPluginInfoPrivate))
 
-#define PLUGIN_GROUP "MATE Settings Plugin"
+#define PLUGIN_GROUP "UKUI Settings Plugin"
 
 #define PLUGIN_PRIORITY_MAX 1
 #define PLUGIN_PRIORITY_DEFAULT 100
 
-struct MateSettingsPluginInfoPrivate
+struct UkuiSettingsPluginInfoPrivate
 {
         char                    *file;
         GSettings               *settings;
@@ -53,7 +53,7 @@ struct MateSettingsPluginInfoPrivate
         char                    *copyright;
         char                    *website;
 
-        MateSettingsPlugin     *plugin;
+        UkuiSettingsPlugin     *plugin;
 
         int                      enabled : 1;
         int                      active : 1;
@@ -78,17 +78,17 @@ enum {
 
 static guint signals [LAST_SIGNAL] = { 0, };
 
-G_DEFINE_TYPE (MateSettingsPluginInfo, mate_settings_plugin_info, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UkuiSettingsPluginInfo, ukui_settings_plugin_info, G_TYPE_OBJECT)
 
 static void
-mate_settings_plugin_info_finalize (GObject *object)
+ukui_settings_plugin_info_finalize (GObject *object)
 {
-        MateSettingsPluginInfo *info;
+        UkuiSettingsPluginInfo *info;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (object));
+        g_return_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (object));
 
-        info = MATE_SETTINGS_PLUGIN_INFO (object);
+        info = UKUI_SETTINGS_PLUGIN_INFO (object);
 
         g_return_if_fail (info->priv != NULL);
 
@@ -113,21 +113,21 @@ mate_settings_plugin_info_finalize (GObject *object)
 		g_object_unref (info->priv->settings);
 	}
 
-        G_OBJECT_CLASS (mate_settings_plugin_info_parent_class)->finalize (object);
+        G_OBJECT_CLASS (ukui_settings_plugin_info_parent_class)->finalize (object);
 }
 
 static void
-mate_settings_plugin_info_class_init (MateSettingsPluginInfoClass *klass)
+ukui_settings_plugin_info_class_init (UkuiSettingsPluginInfoClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = mate_settings_plugin_info_finalize;
+        object_class->finalize = ukui_settings_plugin_info_finalize;
 
         signals [ACTIVATED] =
                 g_signal_new ("activated",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (MateSettingsPluginInfoClass, activated),
+                              G_STRUCT_OFFSET (UkuiSettingsPluginInfoClass, activated),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
@@ -137,33 +137,33 @@ mate_settings_plugin_info_class_init (MateSettingsPluginInfoClass *klass)
                 g_signal_new ("deactivated",
                               G_TYPE_FROM_CLASS (object_class),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (MateSettingsPluginInfoClass, deactivated),
+                              G_STRUCT_OFFSET (UkuiSettingsPluginInfoClass, deactivated),
                               NULL,
                               NULL,
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE,
                               0);
 
-        g_type_class_add_private (klass, sizeof (MateSettingsPluginInfoPrivate));
+        g_type_class_add_private (klass, sizeof (UkuiSettingsPluginInfoPrivate));
 }
 
 static void
-mate_settings_plugin_info_init (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_init (UkuiSettingsPluginInfo *info)
 {
-        info->priv = MATE_SETTINGS_PLUGIN_INFO_GET_PRIVATE (info);
+        info->priv = UKUI_SETTINGS_PLUGIN_INFO_GET_PRIVATE (info);
 }
 
 static void
-debug_info (MateSettingsPluginInfo *info)
+debug_info (UkuiSettingsPluginInfo *info)
 {
-        g_debug ("MateSettingsPluginInfo: name='%s' file='%s' location='%s'",
+        g_debug ("UkuiSettingsPluginInfo: name='%s' file='%s' location='%s'",
                  info->priv->name,
                  info->priv->file,
                  info->priv->location);
 }
 
 static gboolean
-mate_settings_plugin_info_fill_from_file (MateSettingsPluginInfo *info,
+ukui_settings_plugin_info_fill_from_file (UkuiSettingsPluginInfo *info,
                                            const char              *filename)
 {
         GKeyFile *plugin_file = NULL;
@@ -171,7 +171,7 @@ mate_settings_plugin_info_fill_from_file (MateSettingsPluginInfo *info,
         int       priority;
         gboolean  ret;
 
-        mate_settings_profile_start ("%s", filename);
+        ukui_settings_profile_start ("%s", filename);
 
         ret = FALSE;
 
@@ -262,7 +262,7 @@ mate_settings_plugin_info_fill_from_file (MateSettingsPluginInfo *info,
 
         ret = TRUE;
  out:
-        mate_settings_profile_end ("%s", filename);
+        ukui_settings_profile_end ("%s", filename);
 
         return ret;
 }
@@ -270,24 +270,24 @@ mate_settings_plugin_info_fill_from_file (MateSettingsPluginInfo *info,
 static void
 plugin_enabled_cb (GSettings              *settings,
                    gchar                  *key,
-                   MateSettingsPluginInfo *info)
+                   UkuiSettingsPluginInfo *info)
 {
         if (g_settings_get_boolean (info->priv->settings, key)) {
-                mate_settings_plugin_info_activate (info);
+                ukui_settings_plugin_info_activate (info);
         } else {
-                mate_settings_plugin_info_deactivate (info);
+                ukui_settings_plugin_info_deactivate (info);
         }
 }
 
-MateSettingsPluginInfo *
-mate_settings_plugin_info_new_from_file (const char *filename)
+UkuiSettingsPluginInfo *
+ukui_settings_plugin_info_new_from_file (const char *filename)
 {
-        MateSettingsPluginInfo *info;
+        UkuiSettingsPluginInfo *info;
         gboolean                 res;
 
-        info = g_object_new (MATE_TYPE_SETTINGS_PLUGIN_INFO, NULL);
+        info = g_object_new (UKUI_TYPE_SETTINGS_PLUGIN_INFO, NULL);
 
-        res = mate_settings_plugin_info_fill_from_file (info, filename);
+        res = ukui_settings_plugin_info_fill_from_file (info, filename);
         if (! res) {
                 g_object_unref (info);
                 info = NULL;
@@ -297,16 +297,16 @@ mate_settings_plugin_info_new_from_file (const char *filename)
 }
 
 static void
-_deactivate_plugin (MateSettingsPluginInfo *info)
+_deactivate_plugin (UkuiSettingsPluginInfo *info)
 {
-        mate_settings_plugin_deactivate (info->priv->plugin);
+        ukui_settings_plugin_deactivate (info->priv->plugin);
         g_signal_emit (info, signals [DEACTIVATED], 0);
 }
 
 gboolean
-mate_settings_plugin_info_deactivate (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_deactivate (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
 
         if (!info->priv->active || !info->priv->available) {
                 return TRUE;
@@ -322,7 +322,7 @@ mate_settings_plugin_info_deactivate (MateSettingsPluginInfo *info)
 
 
 static gboolean
-load_plugin_module (MateSettingsPluginInfo *info)
+load_plugin_module (UkuiSettingsPluginInfo *info)
 {
         char    *path;
         char    *dirname;
@@ -330,13 +330,13 @@ load_plugin_module (MateSettingsPluginInfo *info)
 
         ret = FALSE;
 
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
         g_return_val_if_fail (info->priv->file != NULL, FALSE);
         g_return_val_if_fail (info->priv->location != NULL, FALSE);
         g_return_val_if_fail (info->priv->plugin == NULL, FALSE);
         g_return_val_if_fail (info->priv->available, FALSE);
 
-        mate_settings_profile_start ("%s", info->priv->location);
+        ukui_settings_profile_start ("%s", info->priv->location);
 
         dirname = g_path_get_dirname (info->priv->file);
         g_return_val_if_fail (dirname != NULL, FALSE);
@@ -345,13 +345,13 @@ load_plugin_module (MateSettingsPluginInfo *info)
         g_free (dirname);
         g_return_val_if_fail (path != NULL, FALSE);
 
-        info->priv->module = G_TYPE_MODULE (mate_settings_module_new (path));
+        info->priv->module = G_TYPE_MODULE (ukui_settings_module_new (path));
         g_free (path);
 
         if (!g_type_module_use (info->priv->module)) {
                 g_warning ("Cannot load plugin '%s' since file '%s' cannot be read.",
                            info->priv->name,
-                           mate_settings_module_get_path (MATE_SETTINGS_MODULE (info->priv->module)));
+                           ukui_settings_module_get_path (UKUI_SETTINGS_MODULE (info->priv->module)));
 
                 g_object_unref (G_OBJECT (info->priv->module));
                 info->priv->module = NULL;
@@ -363,17 +363,17 @@ load_plugin_module (MateSettingsPluginInfo *info)
         }
 
         info->priv->plugin =
-                MATE_SETTINGS_PLUGIN (mate_settings_module_new_object (MATE_SETTINGS_MODULE (info->priv->module)));
+                UKUI_SETTINGS_PLUGIN (ukui_settings_module_new_object (UKUI_SETTINGS_MODULE (info->priv->module)));
 
         g_type_module_unuse (info->priv->module);
         ret = TRUE;
 out:
-        mate_settings_profile_end ("%s", info->priv->location);
+        ukui_settings_profile_end ("%s", info->priv->location);
         return ret;
 }
 
 static gboolean
-_activate_plugin (MateSettingsPluginInfo *info)
+_activate_plugin (UkuiSettingsPluginInfo *info)
 {
         gboolean res = TRUE;
 
@@ -387,7 +387,7 @@ _activate_plugin (MateSettingsPluginInfo *info)
         }
 
         if (res) {
-                mate_settings_plugin_activate (info->priv->plugin);
+                ukui_settings_plugin_activate (info->priv->plugin);
                 g_signal_emit (info, signals [ACTIVATED], 0);
         } else {
                 g_warning ("Error activating plugin '%s'", info->priv->name);
@@ -397,10 +397,10 @@ _activate_plugin (MateSettingsPluginInfo *info)
 }
 
 gboolean
-mate_settings_plugin_info_activate (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_activate (UkuiSettingsPluginInfo *info)
 {
 
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
 
         if (! info->priv->available) {
                 return FALSE;
@@ -419,102 +419,102 @@ mate_settings_plugin_info_activate (MateSettingsPluginInfo *info)
 }
 
 gboolean
-mate_settings_plugin_info_is_active (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_is_active (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
 
         return (info->priv->available && info->priv->active);
 }
 
 gboolean
-mate_settings_plugin_info_get_enabled (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_enabled (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
 
         return (info->priv->enabled);
 }
 
 gboolean
-mate_settings_plugin_info_is_available (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_is_available (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), FALSE);
 
         return (info->priv->available != FALSE);
 }
 
 const char *
-mate_settings_plugin_info_get_name (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_name (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), NULL);
 
         return info->priv->name;
 }
 
 const char *
-mate_settings_plugin_info_get_description (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_description (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), NULL);
 
         return info->priv->desc;
 }
 
 const char **
-mate_settings_plugin_info_get_authors (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_authors (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), (const char **)NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), (const char **)NULL);
 
         return (const char **)info->priv->authors;
 }
 
 const char *
-mate_settings_plugin_info_get_website (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_website (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), NULL);
 
         return info->priv->website;
 }
 
 const char *
-mate_settings_plugin_info_get_copyright (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_copyright (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), NULL);
 
         return info->priv->copyright;
 }
 
 
 const char *
-mate_settings_plugin_info_get_location (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_location (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), NULL);
 
         return info->priv->location;
 }
 
 int
-mate_settings_plugin_info_get_priority (MateSettingsPluginInfo *info)
+ukui_settings_plugin_info_get_priority (UkuiSettingsPluginInfo *info)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info), PLUGIN_PRIORITY_DEFAULT);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info), PLUGIN_PRIORITY_DEFAULT);
 
         return info->priv->priority;
 }
 
 void
-mate_settings_plugin_info_set_priority (MateSettingsPluginInfo *info,
+ukui_settings_plugin_info_set_priority (UkuiSettingsPluginInfo *info,
                                          int                      priority)
 {
-        g_return_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info));
+        g_return_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info));
 
         info->priv->priority = priority;
 }
 
 void
-mate_settings_plugin_info_set_schema (MateSettingsPluginInfo *info,
+ukui_settings_plugin_info_set_schema (UkuiSettingsPluginInfo *info,
                                       gchar                  *schema)
 {
 	int priority;
 
-	g_return_if_fail (MATE_IS_SETTINGS_PLUGIN_INFO (info));
+	g_return_if_fail (UKUI_IS_SETTINGS_PLUGIN_INFO (info));
 
 	info->priv->settings = g_settings_new (schema);
 	info->priv->enabled = g_settings_get_boolean (info->priv->settings, "active");

@@ -32,10 +32,10 @@
 #include <glib.h>
 #include <glib/gstdio.h>
 
-#include "mate-settings-profile.h"
+#include "ukui-settings-profile.h"
 
 void
-_mate_settings_profile_log (const char *func,
+_ukui_settings_profile_log (const char *func,
                              const char *note,
                              const char *format,
                              ...)

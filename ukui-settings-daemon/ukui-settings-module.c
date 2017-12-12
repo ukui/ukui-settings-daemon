@@ -20,18 +20,18 @@
 
 #include "config.h"
 
-#include "mate-settings-module.h"
+#include "ukui-settings-module.h"
 
 #include <gmodule.h>
 
-typedef struct _MateSettingsModuleClass MateSettingsModuleClass;
+typedef struct _UkuiSettingsModuleClass UkuiSettingsModuleClass;
 
-struct _MateSettingsModuleClass
+struct _UkuiSettingsModuleClass
 {
         GTypeModuleClass parent_class;
 };
 
-struct _MateSettingsModule
+struct _UkuiSettingsModule
 {
         GTypeModule parent_instance;
 
@@ -41,18 +41,18 @@ struct _MateSettingsModule
         GType       type;
 };
 
-typedef GType (*MateSettingsModuleRegisterFunc) (GTypeModule *);
+typedef GType (*UkuiSettingsModuleRegisterFunc) (GTypeModule *);
 
-G_DEFINE_TYPE (MateSettingsModule, mate_settings_module, G_TYPE_TYPE_MODULE)
+G_DEFINE_TYPE (UkuiSettingsModule, ukui_settings_module, G_TYPE_TYPE_MODULE)
 
 static gboolean
-mate_settings_module_load (GTypeModule *gmodule)
+ukui_settings_module_load (GTypeModule *gmodule)
 {
-        MateSettingsModule            *module;
-        MateSettingsModuleRegisterFunc register_func;
+        UkuiSettingsModule            *module;
+        UkuiSettingsModuleRegisterFunc register_func;
         gboolean                        res;
 
-        module = MATE_SETTINGS_MODULE (gmodule);
+        module = UKUI_SETTINGS_MODULE (gmodule);
 
         g_debug ("Loading %s", module->path);
 
@@ -65,7 +65,7 @@ mate_settings_module_load (GTypeModule *gmodule)
         }
 
         /* extract symbols from the lib */
-        res = g_module_symbol (module->library, "register_mate_settings_plugin", (void *) &register_func);
+        res = g_module_symbol (module->library, "register_ukui_settings_plugin", (void *) &register_func);
         if (! res) {
                 g_warning ("%s", g_module_error ());
                 g_module_close (module->library);
@@ -78,7 +78,7 @@ mate_settings_module_load (GTypeModule *gmodule)
         module->type = register_func (gmodule);
 
         if (module->type == 0) {
-                g_warning ("Invalid mate settings plugin in module %s", module->path);
+                g_warning ("Invalid ukui settings plugin in module %s", module->path);
                 return FALSE;
         }
 
@@ -86,9 +86,9 @@ mate_settings_module_load (GTypeModule *gmodule)
 }
 
 static void
-mate_settings_module_unload (GTypeModule *gmodule)
+ukui_settings_module_unload (GTypeModule *gmodule)
 {
-        MateSettingsModule *module = MATE_SETTINGS_MODULE (gmodule);
+        UkuiSettingsModule *module = UKUI_SETTINGS_MODULE (gmodule);
 
         g_debug ("Unloading %s", module->path);
 
@@ -99,15 +99,15 @@ mate_settings_module_unload (GTypeModule *gmodule)
 }
 
 const gchar *
-mate_settings_module_get_path (MateSettingsModule *module)
+ukui_settings_module_get_path (UkuiSettingsModule *module)
 {
-        g_return_val_if_fail (MATE_IS_SETTINGS_MODULE (module), NULL);
+        g_return_val_if_fail (UKUI_IS_SETTINGS_MODULE (module), NULL);
 
         return module->path;
 }
 
 GObject *
-mate_settings_module_new_object (MateSettingsModule *module)
+ukui_settings_module_new_object (UkuiSettingsModule *module)
 {
         g_debug ("Creating object of type %s", g_type_name (module->type));
 
@@ -119,45 +119,45 @@ mate_settings_module_new_object (MateSettingsModule *module)
 }
 
 static void
-mate_settings_module_init (MateSettingsModule *module)
+ukui_settings_module_init (UkuiSettingsModule *module)
 {
-        g_debug ("MateSettingsModule %p initialising", module);
+        g_debug ("UkuiSettingsModule %p initialising", module);
 }
 
 static void
-mate_settings_module_finalize (GObject *object)
+ukui_settings_module_finalize (GObject *object)
 {
-        MateSettingsModule *module = MATE_SETTINGS_MODULE (object);
+        UkuiSettingsModule *module = UKUI_SETTINGS_MODULE (object);
 
-        g_debug ("MateSettingsModule %p finalizing", module);
+        g_debug ("UkuiSettingsModule %p finalizing", module);
 
         g_free (module->path);
 
-        G_OBJECT_CLASS (mate_settings_module_parent_class)->finalize (object);
+        G_OBJECT_CLASS (ukui_settings_module_parent_class)->finalize (object);
 }
 
 static void
-mate_settings_module_class_init (MateSettingsModuleClass *class)
+ukui_settings_module_class_init (UkuiSettingsModuleClass *class)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (class);
         GTypeModuleClass *module_class = G_TYPE_MODULE_CLASS (class);
 
-        object_class->finalize = mate_settings_module_finalize;
+        object_class->finalize = ukui_settings_module_finalize;
 
-        module_class->load = mate_settings_module_load;
-        module_class->unload = mate_settings_module_unload;
+        module_class->load = ukui_settings_module_load;
+        module_class->unload = ukui_settings_module_unload;
 }
 
-MateSettingsModule *
-mate_settings_module_new (const char *path)
+UkuiSettingsModule *
+ukui_settings_module_new (const char *path)
 {
-        MateSettingsModule *result;
+        UkuiSettingsModule *result;
 
         if (path == NULL || path[0] == '\0') {
                 return NULL;
         }
 
-        result = g_object_new (MATE_TYPE_SETTINGS_MODULE, NULL);
+        result = g_object_new (UKUI_TYPE_SETTINGS_MODULE, NULL);
 
         g_type_module_set_name (G_TYPE_MODULE (result), path);
         result->path = g_strdup (path);

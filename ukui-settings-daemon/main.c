@@ -39,20 +39,20 @@
 #include <libnotify/notify.h>
 #endif /* HAVE_LIBNOTIFY */
 
-#include "mate-settings-manager.h"
-#include "mate-settings-profile.h"
+#include "ukui-settings-manager.h"
+#include "ukui-settings-profile.h"
 
 #include <libmate-desktop/mate-gsettings.h>
 
-#define MSD_DBUS_NAME         "org.mate.SettingsDaemon"
+#define USD_DBUS_NAME         "org.ukui.SettingsDaemon"
 
-#define DEBUG_KEY             "mate-settings-daemon"
-#define DEBUG_SCHEMA          "org.mate.debug"
+#define DEBUG_KEY             "ukui-settings-daemon"
+#define DEBUG_SCHEMA          "org.ukui.debug"
 
-#define MATE_SESSION_DBUS_NAME      "org.gnome.SessionManager"
-#define MATE_SESSION_DBUS_OBJECT    "/org/gnome/SessionManager"
-#define MATE_SESSION_DBUS_INTERFACE "org.gnome.SessionManager"
-#define MATE_SESSION_PRIVATE_DBUS_INTERFACE "org.gnome.SessionManager.ClientPrivate"
+#define UKUI_SESSION_DBUS_NAME      "org.gnome.SessionManager"
+#define UKUI_SESSION_DBUS_OBJECT    "/org/gnome/SessionManager"
+#define UKUI_SESSION_DBUS_INTERFACE "org.gnome.SessionManager"
+#define UKUI_SESSION_PRIVATE_DBUS_INTERFACE "org.gnome.SessionManager.ClientPrivate"
 
 /* this is kept only for compatibility with custom .desktop files */
 static gboolean   no_daemon    = TRUE;
@@ -108,27 +108,27 @@ acquire_name_on_proxy (DBusGProxy *bus_proxy)
         res = dbus_g_proxy_call (bus_proxy,
                                  "RequestName",
                                  &error,
-                                 G_TYPE_STRING, MSD_DBUS_NAME,
+                                 G_TYPE_STRING, USD_DBUS_NAME,
                                  G_TYPE_UINT, flags,
                                  G_TYPE_INVALID,
                                  G_TYPE_UINT, &result,
                                  G_TYPE_INVALID);
         if (! res) {
                 if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", MSD_DBUS_NAME, error->message);
+                        g_warning ("Failed to acquire %s: %s", USD_DBUS_NAME, error->message);
                         g_error_free (error);
                 } else {
-                        g_warning ("Failed to acquire %s", MSD_DBUS_NAME);
+                        g_warning ("Failed to acquire %s", USD_DBUS_NAME);
                 }
                 goto out;
         }
 
         if (result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
                 if (error != NULL) {
-                        g_warning ("Failed to acquire %s: %s", MSD_DBUS_NAME, error->message);
+                        g_warning ("Failed to acquire %s: %s", USD_DBUS_NAME, error->message);
                         g_error_free (error);
                 } else {
-                        g_warning ("Failed to acquire %s", MSD_DBUS_NAME);
+                        g_warning ("Failed to acquire %s", USD_DBUS_NAME);
                 }
                 goto out;
         }
@@ -195,7 +195,7 @@ bus_register (DBusGConnection *bus)
         DBusGProxy      *bus_proxy;
         gboolean         ret;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         ret = FALSE;
 
@@ -217,19 +217,19 @@ bus_register (DBusGConnection *bus)
         g_debug ("Successfully connected to D-Bus");
 
  out:
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return ret;
 }
 
 static void
-on_session_over (DBusGProxy *proxy, MateSettingsManager *manager)
+on_session_over (DBusGProxy *proxy, UkuiSettingsManager *manager)
 {
         /* not used, see on_session_end instead */
 }
 
 static void
-on_session_query_end (DBusGProxy *proxy, guint flags, MateSettingsManager *manager)
+on_session_query_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager)
 {
         GError *error = NULL;
         gboolean ret = FALSE;
@@ -247,7 +247,7 @@ on_session_query_end (DBusGProxy *proxy, guint flags, MateSettingsManager *manag
 }
 
 static void
-on_session_end (DBusGProxy *proxy, guint flags, MateSettingsManager *manager)
+on_session_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager)
 {
         GError *error = NULL;
         gboolean ret = FALSE;
@@ -263,7 +263,7 @@ on_session_end (DBusGProxy *proxy, guint flags, MateSettingsManager *manager)
                 g_error_free (error);
         }
 
-        mate_settings_manager_stop (manager);
+        ukui_settings_manager_stop (manager);
         gtk_main_quit ();
 }
 
@@ -290,7 +290,7 @@ on_term_signal_pipe_closed (GIOChannel *source,
 }
 
 static void
-watch_for_term_signal (MateSettingsManager *manager)
+watch_for_term_signal (UkuiSettingsManager *manager)
 {
         GIOChannel *channel;
 
@@ -312,7 +312,7 @@ watch_for_term_signal (MateSettingsManager *manager)
 }
 
 static void
-set_session_over_handler (DBusGConnection *bus, MateSettingsManager *manager)
+set_session_over_handler (DBusGConnection *bus, UkuiSettingsManager *manager)
 {
         DBusGProxy *session_proxy;
         DBusGProxy *private_proxy;
@@ -323,13 +323,13 @@ set_session_over_handler (DBusGConnection *bus, MateSettingsManager *manager)
 
         g_assert (bus != NULL);
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         session_proxy =
                  dbus_g_proxy_new_for_name (bus,
-                                            MATE_SESSION_DBUS_NAME,
-                                            MATE_SESSION_DBUS_OBJECT,
-                                            MATE_SESSION_DBUS_INTERFACE);
+                                            UKUI_SESSION_DBUS_NAME,
+                                            UKUI_SESSION_DBUS_OBJECT,
+                                            UKUI_SESSION_DBUS_INTERFACE);
 
         dbus_g_object_register_marshaller (
                 g_cclosure_marshal_VOID__VOID,
@@ -346,13 +346,13 @@ set_session_over_handler (DBusGConnection *bus, MateSettingsManager *manager)
                                      manager,
                                      NULL);
 
-        /* Register with mate-session */
+        /* Register with ukui-session */
         startup_id = g_getenv ("DESKTOP_AUTOSTART_ID");
         if (startup_id != NULL && *startup_id != '\0') {
                 res = dbus_g_proxy_call (session_proxy,
                                          "RegisterClient",
                                          &error,
-                                         G_TYPE_STRING, "mate-settings-daemon",
+                                         G_TYPE_STRING, "ukui-settings-daemon",
                                          G_TYPE_STRING, startup_id,
                                          G_TYPE_INVALID,
                                          DBUS_TYPE_G_OBJECT_PATH, &client_id,
@@ -363,8 +363,8 @@ set_session_over_handler (DBusGConnection *bus, MateSettingsManager *manager)
                 }
                 else {
                         /* get org.gnome.SessionManager.ClientPrivate interface */
-                        private_proxy = dbus_g_proxy_new_for_name_owner (bus, MATE_SESSION_DBUS_NAME,
-                                                                         client_id, MATE_SESSION_PRIVATE_DBUS_INTERFACE,
+                        private_proxy = dbus_g_proxy_new_for_name_owner (bus, UKUI_SESSION_DBUS_NAME,
+                                                                         client_id, UKUI_SESSION_PRIVATE_DBUS_INTERFACE,
                                                                          &error);
                         if (private_proxy == NULL) {
                                 g_warning ("DBUS error: %s", error->message);
@@ -390,11 +390,11 @@ set_session_over_handler (DBusGConnection *bus, MateSettingsManager *manager)
         }
 
         watch_for_term_signal (manager);
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static void
-msd_log_default_handler (const gchar   *log_domain,
+usd_log_default_handler (const gchar   *log_domain,
                          GLogLevelFlags log_level,
                          const gchar   *message,
                          gpointer       unused_data)
@@ -417,7 +417,7 @@ parse_args (int *argc, char ***argv)
         GError *error;
         GOptionContext *context;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
 
         context = g_option_context_new (NULL);
@@ -438,7 +438,7 @@ parse_args (int *argc, char ***argv)
 
         g_option_context_free (context);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
         
         if (debug)
             g_setenv ("G_MESSAGES_DEBUG", "all", FALSE);
@@ -459,7 +459,7 @@ static void debug_changed (GSettings *settings, gchar *key, gpointer user_data)
 int
 main (int argc, char *argv[])
 {
-        MateSettingsManager *manager;
+        UkuiSettingsManager *manager;
         DBusGConnection      *bus;
         gboolean              res;
         GError               *error;
@@ -467,9 +467,9 @@ main (int argc, char *argv[])
 
         manager = NULL;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
-        bindtextdomain (GETTEXT_PACKAGE, MATE_SETTINGS_LOCALEDIR);
+        bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         textdomain (GETTEXT_PACKAGE);
         setlocale (LC_ALL, "");
@@ -488,14 +488,14 @@ main (int argc, char *argv[])
 		}
         }
 
-        mate_settings_profile_start ("opening gtk display");
+        ukui_settings_profile_start ("opening gtk display");
         if (! gtk_init_check (NULL, NULL)) {
                 g_warning ("Unable to initialize GTK+");
                 exit (EXIT_FAILURE);
         }
-        mate_settings_profile_end ("opening gtk display");
+        ukui_settings_profile_end ("opening gtk display");
 
-        g_log_set_default_handler (msd_log_default_handler, NULL);
+        g_log_set_default_handler (usd_log_default_handler, NULL);
 
         bus = get_session_bus ();
         if (bus == NULL) {
@@ -508,12 +508,12 @@ main (int argc, char *argv[])
         }
 
 #ifdef HAVE_LIBNOTIFY
-        notify_init ("mate-settings-daemon");
+        notify_init ("ukui-settings-daemon");
 #endif /* HAVE_LIBNOTIFY */
 
-        mate_settings_profile_start ("mate_settings_manager_new");
-        manager = mate_settings_manager_new ();
-        mate_settings_profile_end ("mate_settings_manager_new");
+        ukui_settings_profile_start ("ukui_settings_manager_new");
+        manager = ukui_settings_manager_new ();
+        ukui_settings_profile_end ("ukui_settings_manager_new");
         if (manager == NULL) {
                 g_warning ("Unable to register object");
                 goto out;
@@ -525,7 +525,7 @@ main (int argc, char *argv[])
            automatically.  Otherwise, wait for an Awake etc. */
         if (g_getenv ("DBUS_STARTER_BUS_TYPE") == NULL) {
                 error = NULL;
-                res = mate_settings_manager_start (manager, &error);
+                res = ukui_settings_manager_start (manager, &error);
                 if (! res) {
                         g_warning ("Unable to start: %s", error->message);
                         g_error_free (error);
@@ -559,7 +559,7 @@ main (int argc, char *argv[])
 #endif /* HAVE_LIBNOTIFY */
 
         g_debug ("SettingsDaemon finished");
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return 0;
 }
