@@ -40,40 +40,40 @@
 #include <canberra-gtk.h>
 #endif
 
-#include "mate-settings-profile.h"
-#include "msd-marshal.h"
-#include "msd-media-keys-manager.h"
-#include "msd-media-keys-manager-glue.h"
+#include "ukui-settings-profile.h"
+#include "usd-marshal.h"
+#include "usd-media-keys-manager.h"
+#include "usd-media-keys-manager-glue.h"
 
 #include "eggaccelerators.h"
 #include "acme.h"
-#include "msd-media-keys-window.h"
-#include "msd-input-helper.h"
+#include "usd-media-keys-window.h"
+#include "usd-input-helper.h"
 
-#define MSD_DBUS_PATH "/org/mate/SettingsDaemon"
-#define MSD_DBUS_NAME "org.mate.SettingsDaemon"
-#define MSD_MEDIA_KEYS_DBUS_PATH MSD_DBUS_PATH "/MediaKeys"
-#define MSD_MEDIA_KEYS_DBUS_NAME MSD_DBUS_NAME ".MediaKeys"
+#define USD_DBUS_PATH "/org/ukui/SettingsDaemon"
+#define USD_DBUS_NAME "org.ukui.SettingsDaemon"
+#define USD_MEDIA_KEYS_DBUS_PATH USD_DBUS_PATH "/MediaKeys"
+#define USD_MEDIA_KEYS_DBUS_NAME USD_DBUS_NAME ".MediaKeys"
 
-#define TOUCHPAD_SCHEMA "org.mate.peripherals-touchpad"
+#define TOUCHPAD_SCHEMA "org.ukui.peripherals-touchpad"
 #define TOUCHPAD_ENABLED_KEY "touchpad-enabled"
 
 #define VOLUME_STEP 6
 
-#define MSD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_MEDIA_KEYS_MANAGER, MsdMediaKeysManagerPrivate))
+#define USD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_MANAGER, UsdMediaKeysManagerPrivate))
 
 typedef struct {
         char   *application;
         guint32 time;
 } MediaPlayer;
 
-struct _MsdMediaKeysManagerPrivate
+struct _UsdMediaKeysManagerPrivate
 {
 #ifdef HAVE_LIBMATEMIXER
         /* Volume bits */
-        MateMixerContext       *context;
-        MateMixerStream        *stream;
-        MateMixerStreamControl *control;
+        UkuiMixerContext       *context;
+        UkuiMixerStream        *stream;
+        UkuiMixerStreamControl *control;
 #endif
         GtkWidget        *dialog;
         GSettings        *settings;
@@ -96,15 +96,15 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-static void     msd_media_keys_manager_class_init  (MsdMediaKeysManagerClass *klass);
-static void     msd_media_keys_manager_init        (MsdMediaKeysManager      *media_keys_manager);
+static void     usd_media_keys_manager_class_init  (UsdMediaKeysManagerClass *klass);
+static void     usd_media_keys_manager_init        (UsdMediaKeysManager      *media_keys_manager);
 
-G_DEFINE_TYPE (MsdMediaKeysManager, msd_media_keys_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdMediaKeysManager, usd_media_keys_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
 static void
-init_screens (MsdMediaKeysManager *manager)
+init_screens (UsdMediaKeysManager *manager)
 {
         GdkDisplay *display;
         int i;
@@ -143,7 +143,7 @@ acme_error (char * msg)
 }
 
 static char *
-get_term_command (MsdMediaKeysManager *manager)
+get_term_command (UsdMediaKeysManager *manager)
 {
 	char *cmd_term, *cmd_args;
 	char *cmd = NULL;
@@ -156,7 +156,7 @@ get_term_command (MsdMediaKeysManager *manager)
 	if (cmd_term[0] != '\0') {
 		cmd = g_strdup_printf ("%s %s -e", cmd_term, cmd_args);
 	} else {
-		cmd = g_strdup_printf ("mate-terminal -e");
+		cmd = g_strdup_printf ("ukui-terminal -e");
 	}
 
 	g_free (cmd_args);
@@ -167,7 +167,7 @@ get_term_command (MsdMediaKeysManager *manager)
 }
 
 static void
-execute (MsdMediaKeysManager *manager,
+execute (UsdMediaKeysManager *manager,
          char                *cmd,
          gboolean             sync,
          gboolean             need_term)
@@ -234,16 +234,16 @@ execute (MsdMediaKeysManager *manager,
 }
 
 static void
-dialog_init (MsdMediaKeysManager *manager)
+dialog_init (UsdMediaKeysManager *manager)
 {
         if (manager->priv->dialog != NULL
-            && !msd_osd_window_is_valid (MSD_OSD_WINDOW (manager->priv->dialog))) {
+            && !usd_osd_window_is_valid (USD_OSD_WINDOW (manager->priv->dialog))) {
                 gtk_widget_destroy (manager->priv->dialog);
                 manager->priv->dialog = NULL;
         }
 
         if (manager->priv->dialog == NULL) {
-                manager->priv->dialog = msd_media_keys_window_new ();
+                manager->priv->dialog = usd_media_keys_window_new ();
         }
 }
 
@@ -263,7 +263,7 @@ is_valid_shortcut (const char *string)
 static void
 update_kbd_cb (GSettings           *settings,
                gchar               *settings_key,
-               MsdMediaKeysManager *manager)
+               UsdMediaKeysManager *manager)
 {
         int      i;
         gboolean need_flush = TRUE;
@@ -320,12 +320,12 @@ update_kbd_cb (GSettings           *settings,
                 g_warning ("Grab failed for some keys, another application may already have access the them.");
 }
 
-static void init_kbd(MsdMediaKeysManager* manager)
+static void init_kbd(UsdMediaKeysManager* manager)
 {
 	int i;
 	gboolean need_flush = FALSE;
 
-	mate_settings_profile_start(NULL);
+	ukui_settings_profile_start(NULL);
 
 	gdk_error_trap_push();
 
@@ -383,11 +383,11 @@ static void init_kbd(MsdMediaKeysManager* manager)
 		g_warning("Grab failed for some keys, another application may already have access the them.");
 	}
 
-	mate_settings_profile_end(NULL);
+	ukui_settings_profile_end(NULL);
 }
 
 static void
-dialog_show (MsdMediaKeysManager *manager)
+dialog_show (UsdMediaKeysManager *manager)
 {
         int            orig_w;
         int            orig_h;
@@ -466,7 +466,7 @@ dialog_show (MsdMediaKeysManager *manager)
 }
 
 static void
-do_url_action (MsdMediaKeysManager *manager,
+do_url_action (UsdMediaKeysManager *manager,
                const gchar         *scheme)
 {
         GError *error = NULL;
@@ -489,7 +489,7 @@ do_url_action (MsdMediaKeysManager *manager,
 }
 
 static void
-do_media_action (MsdMediaKeysManager *manager)
+do_media_action (UsdMediaKeysManager *manager)
 {
         GError *error = NULL;
         GAppInfo *app_info;
@@ -510,21 +510,21 @@ do_media_action (MsdMediaKeysManager *manager)
 }
 
 static void
-do_shutdown_action (MsdMediaKeysManager *manager)
+do_shutdown_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "mate-session-save --shutdown-dialog", FALSE, FALSE);
+        execute (manager, "ukui-session-save --shutdown-dialog", FALSE, FALSE);
 }
 
 static void
-do_logout_action (MsdMediaKeysManager *manager)
+do_logout_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "mate-session-save --logout-dialog", FALSE, FALSE);
+        execute (manager, "ukui-session-save --logout-dialog", FALSE, FALSE);
 }
 
 static void
 do_eject_action_cb (GDrive              *drive,
                     GAsyncResult        *res,
-                    MsdMediaKeysManager *manager)
+                    UsdMediaKeysManager *manager)
 {
         g_drive_eject_with_operation_finish (drive, res, NULL);
 }
@@ -533,7 +533,7 @@ do_eject_action_cb (GDrive              *drive,
 #define SCORE_CAN_EJECT 50
 #define SCORE_HAS_MEDIA 100
 static void
-do_eject_action (MsdMediaKeysManager *manager)
+do_eject_action (UsdMediaKeysManager *manager)
 {
         GList *drives, *l;
         GDrive *fav_drive;
@@ -565,7 +565,7 @@ do_eject_action (MsdMediaKeysManager *manager)
 
         /* Show the dialogue */
         dialog_init (manager);
-        msd_media_keys_window_set_action_custom (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                                  "media-eject",
                                                  FALSE);
         dialog_show (manager);
@@ -588,20 +588,20 @@ do_eject_action (MsdMediaKeysManager *manager)
 }
 
 static void
-do_touchpad_action (MsdMediaKeysManager *manager)
+do_touchpad_action (UsdMediaKeysManager *manager)
 {
         GSettings *settings = g_settings_new (TOUCHPAD_SCHEMA);
         gboolean state = g_settings_get_boolean (settings, TOUCHPAD_ENABLED_KEY);
 
         if (touchpad_is_present () == FALSE) {
                 dialog_init (manager);
-                msd_media_keys_window_set_action_custom (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+                usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                                          "touchpad-disabled", FALSE);
                 return;
         }
 
         dialog_init (manager);
-        msd_media_keys_window_set_action_custom (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                                  (!state) ? "touchpad-enabled" : "touchpad-disabled",
                                                  FALSE);
         dialog_show (manager);
@@ -612,20 +612,20 @@ do_touchpad_action (MsdMediaKeysManager *manager)
 
 #ifdef HAVE_LIBMATEMIXER
 static void
-update_dialog (MsdMediaKeysManager *manager,
+update_dialog (UsdMediaKeysManager *manager,
                guint                volume,
                gboolean             muted,
                gboolean             sound_changed)
 {
         dialog_init (manager);
 
-        msd_media_keys_window_set_volume_muted (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_volume_muted (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                                 muted);
-        msd_media_keys_window_set_volume_level (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_volume_level (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                                 volume);
 
-        msd_media_keys_window_set_action (MSD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
-                                          MSD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
+        usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+                                          USD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
         dialog_show (manager);
 
 #ifdef HAVE_LIBCANBERRA
@@ -635,13 +635,13 @@ update_dialog (MsdMediaKeysManager *manager,
                                         CA_PROP_EVENT_DESCRIPTION, "Volume changed through key press",
                                         CA_PROP_APPLICATION_NAME, PACKAGE_NAME,
                                         CA_PROP_APPLICATION_VERSION, PACKAGE_VERSION,
-                                        CA_PROP_APPLICATION_ID, "org.mate.SettingsDaemon",
+                                        CA_PROP_APPLICATION_ID, "org.ukui.SettingsDaemon",
                                         NULL);
 #endif
 }
 
 static void
-do_sound_action (MsdMediaKeysManager *manager, int type)
+do_sound_action (UsdMediaKeysManager *manager, int type)
 {
         gboolean muted;
         gboolean muted_last;
@@ -717,10 +717,10 @@ do_sound_action (MsdMediaKeysManager *manager, int type)
 }
 
 static void
-update_default_output (MsdMediaKeysManager *manager)
+update_default_output (UsdMediaKeysManager *manager)
 {
-        MateMixerStream        *stream;
-        MateMixerStreamControl *control = NULL;
+        UkuiMixerStream        *stream;
+        UkuiMixerStreamControl *control = NULL;
 
         stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
         if (stream != NULL)
@@ -733,7 +733,7 @@ update_default_output (MsdMediaKeysManager *manager)
         g_clear_object (&manager->priv->control);
 
         if (control != NULL) {
-                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
+                UkuiMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
 
                 /* Do not use the stream if it is not possible to mute it or
                  * change the volume */
@@ -750,28 +750,28 @@ update_default_output (MsdMediaKeysManager *manager)
 }
 
 static void
-on_context_state_notify (MateMixerContext    *context,
+on_context_state_notify (UkuiMixerContext    *context,
                          GParamSpec          *pspec,
-                         MsdMediaKeysManager *manager)
+                         UsdMediaKeysManager *manager)
 {
         update_default_output (manager);
 }
 
 static void
-on_context_default_output_notify (MateMixerContext    *context,
+on_context_default_output_notify (UkuiMixerContext    *context,
                                   GParamSpec          *pspec,
-                                  MsdMediaKeysManager *manager)
+                                  UsdMediaKeysManager *manager)
 {
         update_default_output (manager);
 }
 
 static void
-on_context_stream_removed (MateMixerContext    *context,
+on_context_stream_removed (UkuiMixerContext    *context,
                            const gchar         *name,
-                           MsdMediaKeysManager *manager)
+                           UsdMediaKeysManager *manager)
 {
         if (manager->priv->stream != NULL) {
-                MateMixerStream *stream =
+                UkuiMixerStream *stream =
                         mate_mixer_context_get_stream (manager->priv->context, name);
 
                 if (stream == manager->priv->stream) {
@@ -804,7 +804,7 @@ find_by_time (gconstpointer a,
  * events only nobody is interested.
  */
 gboolean
-msd_media_keys_manager_grab_media_player_keys (MsdMediaKeysManager *manager,
+usd_media_keys_manager_grab_media_player_keys (UsdMediaKeysManager *manager,
                                                const char          *application,
                                                guint32              time,
                                                GError             **error)
@@ -846,7 +846,7 @@ msd_media_keys_manager_grab_media_player_keys (MsdMediaKeysManager *manager,
 }
 
 gboolean
-msd_media_keys_manager_release_media_player_keys (MsdMediaKeysManager *manager,
+usd_media_keys_manager_release_media_player_keys (UsdMediaKeysManager *manager,
                                                   const char          *application,
                                                   GError             **error)
 {
@@ -867,7 +867,7 @@ msd_media_keys_manager_release_media_player_keys (MsdMediaKeysManager *manager,
 }
 
 static gboolean
-msd_media_player_key_pressed (MsdMediaKeysManager *manager,
+usd_media_player_key_pressed (UsdMediaKeysManager *manager,
                               const char          *key)
 {
         const char *application = NULL;
@@ -885,10 +885,10 @@ msd_media_player_key_pressed (MsdMediaKeysManager *manager,
 }
 
 static gboolean
-do_multimedia_player_action (MsdMediaKeysManager *manager,
+do_multimedia_player_action (UsdMediaKeysManager *manager,
                              const char          *key)
 {
-        return msd_media_player_key_pressed (manager, key);
+        return usd_media_player_key_pressed (manager, key);
 }
 
 static void
@@ -904,25 +904,25 @@ do_toggle_accessibility_key (const char *key)
 }
 
 static void
-do_magnifier_action (MsdMediaKeysManager *manager)
+do_magnifier_action (UsdMediaKeysManager *manager)
 {
         do_toggle_accessibility_key ("screen-magnifier-enabled");
 }
 
 static void
-do_screenreader_action (MsdMediaKeysManager *manager)
+do_screenreader_action (UsdMediaKeysManager *manager)
 {
         do_toggle_accessibility_key ("screen-reader-enabled");
 }
 
 static void
-do_on_screen_keyboard_action (MsdMediaKeysManager *manager)
+do_on_screen_keyboard_action (UsdMediaKeysManager *manager)
 {
         do_toggle_accessibility_key ("screen-keyboard-enabled");
 }
 
 static gboolean
-do_action (MsdMediaKeysManager *manager,
+do_action (UsdMediaKeysManager *manager,
            int                  type)
 {
         char *cmd;
@@ -970,8 +970,8 @@ do_action (MsdMediaKeysManager *manager,
                 do_url_action (manager, "mailto");
                 break;
         case SCREENSAVER_KEY:
-                if ((cmd = g_find_program_in_path ("mate-screensaver-command"))) {
-                        execute (manager, "mate-screensaver-command --lock", FALSE, FALSE);
+                if ((cmd = g_find_program_in_path ("ukui-screensaver-command"))) {
+                        execute (manager, "ukui-screensaver-command --lock", FALSE, FALSE);
                 } else {
                         execute (manager, "xscreensaver-command -lock", FALSE, FALSE);
                 }
@@ -990,8 +990,8 @@ do_action (MsdMediaKeysManager *manager,
         case CALCULATOR_KEY:
                 if ((cmd = g_find_program_in_path ("galculator"))) {
                         execute (manager, "galculator", FALSE, FALSE);
-                } else if ((cmd = g_find_program_in_path ("mate-calc"))) {
-                        execute (manager, "mate-calc", FALSE, FALSE);
+                } else if ((cmd = g_find_program_in_path ("ukui-calc"))) {
+                        execute (manager, "ukui-calc", FALSE, FALSE);
                 } else {
                         execute (manager, "gnome-calculator", FALSE, FALSE);
                 }
@@ -1033,7 +1033,7 @@ do_action (MsdMediaKeysManager *manager,
 }
 
 static GdkScreen *
-acme_get_screen_from_event (MsdMediaKeysManager *manager,
+acme_get_screen_from_event (UsdMediaKeysManager *manager,
                             XAnyEvent           *xanyev)
 {
         GdkWindow *window;
@@ -1056,7 +1056,7 @@ acme_get_screen_from_event (MsdMediaKeysManager *manager,
 static GdkFilterReturn
 acme_filter_events (GdkXEvent           *xevent,
                     GdkEvent            *event,
-                    MsdMediaKeysManager *manager)
+                    UsdMediaKeysManager *manager)
 {
         XEvent    *xev = (XEvent *) xevent;
         XAnyEvent *xany = (XAnyEvent *) xevent;
@@ -1097,12 +1097,12 @@ acme_filter_events (GdkXEvent           *xevent,
 }
 
 static gboolean
-start_media_keys_idle_cb (MsdMediaKeysManager *manager)
+start_media_keys_idle_cb (UsdMediaKeysManager *manager)
 {
         GSList *l;
 
         g_debug ("Starting media_keys manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
         manager->priv->volume_monitor = g_volume_monitor_get ();
         manager->priv->settings = g_settings_new (BINDING_SCHEMA);
 
@@ -1111,7 +1111,7 @@ start_media_keys_idle_cb (MsdMediaKeysManager *manager)
 
         /* Start filtering the events */
         for (l = manager->priv->screens; l != NULL; l = l->next) {
-                mate_settings_profile_start ("gdk_window_add_filter");
+                ukui_settings_profile_start ("gdk_window_add_filter");
 
                 g_debug ("adding key filter for screen: %d",
                          gdk_screen_get_number (l->data));
@@ -1119,22 +1119,22 @@ start_media_keys_idle_cb (MsdMediaKeysManager *manager)
                 gdk_window_add_filter (gdk_screen_get_root_window (l->data),
                                        (GdkFilterFunc)acme_filter_events,
                                        manager);
-                mate_settings_profile_end ("gdk_window_add_filter");
+                ukui_settings_profile_end ("gdk_window_add_filter");
         }
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return FALSE;
 }
 
 gboolean
-msd_media_keys_manager_start (MsdMediaKeysManager *manager, GError **error)
+usd_media_keys_manager_start (UsdMediaKeysManager *manager, GError **error)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
 #ifdef HAVE_LIBMATEMIXER
         if (G_LIKELY (mate_mixer_is_initialized ())) {
-                mate_settings_profile_start ("mate_mixer_context_new");
+                ukui_settings_profile_start ("mate_mixer_context_new");
 
                 manager->priv->context = mate_mixer_context_new ();
 
@@ -1153,20 +1153,20 @@ msd_media_keys_manager_start (MsdMediaKeysManager *manager, GError **error)
 
                 mate_mixer_context_open (manager->priv->context);
 
-                mate_settings_profile_end ("mate_mixer_context_new");
+                ukui_settings_profile_end ("mate_mixer_context_new");
         }
 #endif
         g_idle_add ((GSourceFunc) start_media_keys_idle_cb, manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_media_keys_manager_stop (MsdMediaKeysManager *manager)
+usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
 {
-        MsdMediaKeysManagerPrivate *priv = manager->priv;
+        UsdMediaKeysManagerPrivate *priv = manager->priv;
         GSList *ls;
         GList *l;
         int i;
@@ -1238,34 +1238,34 @@ msd_media_keys_manager_stop (MsdMediaKeysManager *manager)
 }
 
 static void
-msd_media_keys_manager_class_init (MsdMediaKeysManagerClass *klass)
+usd_media_keys_manager_class_init (UsdMediaKeysManagerClass *klass)
 {
         signals[MEDIA_PLAYER_KEY_PRESSED] =
                 g_signal_new ("media-player-key-pressed",
                               G_OBJECT_CLASS_TYPE (klass),
                               G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (MsdMediaKeysManagerClass, media_player_key_pressed),
+                              G_STRUCT_OFFSET (UsdMediaKeysManagerClass, media_player_key_pressed),
                               NULL,
                               NULL,
-                              msd_marshal_VOID__STRING_STRING,
+                              usd_marshal_VOID__STRING_STRING,
                               G_TYPE_NONE,
                               2,
                               G_TYPE_STRING,
                               G_TYPE_STRING);
 
-        dbus_g_object_type_install_info (MSD_TYPE_MEDIA_KEYS_MANAGER, &dbus_glib_msd_media_keys_manager_object_info);
+        dbus_g_object_type_install_info (USD_TYPE_MEDIA_KEYS_MANAGER, &dbus_glib_usd_media_keys_manager_object_info);
 
-        g_type_class_add_private (klass, sizeof (MsdMediaKeysManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdMediaKeysManagerPrivate));
 }
 
 static void
-msd_media_keys_manager_init (MsdMediaKeysManager *manager)
+usd_media_keys_manager_init (UsdMediaKeysManager *manager)
 {
-        manager->priv = MSD_MEDIA_KEYS_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_MEDIA_KEYS_MANAGER_GET_PRIVATE (manager);
 }
 
 static gboolean
-register_manager (MsdMediaKeysManager *manager)
+register_manager (UsdMediaKeysManager *manager)
 {
         GError *error = NULL;
 
@@ -1278,20 +1278,20 @@ register_manager (MsdMediaKeysManager *manager)
                 return FALSE;
         }
 
-        dbus_g_connection_register_g_object (manager->priv->connection, MSD_MEDIA_KEYS_DBUS_PATH, G_OBJECT (manager));
+        dbus_g_connection_register_g_object (manager->priv->connection, USD_MEDIA_KEYS_DBUS_PATH, G_OBJECT (manager));
 
         return TRUE;
 }
 
-MsdMediaKeysManager *
-msd_media_keys_manager_new (void)
+UsdMediaKeysManager *
+usd_media_keys_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
                 gboolean res;
 
-                manager_object = g_object_new (MSD_TYPE_MEDIA_KEYS_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_MEDIA_KEYS_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
                 res = register_manager (manager_object);
@@ -1301,5 +1301,5 @@ msd_media_keys_manager_new (void)
                 }
         }
 
-        return MSD_MEDIA_KEYS_MANAGER (manager_object);
+        return USD_MEDIA_KEYS_MANAGER (manager_object);
 }

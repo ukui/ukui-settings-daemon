@@ -21,9 +21,9 @@
 #ifndef __ACME_H__
 #define __ACME_H__
 
-#include "msd-keygrab.h"
+#include "usd-keygrab.h"
 
-#define BINDING_SCHEMA "org.mate.SettingsDaemon.plugins.media-keys"
+#define BINDING_SCHEMA "org.ukui.SettingsDaemon.plugins.media-keys"
 
 enum {
         TOUCHPAD_KEY,

@@ -30,13 +30,13 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "msd-media-keys-window.h"
+#include "usd-media-keys-window.h"
 
-#define MSD_MEDIA_KEYS_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_MEDIA_KEYS_WINDOW, MsdMediaKeysWindowPrivate))
+#define USD_MEDIA_KEYS_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_WINDOW, UsdMediaKeysWindowPrivate))
 
-struct MsdMediaKeysWindowPrivate
+struct UsdMediaKeysWindowPrivate
 {
-        MsdMediaKeysWindowAction action;
+        UsdMediaKeysWindowAction action;
         char                    *icon_name;
         gboolean                 show_level;
 
@@ -47,10 +47,10 @@ struct MsdMediaKeysWindowPrivate
         GtkWidget               *progress;
 };
 
-G_DEFINE_TYPE (MsdMediaKeysWindow, msd_media_keys_window, MSD_TYPE_OSD_WINDOW)
+G_DEFINE_TYPE (UsdMediaKeysWindow, usd_media_keys_window, USD_TYPE_OSD_WINDOW)
 
 static void
-volume_controls_set_visible (MsdMediaKeysWindow *window,
+volume_controls_set_visible (UsdMediaKeysWindow *window,
                              gboolean            visible)
 {
         if (window->priv->progress == NULL)
@@ -64,7 +64,7 @@ volume_controls_set_visible (MsdMediaKeysWindow *window,
 }
 
 static void
-window_set_icon_name (MsdMediaKeysWindow *window,
+window_set_icon_name (UsdMediaKeysWindow *window,
                       const char         *name)
 {
         if (window->priv->image == NULL)
@@ -75,11 +75,11 @@ window_set_icon_name (MsdMediaKeysWindow *window,
 }
 
 static void
-action_changed (MsdMediaKeysWindow *window)
+action_changed (UsdMediaKeysWindow *window)
 {
-        if (!msd_osd_window_is_composited (MSD_OSD_WINDOW (window))) {
+        if (!usd_osd_window_is_composited (USD_OSD_WINDOW (window))) {
                 switch (window->priv->action) {
-                case MSD_MEDIA_KEYS_WINDOW_ACTION_VOLUME:
+                case USD_MEDIA_KEYS_WINDOW_ACTION_VOLUME:
                         volume_controls_set_visible (window, TRUE);
 
                         if (window->priv->volume_muted) {
@@ -89,7 +89,7 @@ action_changed (MsdMediaKeysWindow *window)
                         }
 
                         break;
-                case MSD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM:
+                case USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM:
                         volume_controls_set_visible (window, window->priv->show_level);
                         window_set_icon_name (window, window->priv->icon_name);
                         break;
@@ -99,15 +99,15 @@ action_changed (MsdMediaKeysWindow *window)
                 }
         }
 
-        msd_osd_window_update_and_hide (MSD_OSD_WINDOW (window));
+        usd_osd_window_update_and_hide (USD_OSD_WINDOW (window));
 }
 
 static void
-volume_level_changed (MsdMediaKeysWindow *window)
+volume_level_changed (UsdMediaKeysWindow *window)
 {
-        msd_osd_window_update_and_hide (MSD_OSD_WINDOW (window));
+        usd_osd_window_update_and_hide (USD_OSD_WINDOW (window));
 
-        if (!msd_osd_window_is_composited (MSD_OSD_WINDOW (window)) && window->priv->progress != NULL) {
+        if (!usd_osd_window_is_composited (USD_OSD_WINDOW (window)) && window->priv->progress != NULL) {
                 double fraction;
 
                 fraction = (double) window->priv->volume_level / 100.0;
@@ -118,11 +118,11 @@ volume_level_changed (MsdMediaKeysWindow *window)
 }
 
 static void
-volume_muted_changed (MsdMediaKeysWindow *window)
+volume_muted_changed (UsdMediaKeysWindow *window)
 {
-        msd_osd_window_update_and_hide (MSD_OSD_WINDOW (window));
+        usd_osd_window_update_and_hide (USD_OSD_WINDOW (window));
 
-        if (!msd_osd_window_is_composited (MSD_OSD_WINDOW (window))) {
+        if (!usd_osd_window_is_composited (USD_OSD_WINDOW (window))) {
                 if (window->priv->volume_muted) {
                         window_set_icon_name (window, "audio-volume-muted");
                 } else {
@@ -132,46 +132,46 @@ volume_muted_changed (MsdMediaKeysWindow *window)
 }
 
 void
-msd_media_keys_window_set_action (MsdMediaKeysWindow      *window,
-                                  MsdMediaKeysWindowAction action)
+usd_media_keys_window_set_action (UsdMediaKeysWindow      *window,
+                                  UsdMediaKeysWindowAction action)
 {
-        g_return_if_fail (MSD_IS_MEDIA_KEYS_WINDOW (window));
-        g_return_if_fail (action == MSD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
+        g_return_if_fail (USD_IS_MEDIA_KEYS_WINDOW (window));
+        g_return_if_fail (action == USD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
 
         if (window->priv->action != action) {
                 window->priv->action = action;
                 action_changed (window);
         } else {
-                msd_osd_window_update_and_hide (MSD_OSD_WINDOW (window));
+                usd_osd_window_update_and_hide (USD_OSD_WINDOW (window));
         }
 }
 
 void
-msd_media_keys_window_set_action_custom (MsdMediaKeysWindow      *window,
+usd_media_keys_window_set_action_custom (UsdMediaKeysWindow      *window,
                                          const char              *icon_name,
                                          gboolean                 show_level)
 {
-        g_return_if_fail (MSD_IS_MEDIA_KEYS_WINDOW (window));
+        g_return_if_fail (USD_IS_MEDIA_KEYS_WINDOW (window));
         g_return_if_fail (icon_name != NULL);
 
-        if (window->priv->action != MSD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM ||
+        if (window->priv->action != USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM ||
             g_strcmp0 (window->priv->icon_name, icon_name) != 0 ||
             window->priv->show_level != show_level) {
-                window->priv->action = MSD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM;
+                window->priv->action = USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM;
                 g_free (window->priv->icon_name);
                 window->priv->icon_name = g_strdup (icon_name);
                 window->priv->show_level = show_level;
                 action_changed (window);
         } else {
-                msd_osd_window_update_and_hide (MSD_OSD_WINDOW (window));
+                usd_osd_window_update_and_hide (USD_OSD_WINDOW (window));
         }
 }
 
 void
-msd_media_keys_window_set_volume_muted (MsdMediaKeysWindow *window,
+usd_media_keys_window_set_volume_muted (UsdMediaKeysWindow *window,
                                         gboolean            muted)
 {
-        g_return_if_fail (MSD_IS_MEDIA_KEYS_WINDOW (window));
+        g_return_if_fail (USD_IS_MEDIA_KEYS_WINDOW (window));
 
         if (window->priv->volume_muted != muted) {
                 window->priv->volume_muted = muted;
@@ -180,10 +180,10 @@ msd_media_keys_window_set_volume_muted (MsdMediaKeysWindow *window,
 }
 
 void
-msd_media_keys_window_set_volume_level (MsdMediaKeysWindow *window,
+usd_media_keys_window_set_volume_level (UsdMediaKeysWindow *window,
                                         int                 level)
 {
-        g_return_if_fail (MSD_IS_MEDIA_KEYS_WINDOW (window));
+        g_return_if_fail (USD_IS_MEDIA_KEYS_WINDOW (window));
 
         if (window->priv->volume_level != level) {
                 window->priv->volume_level = level;
@@ -192,7 +192,7 @@ msd_media_keys_window_set_volume_level (MsdMediaKeysWindow *window,
 }
 
 static GdkPixbuf *
-load_pixbuf (MsdMediaKeysWindow *window,
+load_pixbuf (UsdMediaKeysWindow *window,
              const char         *name,
              int                 icon_size)
 {
@@ -236,10 +236,10 @@ draw_eject (cairo_t *cr,
         cairo_rel_line_to (cr, -width / 2, -tri_height);
         cairo_rel_line_to (cr, -width / 2, tri_height);
         cairo_close_path (cr);
-        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, MSD_OSD_WINDOW_FG_ALPHA);
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, USD_OSD_WINDOW_FG_ALPHA);
         cairo_fill_preserve (cr);
 
-        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, MSD_OSD_WINDOW_FG_ALPHA / 2);
+        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, USD_OSD_WINDOW_FG_ALPHA / 2);
         cairo_set_line_width (cr, 2);
         cairo_stroke (cr);
 }
@@ -298,12 +298,12 @@ draw_cross (cairo_t *cr,
         cairo_move_to (cr, cx, cy + size/2.0);
         cairo_rel_line_to (cr, size, -size);
 
-        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, MSD_OSD_WINDOW_FG_ALPHA / 2);
+        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, USD_OSD_WINDOW_FG_ALPHA / 2);
         cairo_set_line_width (cr, 14);
         cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
         cairo_stroke_preserve (cr);
 
-        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, MSD_OSD_WINDOW_FG_ALPHA);
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, USD_OSD_WINDOW_FG_ALPHA);
         cairo_set_line_width (cr, 10);
         cairo_set_line_cap (cr, CAIRO_LINE_CAP_ROUND);
         cairo_stroke (cr);
@@ -337,16 +337,16 @@ draw_speaker (cairo_t *cr,
         cairo_line_to (cr, _x0, _y0);
         cairo_close_path (cr);
 
-        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, MSD_OSD_WINDOW_FG_ALPHA);
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, USD_OSD_WINDOW_FG_ALPHA);
         cairo_fill_preserve (cr);
 
-        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, MSD_OSD_WINDOW_FG_ALPHA / 2);
+        cairo_set_source_rgba (cr, 0.6, 0.6, 0.6, USD_OSD_WINDOW_FG_ALPHA / 2);
         cairo_set_line_width (cr, 2);
         cairo_stroke (cr);
 }
 
 static gboolean
-render_speaker (MsdMediaKeysWindow *window,
+render_speaker (UsdMediaKeysWindow *window,
                 cairo_t            *cr,
                 double              _x0,
                 double              _y0,
@@ -385,7 +385,7 @@ render_speaker (MsdMediaKeysWindow *window,
         }
 
         gdk_cairo_set_source_pixbuf (cr, pixbuf, _x0, _y0);
-        cairo_paint_with_alpha (cr, MSD_OSD_WINDOW_FG_ALPHA);
+        cairo_paint_with_alpha (cr, USD_OSD_WINDOW_FG_ALPHA);
 
         g_object_unref (pixbuf);
 
@@ -393,7 +393,7 @@ render_speaker (MsdMediaKeysWindow *window,
 }
 
 static void
-draw_volume_boxes (MsdMediaKeysWindow *window,
+draw_volume_boxes (UsdMediaKeysWindow *window,
                    cairo_t            *cr,
                    double              percentage,
                    double              _x0,
@@ -432,7 +432,7 @@ draw_volume_boxes (MsdMediaKeysWindow *window,
 }
 
 static void
-draw_action_volume (MsdMediaKeysWindow *window,
+draw_action_volume (UsdMediaKeysWindow *window,
                     cairo_t            *cr)
 {
         int window_width;
@@ -534,7 +534,7 @@ draw_action_volume (MsdMediaKeysWindow *window,
 }
 
 static gboolean
-render_custom (MsdMediaKeysWindow *window,
+render_custom (UsdMediaKeysWindow *window,
                cairo_t            *cr,
                double              _x0,
                double              _y0,
@@ -561,7 +561,7 @@ render_custom (MsdMediaKeysWindow *window,
         }
 
         gdk_cairo_set_source_pixbuf (cr, pixbuf, _x0, _y0);
-        cairo_paint_with_alpha (cr, MSD_OSD_WINDOW_FG_ALPHA);
+        cairo_paint_with_alpha (cr, USD_OSD_WINDOW_FG_ALPHA);
 
         g_object_unref (pixbuf);
 
@@ -569,7 +569,7 @@ render_custom (MsdMediaKeysWindow *window,
 }
 
 static void
-draw_action_custom (MsdMediaKeysWindow *window,
+draw_action_custom (UsdMediaKeysWindow *window,
                     cairo_t            *cr)
 {
         int window_width;
@@ -633,16 +633,16 @@ draw_action_custom (MsdMediaKeysWindow *window,
 }
 
 static void
-msd_media_keys_window_draw_when_composited (MsdOsdWindow *osd_window,
+usd_media_keys_window_draw_when_composited (UsdOsdWindow *osd_window,
                                               cairo_t      *cr)
 {
-        MsdMediaKeysWindow *window = MSD_MEDIA_KEYS_WINDOW (osd_window);
+        UsdMediaKeysWindow *window = USD_MEDIA_KEYS_WINDOW (osd_window);
 
         switch (window->priv->action) {
-        case MSD_MEDIA_KEYS_WINDOW_ACTION_VOLUME:
+        case USD_MEDIA_KEYS_WINDOW_ACTION_VOLUME:
                 draw_action_volume (window, cr);
                 break;
-        case MSD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM:
+        case USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM:
                 draw_action_custom (window, cr);
                 break;
         default:
@@ -651,21 +651,21 @@ msd_media_keys_window_draw_when_composited (MsdOsdWindow *osd_window,
 }
 
 static void
-msd_media_keys_window_class_init (MsdMediaKeysWindowClass *klass)
+usd_media_keys_window_class_init (UsdMediaKeysWindowClass *klass)
 {
-        MsdOsdWindowClass *osd_window_class = MSD_OSD_WINDOW_CLASS (klass);
+        UsdOsdWindowClass *osd_window_class = USD_OSD_WINDOW_CLASS (klass);
 
-        osd_window_class->draw_when_composited = msd_media_keys_window_draw_when_composited;
+        osd_window_class->draw_when_composited = usd_media_keys_window_draw_when_composited;
 
-        g_type_class_add_private (klass, sizeof (MsdMediaKeysWindowPrivate));
+        g_type_class_add_private (klass, sizeof (UsdMediaKeysWindowPrivate));
 }
 
 static void
-msd_media_keys_window_init (MsdMediaKeysWindow *window)
+usd_media_keys_window_init (UsdMediaKeysWindow *window)
 {
-        window->priv = MSD_MEDIA_KEYS_WINDOW_GET_PRIVATE (window);
+        window->priv = USD_MEDIA_KEYS_WINDOW_GET_PRIVATE (window);
 
-        if (!msd_osd_window_is_composited (MSD_OSD_WINDOW (window))) {
+        if (!usd_osd_window_is_composited (USD_OSD_WINDOW (window))) {
                 GtkBuilder *builder;
                 const gchar *objects[] = {"acme_box", NULL};
                 GtkWidget *box;
@@ -692,7 +692,7 @@ msd_media_keys_window_init (MsdMediaKeysWindow *window)
 }
 
 GtkWidget *
-msd_media_keys_window_new (void)
+usd_media_keys_window_new (void)
 {
-        return g_object_new (MSD_TYPE_MEDIA_KEYS_WINDOW, NULL);
+        return g_object_new (USD_TYPE_MEDIA_KEYS_WINDOW, NULL);
 }

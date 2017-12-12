@@ -27,9 +27,9 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "msd-media-keys-manager.h"
+#include "usd-media-keys-manager.h"
 
-static MsdMediaKeysManager *manager = NULL;
+static UsdMediaKeysManager *manager = NULL;
 
 int
 main (int    argc,
@@ -38,7 +38,7 @@ main (int    argc,
         GError  *error = NULL;
 
 #ifdef ENABLE_NLS
-        bindtextdomain (GETTEXT_PACKAGE, MATE_SETTINGS_LOCALEDIR);
+        bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
 # ifdef HAVE_BIND_TEXTDOMAIN_CODESET
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 # endif
@@ -51,10 +51,10 @@ main (int    argc,
                 exit (1);
         }
 
-        manager = msd_media_keys_manager_new ();
+        manager = usd_media_keys_manager_new ();
 
         error = NULL;
-        msd_media_keys_manager_start (manager, &error);
+        usd_media_keys_manager_start (manager, &error);
 
         gtk_main ();
 

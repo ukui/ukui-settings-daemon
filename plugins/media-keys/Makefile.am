@@ -1,4 +1,4 @@
-icondir = $(datadir)/icons/mate
+icondir = $(datadir)/icons/ukui
 context = actions
 
 NULL =
@@ -6,9 +6,9 @@ NULL =
 plugin_LTLIBRARIES = libmedia-keys.la
 
 BUILT_SOURCES = 			\
-	msd-media-keys-manager-glue.h	\
-	msd-marshal.h			\
-	msd-marshal.c			\
+	usd-media-keys-manager-glue.h	\
+	usd-marshal.h			\
+	usd-marshal.c			\
 	$(NULL)
 
 ICON_FILES = 			\
@@ -54,34 +54,34 @@ uninstall-local:
 	rm -f $(DESTDIR)$(icondir)/32x32/$(context)/touchpad-disabled.png
 	rm -f $(DESTDIR)$(icondir)/scalable/$(context)/touchpad-disabled.svg
 
-msd-media-keys-manager-glue.h: msd-media-keys-manager.xml Makefile
-	$(AM_V_GEN) dbus-binding-tool --prefix=msd_media_keys_manager --mode=glib-server $< > xgen-$(@F) \
+usd-media-keys-manager-glue.h: usd-media-keys-manager.xml Makefile
+	$(AM_V_GEN) dbus-binding-tool --prefix=usd_media_keys_manager --mode=glib-server $< > xgen-$(@F) \
 	&& ( cmp -s xgen-$(@F) $@ || cp xgen-$(@F) $@ ) \
 	&& rm -f xgen-$(@F)
 
-msd-marshal.c: msd-marshal.list
-	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=msd_marshal $< --header --body --internal > $@
+usd-marshal.c: usd-marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=usd_marshal $< --header --body --internal > $@
 
-msd-marshal.h: msd-marshal.list
-	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=msd_marshal $< --header --internal > $@
+usd-marshal.h: usd-marshal.list
+	$(AM_V_GEN) $(GLIB_GENMARSHAL) --prefix=usd_marshal $< --header --internal > $@
 
 libmedia_keys_la_SOURCES = 		\
-	msd-media-keys-plugin.h		\
-	msd-media-keys-plugin.c		\
-	msd-media-keys-manager.h	\
-	msd-media-keys-manager.c	\
-	msd-media-keys-window.h		\
-	msd-media-keys-window.c		\
+	usd-media-keys-plugin.h		\
+	usd-media-keys-plugin.c		\
+	usd-media-keys-manager.h	\
+	usd-media-keys-manager.c	\
+	usd-media-keys-window.h		\
+	usd-media-keys-window.c		\
 	acme.h				\
 	$(BUILT_SOURCES)		\
 	$(NULL)
 
 libmedia_keys_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon			\
+	-I$(top_srcdir)/ukui-settings-daemon			\
 	-I$(top_srcdir)/plugins/common				\
 	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
 	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
 	$(AM_CPPFLAGS)
 
 libmedia_keys_la_CFLAGS = \
@@ -91,7 +91,7 @@ libmedia_keys_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libmedia_keys_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)
+	$(USD_PLUGIN_LDFLAGS)
 
 libmedia_keys_la_LIBADD  = 		\
 	$(top_builddir)/plugins/common/libcommon.la			\
@@ -102,9 +102,9 @@ libmedia_keys_la_LIBADD  = 		\
 	-lm
 
 plugin_in_files = 		\
-	media-keys.mate-settings-plugin.in
+	media-keys.ukui-settings-plugin.in
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 noinst_PROGRAMS =				\
 	test-media-keys				\
@@ -112,18 +112,18 @@ noinst_PROGRAMS =				\
 	$(NULL)
 
 test_media_window_SOURCES =			\
-	msd-media-keys-window.c			\
-	msd-media-keys-window.h			\
+	usd-media-keys-window.c			\
+	usd-media-keys-window.h			\
 	test-media-window.c			\
 	$(NULL)
 
 test_media_window_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon			\
+	-I$(top_srcdir)/ukui-settings-daemon			\
 	-I$(top_srcdir)/plugins/common				\
 	-DDATADIR=\""$(datadir)"\"				\
 	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
 	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
 	$(AM_CPPFLAGS)
 
 test_media_window_CFLAGS = \
@@ -139,20 +139,20 @@ test_media_window_LDADD = \
 	-lm
 
 test_media_keys_SOURCES =			\
-	msd-media-keys-manager.c		\
-	msd-media-keys-manager.h		\
-	msd-media-keys-window.h			\
-	msd-media-keys-window.c			\
+	usd-media-keys-manager.c		\
+	usd-media-keys-manager.h		\
+	usd-media-keys-window.h			\
+	usd-media-keys-window.c			\
 	test-media-keys.c			\
 	$(BUILT_SOURCES)			\
 	$(NULL)
 
 test_media_keys_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon			\
+	-I$(top_srcdir)/ukui-settings-daemon			\
 	-I$(top_srcdir)/plugins/common				\
 	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
 	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"			\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
 	$(AM_CPPFLAGS)
 
 test_media_keys_CFLAGS = \
@@ -162,7 +162,7 @@ test_media_keys_CFLAGS = \
 	$(AM_CFLAGS)
 
 test_media_keys_LDADD = \
-	$(top_builddir)/mate-settings-daemon/libmsd-profile.la		\
+	$(top_builddir)/ukui-settings-daemon/libusd-profile.la		\
 	$(top_builddir)/plugins/common/libcommon.la			\
 	$(SETTINGS_DAEMON_LIBS)			\
 	$(SETTINGS_PLUGIN_LIBS)			\
@@ -177,8 +177,8 @@ gtkbuilder_DATA =	\
 	$(NULL)
 
 EXTRA_DIST = 				\
-	msd-media-keys-manager.xml	\
-	msd-marshal.list		\
+	usd-media-keys-manager.xml	\
+	usd-marshal.list		\
 	$(plugin_in_files)		\
 	$(gtkbuilder_DATA)		\
 	$(pixmaps_DATA)			\
@@ -193,4 +193,4 @@ CLEANFILES = 			\
 DISTCLEANFILES =		\
 	$(plugin_DATA)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
