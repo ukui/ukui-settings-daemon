@@ -45,15 +45,15 @@
 #include <X11/keysym.h>
 #endif
 
-#include "mate-settings-profile.h"
-#include "msd-keyboard-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-keyboard-manager.h"
 
-#include "msd-keyboard-xkb.h"
+#include "usd-keyboard-xkb.h"
 
-#define MSD_KEYBOARD_MANAGER_GET_PRIVATE(o) \
-	(G_TYPE_INSTANCE_GET_PRIVATE((o), MSD_TYPE_KEYBOARD_MANAGER, MsdKeyboardManagerPrivate))
+#define USD_KEYBOARD_MANAGER_GET_PRIVATE(o) \
+	(G_TYPE_INSTANCE_GET_PRIVATE((o), USD_TYPE_KEYBOARD_MANAGER, UsdKeyboardManagerPrivate))
 
-#define MSD_KEYBOARD_SCHEMA "org.mate.peripherals-keyboard"
+#define USD_KEYBOARD_SCHEMA "org.ukui.peripherals-keyboard"
 
 #define KEY_REPEAT         "repeat"
 #define KEY_CLICK          "click"
@@ -68,17 +68,17 @@
 #define KEY_NUMLOCK_STATE    "numlock-state"
 #define KEY_NUMLOCK_REMEMBER "remember-numlock-state"
 
-struct MsdKeyboardManagerPrivate {
+struct UsdKeyboardManagerPrivate {
 	gboolean    have_xkb;
 	gint        xkb_event_base;
 	GSettings  *settings;
 };
 
-static void     msd_keyboard_manager_class_init  (MsdKeyboardManagerClass* klass);
-static void     msd_keyboard_manager_init        (MsdKeyboardManager*      keyboard_manager);
-static void     msd_keyboard_manager_finalize    (GObject*                 object);
+static void     usd_keyboard_manager_class_init  (UsdKeyboardManagerClass* klass);
+static void     usd_keyboard_manager_init        (UsdKeyboardManager*      keyboard_manager);
+static void     usd_keyboard_manager_finalize    (GObject*                 object);
 
-G_DEFINE_TYPE (MsdKeyboardManager, msd_keyboard_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdKeyboardManager, usd_keyboard_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
@@ -131,7 +131,7 @@ typedef enum {
 } NumLockState;
 
 static void
-numlock_xkb_init (MsdKeyboardManager *manager)
+numlock_xkb_init (UsdKeyboardManager *manager)
 {
         Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         gboolean have_xkb;
@@ -206,7 +206,7 @@ numlock_xkb_callback (GdkXEvent *xev_,
                         unsigned num_mask = numlock_NumLock_modifier_mask ();
                         unsigned locked_mods = xkbev->state.locked_mods;
                         int numlock_state = !! (num_mask & locked_mods);
-                        GSettings *settings = g_settings_new (MSD_KEYBOARD_SCHEMA);
+                        GSettings *settings = g_settings_new (USD_KEYBOARD_SCHEMA);
                         numlock_set_settings_state (settings, numlock_state);
                         g_object_unref (settings);
                 }
@@ -215,7 +215,7 @@ numlock_xkb_callback (GdkXEvent *xev_,
 }
 
 static void
-numlock_install_xkb_callback (MsdKeyboardManager *manager)
+numlock_install_xkb_callback (UsdKeyboardManager *manager)
 {
         if (!manager->priv->have_xkb)
                 return;
@@ -230,7 +230,7 @@ numlock_install_xkb_callback (MsdKeyboardManager *manager)
 static void
 apply_settings (GSettings          *settings,
                 gchar              *key,
-                MsdKeyboardManager *manager)
+                UsdKeyboardManager *manager)
 {
         XKeyboardControl kbdcontrol;
         gboolean         repeat;
@@ -307,30 +307,30 @@ apply_settings (GSettings          *settings,
 }
 
 void
-msd_keyboard_manager_apply_settings (MsdKeyboardManager *manager)
+usd_keyboard_manager_apply_settings (UsdKeyboardManager *manager)
 {
         apply_settings (manager->priv->settings, NULL, manager);
 }
 
 static gboolean
-start_keyboard_idle_cb (MsdKeyboardManager *manager)
+start_keyboard_idle_cb (UsdKeyboardManager *manager)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         g_debug ("Starting keyboard manager");
 
         manager->priv->have_xkb = 0;
-        manager->priv->settings = g_settings_new (MSD_KEYBOARD_SCHEMA);
+        manager->priv->settings = g_settings_new (USD_KEYBOARD_SCHEMA);
 
         /* Essential - xkb initialization should happen before */
-        msd_keyboard_xkb_init (manager);
+        usd_keyboard_xkb_init (manager);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
         numlock_xkb_init (manager);
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
         /* apply current settings before we install the callback */
-        msd_keyboard_manager_apply_settings (manager);
+        usd_keyboard_manager_apply_settings (manager);
 
         g_signal_connect (manager->priv->settings, "changed", G_CALLBACK (apply_settings), manager);
 
@@ -338,28 +338,28 @@ start_keyboard_idle_cb (MsdKeyboardManager *manager)
         numlock_install_xkb_callback (manager);
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return FALSE;
 }
 
 gboolean
-msd_keyboard_manager_start (MsdKeyboardManager *manager,
+usd_keyboard_manager_start (UsdKeyboardManager *manager,
                             GError            **error)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         g_idle_add ((GSourceFunc) start_keyboard_idle_cb, manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_keyboard_manager_stop (MsdKeyboardManager *manager)
+usd_keyboard_manager_stop (UsdKeyboardManager *manager)
 {
-        MsdKeyboardManagerPrivate *p = manager->priv;
+        UsdKeyboardManagerPrivate *p = manager->priv;
 
         g_debug ("Stopping keyboard manager");
 
@@ -376,50 +376,50 @@ msd_keyboard_manager_stop (MsdKeyboardManager *manager)
         }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
-        msd_keyboard_xkb_shutdown ();
+        usd_keyboard_xkb_shutdown ();
 }
 
 static void
-msd_keyboard_manager_class_init (MsdKeyboardManagerClass *klass)
+usd_keyboard_manager_class_init (UsdKeyboardManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_keyboard_manager_finalize;
+        object_class->finalize = usd_keyboard_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdKeyboardManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdKeyboardManagerPrivate));
 }
 
 static void
-msd_keyboard_manager_init (MsdKeyboardManager *manager)
+usd_keyboard_manager_init (UsdKeyboardManager *manager)
 {
-        manager->priv = MSD_KEYBOARD_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_KEYBOARD_MANAGER_GET_PRIVATE (manager);
 }
 
 static void
-msd_keyboard_manager_finalize (GObject *object)
+usd_keyboard_manager_finalize (GObject *object)
 {
-        MsdKeyboardManager *keyboard_manager;
+        UsdKeyboardManager *keyboard_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_KEYBOARD_MANAGER (object));
+        g_return_if_fail (USD_IS_KEYBOARD_MANAGER (object));
 
-        keyboard_manager = MSD_KEYBOARD_MANAGER (object);
+        keyboard_manager = USD_KEYBOARD_MANAGER (object);
 
         g_return_if_fail (keyboard_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_keyboard_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_keyboard_manager_parent_class)->finalize (object);
 }
 
-MsdKeyboardManager *
-msd_keyboard_manager_new (void)
+UsdKeyboardManager *
+usd_keyboard_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_KEYBOARD_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_KEYBOARD_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_KEYBOARD_MANAGER (manager_object);
+        return USD_KEYBOARD_MANAGER (manager_object);
 }

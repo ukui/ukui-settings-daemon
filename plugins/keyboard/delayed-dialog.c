@@ -33,7 +33,7 @@ static GdkFilterReturn message_filter       (GdkXEvent *xevent,
 static GSList *dialogs = NULL;
 
 /**
- * msd_delayed_show_dialog:
+ * usd_delayed_show_dialog:
  * @dialog: the dialog
  *
  * Shows the dialog as with gtk_widget_show(), unless a window manager
@@ -41,7 +41,7 @@ static GSList *dialogs = NULL;
  * for that to happen before showing the dialog.
  **/
 void
-msd_delayed_show_dialog (GtkWidget *dialog)
+usd_delayed_show_dialog (GtkWidget *dialog)
 {
         GdkDisplay *display = gtk_widget_get_display (dialog);
         Display *xdisplay = GDK_DISPLAY_XDISPLAY (display);

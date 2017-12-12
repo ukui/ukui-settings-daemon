@@ -1,5 +1,5 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
- * mate-settings-keyboard-xkb.h
+ * ukui-settings-keyboard-xkb.h
  *
  * Copyright (C) 2001 Udaltsoft
  *
@@ -21,17 +21,17 @@
  * 02110-1301, USA.
  */
 
-#ifndef __MSD_KEYBOARD_XKB_H
-#define __MSD_KEYBOARD_XKB_H
+#ifndef __USD_KEYBOARD_XKB_H
+#define __USD_KEYBOARD_XKB_H
 
 #include <libxklavier/xklavier.h>
-#include "msd-keyboard-manager.h"
+#include "usd-keyboard-manager.h"
 
-void msd_keyboard_xkb_init(MsdKeyboardManager* manager);
-void msd_keyboard_xkb_shutdown(void);
+void usd_keyboard_xkb_init(UsdKeyboardManager* manager);
+void usd_keyboard_xkb_shutdown(void);
 
 typedef void (*PostActivationCallback) (void* userData);
 
-void msd_keyboard_xkb_set_post_activation_callback(PostActivationCallback fun, void* userData);
+void usd_keyboard_xkb_set_post_activation_callback(PostActivationCallback fun, void* userData);
 
 #endif

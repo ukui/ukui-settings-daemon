@@ -37,20 +37,20 @@
 #include <libmatekbd/matekbd-keyboard-config.h>
 #include <libmatekbd/matekbd-util.h>
 
-#include "msd-keyboard-xkb.h"
+#include "usd-keyboard-xkb.h"
 #include "delayed-dialog.h"
-#include "mate-settings-profile.h"
+#include "ukui-settings-profile.h"
 
 #define GTK_RESPONSE_PRINT 2
 
-#define MATEKBD_DESKTOP_SCHEMA "org.mate.peripherals-keyboard-xkb.general"
-#define MATEKBD_KBD_SCHEMA "org.mate.peripherals-keyboard-xkb.kbd"
+#define MATEKBD_DESKTOP_SCHEMA "org.ukui.peripherals-keyboard-xkb.general"
+#define MATEKBD_KBD_SCHEMA "org.ukui.peripherals-keyboard-xkb.kbd"
 
 #define KNOWN_FILES_KEY "known-file-list"
 #define DISABLE_INDICATOR_KEY "disable-indicator"
 #define DUPLICATE_LEDS_KEY "duplicate-leds"
 
-static MsdKeyboardManager* manager = NULL;
+static UsdKeyboardManager* manager = NULL;
 
 static GSettings* settings_desktop;
 static GSettings* settings_kbd;
@@ -128,10 +128,10 @@ activation_error (void)
 						     vendor,
 						     release,
 						     "xprop -root | grep XKB",
-						     "gsettings list-keys org.mate.peripherals-keyboard-xkb.kbd");
+						     "gsettings list-keys org.ukui.peripherals-keyboard-xkb.kbd");
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (gtk_widget_destroy), NULL);
-	msd_delayed_show_dialog (dialog);
+	usd_delayed_show_dialog (dialog);
 }
 
 static void
@@ -142,7 +142,7 @@ apply_desktop_settings (void)
 	if (!inited_ok)
 		return;
 
-	msd_keyboard_manager_apply_settings (manager);
+	usd_keyboard_manager_apply_settings (manager);
 	matekbd_desktop_config_load_from_gsettings (&current_desktop_config);
 	/* again, probably it would be nice to compare things
 	   before activating them */
@@ -169,7 +169,7 @@ popup_menu_launch_capplet ()
 	GdkAppLaunchContext *context;
 	GError *error = NULL;
 
-	info = g_app_info_create_from_commandline ("mate-keyboard-properties", NULL, 0, &error);
+	info = g_app_info_create_from_commandline ("ukui-keyboard-properties", NULL, 0, &error);
 
 	if (info != NULL) {
 		context = gdk_display_get_app_launch_context (gdk_display_get_default ());
@@ -374,7 +374,7 @@ filter_xkb_config (void)
 	if (!xkl_registry) {
 		xkl_registry =
 		    xkl_config_registry_get_instance (xkl_engine);
-		/* load all materials, unconditionally! */
+		/* load all ukuirials, unconditionally! */
 		if (!xkl_config_registry_load (xkl_registry, TRUE)) {
 			g_object_unref (xkl_registry);
 			xkl_registry = NULL;
@@ -462,7 +462,7 @@ apply_xkb_settings_cb (GSettings *settings, gchar *key, gpointer   user_data)
 }
 
 static void
-msd_keyboard_xkb_analyze_sysconfig (void)
+usd_keyboard_xkb_analyze_sysconfig (void)
 {
 	if (!inited_ok)
 		return;
@@ -473,7 +473,7 @@ msd_keyboard_xkb_analyze_sysconfig (void)
 }
 
 void
-msd_keyboard_xkb_set_post_activation_callback (PostActivationCallback fun,
+usd_keyboard_xkb_set_post_activation_callback (PostActivationCallback fun,
 					       void *user_data)
 {
 	pa_callback = fun;
@@ -481,7 +481,7 @@ msd_keyboard_xkb_set_post_activation_callback (PostActivationCallback fun,
 }
 
 static GdkFilterReturn
-msd_keyboard_xkb_evt_filter (GdkXEvent * xev, GdkEvent * event)
+usd_keyboard_xkb_evt_filter (GdkXEvent * xev, GdkEvent * event)
 {
 	XEvent *xevent = (XEvent *) xev;
 	xkl_engine_filter_events (xkl_engine, xevent);
@@ -490,14 +490,14 @@ msd_keyboard_xkb_evt_filter (GdkXEvent * xev, GdkEvent * event)
 
 /* When new Keyboard is plugged in - reload the settings */
 static void
-msd_keyboard_new_device (XklEngine * engine)
+usd_keyboard_new_device (XklEngine * engine)
 {
 	apply_desktop_settings ();
 	apply_xkb_settings ();
 }
 
 static void
-msd_keyboard_update_indicator_icons ()
+usd_keyboard_update_indicator_icons ()
 {
 	Bool state;
 	int new_state, i;
@@ -528,23 +528,23 @@ msd_keyboard_update_indicator_icons ()
 }
 
 static void
-msd_keyboard_state_changed (XklEngine * engine, XklEngineStateChange type,
+usd_keyboard_state_changed (XklEngine * engine, XklEngineStateChange type,
 			    gint new_group, gboolean restore)
 {
 	xkl_debug (160,
 		   "State changed: type %d, new group: %d, restore: %d.\n",
 		   type, new_group, restore);
 	if (type == INDICATORS_CHANGED) {
-		msd_keyboard_update_indicator_icons ();
+		usd_keyboard_update_indicator_icons ();
 	}
 }
 
 void
-msd_keyboard_xkb_init (MsdKeyboardManager * kbd_manager)
+usd_keyboard_xkb_init (UsdKeyboardManager * kbd_manager)
 {
 	int i;
 	Display *display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
-	mate_settings_profile_start (NULL);
+	ukui_settings_profile_start (NULL);
 
 	gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
 					   DATADIR G_DIR_SEPARATOR_S
@@ -561,12 +561,12 @@ msd_keyboard_xkb_init (MsdKeyboardManager * kbd_manager)
 		    (indicator_off_icon_names[i]);
 	}
 
-	msd_keyboard_update_indicator_icons ();
+	usd_keyboard_update_indicator_icons ();
 
 	manager = kbd_manager;
-	mate_settings_profile_start ("xkl_engine_get_instance");
+	ukui_settings_profile_start ("xkl_engine_get_instance");
 	xkl_engine = xkl_engine_get_instance (display);
-	mate_settings_profile_end ("xkl_engine_get_instance");
+	ukui_settings_profile_end ("xkl_engine_get_instance");
 	if (xkl_engine) {
 		inited_ok = TRUE;
 
@@ -579,7 +579,7 @@ msd_keyboard_xkb_init (MsdKeyboardManager * kbd_manager)
 		                              xkl_engine);
 
 		xkl_engine_backup_names_prop (xkl_engine);
-		msd_keyboard_xkb_analyze_sysconfig ();
+		usd_keyboard_xkb_analyze_sysconfig ();
 
 		matekbd_desktop_config_start_listen (&current_desktop_config,
 		                                     G_CALLBACK (apply_desktop_settings_cb),
@@ -595,37 +595,37 @@ msd_keyboard_xkb_init (MsdKeyboardManager * kbd_manager)
 		                  G_CALLBACK (apply_xkb_settings_cb), NULL);
 
 		gdk_window_add_filter (NULL, (GdkFilterFunc)
-				       msd_keyboard_xkb_evt_filter, NULL);
+				       usd_keyboard_xkb_evt_filter, NULL);
 
 		if (xkl_engine_get_features (xkl_engine) &
 		    XKLF_DEVICE_DISCOVERY)
 			g_signal_connect (xkl_engine, "X-new-device",
 					  G_CALLBACK
-					  (msd_keyboard_new_device), NULL);
+					  (usd_keyboard_new_device), NULL);
 		g_signal_connect (xkl_engine, "X-state-changed",
 				  G_CALLBACK
-				  (msd_keyboard_state_changed), NULL);
+				  (usd_keyboard_state_changed), NULL);
 
-		mate_settings_profile_start ("xkl_engine_start_listen");
+		ukui_settings_profile_start ("xkl_engine_start_listen");
 		xkl_engine_start_listen (xkl_engine,
 					 XKLL_MANAGE_LAYOUTS |
 					 XKLL_MANAGE_WINDOW_STATES);
-		mate_settings_profile_end ("xkl_engine_start_listen");
+		ukui_settings_profile_end ("xkl_engine_start_listen");
 
-		mate_settings_profile_start ("apply_desktop_settings");
+		ukui_settings_profile_start ("apply_desktop_settings");
 		apply_desktop_settings ();
-		mate_settings_profile_end ("apply_desktop_settings");
-		mate_settings_profile_start ("apply_xkb_settings");
+		ukui_settings_profile_end ("apply_desktop_settings");
+		ukui_settings_profile_start ("apply_xkb_settings");
 		apply_xkb_settings ();
-		mate_settings_profile_end ("apply_xkb_settings");
+		ukui_settings_profile_end ("apply_xkb_settings");
 	}
 	preview_dialogs = g_hash_table_new (g_direct_hash, g_direct_equal);
 
-	mate_settings_profile_end (NULL);
+	ukui_settings_profile_end (NULL);
 }
 
 void
-msd_keyboard_xkb_shutdown (void)
+usd_keyboard_xkb_shutdown (void)
 {
 	int i;
 
@@ -649,7 +649,7 @@ msd_keyboard_xkb_shutdown (void)
 				XKLL_MANAGE_WINDOW_STATES);
 
 	gdk_window_remove_filter (NULL, (GdkFilterFunc)
-				  msd_keyboard_xkb_evt_filter, NULL);
+				  usd_keyboard_xkb_evt_filter, NULL);
 
 	if (settings_desktop != NULL) {
 		g_object_unref (settings_desktop);
