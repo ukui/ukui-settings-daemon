@@ -2,7 +2,7 @@ NULL =
 
 gtkbuilderdir = $(pkgdatadir)
 gtkbuilder_DATA = 			\
-	msd-a11y-preferences-dialog.ui	\
+	usd-a11y-preferences-dialog.ui	\
 	$(NULL)
 
 noinst_PROGRAMS =				\
@@ -10,16 +10,16 @@ noinst_PROGRAMS =				\
 	$(NULL)
 
 test_a11y_preferences_dialog_SOURCES =		\
-	msd-a11y-preferences-dialog.c		\
-	msd-a11y-preferences-dialog.h		\
+	usd-a11y-preferences-dialog.c		\
+	usd-a11y-preferences-dialog.h		\
 	test-a11y-preferences-dialog.c		\
 	$(NULL)
 
 test_a11y_preferences_dialog_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon			\
+	-I$(top_srcdir)/ukui-settings-daemon			\
 	-DPIXMAPDIR=\""$(pkgdatadir)"\"				\
 	-DGTKBUILDERDIR=\""$(pkgdatadir)"\"				\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\"	\
 	$(AM_CPPFLAGS)
 
 test_a11y_preferences_dialog_CFLAGS = \
@@ -36,17 +36,17 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 liba11y_keyboard_la_SOURCES = 		\
-	msd-a11y-keyboard-plugin.h	\
-	msd-a11y-keyboard-plugin.c	\
-	msd-a11y-keyboard-manager.h	\
-	msd-a11y-keyboard-manager.c	\
-	msd-a11y-preferences-dialog.h	\
-	msd-a11y-preferences-dialog.c	\
+	usd-a11y-keyboard-plugin.h	\
+	usd-a11y-keyboard-plugin.c	\
+	usd-a11y-keyboard-manager.h	\
+	usd-a11y-keyboard-manager.c	\
+	usd-a11y-preferences-dialog.h	\
+	usd-a11y-preferences-dialog.c	\
 	$(NULL)
 
 liba11y_keyboard_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	-DGTKBUILDERDIR=\""$(gtkbuilderdir)"\" \
 	$(AM_CPPFLAGS)
 
@@ -56,7 +56,7 @@ liba11y_keyboard_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 liba11y_keyboard_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)		\
+	$(USD_PLUGIN_LDFLAGS)		\
 	$(NULL)
 
 liba11y_keyboard_la_LIBADD  = 		\
@@ -66,10 +66,10 @@ liba11y_keyboard_la_LIBADD  = 		\
 	$(NULL)
 
 plugin_in_files = 		\
-	a11y-keyboard.mate-settings-plugin.in	\
+	a11y-keyboard.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -84,4 +84,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@

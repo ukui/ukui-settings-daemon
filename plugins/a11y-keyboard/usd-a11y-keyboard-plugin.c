@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-a11y-keyboard-plugin.h"
-#include "msd-a11y-keyboard-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-a11y-keyboard-plugin.h"
+#include "usd-a11y-keyboard-manager.h"
 
-struct MsdA11yKeyboardPluginPrivate {
-        MsdA11yKeyboardManager *manager;
+struct UsdA11yKeyboardPluginPrivate {
+        UsdA11yKeyboardManager *manager;
 };
 
-#define MSD_A11Y_KEYBOARD_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_A11Y_KEYBOARD_PLUGIN, MsdA11yKeyboardPluginPrivate))
+#define USD_A11Y_KEYBOARD_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_A11Y_KEYBOARD_PLUGIN, UsdA11yKeyboardPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdA11yKeyboardPlugin, msd_a11y_keyboard_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdA11yKeyboardPlugin, usd_a11y_keyboard_plugin)
 
 static void
-msd_a11y_keyboard_plugin_init (MsdA11yKeyboardPlugin *plugin)
+usd_a11y_keyboard_plugin_init (UsdA11yKeyboardPlugin *plugin)
 {
-        plugin->priv = MSD_A11Y_KEYBOARD_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_A11Y_KEYBOARD_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdA11yKeyboardPlugin initializing");
+        g_debug ("UsdA11yKeyboardPlugin initializing");
 
-        plugin->priv->manager = msd_a11y_keyboard_manager_new ();
+        plugin->priv->manager = usd_a11y_keyboard_manager_new ();
 }
 
 static void
-msd_a11y_keyboard_plugin_finalize (GObject *object)
+usd_a11y_keyboard_plugin_finalize (GObject *object)
 {
-        MsdA11yKeyboardPlugin *plugin;
+        UsdA11yKeyboardPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_A11Y_KEYBOARD_PLUGIN (object));
+        g_return_if_fail (USD_IS_A11Y_KEYBOARD_PLUGIN (object));
 
-        g_debug ("MsdA11yKeyboardPlugin finalizing");
+        g_debug ("UsdA11yKeyboardPlugin finalizing");
 
-        plugin = MSD_A11Y_KEYBOARD_PLUGIN (object);
+        plugin = USD_A11Y_KEYBOARD_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_a11y_keyboard_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_a11y_keyboard_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_a11y_keyboard_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating a11y_keyboard plugin");
 
         error = NULL;
-        res = msd_a11y_keyboard_manager_start (MSD_A11Y_KEYBOARD_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_a11y_keyboard_manager_start (USD_A11Y_KEYBOARD_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start a11y_keyboard manager: %s", error->message);
                 g_error_free (error);
@@ -83,27 +83,27 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating a11y_keyboard plugin");
-        msd_a11y_keyboard_manager_stop (MSD_A11Y_KEYBOARD_PLUGIN (plugin)->priv->manager);
+        usd_a11y_keyboard_manager_stop (USD_A11Y_KEYBOARD_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_a11y_keyboard_plugin_class_init (MsdA11yKeyboardPluginClass *klass)
+usd_a11y_keyboard_plugin_class_init (UsdA11yKeyboardPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_a11y_keyboard_plugin_finalize;
+        object_class->finalize = usd_a11y_keyboard_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdA11yKeyboardPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdA11yKeyboardPluginPrivate));
 }
 
 static void
-msd_a11y_keyboard_plugin_class_finalize (MsdA11yKeyboardPluginClass *klass)
+usd_a11y_keyboard_plugin_class_finalize (UsdA11yKeyboardPluginClass *klass)
 {
 }

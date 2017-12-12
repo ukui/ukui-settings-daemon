@@ -34,16 +34,16 @@
 
 #include <gio/gio.h>
 
-#include "msd-a11y-preferences-dialog.h"
+#include "usd-a11y-preferences-dialog.h"
 
 #define SM_DBUS_NAME      "org.gnome.SessionManager"
 #define SM_DBUS_PATH      "/org/gnome/SessionManager"
 #define SM_DBUS_INTERFACE "org.gnome.SessionManager"
 
 
-#define MSD_A11Y_PREFERENCES_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_A11Y_PREFERENCES_DIALOG, MsdA11yPreferencesDialogPrivate))
+#define USD_A11Y_PREFERENCES_DIALOG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_A11Y_PREFERENCES_DIALOG, UsdA11yPreferencesDialogPrivate))
 
-#define GTKBUILDER_UI_FILE "msd-a11y-preferences-dialog.ui"
+#define GTKBUILDER_UI_FILE "usd-a11y-preferences-dialog.ui"
 
 #define KEY_A11Y_SCHEMA              "org.mate.accessibility-keyboard"
 #define KEY_STICKY_KEYS_ENABLED      "stickykeys-enable"
@@ -82,12 +82,12 @@
 #define KEY_COLOR_SCHEME       "gtk-color-scheme"
 #define KEY_ICON_THEME         "icon-theme"
 
-#define KEY_MARCO_SCHEMA    "org.mate.Marco"
+#define KEY_MARCO_SCHEMA    "org.ukui.Marco"
 #define KEY_MARCO_THEME     "theme"
 
 #define HIGH_CONTRAST_THEME    "HighContrast"
 
-struct MsdA11yPreferencesDialogPrivate
+struct UsdA11yPreferencesDialogPrivate
 {
         GtkWidget *sticky_keys_checkbutton;
         GtkWidget *slow_keys_checkbutton;
@@ -110,24 +110,24 @@ enum {
         PROP_0,
 };
 
-static void     msd_a11y_preferences_dialog_class_init  (MsdA11yPreferencesDialogClass *klass);
-static void     msd_a11y_preferences_dialog_init        (MsdA11yPreferencesDialog      *a11y_preferences_dialog);
-static void     msd_a11y_preferences_dialog_finalize    (GObject                       *object);
+static void     usd_a11y_preferences_dialog_class_init  (UsdA11yPreferencesDialogClass *klass);
+static void     usd_a11y_preferences_dialog_init        (UsdA11yPreferencesDialog      *a11y_preferences_dialog);
+static void     usd_a11y_preferences_dialog_finalize    (GObject                       *object);
 
-G_DEFINE_TYPE (MsdA11yPreferencesDialog, msd_a11y_preferences_dialog, GTK_TYPE_DIALOG)
+G_DEFINE_TYPE (UsdA11yPreferencesDialog, usd_a11y_preferences_dialog, GTK_TYPE_DIALOG)
 
 static void
-msd_a11y_preferences_dialog_class_init (MsdA11yPreferencesDialogClass *klass)
+usd_a11y_preferences_dialog_class_init (UsdA11yPreferencesDialogClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_a11y_preferences_dialog_finalize;
+        object_class->finalize = usd_a11y_preferences_dialog_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdA11yPreferencesDialogPrivate));
+        g_type_class_add_private (klass, sizeof (UsdA11yPreferencesDialogPrivate));
 }
 
 static void
-on_response (MsdA11yPreferencesDialog *dialog,
+on_response (UsdA11yPreferencesDialog *dialog,
              gint                      response_id)
 {
         switch (response_id) {
@@ -221,7 +221,7 @@ config_get_large_print (gboolean *is_writable)
 
         g_object_unref (settings);
 
-        g_debug ("MsdA11yPreferences: got x-dpi=%f user-dpi=%f", x_dpi, u_dpi);
+        g_debug ("UsdA11yPreferences: got x-dpi=%f user-dpi=%f", x_dpi, u_dpi);
 
         ret = (((double)DPI_FACTOR_LARGE * x_dpi) < u_dpi);
 
@@ -242,7 +242,7 @@ config_set_large_print (gboolean enabled)
                 x_dpi = get_dpi_from_x_server ();
                 u_dpi = (double)DPI_FACTOR_LARGER * x_dpi;
 
-                g_debug ("MsdA11yPreferences: setting x-dpi=%f user-dpi=%f", x_dpi, u_dpi);
+                g_debug ("UsdA11yPreferences: setting x-dpi=%f user-dpi=%f", x_dpi, u_dpi);
 
                 g_settings_set_double (settings, KEY_FONT_DPI, u_dpi);
         } else {
@@ -253,7 +253,7 @@ config_set_large_print (gboolean enabled)
 }
 
 static gboolean
-config_get_high_contrast (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_high_contrast (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         gboolean ret;
         char    *gtk_theme;
@@ -272,7 +272,7 @@ config_get_high_contrast (MsdA11yPreferencesDialog *dialog, gboolean *is_writabl
 }
 
 static void
-config_set_high_contrast (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_high_contrast (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         if (enabled) {
                 g_settings_set_string (dialog->priv->settings_interface, KEY_GTK_THEME, HIGH_CONTRAST_THEME);
@@ -286,37 +286,37 @@ config_set_high_contrast (MsdA11yPreferencesDialog *dialog, gboolean enabled)
 }
 
 static gboolean
-config_get_sticky_keys (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_sticky_keys (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_a11y, KEY_STICKY_KEYS_ENABLED, is_writable);
 }
 
 static void
-config_set_sticky_keys (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_sticky_keys (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_a11y, KEY_STICKY_KEYS_ENABLED, enabled);
 }
 
 static gboolean
-config_get_bounce_keys (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_bounce_keys (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_a11y, KEY_BOUNCE_KEYS_ENABLED, is_writable);
 }
 
 static void
-config_set_bounce_keys (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_bounce_keys (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_a11y, KEY_BOUNCE_KEYS_ENABLED, enabled);
 }
 
 static gboolean
-config_get_slow_keys (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_slow_keys (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_a11y, KEY_SLOW_KEYS_ENABLED, is_writable);
 }
 
 static void
-config_set_slow_keys (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_slow_keys (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_a11y, KEY_SLOW_KEYS_ENABLED, enabled);
 }
@@ -364,99 +364,99 @@ config_have_at_gsettings_condition (const char *condition)
 }
 
 static gboolean
-config_get_at_screen_reader (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_at_screen_reader (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_at, KEY_AT_SCREEN_READER_ENABLED, is_writable);
 }
 
 static gboolean
-config_get_at_screen_keyboard (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_at_screen_keyboard (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_at, KEY_AT_SCREEN_KEYBOARD_ENABLED, is_writable);
 }
 
 static gboolean
-config_get_at_screen_magnifier (MsdA11yPreferencesDialog *dialog, gboolean *is_writable)
+config_get_at_screen_magnifier (UsdA11yPreferencesDialog *dialog, gboolean *is_writable)
 {
         return config_get_bool (dialog->priv->settings_at, KEY_AT_SCREEN_MAGNIFIER_ENABLED, is_writable);
 }
 
 static void
-config_set_at_screen_reader (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_at_screen_reader (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_at, KEY_AT_SCREEN_READER_ENABLED, enabled);
 }
 
 static void
-config_set_at_screen_keyboard (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_at_screen_keyboard (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_at, KEY_AT_SCREEN_KEYBOARD_ENABLED, enabled);
 }
 
 static void
-config_set_at_screen_magnifier (MsdA11yPreferencesDialog *dialog, gboolean enabled)
+config_set_at_screen_magnifier (UsdA11yPreferencesDialog *dialog, gboolean enabled)
 {
         g_settings_set_boolean (dialog->priv->settings_at, KEY_AT_SCREEN_MAGNIFIER_ENABLED, enabled);
 }
 
 static void
 on_sticky_keys_checkbutton_toggled (GtkToggleButton          *button,
-                                    MsdA11yPreferencesDialog *dialog)
+                                    UsdA11yPreferencesDialog *dialog)
 {
         config_set_sticky_keys (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_bounce_keys_checkbutton_toggled (GtkToggleButton          *button,
-                                    MsdA11yPreferencesDialog *dialog)
+                                    UsdA11yPreferencesDialog *dialog)
 {
         config_set_bounce_keys (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_slow_keys_checkbutton_toggled (GtkToggleButton          *button,
-                                  MsdA11yPreferencesDialog *dialog)
+                                  UsdA11yPreferencesDialog *dialog)
 {
         config_set_slow_keys (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_high_contrast_checkbutton_toggled (GtkToggleButton          *button,
-                                      MsdA11yPreferencesDialog *dialog)
+                                      UsdA11yPreferencesDialog *dialog)
 {
         config_set_high_contrast (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_at_screen_reader_checkbutton_toggled (GtkToggleButton          *button,
-                                         MsdA11yPreferencesDialog *dialog)
+                                         UsdA11yPreferencesDialog *dialog)
 {
         config_set_at_screen_reader (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_at_screen_keyboard_checkbutton_toggled (GtkToggleButton          *button,
-                                           MsdA11yPreferencesDialog *dialog)
+                                           UsdA11yPreferencesDialog *dialog)
 {
         config_set_at_screen_keyboard (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_at_screen_magnifier_checkbutton_toggled (GtkToggleButton          *button,
-                                            MsdA11yPreferencesDialog *dialog)
+                                            UsdA11yPreferencesDialog *dialog)
 {
         config_set_at_screen_magnifier (dialog, gtk_toggle_button_get_active (button));
 }
 
 static void
 on_large_print_checkbutton_toggled (GtkToggleButton          *button,
-                                    MsdA11yPreferencesDialog *dialog)
+                                    UsdA11yPreferencesDialog *dialog)
 {
         config_set_large_print (gtk_toggle_button_get_active (button));
 }
 
 static void
-ui_set_sticky_keys (MsdA11yPreferencesDialog *dialog,
+ui_set_sticky_keys (UsdA11yPreferencesDialog *dialog,
                     gboolean                  enabled)
 {
         gboolean active;
@@ -468,7 +468,7 @@ ui_set_sticky_keys (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_bounce_keys (MsdA11yPreferencesDialog *dialog,
+ui_set_bounce_keys (UsdA11yPreferencesDialog *dialog,
                     gboolean                  enabled)
 {
         gboolean active;
@@ -480,7 +480,7 @@ ui_set_bounce_keys (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_slow_keys (MsdA11yPreferencesDialog *dialog,
+ui_set_slow_keys (UsdA11yPreferencesDialog *dialog,
                   gboolean                  enabled)
 {
         gboolean active;
@@ -492,7 +492,7 @@ ui_set_slow_keys (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_high_contrast (MsdA11yPreferencesDialog *dialog,
+ui_set_high_contrast (UsdA11yPreferencesDialog *dialog,
                       gboolean                  enabled)
 {
         gboolean active;
@@ -504,7 +504,7 @@ ui_set_high_contrast (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_at_screen_reader (MsdA11yPreferencesDialog *dialog,
+ui_set_at_screen_reader (UsdA11yPreferencesDialog *dialog,
                          gboolean                  enabled)
 {
         gboolean active;
@@ -516,7 +516,7 @@ ui_set_at_screen_reader (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_at_screen_keyboard (MsdA11yPreferencesDialog *dialog,
+ui_set_at_screen_keyboard (UsdA11yPreferencesDialog *dialog,
                            gboolean                  enabled)
 {
         gboolean active;
@@ -528,7 +528,7 @@ ui_set_at_screen_keyboard (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_at_screen_magnifier (MsdA11yPreferencesDialog *dialog,
+ui_set_at_screen_magnifier (UsdA11yPreferencesDialog *dialog,
                             gboolean                  enabled)
 {
         gboolean active;
@@ -540,7 +540,7 @@ ui_set_at_screen_magnifier (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-ui_set_large_print (MsdA11yPreferencesDialog *dialog,
+ui_set_large_print (UsdA11yPreferencesDialog *dialog,
                     gboolean                  enabled)
 {
         gboolean active;
@@ -554,7 +554,7 @@ ui_set_large_print (MsdA11yPreferencesDialog *dialog,
 static void
 key_changed_cb (GSettings                *settings,
                 gchar                    *key,
-                MsdA11yPreferencesDialog *dialog)
+                UsdA11yPreferencesDialog *dialog)
 {
         if (g_strcmp0 (key, KEY_STICKY_KEYS_ENABLED) == 0) {
                 gboolean enabled;
@@ -586,7 +586,7 @@ key_changed_cb (GSettings                *settings,
 }
 
 static void
-setup_dialog (MsdA11yPreferencesDialog *dialog,
+setup_dialog (UsdA11yPreferencesDialog *dialog,
               GtkBuilder               *builder)
 {
         GtkWidget   *widget;
@@ -658,7 +658,7 @@ setup_dialog (MsdA11yPreferencesDialog *dialog,
                 gtk_widget_set_sensitive (widget, FALSE);
         }
         gtk_widget_set_no_show_all (widget, TRUE);
-        if (config_have_at_gsettings_condition ("MATE " KEY_AT_SCHEMA " " KEY_AT_SCREEN_KEYBOARD_ENABLED)) {
+        if (config_have_at_gsettings_condition ("UKUI " KEY_AT_SCHEMA " " KEY_AT_SCREEN_KEYBOARD_ENABLED)) {
                 gtk_widget_show_all (widget);
         } else {
                 gtk_widget_hide (widget);
@@ -677,7 +677,7 @@ setup_dialog (MsdA11yPreferencesDialog *dialog,
                 gtk_widget_set_sensitive (widget, FALSE);
         }
         gtk_widget_set_no_show_all (widget, TRUE);
-        if (config_have_at_gsettings_condition ("MATE " KEY_AT_SCHEMA " " KEY_AT_SCREEN_READER_ENABLED)) {
+        if (config_have_at_gsettings_condition ("UKUI " KEY_AT_SCHEMA " " KEY_AT_SCREEN_READER_ENABLED)) {
                 gtk_widget_show_all (widget);
         } else {
                 gtk_widget_hide (widget);
@@ -696,7 +696,7 @@ setup_dialog (MsdA11yPreferencesDialog *dialog,
                 gtk_widget_set_sensitive (widget, FALSE);
         }
         gtk_widget_set_no_show_all (widget, TRUE);
-        if (config_have_at_gsettings_condition ("MATE " KEY_AT_SCHEMA " " KEY_AT_SCREEN_MAGNIFIER_ENABLED)) {
+        if (config_have_at_gsettings_condition ("UKUI " KEY_AT_SCHEMA " " KEY_AT_SCREEN_MAGNIFIER_ENABLED)) {
                 gtk_widget_show_all (widget);
         } else {
                 gtk_widget_hide (widget);
@@ -726,14 +726,14 @@ setup_dialog (MsdA11yPreferencesDialog *dialog,
 }
 
 static void
-msd_a11y_preferences_dialog_init (MsdA11yPreferencesDialog *dialog)
+usd_a11y_preferences_dialog_init (UsdA11yPreferencesDialog *dialog)
 {
         static const gchar *ui_file_path = GTKBUILDERDIR "/" GTKBUILDER_UI_FILE;
         gchar *objects[] = {"main_box", NULL};
         GError *error = NULL;
         GtkBuilder  *builder;
 
-        dialog->priv = MSD_A11Y_PREFERENCES_DIALOG_GET_PRIVATE (dialog);
+        dialog->priv = USD_A11Y_PREFERENCES_DIALOG_GET_PRIVATE (dialog);
 
         dialog->priv->settings_a11y = g_settings_new (KEY_A11Y_SCHEMA);
         dialog->priv->settings_at = g_settings_new (KEY_AT_SCHEMA);
@@ -779,14 +779,14 @@ msd_a11y_preferences_dialog_init (MsdA11yPreferencesDialog *dialog)
 }
 
 static void
-msd_a11y_preferences_dialog_finalize (GObject *object)
+usd_a11y_preferences_dialog_finalize (GObject *object)
 {
-        MsdA11yPreferencesDialog *dialog;
+        UsdA11yPreferencesDialog *dialog;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_A11Y_PREFERENCES_DIALOG (object));
+        g_return_if_fail (USD_IS_A11Y_PREFERENCES_DIALOG (object));
 
-        dialog = MSD_A11Y_PREFERENCES_DIALOG (object);
+        dialog = USD_A11Y_PREFERENCES_DIALOG (object);
 
         g_return_if_fail (dialog->priv != NULL);
 
@@ -795,15 +795,15 @@ msd_a11y_preferences_dialog_finalize (GObject *object)
         g_object_unref (dialog->priv->settings_interface);
         g_object_unref (dialog->priv->settings_marco);
 
-        G_OBJECT_CLASS (msd_a11y_preferences_dialog_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_a11y_preferences_dialog_parent_class)->finalize (object);
 }
 
 GtkWidget *
-msd_a11y_preferences_dialog_new (void)
+usd_a11y_preferences_dialog_new (void)
 {
         GObject *object;
 
-        object = g_object_new (MSD_TYPE_A11Y_PREFERENCES_DIALOG,
+        object = g_object_new (USD_TYPE_A11Y_PREFERENCES_DIALOG,
                                NULL);
 
         return GTK_WIDGET (object);

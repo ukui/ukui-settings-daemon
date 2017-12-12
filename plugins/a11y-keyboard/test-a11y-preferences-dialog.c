@@ -27,14 +27,14 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "msd-a11y-preferences-dialog.h"
+#include "usd-a11y-preferences-dialog.h"
 
 static void
 test_window (void)
 {
         GtkWidget *window;
 
-        window = msd_a11y_preferences_dialog_new ();
+        window = usd_a11y_preferences_dialog_new ();
         gtk_dialog_run (GTK_DIALOG (window));
 }
 
@@ -45,7 +45,7 @@ main (int    argc,
         GError *error = NULL;
 
 #ifdef ENABLE_NLS
-        bindtextdomain (GETTEXT_PACKAGE, MATE_SETTINGS_LOCALEDIR);
+        bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
 # ifdef HAVE_BIND_TEXTDOMAIN_CODESET
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 # endif
