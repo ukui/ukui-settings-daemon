@@ -1,4 +1,4 @@
-/* msd-timeline.c
+/* usd-timeline.c
  *
  * Copyright (C) 2008 Carlos Garnacho  <carlos@imendio.com>
  *
@@ -20,16 +20,16 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 #include <math.h>
-#include "msd-timeline.h"
+#include "usd-timeline.h"
 
-#define MSD_TIMELINE_GET_PRIV(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), MSD_TYPE_TIMELINE, MsdTimelinePriv))
+#define USD_TIMELINE_GET_PRIV(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), USD_TYPE_TIMELINE, UsdTimelinePriv))
 #define MSECS_PER_SEC 1000
 #define FRAME_INTERVAL(nframes) (MSECS_PER_SEC / nframes)
 #define DEFAULT_FPS 30
 
-typedef struct MsdTimelinePriv MsdTimelinePriv;
+typedef struct UsdTimelinePriv UsdTimelinePriv;
 
-struct MsdTimelinePriv
+struct UsdTimelinePriv
 {
   guint duration;
   guint fps;
@@ -38,8 +38,8 @@ struct MsdTimelinePriv
   GTimer *timer;
 
   GdkScreen *screen;
-  MsdTimelineProgressType progress_type;
-  MsdTimelineProgressFunc progress_func;
+  UsdTimelineProgressType progress_type;
+  UsdTimelineProgressFunc progress_func;
 
   guint loop      : 1;
   guint direction : 1;
@@ -66,67 +66,67 @@ enum {
 static guint signals [LAST_SIGNAL] = { 0, };
 
 
-static void  msd_timeline_set_property  (GObject         *object,
+static void  usd_timeline_set_property  (GObject         *object,
 					 guint            prop_id,
 					 const GValue    *value,
 					 GParamSpec      *pspec);
-static void  msd_timeline_get_property  (GObject         *object,
+static void  usd_timeline_get_property  (GObject         *object,
 					 guint            prop_id,
 					 GValue          *value,
 					 GParamSpec      *pspec);
-static void  msd_timeline_finalize      (GObject *object);
+static void  usd_timeline_finalize      (GObject *object);
 
 
-G_DEFINE_TYPE (MsdTimeline, msd_timeline, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdTimeline, usd_timeline, G_TYPE_OBJECT)
 
 
 GType
-msd_timeline_direction_get_type (void)
+usd_timeline_direction_get_type (void)
 {
   static GType type = 0;
 
   if (G_UNLIKELY (type == 0))
     {
       static const GEnumValue values[] = {
-	{ MSD_TIMELINE_DIRECTION_FORWARD,  "MSD_TIMELINE_DIRECTION_FORWARD",  "forward" },
-	{ MSD_TIMELINE_DIRECTION_BACKWARD, "MSD_TIMELINE_DIRECTION_BACKWARD", "backward" },
+	{ USD_TIMELINE_DIRECTION_FORWARD,  "USD_TIMELINE_DIRECTION_FORWARD",  "forward" },
+	{ USD_TIMELINE_DIRECTION_BACKWARD, "USD_TIMELINE_DIRECTION_BACKWARD", "backward" },
 	{ 0, NULL, NULL }
       };
 
-      type = g_enum_register_static (g_intern_static_string ("MsdTimelineDirection"), values);
+      type = g_enum_register_static (g_intern_static_string ("UsdTimelineDirection"), values);
     }
 
   return type;
 }
 
 GType
-msd_timeline_progress_type_get_type (void)
+usd_timeline_progress_type_get_type (void)
 {
   static GType type = 0;
 
   if (G_UNLIKELY (type == 0))
     {
       static const GEnumValue values[] = {
-	{ MSD_TIMELINE_PROGRESS_LINEAR,      "MSD_TIMELINE_PROGRESS_LINEAR",      "linear" },
-	{ MSD_TIMELINE_PROGRESS_SINUSOIDAL,  "MSD_TIMELINE_PROGRESS_SINUSOIDAL",  "sinusoidal" },
-	{ MSD_TIMELINE_PROGRESS_EXPONENTIAL, "MSD_TIMELINE_PROGRESS_EXPONENTIAL", "exponential" },
+	{ USD_TIMELINE_PROGRESS_LINEAR,      "USD_TIMELINE_PROGRESS_LINEAR",      "linear" },
+	{ USD_TIMELINE_PROGRESS_SINUSOIDAL,  "USD_TIMELINE_PROGRESS_SINUSOIDAL",  "sinusoidal" },
+	{ USD_TIMELINE_PROGRESS_EXPONENTIAL, "USD_TIMELINE_PROGRESS_EXPONENTIAL", "exponential" },
 	{ 0, NULL, NULL }
       };
 
-      type = g_enum_register_static (g_intern_static_string ("MsdTimelineProgressType"), values);
+      type = g_enum_register_static (g_intern_static_string ("UsdTimelineProgressType"), values);
     }
 
   return type;
 }
 
 static void
-msd_timeline_class_init (MsdTimelineClass *class)
+usd_timeline_class_init (UsdTimelineClass *class)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-  object_class->set_property = msd_timeline_set_property;
-  object_class->get_property = msd_timeline_get_property;
-  object_class->finalize = msd_timeline_finalize;
+  object_class->set_property = usd_timeline_set_property;
+  object_class->get_property = usd_timeline_get_property;
+  object_class->finalize = usd_timeline_finalize;
 
   g_object_class_install_property (object_class,
 				   PROP_FPS,
@@ -158,16 +158,16 @@ msd_timeline_class_init (MsdTimelineClass *class)
 				   g_param_spec_enum ("direction",
 						      "Direction",
 						      "Whether the timeline moves forward or backward in time",
-						      MSD_TYPE_TIMELINE_DIRECTION,
-						      MSD_TIMELINE_DIRECTION_FORWARD,
+						      USD_TYPE_TIMELINE_DIRECTION,
+						      USD_TIMELINE_DIRECTION_FORWARD,
 						      G_PARAM_READWRITE));
   g_object_class_install_property (object_class,
 				   PROP_DIRECTION,
 				   g_param_spec_enum ("progress-type",
 						      "Progress type",
 						      "Type of progress through the timeline",
-						      MSD_TYPE_TIMELINE_PROGRESS_TYPE,
-						      MSD_TIMELINE_PROGRESS_LINEAR,
+						      USD_TYPE_TIMELINE_PROGRESS_TYPE,
+						      USD_TIMELINE_PROGRESS_LINEAR,
 						      G_PARAM_READWRITE));
   g_object_class_install_property (object_class,
 				   PROP_SCREEN,
@@ -181,7 +181,7 @@ msd_timeline_class_init (MsdTimelineClass *class)
     g_signal_new ("started",
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (MsdTimelineClass, started),
+		  G_STRUCT_OFFSET (UsdTimelineClass, started),
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__VOID,
 		  G_TYPE_NONE, 0);
@@ -190,7 +190,7 @@ msd_timeline_class_init (MsdTimelineClass *class)
     g_signal_new ("paused",
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (MsdTimelineClass, paused),
+		  G_STRUCT_OFFSET (UsdTimelineClass, paused),
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__VOID,
 		  G_TYPE_NONE, 0);
@@ -199,7 +199,7 @@ msd_timeline_class_init (MsdTimelineClass *class)
     g_signal_new ("finished",
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (MsdTimelineClass, finished),
+		  G_STRUCT_OFFSET (UsdTimelineClass, finished),
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__VOID,
 		  G_TYPE_NONE, 0);
@@ -208,58 +208,58 @@ msd_timeline_class_init (MsdTimelineClass *class)
     g_signal_new ("frame",
 		  G_TYPE_FROM_CLASS (object_class),
 		  G_SIGNAL_RUN_LAST,
-		  G_STRUCT_OFFSET (MsdTimelineClass, frame),
+		  G_STRUCT_OFFSET (UsdTimelineClass, frame),
 		  NULL, NULL,
 		  g_cclosure_marshal_VOID__DOUBLE,
 		  G_TYPE_NONE, 1,
 		  G_TYPE_DOUBLE);
 
-  g_type_class_add_private (class, sizeof (MsdTimelinePriv));
+  g_type_class_add_private (class, sizeof (UsdTimelinePriv));
 }
 
 static void
-msd_timeline_init (MsdTimeline *timeline)
+usd_timeline_init (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   priv->fps = DEFAULT_FPS;
   priv->duration = 0;
-  priv->direction = MSD_TIMELINE_DIRECTION_FORWARD;
+  priv->direction = USD_TIMELINE_DIRECTION_FORWARD;
   priv->screen = gdk_screen_get_default ();
 }
 
 static void
-msd_timeline_set_property (GObject      *object,
+usd_timeline_set_property (GObject      *object,
 			   guint         prop_id,
 			   const GValue *value,
 			   GParamSpec   *pspec)
 {
-  MsdTimeline *timeline;
+  UsdTimeline *timeline;
 
-  timeline = MSD_TIMELINE (object);
+  timeline = USD_TIMELINE (object);
 
   switch (prop_id)
     {
     case PROP_FPS:
-      msd_timeline_set_fps (timeline, g_value_get_uint (value));
+      usd_timeline_set_fps (timeline, g_value_get_uint (value));
       break;
     case PROP_DURATION:
-      msd_timeline_set_duration (timeline, g_value_get_uint (value));
+      usd_timeline_set_duration (timeline, g_value_get_uint (value));
       break;
     case PROP_LOOP:
-      msd_timeline_set_loop (timeline, g_value_get_boolean (value));
+      usd_timeline_set_loop (timeline, g_value_get_boolean (value));
       break;
     case PROP_DIRECTION:
-      msd_timeline_set_direction (timeline, g_value_get_enum (value));
+      usd_timeline_set_direction (timeline, g_value_get_enum (value));
       break;
     case PROP_SCREEN:
-      msd_timeline_set_screen (timeline,
+      usd_timeline_set_screen (timeline,
 			       GDK_SCREEN (g_value_get_object (value)));
       break;
     case PROP_PROGRESS_TYPE:
-      msd_timeline_set_progress_type (timeline, g_value_get_enum (value));
+      usd_timeline_set_progress_type (timeline, g_value_get_enum (value));
       break;
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -267,16 +267,16 @@ msd_timeline_set_property (GObject      *object,
 }
 
 static void
-msd_timeline_get_property (GObject    *object,
+usd_timeline_get_property (GObject    *object,
 			   guint       prop_id,
 			   GValue     *value,
 			   GParamSpec *pspec)
 {
-  MsdTimeline *timeline;
-  MsdTimelinePriv *priv;
+  UsdTimeline *timeline;
+  UsdTimelinePriv *priv;
 
-  timeline = MSD_TIMELINE (object);
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  timeline = USD_TIMELINE (object);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   switch (prop_id)
     {
@@ -304,11 +304,11 @@ msd_timeline_get_property (GObject    *object,
 }
 
 static void
-msd_timeline_finalize (GObject *object)
+usd_timeline_finalize (GObject *object)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  priv = MSD_TIMELINE_GET_PRIV (object);
+  priv = USD_TIMELINE_GET_PRIV (object);
 
   if (priv->source_id)
     {
@@ -319,7 +319,7 @@ msd_timeline_finalize (GObject *object)
   if (priv->timer)
       g_timer_destroy (priv->timer);
 
-  G_OBJECT_CLASS (msd_timeline_parent_class)->finalize (object);
+  G_OBJECT_CLASS (usd_timeline_parent_class)->finalize (object);
 }
 
 /* Sinusoidal progress */
@@ -335,27 +335,27 @@ exponential_progress (gdouble progress)
   return progress * progress;
 }
 
-static MsdTimelineProgressFunc
-progress_type_to_func (MsdTimelineProgressType type)
+static UsdTimelineProgressFunc
+progress_type_to_func (UsdTimelineProgressType type)
 {
-  if (type == MSD_TIMELINE_PROGRESS_SINUSOIDAL)
+  if (type == USD_TIMELINE_PROGRESS_SINUSOIDAL)
     return sinusoidal_progress;
-  else if (type == MSD_TIMELINE_PROGRESS_EXPONENTIAL)
+  else if (type == USD_TIMELINE_PROGRESS_EXPONENTIAL)
     return exponential_progress;
 
   return NULL;
 }
 
 static gboolean
-msd_timeline_run_frame (MsdTimeline *timeline,
+usd_timeline_run_frame (UsdTimeline *timeline,
 			gboolean     enable_animations)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
   gdouble linear_progress, progress;
   guint elapsed_time;
-  MsdTimelineProgressFunc progress_func = NULL;
+  UsdTimelineProgressFunc progress_func = NULL;
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (enable_animations)
     {
@@ -363,7 +363,7 @@ msd_timeline_run_frame (MsdTimeline *timeline,
 
       linear_progress = (gdouble) elapsed_time / priv->duration;
 
-      if (priv->direction == MSD_TIMELINE_DIRECTION_BACKWARD)
+      if (priv->direction == USD_TIMELINE_DIRECTION_BACKWARD)
 	linear_progress = 1 - linear_progress;
 
       linear_progress = CLAMP (linear_progress, 0., 1.);
@@ -379,13 +379,13 @@ msd_timeline_run_frame (MsdTimeline *timeline,
 	progress = linear_progress;
     }
   else
-    progress = (priv->direction == MSD_TIMELINE_DIRECTION_FORWARD) ? 1.0 : 0.0;
+    progress = (priv->direction == USD_TIMELINE_DIRECTION_FORWARD) ? 1.0 : 0.0;
 
   g_signal_emit (timeline, signals [FRAME], 0,
 		 CLAMP (progress, 0.0, 1.0));
 
-  if ((priv->direction == MSD_TIMELINE_DIRECTION_FORWARD && progress >= 1.0) ||
-      (priv->direction == MSD_TIMELINE_DIRECTION_BACKWARD && progress <= 0.0))
+  if ((priv->direction == USD_TIMELINE_DIRECTION_FORWARD && progress >= 1.0) ||
+      (priv->direction == USD_TIMELINE_DIRECTION_BACKWARD && progress <= 0.0))
     {
       if (!priv->loop)
 	{
@@ -399,60 +399,60 @@ msd_timeline_run_frame (MsdTimeline *timeline,
 	  return FALSE;
 	}
       else
-	msd_timeline_rewind (timeline);
+	usd_timeline_rewind (timeline);
     }
 
   return TRUE;
 }
 
 static gboolean
-msd_timeline_frame_idle_func (MsdTimeline *timeline)
+usd_timeline_frame_idle_func (UsdTimeline *timeline)
 {
-  return msd_timeline_run_frame (timeline, TRUE);
+  return usd_timeline_run_frame (timeline, TRUE);
 }
 
 /**
- * msd_timeline_new:
+ * usd_timeline_new:
  * @duration: duration in milliseconds for the timeline
  *
- * Creates a new #MsdTimeline with the specified number of frames.
+ * Creates a new #UsdTimeline with the specified number of frames.
  *
- * Return Value: the newly created #MsdTimeline
+ * Return Value: the newly created #UsdTimeline
  **/
-MsdTimeline *
-msd_timeline_new (guint duration)
+UsdTimeline *
+usd_timeline_new (guint duration)
 {
-  return g_object_new (MSD_TYPE_TIMELINE,
+  return g_object_new (USD_TYPE_TIMELINE,
 		       "duration", duration,
 		       NULL);
 }
 
-MsdTimeline *
-msd_timeline_new_for_screen (guint      duration,
+UsdTimeline *
+usd_timeline_new_for_screen (guint      duration,
 			     GdkScreen *screen)
 {
-  return g_object_new (MSD_TYPE_TIMELINE,
+  return g_object_new (USD_TYPE_TIMELINE,
 		       "duration", duration,
 		       "screen", screen,
 		       NULL);
 }
 
 /**
- * msd_timeline_start:
- * @timeline: A #MsdTimeline
+ * usd_timeline_start:
+ * @timeline: A #UsdTimeline
  *
  * Runs the timeline from the current frame.
  **/
 void
-msd_timeline_start (MsdTimeline *timeline)
+usd_timeline_start (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
   GtkSettings *settings;
   gboolean enable_animations = FALSE;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (priv->screen)
     {
@@ -475,7 +475,7 @@ msd_timeline_start (MsdTimeline *timeline)
 	  g_signal_emit (timeline, signals [STARTED], 0);
 
 	  priv->source_id = gdk_threads_add_timeout (FRAME_INTERVAL (priv->fps),
-						     (GSourceFunc) msd_timeline_frame_idle_func,
+						     (GSourceFunc) usd_timeline_frame_idle_func,
 						     timeline);
 	}
     }
@@ -488,24 +488,24 @@ msd_timeline_start (MsdTimeline *timeline)
        * loop into this animation again.
        */
       g_signal_emit (timeline, signals [STARTED], 0);
-      msd_timeline_run_frame (timeline, FALSE);
+      usd_timeline_run_frame (timeline, FALSE);
     }
 }
 
 /**
- * msd_timeline_pause:
- * @timeline: A #MsdTimeline
+ * usd_timeline_pause:
+ * @timeline: A #UsdTimeline
  *
  * Pauses the timeline.
  **/
 void
-msd_timeline_pause (MsdTimeline *timeline)
+usd_timeline_pause (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (priv->source_id)
     {
@@ -517,26 +517,26 @@ msd_timeline_pause (MsdTimeline *timeline)
 }
 
 /**
- * msd_timeline_rewind:
- * @timeline: A #MsdTimeline
+ * usd_timeline_rewind:
+ * @timeline: A #UsdTimeline
  *
  * Rewinds the timeline.
  **/
 void
-msd_timeline_rewind (MsdTimeline *timeline)
+usd_timeline_rewind (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   /* destroy and re-create timer if neccesary  */
   if (priv->timer)
     {
       g_timer_destroy (priv->timer);
 
-      if (msd_timeline_is_running (timeline))
+      if (usd_timeline_is_running (timeline))
 	priv->timer = g_timer_new ();
       else
 	priv->timer = NULL;
@@ -544,70 +544,70 @@ msd_timeline_rewind (MsdTimeline *timeline)
 }
 
 /**
- * msd_timeline_is_running:
- * @timeline: A #MsdTimeline
+ * usd_timeline_is_running:
+ * @timeline: A #UsdTimeline
  *
  * Returns whether the timeline is running or not.
  *
  * Return Value: %TRUE if the timeline is running
  **/
 gboolean
-msd_timeline_is_running (MsdTimeline *timeline)
+usd_timeline_is_running (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), FALSE);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), FALSE);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   return (priv->source_id != 0);
 }
 
 /**
- * msd_timeline_get_fps:
- * @timeline: A #MsdTimeline
+ * usd_timeline_get_fps:
+ * @timeline: A #UsdTimeline
  *
  * Returns the number of frames per second.
  *
  * Return Value: frames per second
  **/
 guint
-msd_timeline_get_fps (MsdTimeline *timeline)
+usd_timeline_get_fps (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), 1);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), 1);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   return priv->fps;
 }
 
 /**
- * msd_timeline_set_fps:
- * @timeline: A #MsdTimeline
+ * usd_timeline_set_fps:
+ * @timeline: A #UsdTimeline
  * @fps: frames per second
  *
  * Sets the number of frames per second that
  * the timeline will play.
  **/
 void
-msd_timeline_set_fps (MsdTimeline *timeline,
+usd_timeline_set_fps (UsdTimeline *timeline,
 		      guint        fps)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
   g_return_if_fail (fps > 0);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   priv->fps = fps;
 
-  if (msd_timeline_is_running (timeline))
+  if (usd_timeline_is_running (timeline))
     {
       g_source_remove (priv->source_id);
       priv->source_id = gdk_threads_add_timeout (FRAME_INTERVAL (priv->fps),
-						 (GSourceFunc) msd_timeline_run_frame,
+						 (GSourceFunc) usd_timeline_run_frame,
 						 timeline);
     }
 
@@ -615,8 +615,8 @@ msd_timeline_set_fps (MsdTimeline *timeline,
 }
 
 /**
- * msd_timeline_get_loop:
- * @timeline: A #MsdTimeline
+ * usd_timeline_get_loop:
+ * @timeline: A #UsdTimeline
  *
  * Returns whether the timeline loops to the
  * beginning when it has reached the end.
@@ -624,47 +624,47 @@ msd_timeline_set_fps (MsdTimeline *timeline,
  * Return Value: %TRUE if the timeline loops
  **/
 gboolean
-msd_timeline_get_loop (MsdTimeline *timeline)
+usd_timeline_get_loop (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), FALSE);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), FALSE);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   return priv->loop;
 }
 
 /**
- * msd_timeline_set_loop:
- * @timeline: A #MsdTimeline
+ * usd_timeline_set_loop:
+ * @timeline: A #UsdTimeline
  * @loop: %TRUE to make the timeline loop
  *
  * Sets whether the timeline loops to the beginning
  * when it has reached the end.
  **/
 void
-msd_timeline_set_loop (MsdTimeline *timeline,
+usd_timeline_set_loop (UsdTimeline *timeline,
 		       gboolean     loop)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   priv->loop = loop;
 
   g_object_notify (G_OBJECT (timeline), "loop");
 }
 
 void
-msd_timeline_set_duration (MsdTimeline *timeline,
+usd_timeline_set_duration (UsdTimeline *timeline,
 			   guint        duration)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   priv->duration = duration;
 
@@ -672,78 +672,78 @@ msd_timeline_set_duration (MsdTimeline *timeline,
 }
 
 guint
-msd_timeline_get_duration (MsdTimeline *timeline)
+usd_timeline_get_duration (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), 0);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), 0);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   return priv->duration;
 }
 
 /**
- * msd_timeline_get_direction:
- * @timeline: A #MsdTimeline
+ * usd_timeline_get_direction:
+ * @timeline: A #UsdTimeline
  *
  * Returns the direction of the timeline.
  *
  * Return Value: direction
  **/
-MsdTimelineDirection
-msd_timeline_get_direction (MsdTimeline *timeline)
+UsdTimelineDirection
+usd_timeline_get_direction (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), MSD_TIMELINE_DIRECTION_FORWARD);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), USD_TIMELINE_DIRECTION_FORWARD);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   return priv->direction;
 }
 
 /**
- * msd_timeline_set_direction:
- * @timeline: A #MsdTimeline
+ * usd_timeline_set_direction:
+ * @timeline: A #UsdTimeline
  * @direction: direction
  *
  * Sets the direction of the timeline.
  **/
 void
-msd_timeline_set_direction (MsdTimeline          *timeline,
-			    MsdTimelineDirection  direction)
+usd_timeline_set_direction (UsdTimeline          *timeline,
+			    UsdTimelineDirection  direction)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   priv->direction = direction;
 
   g_object_notify (G_OBJECT (timeline), "direction");
 }
 
 GdkScreen *
-msd_timeline_get_screen (MsdTimeline *timeline)
+usd_timeline_get_screen (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), NULL);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), NULL);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   return priv->screen;
 }
 
 void
-msd_timeline_set_screen (MsdTimeline *timeline,
+usd_timeline_set_screen (UsdTimeline *timeline,
 			 GdkScreen   *screen)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
   g_return_if_fail (GDK_IS_SCREEN (screen));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (priv->screen)
     g_object_unref (priv->screen);
@@ -754,38 +754,38 @@ msd_timeline_set_screen (MsdTimeline *timeline,
 }
 
 void
-msd_timeline_set_progress_type (MsdTimeline             *timeline,
-				MsdTimelineProgressType  type)
+usd_timeline_set_progress_type (UsdTimeline             *timeline,
+				UsdTimelineProgressType  type)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   priv->progress_type = type;
 
   g_object_notify (G_OBJECT (timeline), "progress-type");
 }
 
-MsdTimelineProgressType
-msd_timeline_get_progress_type (MsdTimeline *timeline)
+UsdTimelineProgressType
+usd_timeline_get_progress_type (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), MSD_TIMELINE_PROGRESS_LINEAR);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), USD_TIMELINE_PROGRESS_LINEAR);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (priv->progress_func)
-    return MSD_TIMELINE_PROGRESS_LINEAR;
+    return USD_TIMELINE_PROGRESS_LINEAR;
 
   return priv->progress_type;
 }
 
 /**
- * msd_timeline_set_progress_func:
- * @timeline: A #MsdTimeline
+ * usd_timeline_set_progress_func:
+ * @timeline: A #UsdTimeline
  * @progress_func: progress function
  *
  * Sets the progress function. This function will be used to calculate
@@ -797,28 +797,28 @@ msd_timeline_get_progress_type (MsdTimeline *timeline)
  * All progresses are in the [0.0, 1.0] range.
  **/
 void
-msd_timeline_set_progress_func (MsdTimeline             *timeline,
-				MsdTimelineProgressFunc  progress_func)
+usd_timeline_set_progress_func (UsdTimeline             *timeline,
+				UsdTimelineProgressFunc  progress_func)
 {
-  MsdTimelinePriv *priv;
+  UsdTimelinePriv *priv;
 
-  g_return_if_fail (MSD_IS_TIMELINE (timeline));
+  g_return_if_fail (USD_IS_TIMELINE (timeline));
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
   priv->progress_func = progress_func;
 }
 
 gdouble
-msd_timeline_get_progress (MsdTimeline *timeline)
+usd_timeline_get_progress (UsdTimeline *timeline)
 {
-  MsdTimelinePriv *priv;
-  MsdTimelineProgressFunc progress_func = NULL;
+  UsdTimelinePriv *priv;
+  UsdTimelineProgressFunc progress_func = NULL;
   gdouble linear_progress, progress;
   guint elapsed_time;
 
-  g_return_val_if_fail (MSD_IS_TIMELINE (timeline), 0.0);
+  g_return_val_if_fail (USD_IS_TIMELINE (timeline), 0.0);
 
-  priv = MSD_TIMELINE_GET_PRIV (timeline);
+  priv = USD_TIMELINE_GET_PRIV (timeline);
 
   if (!priv->timer)
     return 0.;
@@ -827,7 +827,7 @@ msd_timeline_get_progress (MsdTimeline *timeline)
 
   linear_progress = (gdouble) elapsed_time / priv->duration;
 
-  if (priv->direction == MSD_TIMELINE_DIRECTION_BACKWARD)
+  if (priv->direction == USD_TIMELINE_DIRECTION_BACKWARD)
     linear_progress = 1 - linear_progress;
 
   linear_progress = CLAMP (linear_progress, 0., 1.);

@@ -44,11 +44,11 @@
 
 #include <gio/gio.h>
 
-#include "mate-settings-profile.h"
-#include "msd-mouse-manager.h"
-#include "msd-input-helper.h"
+#include "ukui-settings-profile.h"
+#include "usd-mouse-manager.h"
+#include "usd-input-helper.h"
 
-#define MSD_MOUSE_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_MOUSE_MANAGER, MsdMouseManagerPrivate))
+#define USD_MOUSE_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MOUSE_MANAGER, UsdMouseManagerPrivate))
 
 /* Keys with same names for both touchpad and mouse */
 #define KEY_LEFT_HANDED                  "left-handed"          /*  a boolean for mouse, an enum for touchpad */
@@ -56,12 +56,12 @@
 #define KEY_MOTION_THRESHOLD             "motion-threshold"
 
 /* Mouse settings */
-#define MATE_MOUSE_SCHEMA                "org.mate.peripherals-mouse"
+#define UKUI_MOUSE_SCHEMA                "org.mate.peripherals-mouse"
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
 
 /* Touchpad settings */
-#define MATE_TOUCHPAD_SCHEMA             "org.mate.peripherals-touchpad"
+#define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
 #define KEY_TOUCHPAD_DISABLE_W_TYPING    "disable-while-typing"
 #define KEY_TOUCHPAD_TWO_FINGER_CLICK    "two-finger-click"
 #define KEY_TOUCHPAD_THREE_FINGER_CLICK  "three-finger-click"
@@ -78,12 +78,12 @@
 
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
-#define MATE_MOUSE_A11Y_SCHEMA           "org.mate.accessibility-mouse"
+#define UKUI_MOUSE_A11Y_SCHEMA           "org.ukui.accessibility-mouse"
 #define KEY_MOUSE_A11Y_DWELL_ENABLE      "dwell-enable"
 #define KEY_MOUSE_A11Y_DELAY_ENABLE      "delay-enable"
 #endif
 
-struct MsdMouseManagerPrivate
+struct UsdMouseManagerPrivate
 {
         GSettings *settings_mouse;
         GSettings *settings_touchpad;
@@ -103,10 +103,10 @@ typedef enum {
         TOUCHPAD_HANDEDNESS_MOUSE
 } TouchpadHandedness;
 
-static void     msd_mouse_manager_class_init  (MsdMouseManagerClass *klass);
-static void     msd_mouse_manager_init        (MsdMouseManager      *mouse_manager);
-static void     msd_mouse_manager_finalize    (GObject             *object);
-static void     set_mouse_settings            (MsdMouseManager      *manager);
+static void     usd_mouse_manager_class_init  (UsdMouseManagerClass *klass);
+static void     usd_mouse_manager_init        (UsdMouseManager      *mouse_manager);
+static void     usd_mouse_manager_finalize    (GObject             *object);
+static void     set_mouse_settings            (UsdMouseManager      *manager);
 static void     set_tap_to_click_synaptics    (XDeviceInfo          *device_info,
                                                gboolean              state,
                                                gboolean              left_handed,
@@ -115,18 +115,18 @@ static void     set_tap_to_click_synaptics    (XDeviceInfo          *device_info
                                                gint                  three_finger_tap);
 
 
-G_DEFINE_TYPE (MsdMouseManager, msd_mouse_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdMouseManager, usd_mouse_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
 static void
-msd_mouse_manager_class_init (MsdMouseManagerClass *klass)
+usd_mouse_manager_class_init (UsdMouseManagerClass *klass)
 {
         GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = msd_mouse_manager_finalize;
+        object_class->finalize = usd_mouse_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MsdMouseManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UsdMouseManagerPrivate));
 }
 
 static void
@@ -336,7 +336,7 @@ touchpad_set_bool (XDeviceInfo *device_info,
 }
 
 static void
-set_left_handed_legacy_driver (MsdMouseManager *manager,
+set_left_handed_legacy_driver (UsdMouseManager *manager,
                                XDeviceInfo     *device_info,
                                gboolean         mouse_left_handed,
                                gboolean         touchpad_left_handed)
@@ -439,7 +439,7 @@ set_left_handed_libinput (XDeviceInfo *device_info,
 }
 
 static void
-set_left_handed (MsdMouseManager *manager,
+set_left_handed (UsdMouseManager *manager,
                  XDeviceInfo     *device_info,
                  gboolean         mouse_left_handed,
                  gboolean         touchpad_left_handed)
@@ -451,7 +451,7 @@ set_left_handed (MsdMouseManager *manager,
 }
 
 static void
-set_left_handed_all (MsdMouseManager *manager,
+set_left_handed_all (UsdMouseManager *manager,
                      gboolean         mouse_left_handed,
                      gboolean         touchpad_left_handed)
 {
@@ -484,14 +484,14 @@ devicepresence_filter (GdkXEvent *xevent,
         {
                 XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
                 if (dpn->devchange == DeviceEnabled)
-                        set_mouse_settings ((MsdMouseManager *) data);
+                        set_mouse_settings ((UsdMouseManager *) data);
         }
 
         return GDK_FILTER_CONTINUE;
 }
 
 static void
-set_devicepresence_handler (MsdMouseManager *manager)
+set_devicepresence_handler (UsdMouseManager *manager)
 {
         Display *display;
         XEventClass class_presence;
@@ -511,7 +511,7 @@ set_devicepresence_handler (MsdMouseManager *manager)
 }
 
 static void
-set_motion_legacy_driver (MsdMouseManager *manager,
+set_motion_legacy_driver (UsdMouseManager *manager,
                           XDeviceInfo     *device_info)
 {
         XDevice *device;
@@ -601,7 +601,7 @@ set_motion_legacy_driver (MsdMouseManager *manager,
 }
 
 static void
-set_motion_libinput (MsdMouseManager *manager,
+set_motion_libinput (UsdMouseManager *manager,
                      XDeviceInfo     *device_info)
 {
         XDevice *device;
@@ -677,7 +677,7 @@ set_motion_libinput (MsdMouseManager *manager,
 }
 
 static void
-set_motion (MsdMouseManager *manager,
+set_motion (UsdMouseManager *manager,
             XDeviceInfo     *device_info)
 {
         if (property_exists_on_device (device_info, "libinput Accel Speed"))
@@ -687,7 +687,7 @@ set_motion (MsdMouseManager *manager,
 }
 
 static void
-set_motion_all (MsdMouseManager *manager)
+set_motion_all (UsdMouseManager *manager)
 {
         XDeviceInfo *device_info;
         gint n_devices;
@@ -816,7 +816,7 @@ have_program_in_path (const char *name)
 }
 
 static void
-set_disable_w_typing_synaptics (MsdMouseManager *manager,
+set_disable_w_typing_synaptics (UsdMouseManager *manager,
                                 gboolean         state)
 {
         if (state && touchpad_is_present ()) {
@@ -856,7 +856,7 @@ set_disable_w_typing_synaptics (MsdMouseManager *manager,
 }
 
 static void
-set_disable_w_typing_libinput (MsdMouseManager *manager,
+set_disable_w_typing_libinput (UsdMouseManager *manager,
                                gboolean         state)
 {
         XDeviceInfo *device_info;
@@ -877,7 +877,7 @@ set_disable_w_typing_libinput (MsdMouseManager *manager,
 }
 
 static void
-set_disable_w_typing (MsdMouseManager *manager,
+set_disable_w_typing (UsdMouseManager *manager,
                       gboolean         state)
 {
         if (property_from_name ("Synaptics Off"))
@@ -888,7 +888,7 @@ set_disable_w_typing (MsdMouseManager *manager,
 }
 
 static gboolean
-get_touchpad_handedness (MsdMouseManager *manager,
+get_touchpad_handedness (UsdMouseManager *manager,
                          gboolean         mouse_left_handed)
 {
         switch (g_settings_get_enum (manager->priv->settings_touchpad, KEY_LEFT_HANDED)) {
@@ -982,7 +982,7 @@ set_tap_to_click (XDeviceInfo *device_info,
 }
 
 static void
-set_tap_to_click_all (MsdMouseManager *manager)
+set_tap_to_click_all (UsdMouseManager *manager)
 {
         int numdevices, i;
         XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
@@ -1108,7 +1108,7 @@ set_click_actions (XDeviceInfo *device_info,
 }
 
 static void
-set_click_actions_all (MsdMouseManager *manager)
+set_click_actions_all (UsdMouseManager *manager)
 {
         int numdevices, i;
         XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
@@ -1197,7 +1197,7 @@ set_natural_scroll (XDeviceInfo *device_info,
 }
 
 static void
-set_natural_scroll_all (MsdMouseManager *manager)
+set_natural_scroll_all (UsdMouseManager *manager)
 {
         int numdevices, i;
         XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
@@ -1365,7 +1365,7 @@ set_touchpad_enabled_all (gboolean state)
 }
 
 static void
-set_locate_pointer (MsdMouseManager *manager,
+set_locate_pointer (UsdMouseManager *manager,
                     gboolean         state)
 {
         if (state) {
@@ -1375,7 +1375,7 @@ set_locate_pointer (MsdMouseManager *manager,
                 if (manager->priv->locate_pointer_spawned)
                         return;
 
-                args[0] = LIBEXECDIR "/msd-locate-pointer";
+                args[0] = LIBEXECDIR "/usd-locate-pointer";
                 args[1] = NULL;
 
                 g_spawn_async (NULL, args, NULL,
@@ -1399,7 +1399,7 @@ set_locate_pointer (MsdMouseManager *manager,
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
 static void
-set_mousetweaks_daemon (MsdMouseManager *manager,
+set_mousetweaks_daemon (UsdMouseManager *manager,
                         gboolean         dwell_enable,
                         gboolean         delay_enable)
 {
@@ -1423,14 +1423,14 @@ set_mousetweaks_daemon (MsdMouseManager *manager,
                         GtkWidget *dialog;
 
                         GSettings *settings;
-                        settings = g_settings_new (MATE_MOUSE_A11Y_SCHEMA);
+                        settings = g_settings_new (UKUI_MOUSE_A11Y_SCHEMA);
                         if (dwell_enable)
                                 g_settings_set_boolean (settings,
-                                                        MATE_MOUSE_A11Y_KEY_DWELL_ENABLE,
+                                                        UKUI_MOUSE_A11Y_KEY_DWELL_ENABLE,
                                                         FALSE);
                         else if (delay_enable)
                                 g_settings_set_boolean (settings,
-                                                        MATE_MOUSE_A11Y_KEY_DELAY_ENABLE,
+                                                        UKUI_MOUSE_A11Y_KEY_DELAY_ENABLE,
                                                         FALSE);
                         g_object_unref (settings);
 
@@ -1455,7 +1455,7 @@ set_mousetweaks_daemon (MsdMouseManager *manager,
 #endif  /* set_mousetweaks_daemon */
 
 static void
-set_mouse_settings (MsdMouseManager *manager)
+set_mouse_settings (UsdMouseManager *manager)
 {
         gboolean mouse_left_handed = g_settings_get_boolean (manager->priv->settings_mouse, KEY_LEFT_HANDED);
         gboolean touchpad_left_handed = get_touchpad_handedness (manager, mouse_left_handed);
@@ -1476,7 +1476,7 @@ set_mouse_settings (MsdMouseManager *manager)
 static void
 mouse_callback (GSettings          *settings,
                 const gchar        *key,
-                MsdMouseManager    *manager)
+                UsdMouseManager    *manager)
 {
         if (g_strcmp0 (key, KEY_LEFT_HANDED) == 0) {
                 gboolean mouse_left_handed = g_settings_get_boolean (settings, key);
@@ -1506,7 +1506,7 @@ mouse_callback (GSettings          *settings,
 static void
 touchpad_callback (GSettings          *settings,
                    const gchar        *key,
-                   MsdMouseManager    *manager)
+                   UsdMouseManager    *manager)
 {
         if (g_strcmp0 (key, KEY_TOUCHPAD_DISABLE_W_TYPING) == 0) {
                 set_disable_w_typing (manager, g_settings_get_boolean (settings, key));
@@ -1538,18 +1538,18 @@ touchpad_callback (GSettings          *settings,
 }
 
 static void
-msd_mouse_manager_init (MsdMouseManager *manager)
+usd_mouse_manager_init (UsdMouseManager *manager)
 {
-        manager->priv = MSD_MOUSE_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_MOUSE_MANAGER_GET_PRIVATE (manager);
 }
 
 static gboolean
-msd_mouse_manager_idle_cb (MsdMouseManager *manager)
+usd_mouse_manager_idle_cb (UsdMouseManager *manager)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
-        manager->priv->settings_mouse = g_settings_new (MATE_MOUSE_SCHEMA);
-        manager->priv->settings_touchpad = g_settings_new (MATE_TOUCHPAD_SCHEMA);
+        manager->priv->settings_mouse = g_settings_new (UKUI_MOUSE_SCHEMA);
+        manager->priv->settings_touchpad = g_settings_new (UKUI_TOUCHPAD_SCHEMA);
 
         g_signal_connect (manager->priv->settings_mouse, "changed",
                           G_CALLBACK (mouse_callback), manager);
@@ -1571,33 +1571,33 @@ msd_mouse_manager_idle_cb (MsdMouseManager *manager)
                                                         KEY_MOUSE_A11Y_DELAY_ENABLE));
 #endif
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return FALSE;
 }
 
 gboolean
-msd_mouse_manager_start (MsdMouseManager *manager,
+usd_mouse_manager_start (UsdMouseManager *manager,
                          GError         **error)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         if (!supports_xinput_devices ()) {
                 g_debug ("XInput is not supported, not applying any settings");
                 return TRUE;
         }
 
-        g_idle_add ((GSourceFunc) msd_mouse_manager_idle_cb, manager);
+        g_idle_add ((GSourceFunc) usd_mouse_manager_idle_cb, manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-msd_mouse_manager_stop (MsdMouseManager *manager)
+usd_mouse_manager_stop (UsdMouseManager *manager)
 {
-        MsdMouseManagerPrivate *p = manager->priv;
+        UsdMouseManagerPrivate *p = manager->priv;
 
         g_debug ("Stopping mouse manager");
 
@@ -1617,30 +1617,30 @@ msd_mouse_manager_stop (MsdMouseManager *manager)
 }
 
 static void
-msd_mouse_manager_finalize (GObject *object)
+usd_mouse_manager_finalize (GObject *object)
 {
-        MsdMouseManager *mouse_manager;
+        UsdMouseManager *mouse_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_MOUSE_MANAGER (object));
+        g_return_if_fail (USD_IS_MOUSE_MANAGER (object));
 
-        mouse_manager = MSD_MOUSE_MANAGER (object);
+        mouse_manager = USD_MOUSE_MANAGER (object);
 
         g_return_if_fail (mouse_manager->priv != NULL);
 
-        G_OBJECT_CLASS (msd_mouse_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_mouse_manager_parent_class)->finalize (object);
 }
 
-MsdMouseManager *
-msd_mouse_manager_new (void)
+UsdMouseManager *
+usd_mouse_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MSD_TYPE_MOUSE_MANAGER, NULL);
+                manager_object = g_object_new (USD_TYPE_MOUSE_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MSD_MOUSE_MANAGER (manager_object);
+        return USD_MOUSE_MANAGER (manager_object);
 }

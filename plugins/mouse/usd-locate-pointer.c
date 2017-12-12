@@ -1,4 +1,4 @@
-/* msd-locate-pointer.c
+/* usd-locate-pointer.c
  *
  * Copyright (C) 2008 Carlos Garnacho  <carlos@imendio.com>
  *
@@ -18,8 +18,8 @@
  */
 
 #include <gtk/gtk.h>
-#include "msd-timeline.h"
-#include "msd-locate-pointer.h"
+#include "usd-timeline.h"
+#include "usd-locate-pointer.h"
 
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
@@ -37,21 +37,21 @@
 #define CIRCLES_PROGRESS_INTERVAL (0.5 / N_CIRCLES)
 #define CIRCLE_PROGRESS(p) (MIN (1., ((gdouble) (p) * 2.)))
 
-typedef struct MsdLocatePointerData MsdLocatePointerData;
+typedef struct UsdLocatePointerData UsdLocatePointerData;
 
-struct MsdLocatePointerData
+struct UsdLocatePointerData
 {
-  MsdTimeline *timeline;
+  UsdTimeline *timeline;
   GtkWindow *widget;
   GdkWindow *window;
 
   gdouble progress;
 };
 
-static MsdLocatePointerData *data = NULL;
+static UsdLocatePointerData *data = NULL;
 
 static void
-locate_pointer_paint (MsdLocatePointerData *data,
+locate_pointer_paint (UsdLocatePointerData *data,
 		      cairo_t              *cr,
 		      gboolean              composited)
 {
@@ -142,7 +142,7 @@ locate_pointer_paint (MsdLocatePointerData *data,
 }
 
 static void
-update_shape (MsdLocatePointerData *data)
+update_shape (UsdLocatePointerData *data)
 {
   cairo_t *cr;
   cairo_surface_t *mask;
@@ -166,11 +166,11 @@ update_shape (MsdLocatePointerData *data)
 }
 
 static void
-timeline_frame_cb (MsdTimeline *timeline,
+timeline_frame_cb (UsdTimeline *timeline,
 		   gdouble      progress,
 		   gpointer     user_data)
 {
-  MsdLocatePointerData *data = (MsdLocatePointerData *) user_data;
+  UsdLocatePointerData *data = (UsdLocatePointerData *) user_data;
   GdkDisplay *display = gdk_window_get_display (data->window);
   GdkScreen *screen = gdk_display_get_default_screen (display);
 #if GTK_CHECK_VERSION (3, 20, 0)
@@ -246,7 +246,7 @@ unset_transparent_shape (GdkWindow *window)
 
 static void
 composited_changed (GdkScreen            *screen,
-                    MsdLocatePointerData *data)
+                    UsdLocatePointerData *data)
 {
   if (gdk_screen_is_composited (screen))
     {
@@ -259,10 +259,10 @@ composited_changed (GdkScreen            *screen,
 }
 
 static void
-timeline_finished_cb (MsdTimeline *timeline,
+timeline_finished_cb (UsdTimeline *timeline,
 		      gpointer     user_data)
 {
-  MsdLocatePointerData *data = (MsdLocatePointerData *) user_data;
+  UsdLocatePointerData *data = (UsdLocatePointerData *) user_data;
   GdkScreen *screen = gdk_window_get_screen (data->window);
 
   /* set transparent shape and hide window */
@@ -276,7 +276,7 @@ timeline_finished_cb (MsdTimeline *timeline,
 
 static void
 locate_pointer_unrealize_cb (GtkWidget            *widget,
-                             MsdLocatePointerData *data)
+                             UsdLocatePointerData *data)
 {
   if (data->window != NULL)
     {
@@ -289,7 +289,7 @@ locate_pointer_unrealize_cb (GtkWidget            *widget,
 
 static void
 locate_pointer_realize_cb (GtkWidget            *widget,
-                           MsdLocatePointerData *data)
+                           UsdLocatePointerData *data)
 {
   GdkDisplay *display;
   GdkScreen *screen;
@@ -334,7 +334,7 @@ locate_pointer_draw_cb (GtkWidget      *widget,
                         cairo_t        *cr,
                         gpointer        user_data)
 {
-  MsdLocatePointerData *data = (MsdLocatePointerData *) user_data;
+  UsdLocatePointerData *data = (UsdLocatePointerData *) user_data;
   GdkScreen *screen = gdk_window_get_screen (data->window);
 
   if (gtk_cairo_should_draw_window (cr, data->window))
@@ -345,12 +345,12 @@ locate_pointer_draw_cb (GtkWidget      *widget,
   return TRUE;
 }
 
-static MsdLocatePointerData *
-msd_locate_pointer_data_new (void)
+static UsdLocatePointerData *
+usd_locate_pointer_data_new (void)
 {
-  MsdLocatePointerData *data;
+  UsdLocatePointerData *data;
 
-  data = g_new0 (MsdLocatePointerData, 1);
+  data = g_new0 (UsdLocatePointerData, 1);
 
   data->widget = GTK_WINDOW (gtk_window_new (GTK_WINDOW_POPUP));
 
@@ -367,7 +367,7 @@ msd_locate_pointer_data_new (void)
   gtk_widget_set_app_paintable (GTK_WIDGET (data->widget), TRUE);
   gtk_widget_realize (GTK_WIDGET (data->widget));
 
-  data->timeline = msd_timeline_new (ANIMATION_LENGTH);
+  data->timeline = usd_timeline_new (ANIMATION_LENGTH);
   g_signal_connect (data->timeline, "frame",
 		    G_CALLBACK (timeline_frame_cb), data);
   g_signal_connect (data->timeline, "finished",
@@ -377,7 +377,7 @@ msd_locate_pointer_data_new (void)
 }
 
 static void
-move_locate_pointer_window (MsdLocatePointerData *data,
+move_locate_pointer_window (UsdLocatePointerData *data,
 			    GdkDisplay           *display)
 {
 #if GTK_CHECK_VERSION (3, 20, 0)
@@ -429,17 +429,17 @@ move_locate_pointer_window (MsdLocatePointerData *data,
 }
 
 void
-msd_locate_pointer (GdkDisplay *display)
+usd_locate_pointer (GdkDisplay *display)
 {
   GdkScreen *screen = gdk_display_get_default_screen (display);
 
   if (data == NULL)
     {
-      data = msd_locate_pointer_data_new ();
+      data = usd_locate_pointer_data_new ();
     }
 
-  msd_timeline_pause (data->timeline);
-  msd_timeline_rewind (data->timeline);
+  usd_timeline_pause (data->timeline);
+  usd_timeline_rewind (data->timeline);
 
   data->progress = 0.;
 
@@ -450,7 +450,7 @@ msd_locate_pointer (GdkDisplay *display)
   composited_changed (screen, data);
   gtk_widget_show (GTK_WIDGET (data->widget));
 
-  msd_timeline_start (data->timeline);
+  usd_timeline_start (data->timeline);
 }
 
 
@@ -491,7 +491,7 @@ event_filter (GdkXEvent *gdkxevent,
               XAllowEvents (xevent->xany.display,
                             AsyncKeyboard,
                             xevent->xkey.time);
-              msd_locate_pointer (display);
+              usd_locate_pointer (display);
             }
           else
             {

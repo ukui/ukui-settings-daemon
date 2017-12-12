@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-mouse-plugin.h"
-#include "msd-mouse-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-mouse-plugin.h"
+#include "usd-mouse-manager.h"
 
-struct MsdMousePluginPrivate {
-        MsdMouseManager *manager;
+struct UsdMousePluginPrivate {
+        UsdMouseManager *manager;
 };
 
-#define MSD_MOUSE_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_MOUSE_PLUGIN, MsdMousePluginPrivate))
+#define USD_MOUSE_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_MOUSE_PLUGIN, UsdMousePluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdMousePlugin, msd_mouse_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdMousePlugin, usd_mouse_plugin)
 
 static void
-msd_mouse_plugin_init (MsdMousePlugin *plugin)
+usd_mouse_plugin_init (UsdMousePlugin *plugin)
 {
-        plugin->priv = MSD_MOUSE_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_MOUSE_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdMousePlugin initializing");
+        g_debug ("UsdMousePlugin initializing");
 
-        plugin->priv->manager = msd_mouse_manager_new ();
+        plugin->priv->manager = usd_mouse_manager_new ();
 }
 
 static void
-msd_mouse_plugin_finalize (GObject *object)
+usd_mouse_plugin_finalize (GObject *object)
 {
-        MsdMousePlugin *plugin;
+        UsdMousePlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_MOUSE_PLUGIN (object));
+        g_return_if_fail (USD_IS_MOUSE_PLUGIN (object));
 
-        g_debug ("MsdMousePlugin finalizing");
+        g_debug ("UsdMousePlugin finalizing");
 
-        plugin = MSD_MOUSE_PLUGIN (object);
+        plugin = USD_MOUSE_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_mouse_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_mouse_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_mouse_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating mouse plugin");
 
         error = NULL;
-        res = msd_mouse_manager_start (MSD_MOUSE_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_mouse_manager_start (USD_MOUSE_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start mouse manager: %s", error->message);
                 g_error_free (error);
@@ -83,28 +83,28 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating mouse plugin");
-        msd_mouse_manager_stop (MSD_MOUSE_PLUGIN (plugin)->priv->manager);
+        usd_mouse_manager_stop (USD_MOUSE_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_mouse_plugin_class_init (MsdMousePluginClass *klass)
+usd_mouse_plugin_class_init (UsdMousePluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_mouse_plugin_finalize;
+        object_class->finalize = usd_mouse_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdMousePluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdMousePluginPrivate));
 }
 
 static void
-msd_mouse_plugin_class_finalize (MsdMousePluginClass *klass)
+usd_mouse_plugin_class_finalize (UsdMousePluginClass *klass)
 {
 }
 
