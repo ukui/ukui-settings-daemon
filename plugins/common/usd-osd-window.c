@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * On-screen-display (OSD) window for mate-settings-daemon's plugins
+ * On-screen-display (OSD) window for ukui-settings-daemon's plugins
  *
  * Copyright (C) 2006-2007 William Jon McCann <mccann@jhu.edu> 
  * Copyright (C) 2009 Novell, Inc
@@ -36,7 +36,7 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
-#include "msd-osd-window.h"
+#include "usd-osd-window.h"
 
 #define DIALOG_TIMEOUT 2000     /* dialog timeout in ms */
 #define DIALOG_FADE_TIMEOUT 1500 /* timeout before fade starts */
@@ -44,9 +44,9 @@
 
 #define BG_ALPHA 0.75
 
-#define MSD_OSD_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_OSD_WINDOW, MsdOsdWindowPrivate))
+#define USD_OSD_WINDOW_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_OSD_WINDOW, UsdOsdWindowPrivate))
 
-struct MsdOsdWindowPrivate
+struct UsdOsdWindowPrivate
 {
         guint                    is_composited : 1;
         guint                    hide_timeout_id;
@@ -61,10 +61,10 @@ enum {
 
 static guint signals[LAST_SIGNAL] = { 0 };
 
-G_DEFINE_TYPE (MsdOsdWindow, msd_osd_window, GTK_TYPE_WINDOW)
+G_DEFINE_TYPE (UsdOsdWindow, usd_osd_window, GTK_TYPE_WINDOW)
 
 static gboolean
-fade_timeout (MsdOsdWindow *window)
+fade_timeout (UsdOsdWindow *window)
 {
         if (window->priv->fade_out_alpha <= 0.0) {
                 gtk_widget_hide (GTK_WIDGET (window));
@@ -95,7 +95,7 @@ fade_timeout (MsdOsdWindow *window)
 }
 
 static gboolean
-hide_timeout (MsdOsdWindow *window)
+hide_timeout (UsdOsdWindow *window)
 {
         if (window->priv->is_composited) {
                 window->priv->hide_timeout_id = 0;
@@ -110,7 +110,7 @@ hide_timeout (MsdOsdWindow *window)
 }
 
 static void
-remove_hide_timeout (MsdOsdWindow *window)
+remove_hide_timeout (UsdOsdWindow *window)
 {
         if (window->priv->hide_timeout_id != 0) {
                 g_source_remove (window->priv->hide_timeout_id);
@@ -125,7 +125,7 @@ remove_hide_timeout (MsdOsdWindow *window)
 }
 
 static void
-add_hide_timeout (MsdOsdWindow *window)
+add_hide_timeout (UsdOsdWindow *window)
 {
         int timeout;
 
@@ -146,14 +146,14 @@ add_hide_timeout (MsdOsdWindow *window)
 static void
 draw_when_composited (GtkWidget *widget, cairo_t *orig_cr)
 {
-        MsdOsdWindow    *window;
+        UsdOsdWindow    *window;
         cairo_t         *cr;
         cairo_surface_t *surface;
         int              width;
         int              height;
         GtkStyleContext *context;
 
-        window = MSD_OSD_WINDOW (widget);
+        window = USD_OSD_WINDOW (widget);
 
         context = gtk_widget_get_style_context (widget);
         cairo_set_operator (orig_cr, CAIRO_OPERATOR_SOURCE);
@@ -211,7 +211,7 @@ draw_when_not_composited (GtkWidget *widget, cairo_t *cr)
         context = gtk_widget_get_style_context (widget);
 
         gtk_style_context_set_state (context, GTK_STATE_FLAG_ACTIVE);
-        gtk_style_context_add_class(context,"msd-osd-window-solid");
+        gtk_style_context_add_class(context,"usd-osd-window-solid");
         gtk_render_frame (context,
                           cr,
                           0,
@@ -221,13 +221,13 @@ draw_when_not_composited (GtkWidget *widget, cairo_t *cr)
 }
 
 static gboolean
-msd_osd_window_draw (GtkWidget *widget,
+usd_osd_window_draw (GtkWidget *widget,
                      cairo_t   *cr)
 {
-	MsdOsdWindow *window;
+	UsdOsdWindow *window;
 	GtkWidget *child;
 
-	window = MSD_OSD_WINDOW (widget);
+	window = USD_OSD_WINDOW (widget);
 
 	if (window->priv->is_composited)
 		draw_when_composited (widget, cr);
@@ -242,34 +242,34 @@ msd_osd_window_draw (GtkWidget *widget,
 }
 
 static void
-msd_osd_window_real_show (GtkWidget *widget)
+usd_osd_window_real_show (GtkWidget *widget)
 {
-        MsdOsdWindow *window;
+        UsdOsdWindow *window;
 
-        if (GTK_WIDGET_CLASS (msd_osd_window_parent_class)->show) {
-                GTK_WIDGET_CLASS (msd_osd_window_parent_class)->show (widget);
+        if (GTK_WIDGET_CLASS (usd_osd_window_parent_class)->show) {
+                GTK_WIDGET_CLASS (usd_osd_window_parent_class)->show (widget);
         }
 
-        window = MSD_OSD_WINDOW (widget);
+        window = USD_OSD_WINDOW (widget);
         remove_hide_timeout (window);
         add_hide_timeout (window);
 }
 
 static void
-msd_osd_window_real_hide (GtkWidget *widget)
+usd_osd_window_real_hide (GtkWidget *widget)
 {
-        MsdOsdWindow *window;
+        UsdOsdWindow *window;
 
-        if (GTK_WIDGET_CLASS (msd_osd_window_parent_class)->hide) {
-                GTK_WIDGET_CLASS (msd_osd_window_parent_class)->hide (widget);
+        if (GTK_WIDGET_CLASS (usd_osd_window_parent_class)->hide) {
+                GTK_WIDGET_CLASS (usd_osd_window_parent_class)->hide (widget);
         }
 
-        window = MSD_OSD_WINDOW (widget);
+        window = USD_OSD_WINDOW (widget);
         remove_hide_timeout (window);
 }
 
 static void
-msd_osd_window_real_realize (GtkWidget *widget)
+usd_osd_window_real_realize (GtkWidget *widget)
 {
         GdkScreen *screen;
         GdkVisual *visual;
@@ -284,8 +284,8 @@ msd_osd_window_real_realize (GtkWidget *widget)
 
         gtk_widget_set_visual (widget, visual);
 
-        if (GTK_WIDGET_CLASS (msd_osd_window_parent_class)->realize) {
-                GTK_WIDGET_CLASS (msd_osd_window_parent_class)->realize (widget);
+        if (GTK_WIDGET_CLASS (usd_osd_window_parent_class)->realize) {
+                GTK_WIDGET_CLASS (usd_osd_window_parent_class)->realize (widget);
         }
 
         /* make the whole window ignore events */
@@ -295,14 +295,14 @@ msd_osd_window_real_realize (GtkWidget *widget)
 }
 
 static void
-msd_osd_window_style_updated (GtkWidget *widget)
+usd_osd_window_style_updated (GtkWidget *widget)
 {
         GtkStyleContext *context;
         GtkBorder padding;
 
-        GTK_WIDGET_CLASS (msd_osd_window_parent_class)->style_updated (widget);
+        GTK_WIDGET_CLASS (usd_osd_window_parent_class)->style_updated (widget);
 
-        /* We set our border width to 12 (per the MATE standard), plus the
+        /* We set our border width to 12 (per the UKUI standard), plus the
          * padding of the frame that we draw in our expose/draw handler.  This will
          * make our child be 12 pixels away from the frame.
          */
@@ -313,16 +313,16 @@ msd_osd_window_style_updated (GtkWidget *widget)
 }
 
 static void
-msd_osd_window_get_preferred_width (GtkWidget *widget,
+usd_osd_window_get_preferred_width (GtkWidget *widget,
                                     gint      *minimum,
                                     gint      *natural)
 {
         GtkStyleContext *context;
         GtkBorder padding;
 
-        GTK_WIDGET_CLASS (msd_osd_window_parent_class)->get_preferred_width (widget, minimum, natural);
+        GTK_WIDGET_CLASS (usd_osd_window_parent_class)->get_preferred_width (widget, minimum, natural);
 
-        /* See the comment in msd_osd_window_style_updated() for why we add the padding here */
+        /* See the comment in usd_osd_window_style_updated() for why we add the padding here */
 
         context = gtk_widget_get_style_context (widget);
         gtk_style_context_get_padding (context, GTK_STATE_FLAG_NORMAL, &padding);
@@ -332,16 +332,16 @@ msd_osd_window_get_preferred_width (GtkWidget *widget,
 }
 
 static void
-msd_osd_window_get_preferred_height (GtkWidget *widget,
+usd_osd_window_get_preferred_height (GtkWidget *widget,
                                      gint      *minimum,
                                      gint      *natural)
 {
         GtkStyleContext *context;
         GtkBorder padding;
 
-        GTK_WIDGET_CLASS (msd_osd_window_parent_class)->get_preferred_height (widget, minimum, natural);
+        GTK_WIDGET_CLASS (usd_osd_window_parent_class)->get_preferred_height (widget, minimum, natural);
 
-        /* See the comment in msd_osd_window_style_updated() for why we add the padding here */
+        /* See the comment in usd_osd_window_style_updated() for why we add the padding here */
 
         context = gtk_widget_get_style_context (widget);
         gtk_style_context_get_padding (context, GTK_STATE_FLAG_NORMAL, &padding);
@@ -351,13 +351,13 @@ msd_osd_window_get_preferred_height (GtkWidget *widget,
 }
 
 static GObject *
-msd_osd_window_constructor (GType                  type,
+usd_osd_window_constructor (GType                  type,
                             guint                  n_construct_properties,
                             GObjectConstructParam *construct_params)
 {
         GObject *object;
 
-        object = G_OBJECT_CLASS (msd_osd_window_parent_class)->constructor (type, n_construct_properties, construct_params);
+        object = G_OBJECT_CLASS (usd_osd_window_parent_class)->constructor (type, n_construct_properties, construct_params);
 
         g_object_set (object,
                       "type", GTK_WINDOW_POPUP,
@@ -375,68 +375,68 @@ msd_osd_window_constructor (GType                  type,
 }
 
 static void
-msd_osd_window_class_init (MsdOsdWindowClass *klass)
+usd_osd_window_class_init (UsdOsdWindowClass *klass)
 {
         GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
         GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-        gobject_class->constructor = msd_osd_window_constructor;
+        gobject_class->constructor = usd_osd_window_constructor;
 
-        widget_class->show = msd_osd_window_real_show;
-        widget_class->hide = msd_osd_window_real_hide;
-        widget_class->realize = msd_osd_window_real_realize;
-        widget_class->style_updated = msd_osd_window_style_updated;
-        widget_class->get_preferred_width = msd_osd_window_get_preferred_width;
-        widget_class->get_preferred_height = msd_osd_window_get_preferred_height;
-        widget_class->draw = msd_osd_window_draw;
+        widget_class->show = usd_osd_window_real_show;
+        widget_class->hide = usd_osd_window_real_hide;
+        widget_class->realize = usd_osd_window_real_realize;
+        widget_class->style_updated = usd_osd_window_style_updated;
+        widget_class->get_preferred_width = usd_osd_window_get_preferred_width;
+        widget_class->get_preferred_height = usd_osd_window_get_preferred_height;
+        widget_class->draw = usd_osd_window_draw;
 
         signals[DRAW_WHEN_COMPOSITED] = g_signal_new ("draw-when-composited",
                                                         G_TYPE_FROM_CLASS (gobject_class),
                                                         G_SIGNAL_RUN_FIRST,
-                                                        G_STRUCT_OFFSET (MsdOsdWindowClass, draw_when_composited),
+                                                        G_STRUCT_OFFSET (UsdOsdWindowClass, draw_when_composited),
                                                         NULL, NULL,
                                                         g_cclosure_marshal_VOID__POINTER,
                                                         G_TYPE_NONE, 1,
                                                         G_TYPE_POINTER);
 
 #if GTK_CHECK_VERSION (3, 20, 0)
-        gtk_widget_class_set_css_name (widget_class, "MsdOsdWindow");
+        gtk_widget_class_set_css_name (widget_class, "UsdOsdWindow");
 #endif
-        g_type_class_add_private (klass, sizeof (MsdOsdWindowPrivate));
+        g_type_class_add_private (klass, sizeof (UsdOsdWindowPrivate));
 }
 
 /**
- * msd_osd_window_is_composited:
- * @window: a #MsdOsdWindow
+ * usd_osd_window_is_composited:
+ * @window: a #UsdOsdWindow
  *
  * Return value: whether the window was created on a composited screen.
  */
 gboolean
-msd_osd_window_is_composited (MsdOsdWindow *window)
+usd_osd_window_is_composited (UsdOsdWindow *window)
 {
         return window->priv->is_composited;
 }
 
 /**
- * msd_osd_window_is_valid:
- * @window: a #MsdOsdWindow
+ * usd_osd_window_is_valid:
+ * @window: a #UsdOsdWindow
  *
  * Return value: TRUE if the @window's idea of being composited matches whether
  * its current screen is actually composited.
  */
 gboolean
-msd_osd_window_is_valid (MsdOsdWindow *window)
+usd_osd_window_is_valid (UsdOsdWindow *window)
 {
         GdkScreen *screen = gtk_widget_get_screen (GTK_WIDGET (window));
         return gdk_screen_is_composited (screen) == window->priv->is_composited;
 }
 
 static void
-msd_osd_window_init (MsdOsdWindow *window)
+usd_osd_window_init (UsdOsdWindow *window)
 {
         GdkScreen *screen;
 
-        window->priv = MSD_OSD_WINDOW_GET_PRIVATE (window);
+        window->priv = USD_OSD_WINDOW_GET_PRIVATE (window);
 
         screen = gtk_widget_get_screen (GTK_WIDGET (window));
 
@@ -467,19 +467,19 @@ msd_osd_window_init (MsdOsdWindow *window)
 }
 
 GtkWidget *
-msd_osd_window_new (void)
+usd_osd_window_new (void)
 {
-        return g_object_new (MSD_TYPE_OSD_WINDOW, NULL);
+        return g_object_new (USD_TYPE_OSD_WINDOW, NULL);
 }
 
 /**
- * msd_osd_window_update_and_hide:
- * @window: a #MsdOsdWindow
+ * usd_osd_window_update_and_hide:
+ * @window: a #UsdOsdWindow
  *
  * Queues the @window for immediate drawing, and queues a timer to hide the window.
  */
 void
-msd_osd_window_update_and_hide (MsdOsdWindow *window)
+usd_osd_window_update_and_hide (UsdOsdWindow *window)
 {
         remove_hide_timeout (window);
         add_hide_timeout (window);

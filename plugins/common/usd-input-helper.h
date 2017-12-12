@@ -1,6 +1,6 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
- * Copyright (C) 2008 Jens Granseuer <jensgr@gmx.net>
+ * Copyright (C) 2010 Bastien Nocera <hadess@hadess.net>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,38 +14,23 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
+ * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef __MSD_COMMON_KEYGRAB_H
-#define __MSD_COMMON_KEYGRAB_H
+#ifndef __USD_INPUT_HELPER_H
+#define __USD_INPUT_HELPER_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+G_BEGIN_DECLS
 
 #include <glib.h>
-#include <X11/keysym.h>
 
-typedef struct {
-        guint keysym;
-        guint state;
-        guint *keycodes;
-} Key;
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/XIproto.h>
 
+gboolean  supports_xinput_devices (void);
+XDevice  *device_is_touchpad      (XDeviceInfo *deviceinfo);
+gboolean  touchpad_is_present     (void);
 
-void	        grab_key_unsafe	(Key     *key,
-		        	 gboolean grab,
-			         GSList  *screens);
+G_END_DECLS
 
-gboolean        match_key       (Key     *key,
-                                 XEvent  *event);
-
-gboolean        key_uses_keycode (const Key *key,
-                                  guint keycode);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* __MSD_COMMON_KEYGRAB_H */
+#endif /* __USD_INPUT_HELPER_H */

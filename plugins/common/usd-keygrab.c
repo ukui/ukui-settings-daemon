@@ -32,25 +32,25 @@
 
 #include "eggaccelerators.h"
 
-#include "msd-keygrab.h"
+#include "usd-keygrab.h"
 
 /* these are the mods whose combinations are ignored by the keygrabbing code */
-static GdkModifierType msd_ignored_mods = 0;
+static GdkModifierType usd_ignored_mods = 0;
 
 /* these are the ones we actually use for global keys, we always only check
  * for these set */
-static GdkModifierType msd_used_mods = 0;
+static GdkModifierType usd_used_mods = 0;
 
 static void
 setup_modifiers (void)
 {
-        if (msd_used_mods == 0 || msd_ignored_mods == 0) {
+        if (usd_used_mods == 0 || usd_ignored_mods == 0) {
                 GdkModifierType dynmods;
 
                 /* default modifiers */
-                msd_ignored_mods = \
+                usd_ignored_mods = \
                         0x2000 /*Xkb modifier*/ | GDK_LOCK_MASK | GDK_HYPER_MASK;
-		msd_used_mods = \
+		usd_used_mods = \
                         GDK_SHIFT_MASK | GDK_CONTROL_MASK |\
                         GDK_MOD1_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK |\
                         GDK_MOD5_MASK | GDK_SUPER_MASK | GDK_META_MASK;
@@ -62,8 +62,8 @@ setup_modifiers (void)
                                                       EGG_VIRTUAL_NUM_LOCK_MASK,
                                                       &dynmods);
 
-                msd_ignored_mods |= dynmods;
-                msd_used_mods &= ~dynmods;
+                usd_ignored_mods |= dynmods;
+                usd_used_mods &= ~dynmods;
 	}
 }
 
@@ -89,11 +89,11 @@ grab_key_real (guint      keycode,
         }
 }
 
-/* Grab the key. In order to ignore MSD_IGNORED_MODS we need to grab
+/* Grab the key. In order to ignore USD_IGNORED_MODS we need to grab
  * all combinations of the ignored modifiers and those actually used
  * for the binding (if any).
  *
- * inspired by all_combinations from mate-panel/mate-panel/global-keys.c
+ * inspired by all_combinations from ukui-panel/ukui-panel/global-keys.c
  *
  * This may generate X errors.  The correct way to use this is like:
  *
@@ -124,7 +124,7 @@ grab_key_unsafe (Key                 *key,
 
         setup_modifiers ();
 
-        mask = msd_ignored_mods & ~key->state & GDK_MODIFIER_MASK;
+        mask = usd_ignored_mods & ~key->state & GDK_MODIFIER_MASK;
 
         bit = 0;
         /* store the indexes of all set bits in mask in the array */
@@ -236,11 +236,11 @@ match_key (Key *key, XEvent *event)
 			consumed &= ~GDK_SHIFT_MASK;
 
 		return ((lower == key->keysym || upper == key->keysym)
-			&& (event->xkey.state & ~consumed & msd_used_mods) == key->state);
+			&& (event->xkey.state & ~consumed & usd_used_mods) == key->state);
 	}
 
 	/* The key we passed doesn't have a keysym, so try with just the keycode */
         return (key != NULL
-                && key->state == (event->xkey.state & msd_used_mods)
+                && key->state == (event->xkey.state & usd_used_mods)
                 && key_uses_keycode (key, event->xkey.keycode));
 }
