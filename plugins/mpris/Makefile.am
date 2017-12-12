@@ -2,14 +2,14 @@ plugin_LTLIBRARIES = \
 	libmpris.la
 
 libmpris_la_SOURCES = 		\
-	msd-mpris-manager.c	\
-	msd-mpris-manager.h	\
-	msd-mpris-plugin.c	\
-	msd-mpris-plugin.h
+	usd-mpris-manager.c	\
+	usd-mpris-manager.h	\
+	usd-mpris-plugin.c	\
+	usd-mpris-plugin.h
 
 libmpris_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libmpris_la_CFLAGS = \
@@ -17,15 +17,15 @@ libmpris_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libmpris_la_LDFLAGS = 		\
-	$(MSD_PLUGIN_LDFLAGS)
+	$(USD_PLUGIN_LDFLAGS)
 
 libmpris_la_LIBADD  = 		\
 	$(SETTINGS_PLUGIN_LIBS)
 
 plugin_in_files = 		\
-	mpris.mate-settings-plugin.in
+	mpris.ukui-settings-plugin.in
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)
@@ -36,5 +36,5 @@ CLEANFILES = 			\
 DISTCLEANFILES =		\
 	$(plugin_DATA)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@
 

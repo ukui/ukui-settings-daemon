@@ -21,8 +21,8 @@
  *      Stefano Karapetsas <stefano@karapetsas.com>
  */
 
-#ifndef __MSD_MPRIS_MANAGER_H
-#define __MSD_MPRIS_MANAGER_H
+#ifndef __USD_MPRIS_MANAGER_H
+#define __USD_MPRIS_MANAGER_H
 
 #include <glib-object.h>
 
@@ -30,35 +30,35 @@
 extern "C" {
 #endif
 
-#define MSD_TYPE_MPRIS_MANAGER         (msd_mpris_manager_get_type ())
-#define MSD_MPRIS_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), MSD_TYPE_MPRIS_MANAGER, MsdMprisManager))
-#define MSD_MPRIS_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), MSD_TYPE_MPRIS_MANAGER, MsdMprisManagerClass))
-#define MSD_IS_MPRIS_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), MSD_TYPE_MPRIS_MANAGER))
-#define MSD_IS_MPRIS_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), MSD_TYPE_MPRIS_MANAGER))
-#define MSD_MPRIS_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), MSD_TYPE_MPRIS_MANAGER, MsdMprisManagerClass))
+#define USD_TYPE_MPRIS_MANAGER         (usd_mpris_manager_get_type ())
+#define USD_MPRIS_MANAGER(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), USD_TYPE_MPRIS_MANAGER, UsdMprisManager))
+#define USD_MPRIS_MANAGER_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), USD_TYPE_MPRIS_MANAGER, UsdMprisManagerClass))
+#define USD_IS_MPRIS_MANAGER(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), USD_TYPE_MPRIS_MANAGER))
+#define USD_IS_MPRIS_MANAGER_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), USD_TYPE_MPRIS_MANAGER))
+#define USD_MPRIS_MANAGER_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), USD_TYPE_MPRIS_MANAGER, UsdMprisManagerClass))
 
-typedef struct MsdMprisManagerPrivate MsdMprisManagerPrivate;
+typedef struct UsdMprisManagerPrivate UsdMprisManagerPrivate;
 
 typedef struct
 {
         GObject                     parent;
-        MsdMprisManagerPrivate *priv;
-} MsdMprisManager;
+        UsdMprisManagerPrivate *priv;
+} UsdMprisManager;
 
 typedef struct
 {
         GObjectClass   parent_class;
-} MsdMprisManagerClass;
+} UsdMprisManagerClass;
 
-GType                   msd_mpris_manager_get_type            (void);
+GType                   usd_mpris_manager_get_type            (void);
 
-MsdMprisManager *       msd_mpris_manager_new                 (void);
-gboolean                msd_mpris_manager_start               (MsdMprisManager *manager,
+UsdMprisManager *       usd_mpris_manager_new                 (void);
+gboolean                usd_mpris_manager_start               (UsdMprisManager *manager,
                                                                GError         **error);
-void                    msd_mpris_manager_stop                (MsdMprisManager *manager);
+void                    usd_mpris_manager_stop                (UsdMprisManager *manager);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MSD_MPRIS_MANAGER_H */
+#endif /* __USD_MPRIS_MANAGER_H */

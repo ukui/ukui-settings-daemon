@@ -42,8 +42,8 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-#include "mate-settings-profile.h"
-#include "msd-mpris-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-mpris-manager.h"
 
 #define MPRIS_OBJECT_PATH  "/org/mpris/MediaPlayer2"
 #define MPRIS_INTERFACE    "org.mpris.MediaPlayer2.Player"
@@ -71,9 +71,9 @@ static const gchar *BUS_NAMES[] = {"org.mpris.MediaPlayer2.audacious",
                                    "org.mpris.MediaPlayer2.gmusicbrowser",
                                    "org.mpris.MediaPlayer2.spotify"};
 
-#define MSD_MPRIS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MSD_TYPE_MPRIS_MANAGER, MsdMprisManagerPrivate))
+#define USD_MPRIS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MPRIS_MANAGER, UsdMprisManagerPrivate))
 
-struct MsdMprisManagerPrivate
+struct UsdMprisManagerPrivate
 {
         GQueue       *media_player_queue;
         GDBusProxy   *media_keys_proxy;
@@ -84,11 +84,11 @@ enum {
         PROP_0,
 };
 
-static void     msd_mpris_manager_class_init  (MsdMprisManagerClass *klass);
-static void     msd_mpris_manager_init        (MsdMprisManager      *mpris_manager);
-static void     msd_mpris_manager_finalize    (GObject              *object);
+static void     usd_mpris_manager_class_init  (UsdMprisManagerClass *klass);
+static void     usd_mpris_manager_init        (UsdMprisManager      *mpris_manager);
+static void     usd_mpris_manager_finalize    (GObject              *object);
 
-G_DEFINE_TYPE (MsdMprisManager, msd_mpris_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UsdMprisManager, usd_mpris_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
@@ -115,7 +115,7 @@ static void
 mp_name_appeared (GDBusConnection  *connection,
                   const gchar      *name,
                   const gchar      *name_owner,
-                  MsdMprisManager  *manager)
+                  UsdMprisManager  *manager)
 {
     gchar *player_name;
 
@@ -131,7 +131,7 @@ mp_name_appeared (GDBusConnection  *connection,
 static void
 mp_name_vanished (GDBusConnection *connection,
                   const gchar     *name,
-                  MsdMprisManager *manager)
+                  UsdMprisManager *manager)
 {
     gchar *player_name;
     GList *player_list;
@@ -155,7 +155,7 @@ mp_name_vanished (GDBusConnection *connection,
 /* Code copied from Totem media player
  * src/plugins/media-player-keys/totem-media-player-keys.c */
 static void
-on_media_player_key_pressed (MsdMprisManager  *manager,
+on_media_player_key_pressed (UsdMprisManager  *manager,
                              const gchar      *key)
 {
     GDBusProxyFlags flags = G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START;
@@ -213,7 +213,7 @@ on_media_player_key_pressed (MsdMprisManager  *manager,
 static void
 grab_media_player_keys_cb (GDBusProxy       *proxy,
                            GAsyncResult     *res,
-                           MsdMprisManager  *manager)
+                           UsdMprisManager  *manager)
 {
     GVariant *variant;
     GError *error = NULL;
@@ -230,14 +230,14 @@ grab_media_player_keys_cb (GDBusProxy       *proxy,
 }
 
 static void
-grab_media_player_keys (MsdMprisManager *manager)
+grab_media_player_keys (UsdMprisManager *manager)
 {
     if (manager->priv->media_keys_proxy == NULL)
         return;
 
     g_dbus_proxy_call (manager->priv->media_keys_proxy,
                       "GrabMediaPlayerKeys",
-                      g_variant_new ("(su)", "MsdMpris", 0),
+                      g_variant_new ("(su)", "UsdMpris", 0),
                       G_DBUS_CALL_FLAGS_NONE,
                       -1, NULL,
                       (GAsyncReadyCallback) grab_media_player_keys_cb,
@@ -249,14 +249,14 @@ key_pressed (GDBusProxy          *proxy,
              gchar               *sender_name,
              gchar               *signal_name,
              GVariant            *parameters,
-             MsdMprisManager     *manager)
+             UsdMprisManager     *manager)
 {
     char *app, *cmd;
 
     if (g_strcmp0 (signal_name, "MediaPlayerKeyPressed") != 0)
         return;
     g_variant_get (parameters, "(ss)", &app, &cmd);
-    if (g_strcmp0 (app, "MsdMpris") == 0) {
+    if (g_strcmp0 (app, "UsdMpris") == 0) {
         on_media_player_key_pressed (manager, cmd);
     }
     g_free (app);
@@ -266,7 +266,7 @@ key_pressed (GDBusProxy          *proxy,
 static void
 got_proxy_cb (GObject           *source_object,
               GAsyncResult      *res,
-              MsdMprisManager   *manager)
+              UsdMprisManager   *manager)
 {
     GError *error = NULL;
 
@@ -286,27 +286,27 @@ got_proxy_cb (GObject           *source_object,
 }
 
 static void
-msd_name_appeared (GDBusConnection     *connection,
+usd_name_appeared (GDBusConnection     *connection,
                    const gchar         *name,
                    const gchar         *name_owner,
-                   MsdMprisManager     *manager)
+                   UsdMprisManager     *manager)
 {
     g_dbus_proxy_new_for_bus (G_BUS_TYPE_SESSION,
                               G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES |
                               G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
                               NULL,
-                              "org.mate.SettingsDaemon",
-                              "/org/mate/SettingsDaemon/MediaKeys",
-                              "org.mate.SettingsDaemon.MediaKeys",
+                              "org.ukui.SettingsDaemon",
+                              "/org/ukui/SettingsDaemon/MediaKeys",
+                              "org.ukui.SettingsDaemon.MediaKeys",
                               NULL,
                               (GAsyncReadyCallback) got_proxy_cb,
                               manager);
 }
 
 static void
-msd_name_vanished (GDBusConnection   *connection,
+usd_name_vanished (GDBusConnection   *connection,
                    const gchar       *name,
-                   MsdMprisManager   *manager)
+                   UsdMprisManager   *manager)
 {
     if (manager->priv->media_keys_proxy != NULL) {
         g_object_unref (manager->priv->media_keys_proxy);
@@ -316,14 +316,14 @@ msd_name_vanished (GDBusConnection   *connection,
 
 
 gboolean
-msd_mpris_manager_start (MsdMprisManager   *manager,
+usd_mpris_manager_start (UsdMprisManager   *manager,
                          GError           **error)
 {
     GBusNameWatcherFlags flags = G_BUS_NAME_WATCHER_FLAGS_NONE;
     int i;
     
     g_debug ("Starting mpris manager");
-    mate_settings_profile_start (NULL);
+    ukui_settings_profile_start (NULL);
 
     manager->priv->media_player_queue = g_queue_new();
 
@@ -341,18 +341,18 @@ msd_mpris_manager_start (MsdMprisManager   *manager,
 
 
     manager->priv->watch_id = g_bus_watch_name (G_BUS_TYPE_SESSION,
-                                                "org.mate.SettingsDaemon",
+                                                "org.ukui.SettingsDaemon",
                                                 G_BUS_NAME_WATCHER_FLAGS_NONE,
-                                                (GBusNameAppearedCallback) msd_name_appeared,
-                                                (GBusNameVanishedCallback) msd_name_vanished,
+                                                (GBusNameAppearedCallback) usd_name_appeared,
+                                                (GBusNameVanishedCallback) usd_name_vanished,
                                                 manager, NULL);
 
-    mate_settings_profile_end (NULL);
+    ukui_settings_profile_end (NULL);
     return TRUE;
 }
 
 void
-msd_mpris_manager_stop (MsdMprisManager *manager)
+usd_mpris_manager_stop (UsdMprisManager *manager)
 {
     g_debug ("Stopping mpris manager");
 
@@ -368,47 +368,47 @@ msd_mpris_manager_stop (MsdMprisManager *manager)
 }
 
 static void
-msd_mpris_manager_class_init (MsdMprisManagerClass *klass)
+usd_mpris_manager_class_init (UsdMprisManagerClass *klass)
 {
     GObjectClass   *object_class = G_OBJECT_CLASS (klass);
 
-    object_class->finalize = msd_mpris_manager_finalize;
+    object_class->finalize = usd_mpris_manager_finalize;
 
-    g_type_class_add_private (klass, sizeof (MsdMprisManagerPrivate));
+    g_type_class_add_private (klass, sizeof (UsdMprisManagerPrivate));
 }
 
 static void
-msd_mpris_manager_init (MsdMprisManager *manager)
+usd_mpris_manager_init (UsdMprisManager *manager)
 {
-        manager->priv = MSD_MPRIS_MANAGER_GET_PRIVATE (manager);
+        manager->priv = USD_MPRIS_MANAGER_GET_PRIVATE (manager);
 
 }
 
 static void
-msd_mpris_manager_finalize (GObject *object)
+usd_mpris_manager_finalize (GObject *object)
 {
-    MsdMprisManager *mpris_manager;
+    UsdMprisManager *mpris_manager;
 
     g_return_if_fail (object != NULL);
-    g_return_if_fail (MSD_IS_MPRIS_MANAGER (object));
+    g_return_if_fail (USD_IS_MPRIS_MANAGER (object));
 
-    mpris_manager = MSD_MPRIS_MANAGER (object);
+    mpris_manager = USD_MPRIS_MANAGER (object);
 
     g_return_if_fail (mpris_manager->priv != NULL);
 
-    G_OBJECT_CLASS (msd_mpris_manager_parent_class)->finalize (object);
+    G_OBJECT_CLASS (usd_mpris_manager_parent_class)->finalize (object);
 }
 
-MsdMprisManager *
-msd_mpris_manager_new (void)
+UsdMprisManager *
+usd_mpris_manager_new (void)
 {
     if (manager_object != NULL) {
         g_object_ref (manager_object);
     } else {
-        manager_object = g_object_new (MSD_TYPE_MPRIS_MANAGER, NULL);
+        manager_object = g_object_new (USD_TYPE_MPRIS_MANAGER, NULL);
         g_object_add_weak_pointer (manager_object,
                                    (gpointer *) &manager_object);
     }
 
-    return MSD_MPRIS_MANAGER (manager_object);
+    return USD_MPRIS_MANAGER (manager_object);
 }

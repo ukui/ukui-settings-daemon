@@ -20,46 +20,46 @@
  *      Stefano Karapetsas <stefano@karapetsas.com>
  */
 
-#ifndef __MSD_MPRIS_PLUGIN_H__
-#define __MSD_MPRIS_PLUGIN_H__
+#ifndef __USD_MPRIS_PLUGIN_H__
+#define __USD_MPRIS_PLUGIN_H__
 
 #include <glib.h>
 #include <glib-object.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
+#include "ukui-settings-plugin.h"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define MSD_TYPE_MPRIS_PLUGIN                (msd_mpris_plugin_get_type ())
-#define MSD_MPRIS_PLUGIN(o)                  (G_TYPE_CHECK_INSTANCE_CAST ((o), MSD_TYPE_MPRIS_PLUGIN, MsdMprisPlugin))
-#define MSD_MPRIS_PLUGIN_CLASS(k)            (G_TYPE_CHECK_CLASS_CAST((k), MSD_TYPE_MPRIS_PLUGIN, MsdMprisPluginClass))
-#define MSD_IS_MPRIS_PLUGIN(o)               (G_TYPE_CHECK_INSTANCE_TYPE ((o), MSD_TYPE_MPRIS_PLUGIN))
-#define MSD_IS_MPRIS_PLUGIN_CLASS(k)         (G_TYPE_CHECK_CLASS_TYPE ((k), MSD_TYPE_MPRIS_PLUGIN))
-#define MSD_MPRIS_PLUGIN_GET_CLASS(o)        (G_TYPE_INSTANCE_GET_CLASS ((o), MSD_TYPE_MPRIS_PLUGIN, MsdMprisPluginClass))
+#define USD_TYPE_MPRIS_PLUGIN                (usd_mpris_plugin_get_type ())
+#define USD_MPRIS_PLUGIN(o)                  (G_TYPE_CHECK_INSTANCE_CAST ((o), USD_TYPE_MPRIS_PLUGIN, UsdMprisPlugin))
+#define USD_MPRIS_PLUGIN_CLASS(k)            (G_TYPE_CHECK_CLASS_CAST((k), USD_TYPE_MPRIS_PLUGIN, UsdMprisPluginClass))
+#define USD_IS_MPRIS_PLUGIN(o)               (G_TYPE_CHECK_INSTANCE_TYPE ((o), USD_TYPE_MPRIS_PLUGIN))
+#define USD_IS_MPRIS_PLUGIN_CLASS(k)         (G_TYPE_CHECK_CLASS_TYPE ((k), USD_TYPE_MPRIS_PLUGIN))
+#define USD_MPRIS_PLUGIN_GET_CLASS(o)        (G_TYPE_INSTANCE_GET_CLASS ((o), USD_TYPE_MPRIS_PLUGIN, UsdMprisPluginClass))
 
-typedef struct MsdMprisPluginPrivate MsdMprisPluginPrivate;
-
-typedef struct
-{
-        MateSettingsPlugin    parent;
-        MsdMprisPluginPrivate *priv;
-} MsdMprisPlugin;
+typedef struct UsdMprisPluginPrivate UsdMprisPluginPrivate;
 
 typedef struct
 {
-        MateSettingsPluginClass parent_class;
-} MsdMprisPluginClass;
+        UkuiSettingsPlugin    parent;
+        UsdMprisPluginPrivate *priv;
+} UsdMprisPlugin;
 
-GType   msd_mpris_plugin_get_type            (void) G_GNUC_CONST;
+typedef struct
+{
+        UkuiSettingsPluginClass parent_class;
+} UsdMprisPluginClass;
+
+GType   usd_mpris_plugin_get_type            (void) G_GNUC_CONST;
 
 /* All the plugins must implement this function */
-G_MODULE_EXPORT GType register_mate_settings_plugin (GTypeModule *module);
+G_MODULE_EXPORT GType register_ukui_settings_plugin (GTypeModule *module);
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MSD_MPRIS_PLUGIN_H__ */
+#endif /* __USD_MPRIS_PLUGIN_H__ */

@@ -25,39 +25,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-mpris-plugin.h"
-#include "msd-mpris-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-mpris-plugin.h"
+#include "usd-mpris-manager.h"
 
-struct MsdMprisPluginPrivate {
-        MsdMprisManager *manager;
+struct UsdMprisPluginPrivate {
+        UsdMprisManager *manager;
 };
 
-#define MSD_MPRIS_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_MPRIS_PLUGIN, MsdMprisPluginPrivate))
+#define USD_MPRIS_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_MPRIS_PLUGIN, UsdMprisPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdMprisPlugin, msd_mpris_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdMprisPlugin, usd_mpris_plugin)
 
 static void
-msd_mpris_plugin_init (MsdMprisPlugin *plugin)
+usd_mpris_plugin_init (UsdMprisPlugin *plugin)
 {
-        plugin->priv = MSD_MPRIS_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_MPRIS_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdMprisPlugin initializing");
+        g_debug ("UsdMprisPlugin initializing");
 
-        plugin->priv->manager = msd_mpris_manager_new ();
+        plugin->priv->manager = usd_mpris_manager_new ();
 }
 
 static void
-msd_mpris_plugin_finalize (GObject *object)
+usd_mpris_plugin_finalize (GObject *object)
 {
-        MsdMprisPlugin *plugin;
+        UsdMprisPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_MPRIS_PLUGIN (object));
+        g_return_if_fail (USD_IS_MPRIS_PLUGIN (object));
 
-        g_debug ("MsdMprisPlugin finalizing");
+        g_debug ("UsdMprisPlugin finalizing");
 
-        plugin = MSD_MPRIS_PLUGIN (object);
+        plugin = USD_MPRIS_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -65,11 +65,11 @@ msd_mpris_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_mpris_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_mpris_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -77,7 +77,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating mpris plugin");
 
         error = NULL;
-        res = msd_mpris_manager_start (MSD_MPRIS_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_mpris_manager_start (USD_MPRIS_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start mpris manager: %s", error->message);
                 g_error_free (error);
@@ -85,27 +85,27 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating mpris plugin");
-        msd_mpris_manager_stop (MSD_MPRIS_PLUGIN (plugin)->priv->manager);
+        usd_mpris_manager_stop (USD_MPRIS_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_mpris_plugin_class_init (MsdMprisPluginClass *klass)
+usd_mpris_plugin_class_init (UsdMprisPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_mpris_plugin_finalize;
+        object_class->finalize = usd_mpris_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdMprisPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdMprisPluginPrivate));
 }
 
 static void
-msd_mpris_plugin_class_finalize (MsdMprisPluginClass *klass)
+usd_mpris_plugin_class_finalize (UsdMprisPluginClass *klass)
 {
 }
