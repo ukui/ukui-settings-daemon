@@ -5,10 +5,10 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 libclipboard_la_SOURCES = 	\
-	msd-clipboard-plugin.h	\
-	msd-clipboard-plugin.c	\
-	msd-clipboard-manager.h	\
-	msd-clipboard-manager.c	\
+	usd-clipboard-plugin.h	\
+	usd-clipboard-plugin.c	\
+	usd-clipboard-manager.h	\
+	usd-clipboard-manager.c	\
 	xutils.h		\
 	xutils.c		\
 	list.h			\
@@ -16,8 +16,8 @@ libclipboard_la_SOURCES = 	\
 	$(NULL)
 
 libclipboard_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libclipboard_la_CFLAGS = \
@@ -25,7 +25,7 @@ libclipboard_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libclipboard_la_LDFLAGS = 	\
-	$(MSD_PLUGIN_LDFLAGS)	\
+	$(USD_PLUGIN_LDFLAGS)	\
 	$(NULL)
 
 libclipboard_la_LIBADD  = 	\
@@ -33,10 +33,10 @@ libclipboard_la_LIBADD  = 	\
 	$(NULL)
 
 plugin_in_files = 		\
-	clipboard.mate-settings-plugin.in	\
+	clipboard.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -50,4 +50,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@

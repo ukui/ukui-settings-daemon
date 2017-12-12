@@ -23,39 +23,39 @@
 #include <glib/gi18n-lib.h>
 #include <gmodule.h>
 
-#include "mate-settings-plugin.h"
-#include "msd-clipboard-plugin.h"
-#include "msd-clipboard-manager.h"
+#include "ukui-settings-plugin.h"
+#include "usd-clipboard-plugin.h"
+#include "usd-clipboard-manager.h"
 
-struct MsdClipboardPluginPrivate {
-        MsdClipboardManager *manager;
+struct UsdClipboardPluginPrivate {
+        UsdClipboardManager *manager;
 };
 
-#define MSD_CLIPBOARD_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), MSD_TYPE_CLIPBOARD_PLUGIN, MsdClipboardPluginPrivate))
+#define USD_CLIPBOARD_PLUGIN_GET_PRIVATE(object) (G_TYPE_INSTANCE_GET_PRIVATE ((object), USD_TYPE_CLIPBOARD_PLUGIN, UsdClipboardPluginPrivate))
 
-MATE_SETTINGS_PLUGIN_REGISTER (MsdClipboardPlugin, msd_clipboard_plugin)
+UKUI_SETTINGS_PLUGIN_REGISTER (UsdClipboardPlugin, usd_clipboard_plugin)
 
 static void
-msd_clipboard_plugin_init (MsdClipboardPlugin *plugin)
+usd_clipboard_plugin_init (UsdClipboardPlugin *plugin)
 {
-        plugin->priv = MSD_CLIPBOARD_PLUGIN_GET_PRIVATE (plugin);
+        plugin->priv = USD_CLIPBOARD_PLUGIN_GET_PRIVATE (plugin);
 
-        g_debug ("MsdClipboardPlugin initializing");
+        g_debug ("UsdClipboardPlugin initializing");
 
-        plugin->priv->manager = msd_clipboard_manager_new ();
+        plugin->priv->manager = usd_clipboard_manager_new ();
 }
 
 static void
-msd_clipboard_plugin_finalize (GObject *object)
+usd_clipboard_plugin_finalize (GObject *object)
 {
-        MsdClipboardPlugin *plugin;
+        UsdClipboardPlugin *plugin;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MSD_IS_CLIPBOARD_PLUGIN (object));
+        g_return_if_fail (USD_IS_CLIPBOARD_PLUGIN (object));
 
-        g_debug ("MsdClipboardPlugin finalizing");
+        g_debug ("UsdClipboardPlugin finalizing");
 
-        plugin = MSD_CLIPBOARD_PLUGIN (object);
+        plugin = USD_CLIPBOARD_PLUGIN (object);
 
         g_return_if_fail (plugin->priv != NULL);
 
@@ -63,11 +63,11 @@ msd_clipboard_plugin_finalize (GObject *object)
                 g_object_unref (plugin->priv->manager);
         }
 
-        G_OBJECT_CLASS (msd_clipboard_plugin_parent_class)->finalize (object);
+        G_OBJECT_CLASS (usd_clipboard_plugin_parent_class)->finalize (object);
 }
 
 static void
-impl_activate (MateSettingsPlugin *plugin)
+impl_activate (UkuiSettingsPlugin *plugin)
 {
         gboolean res;
         GError  *error;
@@ -75,7 +75,7 @@ impl_activate (MateSettingsPlugin *plugin)
         g_debug ("Activating clipboard plugin");
 
         error = NULL;
-        res = msd_clipboard_manager_start (MSD_CLIPBOARD_PLUGIN (plugin)->priv->manager, &error);
+        res = usd_clipboard_manager_start (USD_CLIPBOARD_PLUGIN (plugin)->priv->manager, &error);
         if (! res) {
                 g_warning ("Unable to start clipboard manager: %s", error->message);
                 g_error_free (error);
@@ -83,28 +83,28 @@ impl_activate (MateSettingsPlugin *plugin)
 }
 
 static void
-impl_deactivate (MateSettingsPlugin *plugin)
+impl_deactivate (UkuiSettingsPlugin *plugin)
 {
         g_debug ("Deactivating clipboard plugin");
-        msd_clipboard_manager_stop (MSD_CLIPBOARD_PLUGIN (plugin)->priv->manager);
+        usd_clipboard_manager_stop (USD_CLIPBOARD_PLUGIN (plugin)->priv->manager);
 }
 
 static void
-msd_clipboard_plugin_class_init (MsdClipboardPluginClass *klass)
+usd_clipboard_plugin_class_init (UsdClipboardPluginClass *klass)
 {
         GObjectClass           *object_class = G_OBJECT_CLASS (klass);
-        MateSettingsPluginClass *plugin_class = MATE_SETTINGS_PLUGIN_CLASS (klass);
+        UkuiSettingsPluginClass *plugin_class = UKUI_SETTINGS_PLUGIN_CLASS (klass);
 
-        object_class->finalize = msd_clipboard_plugin_finalize;
+        object_class->finalize = usd_clipboard_plugin_finalize;
 
         plugin_class->activate = impl_activate;
         plugin_class->deactivate = impl_deactivate;
 
-        g_type_class_add_private (klass, sizeof (MsdClipboardPluginPrivate));
+        g_type_class_add_private (klass, sizeof (UsdClipboardPluginPrivate));
 }
 
 static void
-msd_clipboard_plugin_class_finalize (MsdClipboardPluginClass *klass)
+usd_clipboard_plugin_class_finalize (UsdClipboardPluginClass *klass)
 {
 }
 
