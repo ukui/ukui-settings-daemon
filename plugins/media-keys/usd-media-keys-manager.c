@@ -512,7 +512,7 @@ do_media_action (UsdMediaKeysManager *manager)
 static void
 do_shutdown_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "ukui-session-save --shutdown-dialog", FALSE, FALSE);
+        execute (manager, "ukui-session-save --logout-dialog", FALSE, FALSE);
 }
 
 static void

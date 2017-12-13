@@ -68,10 +68,12 @@
 #define KEY_NUMLOCK_STATE    "numlock-state"
 #define KEY_NUMLOCK_REMEMBER "remember-numlock-state"
 
+
 struct UsdKeyboardManagerPrivate {
 	gboolean    have_xkb;
 	gint        xkb_event_base;
 	GSettings  *settings;
+	int 	    old_state;
 };
 
 static void     usd_keyboard_manager_class_init  (UsdKeyboardManagerClass* klass);
@@ -193,26 +195,36 @@ static void numlock_set_settings_state(GSettings *settings, NumLockState new_sta
 }
 
 static GdkFilterReturn
-numlock_xkb_callback (GdkXEvent *xev_,
-                      GdkEvent *gdkev_,
-                      gpointer xkb_event_code)
+xkb_events_filter (GdkXEvent *xev_,
+                   GdkEvent  *gdkev_,
+                   gpointer   user_data)
 {
         XEvent *xev = (XEvent *) xev_;
+        XkbEvent *xkbev = (XkbEvent *) xev;
+        UsdKeyboardManager *manager = (UsdKeyboardManager *) user_data;
 
-        if (xev->type == GPOINTER_TO_INT (xkb_event_code)) {
-                XkbEvent *xkbev = (XkbEvent *)xev;
-                if (xkbev->any.xkb_type == XkbStateNotify)
-                if (xkbev->state.changed & XkbModifierLockMask) {
-                        unsigned num_mask = numlock_NumLock_modifier_mask ();
-                        unsigned locked_mods = xkbev->state.locked_mods;
-                        int numlock_state = !! (num_mask & locked_mods);
-                        GSettings *settings = g_settings_new (USD_KEYBOARD_SCHEMA);
-                        numlock_set_settings_state (settings, numlock_state);
-                        g_object_unref (settings);
+        if (xev->type != manager->priv->xkb_event_base ||
+            xkbev->any.xkb_type != XkbStateNotify)
+                return GDK_FILTER_CONTINUE;
+
+        if (xkbev->state.changed & XkbModifierLockMask) {
+                unsigned num_mask = numlock_NumLock_modifier_mask ();
+                unsigned locked_mods = xkbev->state.locked_mods;
+                int numlock_state;
+
+                numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
+
+                if (numlock_state != manager->priv->old_state) {
+                        g_settings_set_enum (manager->priv->settings,
+                                             KEY_NUMLOCK_STATE,
+                                             numlock_state);
+                        manager->priv->old_state = numlock_state;
                 }
         }
+
         return GDK_FILTER_CONTINUE;
 }
+
 
 static void
 numlock_install_xkb_callback (UsdKeyboardManager *manager)
@@ -221,62 +233,35 @@ numlock_install_xkb_callback (UsdKeyboardManager *manager)
                 return;
 
         gdk_window_add_filter (NULL,
-                               numlock_xkb_callback,
-                               GINT_TO_POINTER (manager->priv->xkb_event_base));
+                               xkb_events_filter,
+                               GINT_TO_POINTER (manager));
 }
 
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
 static void
-apply_settings (GSettings          *settings,
-                gchar              *key,
-                UsdKeyboardManager *manager)
+apply_bell (UsdKeyboardManager *manager)
 {
+        GSettings       *settings;
         XKeyboardControl kbdcontrol;
-        gboolean         repeat;
         gboolean         click;
-        int              rate;
-        int              delay;
-        int              click_volume;
         int              bell_volume;
         int              bell_pitch;
         int              bell_duration;
-        char            *volume_string;
-#ifdef HAVE_X11_EXTENSIONS_XKB_H
-        gboolean         rnumlock;
-#endif /* HAVE_X11_EXTENSIONS_XKB_H */
+        char		*volume_string;
+        int              click_volume;
 
-        repeat        = g_settings_get_boolean  (settings, KEY_REPEAT);
+        g_debug ("Applying the bell settings");
+        settings      = manager->priv->settings;
         click         = g_settings_get_boolean  (settings, KEY_CLICK);
-        rate          = g_settings_get_int   (settings, KEY_RATE);
-        delay         = g_settings_get_int   (settings, KEY_DELAY);
         click_volume  = g_settings_get_int   (settings, KEY_CLICK_VOLUME);
+
         bell_pitch    = g_settings_get_int   (settings, KEY_BELL_PITCH);
         bell_duration = g_settings_get_int   (settings, KEY_BELL_DURATION);
 
         volume_string = g_settings_get_string (settings, KEY_BELL_MODE);
         bell_volume   = (volume_string && !strcmp (volume_string, "on")) ? 50 : 0;
-        g_free (volume_string);
-
-        gdk_error_trap_push ();
-        if (repeat) {
-                gboolean rate_set = FALSE;
-
-                XAutoRepeatOn (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()));
-                /* Use XKB in preference */
-#ifdef HAVE_X11_EXTENSIONS_XKB_H
-                rate_set = xkb_set_keyboard_autorepeat_rate (delay, rate);
-#endif
-#ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
-                if (!rate_set)
-                        rate_set = xfree86_set_keyboard_autorepeat_rate (delay, rate);
-#endif
-                if (!rate_set)
-                        g_warning ("Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
-                                   "no way to support keyboard autorepeat rate settings");
-        } else {
-                XAutoRepeatOff (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()));
-        }
+	g_free (volume_string);
 
         /* as percentage from 0..100 inclusive */
         if (click_volume < 0) {
@@ -288,22 +273,93 @@ apply_settings (GSettings          *settings,
         kbdcontrol.bell_percent = bell_volume;
         kbdcontrol.bell_pitch = bell_pitch;
         kbdcontrol.bell_duration = bell_duration;
-        XChangeKeyboardControl (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
+        gdk_error_trap_push ();
+        XChangeKeyboardControl (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                 KBKeyClickPercent | KBBellPercent | KBBellPitch | KBBellDuration,
                                 &kbdcontrol);
 
-#ifdef HAVE_X11_EXTENSIONS_XKB_H
-        rnumlock = g_settings_get_boolean (settings, KEY_NUMLOCK_REMEMBER);
+        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        //gdk_error_trap_pop_ignored ();
+}
 
-        if (rnumlock == 0 || key == NULL) {
-                if (manager->priv->have_xkb && rnumlock) {
-                        numlock_set_xkb_state (numlock_get_settings_state (settings));
-                }
+static void
+apply_numlock (UsdKeyboardManager *manager)
+{
+        GSettings *settings;
+        gboolean rnumlock;
+
+        g_debug ("Applying the num-lock settings");
+        settings = manager->priv->settings;
+        rnumlock = g_settings_get_boolean  (settings, KEY_NUMLOCK_REMEMBER);
+        manager->priv->old_state = g_settings_get_enum (manager->priv->settings, KEY_NUMLOCK_STATE);
+
+        gdk_error_trap_push ();
+        if (rnumlock) {
+                numlock_set_xkb_state (manager->priv->old_state);
         }
-#endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
-        XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), FALSE);
-        gdk_error_trap_pop_ignored ();
+        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        //gdk_error_trap_pop_ignored ();
+}
+
+static void
+apply_repeat (UsdKeyboardManager *manager)
+{
+        GSettings       *settings;
+        gboolean         repeat;
+        guint            rate;
+        guint            delay;
+
+        g_debug ("Applying the repeat settings");
+        settings      = manager->priv->settings;
+        repeat        = g_settings_get_boolean  (settings, KEY_REPEAT);
+        rate	      = g_settings_get_int  (settings, KEY_RATE);
+        delay         = g_settings_get_int  (settings, KEY_DELAY);
+
+        gdk_error_trap_push ();
+        if (repeat) {
+                gboolean rate_set = FALSE;
+
+                XAutoRepeatOn (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+                /* Use XKB in preference */
+                rate_set = xkb_set_keyboard_autorepeat_rate (delay, rate);
+
+                if (!rate_set)
+                        g_warning ("Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
+                                   "no way to support keyboard autorepeat rate settings");
+        } else {
+                XAutoRepeatOff (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+        }
+
+        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        //gdk_error_trap_pop_ignored ();
+}
+
+static void
+apply_settings (GSettings          *settings,
+                gchar              *key,
+                UsdKeyboardManager *manager)
+{
+	if (g_strcmp0 (key, KEY_CLICK) == 0||
+            g_strcmp0 (key, KEY_CLICK_VOLUME) == 0 ||
+            g_strcmp0 (key, KEY_BELL_PITCH) == 0 ||
+            g_strcmp0 (key, KEY_BELL_DURATION) == 0 ||
+            g_strcmp0 (key, KEY_BELL_MODE) == 0) {
+                g_debug ("Bell setting '%s' changed, applying bell settings", key);
+                apply_bell (manager);
+        } else if (g_strcmp0 (key, KEY_NUMLOCK_REMEMBER) == 0) {
+                g_debug ("Remember Num-Lock state '%s' changed, applying num-lock settings", key);
+                apply_numlock (manager);
+        } else if (g_strcmp0 (key, KEY_NUMLOCK_STATE) == 0) {
+                g_debug ("Num-Lock state '%s' changed, will apply at next startup", key);
+        } else if (g_strcmp0 (key, KEY_REPEAT) == 0 ||
+                 g_strcmp0 (key, KEY_RATE) == 0 ||
+                 g_strcmp0 (key, KEY_DELAY) == 0) {
+                g_debug ("Key repeat setting '%s' changed, applying key repeat settings", key);
+                apply_repeat (manager);
+        } else {
+                g_warning ("Unhandled settings change, key '%s'", key);
+        }
 }
 
 void
@@ -371,8 +427,8 @@ usd_keyboard_manager_stop (UsdKeyboardManager *manager)
 #if HAVE_X11_EXTENSIONS_XKB_H
         if (p->have_xkb) {
                 gdk_window_remove_filter (NULL,
-                                          numlock_xkb_callback,
-                                          GINT_TO_POINTER (p->xkb_event_base));
+                                          xkb_events_filter,
+                                          GINT_TO_POINTER (manager));
         }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 

@@ -537,6 +537,11 @@ confirm_with_user_idle_cb (gpointer data)
         struct confirmation *confirmation = data;
         char *backup_filename;
         char *intended_filename;
+	
+	static int stat = 0;
+	if (stat)
+		return FALSE;
+	stat = 1;
 
         backup_filename = mate_rr_config_get_backup_filename ();
         intended_filename = mate_rr_config_get_intended_filename ();
@@ -547,6 +552,7 @@ confirm_with_user_idle_cb (gpointer data)
                 restore_backup_configuration (confirmation->manager, backup_filename, intended_filename, confirmation->timestamp);
 
         g_free (confirmation);
+	stat = 0;
 
         return FALSE;
 }

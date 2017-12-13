@@ -169,7 +169,10 @@ popup_menu_launch_capplet ()
 	GdkAppLaunchContext *context;
 	GError *error = NULL;
 
-	info = g_app_info_create_from_commandline ("ukui-keyboard-properties", NULL, 0, &error);
+	if (g_file_test("/usr/bin/ukui-control-center", G_FILE_TEST_EXISTS))
+		info = g_app_info_create_from_commandline ("ukui-control-center -k &", NULL, 0, &error);
+	else
+		info = g_app_info_create_from_commandline ("mate-keyboard-properties", NULL, 0, &error);
 
 	if (info != NULL) {
 		context = gdk_display_get_app_launch_context (gdk_display_get_default ());
