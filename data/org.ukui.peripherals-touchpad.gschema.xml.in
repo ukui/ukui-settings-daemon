@@ -1,10 +1,10 @@
 <schemalist gettext-domain="@GETTEXT_PACKAGE@">
-  <enum id="org.mate.peripherals-touchpad.Handedness">
+  <enum id="org.ukui.peripherals-touchpad.Handedness">
     <value nick="right" value="0"/>
     <value nick="left" value="1"/>
     <value nick="mouse" value="2"/>
   </enum>
-  <schema id="org.mate.peripherals-touchpad" path="/org/mate/desktop/peripherals/touchpad/">
+  <schema id="org.ukui.peripherals-touchpad" path="/org/ukui/desktop/peripherals/touchpad/">
     <key name="disable-while-typing" type="b">
       <default>false</default>
       <summary>Disable touchpad while typing</summary>
@@ -70,7 +70,7 @@
       <summary>Three finger tap button</summary>
       <description>Select the button mapping for three-finger tap. Supported values are: 1: left mouse button 2: middle mouse button 3: right mouse button</description>
     </key>
-    <key name="left-handed" enum="org.mate.peripherals-touchpad.Handedness">
+    <key name="left-handed" enum="org.ukui.peripherals-touchpad.Handedness">
       <default>'mouse'</default>
       <summary>Touchpad button orientation</summary>
       <description>Swap left and right buttons for left-handed touchpads with 'left', 'right' for right-handed, 'mouse' to follow the mouse setting.</description>

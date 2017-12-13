@@ -1,5 +1,5 @@
 <schemalist gettext-domain="@GETTEXT_PACKAGE@">
-  <schema id="org.mate.applications-at" path="/org/mate/desktop/applications/at/">
+  <schema id="org.ukui.applications-at" path="/org/ukui/desktop/applications/at/">
     <key name="screen-keyboard-enabled" type="b">
       <default>false</default>
       <summary>On-screen keyboard</summary>

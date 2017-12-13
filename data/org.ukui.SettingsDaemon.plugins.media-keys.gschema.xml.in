@@ -1,9 +1,9 @@
 <schemalist>
-  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.mate.SettingsDaemon.plugins.media-keys" path="/org/mate/settings-daemon/plugins/media-keys/">
+  <schema gettext-domain="@GETTEXT_PACKAGE@" id="org.ukui.SettingsDaemon.plugins.media-keys" path="/org/ukui/settings-daemon/plugins/media-keys/">
     <key name="active" type="b">
       <default>true</default>
       <summary>Activation of this plugin</summary>
-      <description>Whether this plugin would be activated by mate-settings-daemon or not</description>
+      <description>Whether this plugin would be activated by ukui-settings-daemon or not</description>
     </key>
     <key name="enable-osd" type="b">
       <default>true</default>
@@ -13,7 +13,7 @@
     <key name="priority" type="i">
       <default>98</default>
       <summary>Priority to use for this plugin</summary>
-      <description>Priority to use for this plugin in mate-settings-daemon startup queue</description>
+      <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
     </key>
     <key name="volume-step" type="i">
       <default>6</default>

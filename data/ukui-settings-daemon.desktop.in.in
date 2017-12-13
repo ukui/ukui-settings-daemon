@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+_Name=UKUI Settings Daemon
+Exec=@LIBEXECDIR@/ukui-settings-daemon
+OnlyShowIn=UKUI;
+X-UKUI-Autostart-Phase=Initialization
+X-UKUI-Autostart-Notify=true
+X-UKUI-AutoRestart=true
