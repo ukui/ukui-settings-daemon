@@ -921,6 +921,31 @@ do_on_screen_keyboard_action (UsdMediaKeysManager *manager)
         do_toggle_accessibility_key ("screen-keyboard-enabled");
 }
 
+static void
+do_terminal_action (MsdMediaKeysManager *manager)
+{
+        execute (manager, "mate-terminal",FALSE,FALSE);
+}
+
+static void
+do_screenshot_action (MsdMediaKeysManager *manager)
+{
+        execute (manager, "mate-screenshot",FALSE,FALSE);
+}
+
+static void
+do_area_screenshot_action (MsdMediaKeysManager *manager)
+{
+        execute (manager, "mate-screenshot -a",FALSE,FALSE);
+}
+
+static void
+do_window_screenshot_action (MsdMediaKeysManager *manager)
+{
+        execute (manager, "mate-screenshot -w",FALSE,FALSE);
+}
+
+
 static gboolean
 do_action (UsdMediaKeysManager *manager,
            int                  type)
@@ -1024,6 +1049,18 @@ do_action (UsdMediaKeysManager *manager,
                 break;
         case ON_SCREEN_KEYBOARD_KEY:
                 do_on_screen_keyboard_action (manager);
+                break;
+        case TERMINAL_KEY:
+                do_terminal_action (manager);
+                break;
+        case SCREENSHOT_KEY:
+                do_screenshot_action (manager);
+                break;
+        case AREA_SCREENSHOT_KEY:
+                do_area_screenshot_action (manager);
+                break;
+        case WINDOW_SCREENSHOT_KEY:
+                do_window_screenshot_action (manager);
                 break;
         default:
                 g_assert_not_reached ();

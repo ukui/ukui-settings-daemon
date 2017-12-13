@@ -584,6 +584,38 @@ msgstr "用于显示屏幕阅读器的键绑定。"
 msgid "Binding to show the on-screen keyboard"
 msgstr "用于显示屏幕键盘的键绑定。"
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:140
+msgid "Terminal"
+msgstr "打开终端"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:141
+msgid "Open ukui terminal."
+msgstr "打开终端。"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:145
+msgid "Take a screenshot"
+msgstr "截图"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:146
+msgid "Binding to take a screenshot."
+msgstr "截图的快捷键绑定。"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:150
+msgid "Take a screenshot of a window"
+msgstr "截取窗口的截图"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:151
+msgid "Binding to take a screenshot of a window."
+msgstr "截取窗口截图的快捷键绑定。"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:155
+msgid "Take a screenshot of an area"
+msgstr "截取一个区域的截图"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.in.h:156
+msgid "Binding to take a screenshot of an area."
+msgstr "截取一个区域的截图快捷键绑定。"
+
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
 msgstr "在通知区域显示"

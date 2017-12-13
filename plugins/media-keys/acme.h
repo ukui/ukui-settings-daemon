@@ -53,6 +53,10 @@ enum {
         SCREENREADER_KEY,
         ON_SCREEN_KEYBOARD_KEY,
         LOGOUT_KEY,
+        TERMINAL_KEY,
+        SCREENSHOT_KEY,
+        WINDOW_SCREENSHOT_KEY,
+        AREA_SCREENSHOT_KEY,
         HANDLED_KEYS,
 };
 
@@ -90,6 +94,10 @@ static struct {
         { SCREENREADER_KEY, "screenreader", NULL, NULL },
         { ON_SCREEN_KEYBOARD_KEY, "on-screen-keyboard", NULL, NULL },
         { LOGOUT_KEY, "logout", NULL, NULL },
+        { TERMINAL_KEY, "terminal", NULL, NULL },
+        { SCREENSHOT_KEY, "screenshot", NULL, NULL },
+        { WINDOW_SCREENSHOT_KEY, "window-screenshot", NULL, NULL },
+        { AREA_SCREENSHOT_KEY, "area-screenshot", NULL, NULL },
 };
 
 #endif /* __ACME_H__ */
