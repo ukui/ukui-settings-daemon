@@ -5,10 +5,10 @@ plugin_LTLIBRARIES = \
 	$(NULL)
 
 libxsettings_la_SOURCES = 	\
-	msd-xsettings-plugin.h	\
-	msd-xsettings-plugin.c	\
-	msd-xsettings-manager.h	\
-	msd-xsettings-manager.c	\
+	usd-xsettings-plugin.h	\
+	usd-xsettings-plugin.c	\
+	usd-xsettings-manager.h	\
+	usd-xsettings-manager.c	\
 	xsettings-common.h	\
 	xsettings-common.c	\
 	xsettings-manager.h	\
@@ -18,8 +18,8 @@ libxsettings_la_SOURCES = 	\
 	$(NULL)
 
 libxsettings_la_CPPFLAGS = \
-	-I$(top_srcdir)/mate-settings-daemon		\
-	-DMATE_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
+	-I$(top_srcdir)/ukui-settings-daemon		\
+	-DUKUI_SETTINGS_LOCALEDIR=\""$(datadir)/locale"\" \
 	$(AM_CPPFLAGS)
 
 libxsettings_la_CFLAGS = \
@@ -28,7 +28,7 @@ libxsettings_la_CFLAGS = \
 	$(AM_CFLAGS)
 
 libxsettings_la_LDFLAGS = 	\
-	$(MSD_PLUGIN_LDFLAGS)	\
+	$(USD_PLUGIN_LDFLAGS)	\
 	$(NULL)
 
 libxsettings_la_LIBADD  = 	\
@@ -37,10 +37,10 @@ libxsettings_la_LIBADD  = 	\
 	$(NULL)
 
 plugin_in_files = 		\
-	xsettings.mate-settings-plugin.in	\
+	xsettings.ukui-settings-plugin.in	\
 	$(NULL)
 
-plugin_DATA = $(plugin_in_files:.mate-settings-plugin.in=.mate-settings-plugin)
+plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
 EXTRA_DIST = 			\
 	$(plugin_in_files)	\
@@ -54,4 +54,4 @@ DISTCLEANFILES =		\
 	$(plugin_DATA)		\
 	$(NULL)
 
-@MSD_INTLTOOL_PLUGIN_RULE@
+@USD_INTLTOOL_PLUGIN_RULE@

@@ -39,12 +39,12 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#include "mate-settings-profile.h"
-#include "msd-xsettings-manager.h"
+#include "ukui-settings-profile.h"
+#include "usd-xsettings-manager.h"
 #include "xsettings-manager.h"
 #include "fontconfig-monitor.h"
 
-#define MATE_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), MATE_TYPE_XSETTINGS_MANAGER, MateXSettingsManagerPrivate))
+#define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, UkuiXSettingsManagerPrivate))
 
 #define MOUSE_SCHEMA          "org.mate.peripherals-mouse"
 #define INTERFACE_SCHEMA      "org.mate.interface"
@@ -53,7 +53,7 @@
 #define CURSOR_THEME_KEY      "cursor-theme"
 #define CURSOR_SIZE_KEY       "cursor-size"
 
-#define FONT_RENDER_SCHEMA    "org.mate.font-rendering"
+#define FONT_RENDER_SCHEMA    "org.ukui.font-rendering"
 #define FONT_ANTIALIASING_KEY "antialiasing"
 #define FONT_HINTING_KEY      "hinting"
 #define FONT_RGBA_ORDER_KEY   "rgba-order"
@@ -74,7 +74,7 @@
 #define DPI_HIGH_REASONABLE_VALUE 500
 
 typedef struct _TranslationEntry TranslationEntry;
-typedef void (* TranslationFunc) (MateXSettingsManager  *manager,
+typedef void (* TranslationFunc) (UkuiXSettingsManager  *manager,
                                   TranslationEntry      *trans,
                                   GVariant              *value);
 
@@ -86,7 +86,7 @@ struct _TranslationEntry {
         TranslationFunc translate;
 };
 
-struct MateXSettingsManagerPrivate
+struct UkuiXSettingsManagerPrivate
 {
         XSettingsManager **managers;
         GHashTable *gsettings;
@@ -94,28 +94,28 @@ struct MateXSettingsManagerPrivate
         fontconfig_monitor_handle_t *fontconfig_handle;
 };
 
-#define MSD_XSETTINGS_ERROR msd_xsettings_error_quark ()
+#define USD_XSETTINGS_ERROR usd_xsettings_error_quark ()
 
 enum {
-        MSD_XSETTINGS_ERROR_INIT
+        USD_XSETTINGS_ERROR_INIT
 };
 
-static void     mate_xsettings_manager_class_init  (MateXSettingsManagerClass *klass);
-static void     mate_xsettings_manager_init        (MateXSettingsManager      *xsettings_manager);
-static void     mate_xsettings_manager_finalize    (GObject                  *object);
+static void     ukui_xsettings_manager_class_init  (UkuiXSettingsManagerClass *klass);
+static void     ukui_xsettings_manager_init        (UkuiXSettingsManager      *xsettings_manager);
+static void     ukui_xsettings_manager_finalize    (GObject                  *object);
 
-G_DEFINE_TYPE (MateXSettingsManager, mate_xsettings_manager, G_TYPE_OBJECT)
+G_DEFINE_TYPE (UkuiXSettingsManager, ukui_xsettings_manager, G_TYPE_OBJECT)
 
 static gpointer manager_object = NULL;
 
 static GQuark
-msd_xsettings_error_quark (void)
+usd_xsettings_error_quark (void)
 {
-        return g_quark_from_static_string ("msd-xsettings-error-quark");
+        return g_quark_from_static_string ("usd-xsettings-error-quark");
 }
 
 static void
-translate_bool_int (MateXSettingsManager  *manager,
+translate_bool_int (UkuiXSettingsManager  *manager,
                     TranslationEntry      *trans,
                     GVariant              *value)
 {
@@ -128,7 +128,7 @@ translate_bool_int (MateXSettingsManager  *manager,
 }
 
 static void
-translate_int_int (MateXSettingsManager  *manager,
+translate_int_int (UkuiXSettingsManager  *manager,
                    TranslationEntry      *trans,
                    GVariant              *value)
 {
@@ -141,7 +141,7 @@ translate_int_int (MateXSettingsManager  *manager,
 }
 
 static void
-translate_string_string (MateXSettingsManager  *manager,
+translate_string_string (UkuiXSettingsManager  *manager,
                          TranslationEntry      *trans,
                          GVariant              *value)
 {
@@ -155,7 +155,7 @@ translate_string_string (MateXSettingsManager  *manager,
 }
 
 static void
-translate_string_string_toolbar (MateXSettingsManager  *manager,
+translate_string_string_toolbar (UkuiXSettingsManager  *manager,
                                  TranslationEntry      *trans,
                                  GVariant              *value)
 {
@@ -288,7 +288,7 @@ typedef struct
         int         cursor_size;
         const char *rgba;
         const char *hintstyle;
-} MateXftSettings;
+} UkuiXftSettings;
 
 static const char *rgba_types[] = { "rgb", "bgr", "vbgr", "vrgb" };
 
@@ -296,8 +296,8 @@ static const char *rgba_types[] = { "rgb", "bgr", "vbgr", "vrgb" };
  * This probably could be done a bit more cleanly with g_settings_get_enum
  */
 static void
-xft_settings_get (MateXSettingsManager *manager,
-                  MateXftSettings *settings)
+xft_settings_get (UkuiXSettingsManager *manager,
+                  UkuiXftSettings *settings)
 {
         GSettings *mouse_gsettings;
         char      *antialiasing;
@@ -382,12 +382,12 @@ xft_settings_get (MateXSettingsManager *manager,
 }
 
 static void
-xft_settings_set_xsettings (MateXSettingsManager *manager,
-                            MateXftSettings      *settings)
+xft_settings_set_xsettings (UkuiXSettingsManager *manager,
+                            UkuiXftSettings      *settings)
 {
         int i;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         for (i = 0; manager->priv->managers [i]; i++) {
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/Antialias", settings->antialias);
@@ -400,7 +400,7 @@ xft_settings_set_xsettings (MateXSettingsManager *manager,
                 xsettings_manager_set_int (manager->priv->managers [i], "Gtk/CursorThemeSize", settings->cursor_size);
                 xsettings_manager_set_string (manager->priv->managers [i], "Gtk/CursorThemeName", settings->cursor_theme);
         }
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static void
@@ -435,13 +435,13 @@ update_property (GString *props, const gchar* key, const gchar* value)
 }
 
 static void
-xft_settings_set_xresources (MateXftSettings *settings)
+xft_settings_set_xresources (UkuiXftSettings *settings)
 {
         GString    *add_string;
         char        dpibuf[G_ASCII_DTOSTR_BUF_SIZE];
         Display    *dpy;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         /* get existing properties */
         dpy = XOpenDisplay (NULL);
@@ -476,30 +476,30 @@ xft_settings_set_xresources (MateXftSettings *settings)
 
         g_string_free (add_string, TRUE);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 /* We mirror the Xft properties both through XSETTINGS and through
  * X resources
  */
 static void
-update_xft_settings (MateXSettingsManager *manager)
+update_xft_settings (UkuiXSettingsManager *manager)
 {
-        MateXftSettings settings;
+        UkuiXftSettings settings;
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         xft_settings_get (manager, &settings);
         xft_settings_set_xsettings (manager, &settings);
         xft_settings_set_xresources (&settings);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static void
 xft_callback (GSettings            *gsettings,
               const gchar          *key,
-              MateXSettingsManager *manager)
+              UkuiXSettingsManager *manager)
 {
         int i;
 
@@ -512,46 +512,46 @@ xft_callback (GSettings            *gsettings,
 
 static void
 fontconfig_callback (fontconfig_monitor_handle_t *handle,
-                     MateXSettingsManager       *manager)
+                     UkuiXSettingsManager       *manager)
 {
         int i;
         int timestamp = time (NULL);
 
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         for (i = 0; manager->priv->managers [i]; i++) {
                 xsettings_manager_set_int (manager->priv->managers [i], "Fontconfig/Timestamp", timestamp);
                 xsettings_manager_notify (manager->priv->managers [i]);
         }
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static gboolean
-start_fontconfig_monitor_idle_cb (MateXSettingsManager *manager)
+start_fontconfig_monitor_idle_cb (UkuiXSettingsManager *manager)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         manager->priv->fontconfig_handle = fontconfig_monitor_start ((GFunc) fontconfig_callback, manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return FALSE;
 }
 
 static void
-start_fontconfig_monitor (MateXSettingsManager  *manager)
+start_fontconfig_monitor (UkuiXSettingsManager  *manager)
 {
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         fontconfig_cache_init ();
 
         g_idle_add ((GSourceFunc) start_fontconfig_monitor_idle_cb, manager);
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 }
 
 static void
-stop_fontconfig_monitor (MateXSettingsManager  *manager)
+stop_fontconfig_monitor (UkuiXSettingsManager  *manager)
 {
         if (manager->priv->fontconfig_handle) {
                 fontconfig_monitor_stop (manager->priv->fontconfig_handle);
@@ -560,7 +560,7 @@ stop_fontconfig_monitor (MateXSettingsManager  *manager)
 }
 
 static void
-process_value (MateXSettingsManager *manager,
+process_value (UkuiXSettingsManager *manager,
                TranslationEntry     *trans,
                GVariant             *value)
 {
@@ -591,7 +591,7 @@ find_translation_entry (GSettings *gsettings, const char *key)
 static void
 xsettings_callback (GSettings             *gsettings,
                     const char            *key,
-                    MateXSettingsManager  *manager)
+                    UkuiXSettingsManager  *manager)
 {
         TranslationEntry *trans;
         int               i;
@@ -617,7 +617,7 @@ xsettings_callback (GSettings             *gsettings,
         for (i = 0; manager->priv->managers [i]; i++) {
                 xsettings_manager_set_string (manager->priv->managers [i],
                                               "Net/FallbackIconTheme",
-                                              "mate");
+                                              "ukui");
         }
 
         for (i = 0; manager->priv->managers [i]; i++) {
@@ -640,7 +640,7 @@ terminate_cb (void *data)
 }
 
 static gboolean
-setup_xsettings_managers (MateXSettingsManager *manager)
+setup_xsettings_managers (UkuiXSettingsManager *manager)
 {
         GdkDisplay *display;
         int         i;
@@ -680,18 +680,18 @@ setup_xsettings_managers (MateXSettingsManager *manager)
 }
 
 gboolean
-mate_xsettings_manager_start (MateXSettingsManager *manager,
+ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
                                GError               **error)
 {
         guint        i;
         GList       *list, *l;
 
         g_debug ("Starting xsettings manager");
-        mate_settings_profile_start (NULL);
+        ukui_settings_profile_start (NULL);
 
         if (!setup_xsettings_managers (manager)) {
-                g_set_error (error, MSD_XSETTINGS_ERROR,
-                             MSD_XSETTINGS_ERROR_INIT,
+                g_set_error (error, USD_XSETTINGS_ERROR,
+                             USD_XSETTINGS_ERROR_INIT,
                              "Could not initialize xsettings manager.");
                 return FALSE;
         }
@@ -740,21 +740,21 @@ mate_xsettings_manager_start (MateXSettingsManager *manager,
         for (i = 0; manager->priv->managers [i]; i++)
                 xsettings_manager_set_string (manager->priv->managers [i],
                                               "Net/FallbackIconTheme",
-                                              "mate");
+                                              "ukui");
 
         for (i = 0; manager->priv->managers [i]; i++) {
                 xsettings_manager_notify (manager->priv->managers [i]);
         }
 
-        mate_settings_profile_end (NULL);
+        ukui_settings_profile_end (NULL);
 
         return TRUE;
 }
 
 void
-mate_xsettings_manager_stop (MateXSettingsManager *manager)
+ukui_xsettings_manager_stop (UkuiXSettingsManager *manager)
 {
-        MateXSettingsManagerPrivate *p = manager->priv;
+        UkuiXSettingsManagerPrivate *p = manager->priv;
         int i;
 
         g_debug ("Stopping xsettings manager");
@@ -782,46 +782,46 @@ mate_xsettings_manager_stop (MateXSettingsManager *manager)
 }
 
 static void
-mate_xsettings_manager_class_init (MateXSettingsManagerClass *klass)
+ukui_xsettings_manager_class_init (UkuiXSettingsManagerClass *klass)
 {
         GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = mate_xsettings_manager_finalize;
+        object_class->finalize = ukui_xsettings_manager_finalize;
 
-        g_type_class_add_private (klass, sizeof (MateXSettingsManagerPrivate));
+        g_type_class_add_private (klass, sizeof (UkuiXSettingsManagerPrivate));
 }
 
 static void
-mate_xsettings_manager_init (MateXSettingsManager *manager)
+ukui_xsettings_manager_init (UkuiXSettingsManager *manager)
 {
-        manager->priv = MATE_XSETTINGS_MANAGER_GET_PRIVATE (manager);
+        manager->priv = UKUI_XSETTINGS_MANAGER_GET_PRIVATE (manager);
 }
 
 static void
-mate_xsettings_manager_finalize (GObject *object)
+ukui_xsettings_manager_finalize (GObject *object)
 {
-        MateXSettingsManager *xsettings_manager;
+        UkuiXSettingsManager *xsettings_manager;
 
         g_return_if_fail (object != NULL);
-        g_return_if_fail (MATE_IS_XSETTINGS_MANAGER (object));
+        g_return_if_fail (UKUI_IS_XSETTINGS_MANAGER (object));
 
-        xsettings_manager = MATE_XSETTINGS_MANAGER (object);
+        xsettings_manager = UKUI_XSETTINGS_MANAGER (object);
 
         g_return_if_fail (xsettings_manager->priv != NULL);
 
-        G_OBJECT_CLASS (mate_xsettings_manager_parent_class)->finalize (object);
+        G_OBJECT_CLASS (ukui_xsettings_manager_parent_class)->finalize (object);
 }
 
-MateXSettingsManager *
-mate_xsettings_manager_new (void)
+UkuiXSettingsManager *
+ukui_xsettings_manager_new (void)
 {
         if (manager_object != NULL) {
                 g_object_ref (manager_object);
         } else {
-                manager_object = g_object_new (MATE_TYPE_XSETTINGS_MANAGER, NULL);
+                manager_object = g_object_new (UKUI_TYPE_XSETTINGS_MANAGER, NULL);
                 g_object_add_weak_pointer (manager_object,
                                            (gpointer *) &manager_object);
         }
 
-        return MATE_XSETTINGS_MANAGER (manager_object);
+        return UKUI_XSETTINGS_MANAGER (manager_object);
 }
