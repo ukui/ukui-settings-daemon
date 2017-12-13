@@ -23,7 +23,7 @@
 
 #include "usd-ldsm-trash-empty.h"
 
-#define CAJA_PREFS_SCHEMA "org.ukui.caja.preferences"
+#define CAJA_PREFS_SCHEMA "org.ukui.peony.preferences"
 #define CAJA_CONFIRM_TRASH_KEY "confirm-trash"
 
 /* Some of this code has been borrowed from the trash-applet, courtesy of Ryan Lortie */

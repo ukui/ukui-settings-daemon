@@ -56,7 +56,7 @@
 #define KEY_AT_SCREEN_MAGNIFIER_ENABLED "screen-magnifier-enabled"
 #define KEY_AT_SCREEN_READER_ENABLED    "screen-reader-enabled"
 
-#define FONT_RENDER_SCHEMA        "org.mate.font-rendering"
+#define FONT_RENDER_SCHEMA        "org.ukui.font-rendering"
 #define KEY_FONT_DPI              "dpi"
 
 /* X servers sometimes lie about the screen's physical dimensions, so we cannot

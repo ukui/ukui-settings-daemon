@@ -89,7 +89,7 @@ usd_a11y_settings_manager_start (UsdA11ySettingsManager *manager,
         g_debug ("Starting a11y_settings manager");
         ukui_settings_profile_start (NULL);
 
-	manager->priv->interface_settings = g_settings_new ("org.ukui.interface");
+	manager->priv->interface_settings = g_settings_new ("org.mate.interface");
 	manager->priv->a11y_apps_settings = g_settings_new ("org.gnome.desktop.a11y.applications");
 
 	g_signal_connect (G_OBJECT (manager->priv->a11y_apps_settings), "changed",

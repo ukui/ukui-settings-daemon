@@ -53,7 +53,7 @@
 #define USD_KEYBOARD_MANAGER_GET_PRIVATE(o) \
 	(G_TYPE_INSTANCE_GET_PRIVATE((o), USD_TYPE_KEYBOARD_MANAGER, UsdKeyboardManagerPrivate))
 
-#define USD_KEYBOARD_SCHEMA "org.ukui.peripherals-keyboard"
+#define USD_KEYBOARD_SCHEMA "org.mate.peripherals-keyboard"
 
 #define KEY_REPEAT         "repeat"
 #define KEY_CLICK          "click"

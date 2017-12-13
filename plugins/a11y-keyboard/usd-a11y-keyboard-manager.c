@@ -51,7 +51,7 @@
 #include "usd-a11y-keyboard-manager.h"
 #include "usd-a11y-preferences-dialog.h"
 
-#define CONFIG_SCHEMA "org.ukui.accessibility-keyboard"
+#define CONFIG_SCHEMA "org.mate.accessibility-keyboard"
 #define NOTIFICATION_TIMEOUT 30
 
 #define USD_A11Y_KEYBOARD_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_A11Y_KEYBOARD_MANAGER, UsdA11yKeyboardManagerPrivate))

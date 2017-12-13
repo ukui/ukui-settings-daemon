@@ -34,7 +34,7 @@
 #define INTERVAL_TWO_MINUTES 2*60
 
 /* Thumbnail cleaner */
-#define THUMB_CACHE_SCHEMA	"org.ukui.thumbnail-cache"
+#define THUMB_CACHE_SCHEMA	"org.mate.thumbnail-cache"
 #define THUMB_CACHE_KEY_AGE	"maximum-age"
 #define THUMB_CACHE_KEY_SIZE	"maximum-size"
 
