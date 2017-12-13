@@ -1,16 +1,16 @@
 AC_PREREQ([2.60])
 
-m4_define([msd_api_version_major],[1])
-m4_define([msd_api_version_minor],[18])
-m4_define([msd_api_version_micro],[1])
-m4_define([msd_api_version],
-	[msd_api_version_major.msd_api_version_minor.msd_api_version_micro])
+m4_define([usd_api_version_major],[1])
+m4_define([usd_api_version_minor],[18])
+m4_define([usd_api_version_micro],[1])
+m4_define([usd_api_version],
+	[usd_api_version_major.usd_api_version_minor.usd_api_version_micro])
 
-AC_INIT([mate-settings-daemon],
-	[msd_api_version_major.msd_api_version_minor.msd_api_version_micro],
-	[http://www.mate-desktop.org/])
+AC_INIT([ukui-settings-daemon],
+	[usd_api_version_major.usd_api_version_minor.usd_api_version_micro],
+	[http://www.ukui.org/])
 
-AC_CONFIG_SRCDIR([mate-settings-daemon/mate-settings-manager.c])
+AC_CONFIG_SRCDIR([ukui-settings-daemon/ukui-settings-manager.c])
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-xz tar-ustar check-news])
@@ -31,7 +31,7 @@ AC_CONFIG_HEADERS([config.h])
 
 IT_PROG_INTLTOOL([0.50.1])
 
-GETTEXT_PACKAGE=mate-settings-daemon
+GETTEXT_PACKAGE=ukui-settings-daemon
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE", [Name of default gettext domain])
 
@@ -45,12 +45,12 @@ AM_GLIB_GNU_GETTEXT
 
 AS_AC_EXPAND(LIBEXECDIR, "$libexecdir")
 
-MSD_INTLTOOL_PLUGIN_RULE='%.mate-settings-plugin:   %.mate-settings-plugin.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@'
-AC_SUBST([MSD_INTLTOOL_PLUGIN_RULE])
+USD_INTLTOOL_PLUGIN_RULE='%.ukui-settings-plugin:   %.ukui-settings-plugin.in   $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po) ; LC_ALL=C $(INTLTOOL_MERGE) -d -u -c $(top_builddir)/po/.intltool-merge-cache $(top_srcdir)/po $< [$]@'
+AC_SUBST([USD_INTLTOOL_PLUGIN_RULE])
 
-dnl Unconditionally use this dir to avoid a circular dep with matecc
-MATE_KEYBINDINGS_KEYSDIR="${datadir}/mate-control-center/keybindings"
-AC_SUBST(MATE_KEYBINDINGS_KEYSDIR)
+dnl Unconditionally use this dir to avoid a circular dep with ukcc
+UKUI_KEYBINDINGS_KEYSDIR="${datadir}/ukui-control-center/keybindings"
+AC_SUBST(UKUI_KEYBINDINGS_KEYSDIR)
 
 dnl ---------------------------------------------------------------------------
 dnl - Dependencies
@@ -82,13 +82,13 @@ PKG_CHECK_MODULES(SETTINGS_PLUGIN,
 	dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
 )
 
-MSD_PLUGIN_LDFLAGS="-export_dynamic -module -avoid-version -no-undefined"
+USD_PLUGIN_LDFLAGS="-export_dynamic -module -avoid-version -no-undefined"
 case $host_os in
   darwin*)
-    MSD_PLUGIN_LDFLAGS="${MSD_PLUGIN_LDFLAGS} -Wl,-bundle_loader,\$(top_builddir)/mate-settings-daemon/mate-settings-daemon"
+    USD_PLUGIN_LDFLAGS="${USD_PLUGIN_LDFLAGS} -Wl,-bundle_loader,\$(top_builddir)/ukui-settings-daemon/ukui-settings-daemon"
     ;;
 esac
-AC_SUBST([MSD_PLUGIN_LDFLAGS])
+AC_SUBST([USD_PLUGIN_LDFLAGS])
 
 PKG_CHECK_MODULES(DCONF, dconf >= 0.13.4)
 
@@ -376,7 +376,7 @@ fi
 # Plugins
 # ---------------------------------------------------------------------------
 
-plugindir='$(libdir)/mate-settings-daemon'
+plugindir='$(libdir)/ukui-settings-daemon'
 AC_SUBST([plugindir])
 
 dnl ---------------------------------------------------------------------------
@@ -445,7 +445,7 @@ AC_SUBST(DEBUG_CFLAGS)
 
 AC_OUTPUT([
 Makefile
-mate-settings-daemon/Makefile
+ukui-settings-daemon/Makefile
 plugins/Makefile
 plugins/a11y-keyboard/Makefile
 plugins/a11y-settings/Makefile
@@ -468,30 +468,30 @@ plugins/xrdb/Makefile
 plugins/xrdb/data/Makefile
 plugins/xsettings/Makefile
 data/Makefile
-data/mate-settings-daemon.desktop.in
-data/mate-settings-daemon.pc
-data/mate-settings-daemon-uninstalled.pc
-data/org.mate.applications-at.gschema.xml
-data/org.mate.font-rendering.gschema.xml
-data/org.mate.peripherals-smartcard.gschema.xml
-data/org.mate.peripherals-touchpad.gschema.xml
-data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml
-data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml
-data/org.mate.SettingsDaemon.plugins.background.gschema.xml
-data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml
-data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml
-data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml
-data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml
-data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml
-data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml
-data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml
-data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml
-data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml
-data/org.mate.SettingsDaemon.plugins.sound.gschema.xml
-data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml
-data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml
-data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml
-data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml
+data/ukui-settings-daemon.desktop.in
+data/ukui-settings-daemon.pc
+data/ukui-settings-daemon-uninstalled.pc
+data/org.ukui.applications-at.gschema.xml
+data/org.ukui.font-rendering.gschema.xml
+data/org.ukui.peripherals-smartcard.gschema.xml
+data/org.ukui.peripherals-touchpad.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.background.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml
 po/Makefile.in
 ])
 
@@ -500,7 +500,7 @@ dnl - Show summary
 dnl ---------------------------------------------------------------------------
 
 echo "
-                mate-settings-daemon $VERSION
+                ukui-settings-daemon $VERSION
                 =============================
 
     prefix:                   ${prefix}

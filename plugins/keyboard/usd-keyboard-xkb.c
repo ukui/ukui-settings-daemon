@@ -374,7 +374,7 @@ filter_xkb_config (void)
 	if (!xkl_registry) {
 		xkl_registry =
 		    xkl_config_registry_get_instance (xkl_engine);
-		/* load all ukuirials, unconditionally! */
+		/* load all materials, unconditionally! */
 		if (!xkl_config_registry_load (xkl_registry, TRUE)) {
 			g_object_unref (xkl_registry);
 			xkl_registry = NULL;
