@@ -755,7 +755,7 @@
 
 2008-04-23  Vincent Untz  <vuntz@gnome.org>
 
-	* POTFILES.skip: Add data/mate-settings-daemon.desktop.in here so that
+	* POTFILES.skip: Add data/ukui-settings-daemon.desktop.in here so that
 	distcheck works.
 
 2008-04-22  Kjartan Maraas  <kmaraas@gnome.org>
@@ -836,7 +836,7 @@
 2008-03-08  Marcel Telka  <marcel@telka.sk>
 
 	* POTFILES.in: Removed
-	data/apps_mate_settings_daemon_default_editor.schemas.in.
+	data/apps_ukui_settings_daemon_default_editor.schemas.in.
 
 2008-03-07 Arangel Angov <arangel@linux.net.mk>
 
@@ -877,7 +877,7 @@
 2008-02-26  Matthias Clasen  <mclasen@redhat.com>
 
 	* *.po: Remove obsolete translations by running
-	msgmerge -U $po mate-settings-daemon.pot.
+	msgmerge -U $po ukui-settings-daemon.pot.
 	See
 	http://mail.gnome.org/archives/mate-i18n/2008-February/msg00123.html
 
@@ -951,7 +951,7 @@
 
 2008-02-16  Artur Flinta  <aflinta@gmail.com>
 
-	* pl.po: Updated Polish translation by MATE PL Team.
+	* pl.po: Updated Polish translation by UKUI PL Team.
 
 2008-02-16  Jorge Gonzalez  <jorgegonz@svn.gnome.org>
 
@@ -959,7 +959,7 @@
 
 2008-02-16  Artur Flinta  <aflinta@gmail.com>
 
-	* pl.po: Updated Polish translation by MATE PL Team.
+	* pl.po: Updated Polish translation by UKUI PL Team.
 
 2008-02-15  Djihed Afifi <djihed@gmail.com>
 
@@ -1126,7 +1126,7 @@
 	Fixes #509651
 
 	* LINGUAS:
-	* *.po: added translations from mate-control-center module.
+	* *.po: added translations from ukui-control-center module.
 
 2007-12-22  William Jon McCann  <mccann@jhu.edu>
 

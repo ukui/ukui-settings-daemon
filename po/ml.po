@@ -11,12 +11,12 @@
 # Santhosh|സന്തോഷ് Thottingal|തോട്ടിങ്ങല്‍ <santhosh00@gmail.com>, 2007
 msgid ""
 msgstr ""
-"Project-Id-Version: MATE Desktop Environment\n"
+"Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2016-12-06 01:02+0300\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
-"Language-Team: Malayalam (http://www.transifex.com/mate/MATE/language/ml/)\n"
+"Language-Team: Malayalam (http://wiki.ukui.org/trans/)\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,81 +28,81 @@ msgid "Accessibility"
 msgstr "സാമീപ്യത "
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Toggle magnifier"
 msgstr "മാഗ്നിഫയര്‍ ടൊഗിള്‍ ചെയ്യുക"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Toggle screen reader"
 msgstr "സ്ക്രീന്‍ റീഡര്‍ ടൊഗിള്‍ ചെയ്യുക"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle on-screen keyboard"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ കീബോര്‍ഡ് ടൊഗിള്‍ ചെയ്യുക"
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:1
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:1
 msgid "On-screen keyboard"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ കീബോര്‍ഡ്"
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:2
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:2
 msgid "Whether the on-screen keyboard is turned on."
 msgstr "ഓണ്‍-സ്ക്രീന്‍ കീബോര്‍ഡ് ഓണ്‍ ആണോ എന്നു്."
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:3
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:3
 msgid "Screen magnifier"
 msgstr "സ്ക്രീന്‍വലിപ്പം കൂട്ടാനുള്ള ഉപകരണം "
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:4
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:4
 msgid "Whether the screen magnifier is turned on."
 msgstr "സ്ക്രീന്‍ മാഗ്നിഫയര്‍ ഓണ്‍ ആണോ എന്നു്."
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:5
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:5
 msgid "Screen reader"
 msgstr "സ്ക്രീന്‍ വായനക്കാരന്‍"
 
-#: ../data/org.mate.applications-at.gschema.xml.in.h:6
+#: ../data/org.ukui.applications-at.gschema.xml.in.h:6
 msgid "Whether the screen reader is turned on."
 msgstr "സ്ക്രീന്‍ റീഡര്‍ ഓണ്‍ ആണോ എന്നു്."
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:1
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:1
 msgid "DPI"
 msgstr "ഡി.പി.ഐ"
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:2
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:2
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
 msgstr "ലിപി-വലിപ്പങ്ങള്‍ പിക്സെല്‍ (ചിത്ര-അണു) വലിപ്പങ്ങളായി മാറ്റാനുള്ള റെസലൂഷന്‍, ഇഞ്ചില്‍ എത്ര ബിന്ദുക്കള്‍ എന്ന എണ്ണത്തില്‍ (ഡോട്സ് പര്‍ ഇഞ്ച്)"
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:3
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
 msgstr "ആന്റി-എലയാസിങ്ങ്"
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:4
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:4
 msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
 msgstr "ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം ആന്റി-എലയാസിങ്ങ്. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   \"none\"(\"ഒന്നും അല്ല\") ആന്റി-എലയാസിങ്ങ് വേണ്ടെങ്കില്‍, \"grayscale\"(\"ഗ്രേസ്കേല്‍\") സാധാരണ ഗ്രേസ്കേല്‍ ആന്റി-എലയാസിങ്ങിനായ്,\"rgba\"( \"ആര്‍.ജി.ബി.എ\") സബ്-പിക്സെല്‍ (രണ്ടാം തരം ചിത്ര-അണു) എലയാസിങ്ങിനായ് (എല്‍.സി.ഡി സ്ക്രീനിനു മാത്രം)."
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:5
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
 msgstr "<b>ഹിന്റിങ്ങ്(നിര്‍ദ്ദേശം കൊടുക്കല്‍)</b>:"
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:6
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
 "The type of hinting to use when rendering fonts. Possible values are: "
 "\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
 "\"full\" for maximum hinting (may cause distortion of letter forms)."
 msgstr "ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം നിര്‍ദ്ദേശങ്ങള്‍. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   \"none\"(\"ഒന്നും അല്ല\") നിര്‍ദ്ദേശങ്ങള്‍ വേണ്ടെങ്കില്‍, \"slight\"(\"ചെറുതായിട്ട്\") അടിസ്ഥാനപരമായതിന്,\"medium\"( \"പരിമിതം\") പരിമിതമായതിനായ് ,\"full\"( \"മുഴുവന്‍\") ഏറ്റവും കൂടുതല്‍ നിര്‍ദ്ദേശങ്ങള്‍ക്കായ് (അക്ഷര രൂപങ്ങളില്‍ വ്യത്യാസം വരുത്തിയേക്കാം)."
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:7
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
 msgstr "ആര്‍.ജി.ബി.എ ക്രമം"
 
-#: ../data/org.mate.font-rendering.gschema.xml.in.h:8
+#: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
 "The order of subpixel elements on an LCD screen; only used when antialiasing"
 " is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
@@ -110,488 +110,488 @@ msgid ""
 " on bottom."
 msgstr "രണ്ടാം തരം പിക്സെലുകള്‍ (ചിത്ര-അണുക്കള്‍) ഒരു എല്‍.സി.ഡി സ്ക്രീനേല്‍ വരുന്ന ക്രമം; ഉപയോഗിക്കുന്നത് ആന്റി-എലയാസിങ്ങ് \"rgba\" (\"ആര്‍.ജി.ബി.എ\") ആക്കുംബോള്‍ മാത്രം. എടുക്കാവുന്ന വിലകള്‍ : \"rgb\"(\"ആര്‍.ജി.ബി\") ചുവപ്പ് ഇടതു വശത്തേക്കായ് (പൊതുവേ ഉള്ള തരം),\"bgr\"(\"ബി.ജി.ആര്‍\") നീല വലതുവശത്തേക്കായ്,\"vrgb\"(\"വി.ആര്‍.ജി.ബി\") മുകളിലായ്, \"vbgr\" (\"വി.ബി.ജി.ആര്‍\" ) ചുവപ്പ് താഴെയായ് വരാന്‍."
 
-#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:1
+#: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
 msgstr ""
 
-#: ../data/org.mate.peripherals-smartcard.gschema.xml.in.h:2
+#: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:2
 msgid ""
 "Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
 "action will get performed when the smartcard used for log in is removed."
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:1
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:1
 msgid "Disable touchpad while typing"
 msgstr "ടൈപ്പ് ചെയ്യുമ്പോള്‍ ടച്ച്പാഡ് പ്രവര്‍ത്തന രഹിതമാക്കുക"
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:2
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
 "Set this to TRUE if you have problems with accidentally hitting the touchpad"
 " while typing."
 msgstr "ടൈപ്പ് ചെയ്യുമ്പോള്‍ അബന്ധത്തില്‍ ടച്ച്പാഡില്‍ ഹിറ്റ് ചെയ്യുന്നതു് പ്രശ്നമുണ്ടാക്കുന്നുണ്ടെങ്കില്‍, ഇതു് TRUE ആയി സജ്ജമാക്കുക. "
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:3
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
 msgstr "ടച്ച്പാഡില്‍ മൌസ് ക്ലിക്കുകള്‍ പ്രവര്‍ത്തന സജ്ജമാക്കുക"
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:4
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
 msgstr "ടച്ച്പാഡില്‍ ടാപ്പ് ചെയ്തു മൌസ് ക്ലിക്കുകള്‍ അയയ്ക്കുന്നതിനായി ഇതു് TRUE ആയി സജ്ജമാക്കുക."
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:5
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:6
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:6
 msgid "Set this to TRUE to allow vertical edge scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:7
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:7
 msgid "Enable horizontal edge scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:8
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:8
 msgid "Set this to TRUE to allow horizontal edge scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:9
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:9
 msgid "Enable vertical two-finger scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:10
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:10
 msgid "Set this to TRUE to allow vertical two-finger scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:11
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:11
 msgid "Enable horizontal two-finger scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:12
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:12
 msgid "Set this to TRUE to allow horizontal two-finger scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:13
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:13
 msgid "Natural scrolling"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:14
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:14
 msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:15
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:15
 msgid "Enable touchpad"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:16
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:16
 msgid "Set this to TRUE to enable all touchpads."
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:17
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:17
 msgid "Enabled two-finger button-click emulation"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:18
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:18
 msgid "0 thru 3, 0 is inactive, 1-3 is button to emulate"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:19
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:19
 msgid "Enable three-finger button-click emulation"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:20
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:20
 msgid "One finger tap button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:21
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:21
 msgid ""
 "Select the button mapping for one-finger tap. Supported values are: 1: left "
 "mouse button 2: middle mouse button 3: right mouse button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:22
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:22
 msgid "Two finger tap button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:23
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:23
 msgid ""
 "Select the button mapping for two-finger tap. Supported values are: 1: left "
 "mouse button 2: middle mouse button 3: right mouse button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:24
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:24
 msgid "Three finger tap button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:25
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:25
 msgid ""
 "Select the button mapping for three-finger tap. Supported values are: 1: "
 "left mouse button 2: middle mouse button 3: right mouse button"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:26
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:26
 msgid "Touchpad button orientation"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:27
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:27
 msgid ""
 "Swap left and right buttons for left-handed touchpads with 'left', 'right' "
 "for right-handed, 'mouse' to follow the mouse setting."
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:28
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:28
 msgid "Motion Acceleration"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:29
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:29
 msgid ""
 "Acceleration multiplier for touchpad motion. A value of -1 is the system "
 "default."
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:30
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:30
 msgid "Motion Threshold"
 msgstr ""
 
-#: ../data/org.mate.peripherals-touchpad.gschema.xml.in.h:31
+#: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:31
 msgid ""
 "Distance in pixels the pointer must move before accelerated touchpad motion "
 "is activated. A value of -1 is the system default."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:1
-#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:1
+#: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:1
 msgid "Activation of this plugin"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
-#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
-msgid "Whether this plugin would be activated by mate-settings-daemon or not"
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
+#: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
+msgid "Whether this plugin would be activated by ukui-settings-daemon or not"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:5
-#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:3
-#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:5
+#: ../data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:3
 msgid "Priority to use for this plugin"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.background.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.datetime.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:6
-#: ../data/org.mate.SettingsDaemon.plugins.mouse.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.mpris.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.sound.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
-#: ../data/org.mate.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
-msgid "Priority to use for this plugin in mate-settings-daemon startup queue"
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:6
+#: ../data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
+msgid "Priority to use for this plugin in ukui-settings-daemon startup queue"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
 msgid "Free percentage notify threshold"
 msgstr "Free percentage notify threshold"
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
 msgid ""
 "Percentage free space threshold for initial warning of low disk space. If "
 "the percentage free space drops below this, a warning will be shown."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
 msgid "Subsequent free percentage notify threshold"
 msgstr "Subsequent free percentage notify threshold"
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
 msgid ""
 "Specify the percentage that the free disk space should reduce by before "
 "issuing a subsequent warning."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
 msgid "Free space no notify threshold"
 msgstr "Free space no notify threshold"
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
 msgid ""
 "Specify an amount in GB. If the amount of free space is more than this, no "
 "warning will be shown."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
 msgid "Minimum notify period for repeated warnings"
 msgstr "ആവര്‍ത്തിച്ചുള്ള മുന്നറിയിപ്പുകള്‍ക്കുള്ള ഏറ്റവും കുറഞ്ഞ അറിയിപ്പു് സമയം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:12
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:12
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
 msgstr "സമയം മിനിറ്റുകളില്‍ വ്യക്തമാക്കുക. ഈ സമയത്തിലല്ലാതെ, ഒരു വോള്യത്തിനുള്ള മുന്നറിയിപ്പുകള്‍ ലഭ്യമാകുന്നതല്ല."
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
 msgstr "അവഗണിക്കുവാനുള്ള മൌണ്ട് പാഥുകള്‍"
 
-#: ../data/org.mate.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
+#: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
 msgstr "സ്ഥലം കുറവാകുമ്പോള്‍ അവഗണിക്കുവാനുള്ള മൌണ്ട് പാഥുകളുടെ പട്ടിക വ്യക്തമാക്കുക."
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
 msgid "Whether an OSD notification is shown to notify about changes"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
 msgid "Volume step"
 msgstr "ശബ്ദം ഉയര്‍ത്തേണ്ട ക്രമം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:8
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:8
 msgid "Volume step as percentage of volume."
 msgstr "ശബ്ദത്തിനെ ശതമാനക്കണക്കില്‍ ഉയര്‍ത്തുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:9
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:9
 msgid "Toggle touchpad"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:10
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:10
 msgid "Binding to enable or disable the touchpad."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:11
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:11
 msgid "Volume mute"
 msgstr "നിശ്ശബ്ദമാക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:12
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:12
 msgid "Binding to mute the system volume."
 msgstr "സിസ്റ്റം നിശബ്ദമാക്കാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:13
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:13
 msgid "Volume down"
 msgstr "ശബ്ദം കുറയ്ക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:14
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:14
 msgid "Binding to lower the system volume."
 msgstr "സിസ്റ്റത്തിലെ ശബ്ദം കുറയ്ക്കാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:15
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:15
 msgid "Volume up"
 msgstr "ശബ്ദം കൂട്ടുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:16
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:16
 msgid "Binding to raise the system volume."
 msgstr "സിസ്റ്റത്തിലെ ശബ്ദം കൂട്ടാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:17
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:17
 msgid "Shut down"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:18
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:18
 msgid "Binding to shut down."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
 msgid "Log out"
 msgstr "പുറത്തിറങ്ങുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
 msgid "Binding to log out."
 msgstr "പുറത്തിറങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:21
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:21
 msgid "Eject"
 msgstr "പുറത്തെടുക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:22
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:22
 msgid "Binding to eject an optical disc."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:23
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:23
 msgid "Home folder"
 msgstr "തട്ടകം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:24
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:24
 msgid "Binding to open the Home folder."
 msgstr "'വീട്' അറ തുറക്കാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:25
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:25
 msgid "Search"
 msgstr "തെരച്ചില്‍"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:26
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:26
 msgid "Binding to launch the search tool."
 msgstr "തിരയല്‍ ഉപകരണം തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:27
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:27
 msgid "Launch email client"
 msgstr "ഇ-മെയില്‍ ക്ലയന്റ് തുടങ്ങുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:28
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:28
 msgid "Binding to launch the email client."
 msgstr "ഇ-മെയില്‍ ക്ലയന്റ് തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:29
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:29
 msgid "Lock screen"
 msgstr "സ്ക്രീന്‍ പൂട്ടുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:30
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:30
 msgid "Binding to lock the screen."
 msgstr "സ്ക്രീന്‍ പൂട്ടാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
 msgid "Launch help browser"
 msgstr "സഹായകബ്രൌസര്‍ തുറക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
 msgid "Binding to launch the help browser."
 msgstr "സഹായകബ്രൌസര്‍ തുടങ്ങുവാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
 msgid "Launch calculator"
 msgstr "കാല്‍ക്കുലേറ്റര്‍ തുടങ്ങുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
 msgid "Binding to launch the calculator."
 msgstr "കാല്‍കുലേറ്റര്‍ തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch web browser"
 msgstr "ബ്രൌസര്‍ തുറക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the web browser."
 msgstr "ബ്രൌസര്‍ തുടങ്ങുവാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch media player"
 msgstr "ചലച്ചിത്രദര്‍ശിനി തുടങ്ങുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the media player."
 msgstr "മാധ്യമ പ്ലേയര്‍ തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Play (or play/pause)"
 msgstr "പാടുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "പ്ലേബാക്ക് തുടങ്ങാനുള്ള ബന്ധം (അല്ലെങ്കില്‍ തുടങ്ങുക/താല്‍കാലികമായി നിര്‍ത്തുക തമ്മില്‍ മാറാനുള്ളത്)"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Pause playback"
 msgstr "പ്ലേബാക്ക് താല്‍കാലികമായി നിര്‍ത്താനുള്ള കീ"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to pause playback."
 msgstr "പ്ലേബാക്ക് താല്‍കാലികമായി നിര്‍ത്താനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Stop playback"
 msgstr "പ്ലേബാക്ക് നിര്‍ത്താനുള്ള കീ"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to stop playback."
 msgstr "പ്ലേബാക്ക് നിര്‍ത്താനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Previous track"
 msgstr "മുമ്പുളള ട്രാക്"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to skip to previous track."
 msgstr "മുമ്പുളളതിലേയ്ക്കു് പോകുവാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Next track"
 msgstr "അടുത്ത ട്രാക്ക്"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to skip to next track."
 msgstr "അടുത്ത ട്രാക്കിലേയ്ക്കു് പോകുവാനുള്ള ബന്ധം"
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
 msgstr "അവതരണങ്ങള്‍ അറിയിപ്പ് വിഭഗത്തില്‍ കാണിക്കുക"
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:6
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:6
 msgid ""
 "Whether a notification icon with display-related things should be shown in "
 "the panel."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
 msgid "Do not touch monitor configuration"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:8
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:8
 msgid ""
-"Usually, mate-settings-daemon configures internal and external monitors "
+"Usually, ukui-settings-daemon configures internal and external monitors "
 "according to the turn_on_external_monitors_at_startup and "
 "turn_on_laptop_monitor_at_startup settings and determines an appropriate "
 "cloning/side-by-side mode. Setting this key to True disables this, and the "
@@ -599,31 +599,31 @@ msgid ""
 "configuration)."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
 msgid "Turn on external monitor after system boot"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
 "Turn on external monitor after system boot if user plugs in external monitor"
 " on system boot."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
 msgstr ""
 
-#: ../data/org.mate.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:14
+#: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:14
 msgid ""
 "The XRandR plugin will look for a default configuration in the file "
 "specified by this key. This is similar to the ~/.config/monitors.xml that "
@@ -632,31 +632,31 @@ msgid ""
 "then the file specified by this key will be used instead."
 msgstr ""
 
-#: ../data/mate-settings-daemon.desktop.in.in.h:1
-msgid "MATE Settings Daemon"
+#: ../data/ukui-settings-daemon.desktop.in.in.h:1
+msgid "UKUI Settings Daemon"
 msgstr "ഗ്നോമിലെ സജ്ജീകരണങ്ങളുടെ നിരന്തരപ്രവൃത്തി"
 
-#: ../mate-settings-daemon/main.c:65
+#: ../ukui-settings-daemon/main.c:65
 msgid "Enable debugging code"
 msgstr "പിഴവുതിരുത്തല്‍കോഡ് പ്രാവര്‍ത്തികമാക്കുക. "
 
-#: ../mate-settings-daemon/main.c:66
+#: ../ukui-settings-daemon/main.c:66
 msgid "Replace the current daemon"
 msgstr ""
 
-#: ../mate-settings-daemon/main.c:67
+#: ../ukui-settings-daemon/main.c:67
 msgid "Don't become a daemon"
 msgstr "നിരന്തരപ്രവൃത്തി (ഡീമണ്‍) ആവേണ്ടതില്ല"
 
-#: ../mate-settings-daemon/main.c:68
+#: ../ukui-settings-daemon/main.c:68
 msgid "Exit after a time (for debugging)"
 msgstr ""
 
-#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:1
+#: ../plugins/a11y-keyboard/a11y-keyboard.ukui-settings-plugin.in.h:1
 msgid "Accessibility Keyboard"
 msgstr "സാമീപ്യത കീബോര്‍ഡ്"
 
-#: ../plugins/a11y-keyboard/a11y-keyboard.mate-settings-plugin.in.h:2
+#: ../plugins/a11y-keyboard/a11y-keyboard.ukui-settings-plugin.in.h:2
 msgid "Accessibility keyboard plugin"
 msgstr "സാമീപ്യത കീബോര്‍ഡ് സമ്യോജകം"
 
@@ -792,27 +792,27 @@ msgstr "ഈ സമയത്തിനിടയിലെ ഇരട്ട കീ �
 msgid "Press and _hold keys to accept them (Slow Keys)"
 msgstr "കീകള്‍ അമര്‍ത്തി (_h)പിടിക്കുക അവ അംഗീകരിക്കാന്‍ (പതുക്കെയുള്ള കീകള്‍)"
 
-#: ../plugins/background/background.mate-settings-plugin.in.h:1
+#: ../plugins/background/background.ukui-settings-plugin.in.h:1
 msgid "Background"
 msgstr "പശ്ചാത്തലം"
 
-#: ../plugins/background/background.mate-settings-plugin.in.h:2
+#: ../plugins/background/background.ukui-settings-plugin.in.h:2
 msgid "Background plugin"
 msgstr "പശ്ചാത്തലചിത്രം സമ്യോജകം "
 
-#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:1
+#: ../plugins/clipboard/clipboard.ukui-settings-plugin.in.h:1
 msgid "Clipboard"
 msgstr "താല്‍കാലിക വിവര ശേഖരം"
 
-#: ../plugins/clipboard/clipboard.mate-settings-plugin.in.h:2
+#: ../plugins/clipboard/clipboard.ukui-settings-plugin.in.h:2
 msgid "Clipboard plugin"
 msgstr "താല്‍കാലിക വിവര ശേഖരം  സംയോജകം"
 
-#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:1
+#: ../plugins/dummy/dummy.ukui-settings-plugin.in.h:1
 msgid "Dummy"
 msgstr "വ്യാജന്‍"
 
-#: ../plugins/dummy/dummy.mate-settings-plugin.in.h:2
+#: ../plugins/dummy/dummy.ukui-settings-plugin.in.h:2
 msgid "Dummy plugin"
 msgstr "വ്യാജന്‍ സംയോജകം"
 
@@ -930,19 +930,19 @@ msgid ""
 "which is linked to the key (%s)"
 msgstr "(%s) പ്രവര്‍ത്തിപ്പിക്കുന്നതില്‍ പിശക് ,\nഇത് (%s) കീയുമായി ലിങ്ക് ചെയ്തിരിക്കുന്നു."
 
-#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:1
+#: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
 msgstr "കീ-ബന്ധങ്ങള്‍ "
 
-#: ../plugins/keybindings/keybindings.mate-settings-plugin.in.h:2
+#: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:2
 msgid "Keybindings plugin"
 msgstr "കീ-ബന്ധങ്ങള്‍ സംയോജകം"
 
-#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:1
+#: ../plugins/keyboard/keyboard.ukui-settings-plugin.in.h:1
 msgid "Keyboard"
 msgstr "കീബോര്‍ഡ്"
 
-#: ../plugins/keyboard/keyboard.mate-settings-plugin.in.h:2
+#: ../plugins/keyboard/keyboard.ukui-settings-plugin.in.h:2
 msgid "Keyboard plugin"
 msgstr "കീബോര്‍ഡ് സംയോജകം"
 
@@ -988,11 +988,11 @@ msgid ""
 "Verify that this is a valid command."
 msgstr "ആജ്ഞ നടപ്പിലാക്കാന്‍ പറ്റിയില്ല.:  %s\n ഈ ആജ്ഞ നിലവിലുണ്ടെന്ന് ഉറപ്പുവരുത്തുക"
 
-#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:1
+#: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
 msgstr "മാധ്യമ സംയോജകം"
 
-#: ../plugins/media-keys/media-keys.mate-settings-plugin.in.h:2
+#: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:2
 msgid "Media keys plugin"
 msgstr " സംയോജകം"
 
@@ -1009,35 +1009,35 @@ msgstr ""
 msgid "Mouse Preferences"
 msgstr "മൌസ് മുന്‍‌ഗണനകള്‍"
 
-#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:1
+#: ../plugins/mouse/mouse.ukui-settings-plugin.in.h:1
 msgid "Mouse"
 msgstr "മൌസ്"
 
-#: ../plugins/mouse/mouse.mate-settings-plugin.in.h:2
+#: ../plugins/mouse/mouse.ukui-settings-plugin.in.h:2
 msgid "Mouse plugin"
 msgstr "മൌസ് സംയോജകം"
 
-#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:1
+#: ../plugins/mpris/mpris.ukui-settings-plugin.in.h:1
 msgid "Mpris"
 msgstr ""
 
-#: ../plugins/mpris/mpris.mate-settings-plugin.in.h:2
+#: ../plugins/mpris/mpris.ukui-settings-plugin.in.h:2
 msgid "Mpris plugin"
 msgstr ""
 
-#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:1
+#: ../plugins/typing-break/typing-break.ukui-settings-plugin.in.h:1
 msgid "Typing Break"
 msgstr "ടൈപ്പിങ്ങ് വിശ്രമവേള"
 
-#: ../plugins/typing-break/typing-break.mate-settings-plugin.in.h:2
+#: ../plugins/typing-break/typing-break.ukui-settings-plugin.in.h:2
 msgid "Typing break plugin"
 msgstr "ടൈപ്പിങ്ങ് വിശ്രമവേള  സംയോജകം"
 
-#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:1
+#: ../plugins/xrandr/xrandr.ukui-settings-plugin.in.h:1
 msgid "XRandR"
 msgstr "XRandR(എക്സ്-റാന്റ്-ആര്‍)"
 
-#: ../plugins/xrandr/xrandr.mate-settings-plugin.in.h:2
+#: ../plugins/xrandr/xrandr.ukui-settings-plugin.in.h:2
 msgid "Set up screen size and rotation settings"
 msgstr "സ്ക്രീന്‍ വലിപ്പവും തിരിക്കലും സജ്ജീകരിക്കുക"
 
@@ -1127,19 +1127,19 @@ msgstr "മോണിറ്ററുകള്‍ക്കുള്ള സൂക�
 msgid "Cannot determine user's home directory"
 msgstr "ഉപയോക്താവിന്റെ സ്വന്തം തട്ട് ലഭ്യമല്ല"
 
-#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:1
+#: ../plugins/xrdb/xrdb.ukui-settings-plugin.in.h:1
 msgid "X Resource Database"
 msgstr "എക്സ്-വിഭവ വിവരസംഭരണി"
 
-#: ../plugins/xrdb/xrdb.mate-settings-plugin.in.h:2
+#: ../plugins/xrdb/xrdb.ukui-settings-plugin.in.h:2
 msgid "Manage the X resource database"
 msgstr "എക്സ്-വിഭവ വിവരസംഭരണി കയ്കാര്യം ചെയ്യുക"
 
-#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:1
+#: ../plugins/xsettings/xsettings.ukui-settings-plugin.in.h:1
 msgid "X Settings"
 msgstr "എക്സ് സജ്ജീകരണങ്ങള്‍"
 
-#: ../plugins/xsettings/xsettings.mate-settings-plugin.in.h:2
+#: ../plugins/xsettings/xsettings.ukui-settings-plugin.in.h:2
 msgid "Manage X Settings"
 msgstr "എക്സ് സജ്ജീകരണങ്ങള്‍ കയ്കാര്യം ചെയ്യുക"
 
@@ -1209,26 +1209,26 @@ msgstr ""
 msgid "smartcard driver"
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:1
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:1
 msgid "Change system time zone"
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:2
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:2
 msgid "Privileges are required to change the system time zone."
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:3
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:3
 msgid "Change system time"
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:4
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:4
 msgid "Privileges are required to change the system time."
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:5
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:5
 msgid "Configure hardware clock"
 msgstr ""
 
-#: ../plugins/datetime/org.mate.settingsdaemon.datetimemechanism.policy.in.h:6
+#: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:6
 msgid "Privileges are required to configure the hardware clock."
 msgstr ""

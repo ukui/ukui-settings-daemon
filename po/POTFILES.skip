@@ -6,4 +6,4 @@
 # Without these files, "make distcheck" fails.  Please do not
 # remove these unless you fix "make distcheck" a different way.
 #
-data/mate-settings-daemon.desktop.in
+data/ukui-settings-daemon.desktop.in
