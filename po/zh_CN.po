@@ -1240,3 +1240,12 @@ msgstr "配置硬件时钟"
 #: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:6
 msgid "Privileges are required to configure the hardware clock."
 msgstr "配置硬件时钟需要权限"
+
+msgid "Desktop"
+msgstr "桌面"
+
+msgid "Sound"
+msgstr "声音"
+
+msgid "Shutdown"
+msgstr "关机"
