@@ -39,7 +39,7 @@
 #include <gdk/gdkx.h>
 #include <gio/gio.h>
 
-#define UKUI_DESKTOP_USE_UNSTABLE_API
+#define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-bg.h>
 #include <X11/Xatom.h>
 
@@ -53,13 +53,13 @@
 
 struct UsdBackgroundManagerPrivate {
 	GSettings       *settings;
-	UkuiBG          *bg;
+	MateBG          *bg;
 	cairo_surface_t *surface;
-	UkuiBGCrossfade *fade;
+	MateBGCrossfade *fade;
 	GList           *scr_sizes;
 
 	gboolean         usd_can_draw;
-	gboolean         caja_can_draw;
+	gboolean         peony_can_draw;
 	gboolean         do_fade;
 	gboolean         draw_in_progress;
 
@@ -87,39 +87,39 @@ can_fade_bg (UsdBackgroundManager *manager)
 	return g_settings_get_boolean (manager->priv->settings, MATE_BG_KEY_BACKGROUND_FADE);
 }
 
-/* Whether Caja is configured to draw desktop (show-desktop-icons) */
+/* Whether Peony is configured to draw desktop (show-desktop-icons) */
 static gboolean
-caja_can_draw_bg (UsdBackgroundManager *manager)
+peony_can_draw_bg (UsdBackgroundManager *manager)
 {
 	return g_settings_get_boolean (manager->priv->settings, MATE_BG_KEY_SHOW_DESKTOP);
 }
 
 static gboolean
-caja_is_drawing_bg (UsdBackgroundManager *manager)
+peony_is_drawing_bg (UsdBackgroundManager *manager)
 {
 	Display       *display = gdk_x11_get_default_xdisplay ();
 	Window         window = gdk_x11_get_default_root_xwindow ();
-	Atom           caja_prop, wmclass_prop, type;
-	Window         caja_window;
+	Atom           peony_prop, wmclass_prop, type;
+	Window         peony_window;
 	int            format;
 	unsigned long  nitems, after;
 	unsigned char *data;
 	gboolean       running = FALSE;
 
-	if (!manager->priv->caja_can_draw)
+	if (!manager->priv->peony_can_draw)
 		return FALSE;
 
-	caja_prop = XInternAtom (display, "CAJA_DESKTOP_WINDOW_ID", True);
-	if (caja_prop == None)
+	peony_prop = XInternAtom (display, "PEONY_DESKTOP_WINDOW_ID", True);
+	if (peony_prop == None)
 		return FALSE;
 
-	XGetWindowProperty (display, window, caja_prop, 0, 1, False,
+	XGetWindowProperty (display, window, peony_prop, 0, 1, False,
 			    XA_WINDOW, &type, &format, &nitems, &after, &data);
 
 	if (data == NULL)
 		return FALSE;
 
-	caja_window = *(Window *) data;
+	peony_window = *(Window *) data;
 	XFree (data);
 
 	if (type != XA_WINDOW || format != 32)
@@ -131,7 +131,7 @@ caja_is_drawing_bg (UsdBackgroundManager *manager)
 
 	gdk_error_trap_push();
 
-	XGetWindowProperty (display, caja_window, wmclass_prop, 0, 20, False,
+	XGetWindowProperty (display, peony_window, wmclass_prop, 0, 20, False,
 			    XA_STRING, &type, &format, &nitems, &after, &data);
 
 	XSync (display, False);
@@ -139,10 +139,10 @@ caja_is_drawing_bg (UsdBackgroundManager *manager)
 	if (gdk_error_trap_pop() == BadWindow || data == NULL)
 		return FALSE;
 
-	/* See: caja_desktop_window_new(), in src/caja-desktop-window.c */
+	/* See: peony_desktop_window_new(), in src/peony-desktop-window.c */
 	if (nitems == 20 && after == 0 && format == 8 &&
 	    !strcmp((char*) data, "desktop_window") &&
-	    !strcmp((char*) data + strlen((char*) data) + 1, "Caja"))
+	    !strcmp((char*) data + strlen((char*) data) + 1, "Peony"))
 	{
 		running = TRUE;
 	}
@@ -210,7 +210,7 @@ draw_background (UsdBackgroundManager *manager,
 {
 	UsdBackgroundManagerPrivate *p = manager->priv;
 
-	if (!p->usd_can_draw || p->draw_in_progress || caja_is_drawing_bg (manager))
+	if (!p->usd_can_draw || p->draw_in_progress || peony_is_drawing_bg (manager))
 		return;
 
 	ukui_settings_profile_start (NULL);
@@ -235,7 +235,7 @@ draw_background (UsdBackgroundManager *manager,
 }
 
 static void
-on_bg_changed (UkuiBG               *bg,
+on_bg_changed (MateBG               *bg,
 	       UsdBackgroundManager *manager)
 {
 	g_debug ("Background changed");
@@ -243,7 +243,7 @@ on_bg_changed (UkuiBG               *bg,
 }
 
 static void
-on_bg_transitioned (UkuiBG               *bg,
+on_bg_transitioned (MateBG               *bg,
 		    UsdBackgroundManager *manager)
 {
 	g_debug ("Background transitioned");
@@ -256,7 +256,7 @@ on_screen_size_changed (GdkScreen            *screen,
 {
 	UsdBackgroundManagerPrivate *p = manager->priv;
 
-	if (!p->usd_can_draw || p->draw_in_progress || caja_is_drawing_bg (manager))
+	if (!p->usd_can_draw || p->draw_in_progress || peony_is_drawing_bg (manager))
 		return;
 
 	gint scr_num = gdk_screen_get_number (screen);
@@ -329,9 +329,9 @@ settings_change_event_cb (GSettings            *settings,
 
 	/* Complements on_bg_handling_changed() */
 	p->usd_can_draw = usd_can_draw_bg (manager);
-	p->caja_can_draw = caja_can_draw_bg (manager);
+	p->peony_can_draw = peony_can_draw_bg (manager);
 
-	if (p->usd_can_draw && p->bg != NULL && !caja_is_drawing_bg (manager))
+	if (p->usd_can_draw && p->bg != NULL && !peony_is_drawing_bg (manager))
 	{
 		/* Defer signal processing to avoid making the dconf backend deadlock */
 		g_idle_add ((GSourceFunc) settings_change_event_idle_cb, manager);
@@ -395,7 +395,7 @@ on_bg_handling_changed (GSettings            *settings,
 
 	ukui_settings_profile_start (NULL);
 
-	if (caja_is_drawing_bg (manager))
+	if (peony_is_drawing_bg (manager))
 	{
 		if (p->bg != NULL)
 			remove_background (manager);
@@ -424,9 +424,9 @@ queue_timeout (UsdBackgroundManager *manager)
 	if (manager->priv->timeout_id > 0)
 		return;
 
-	/* SessionRunning: now check if Caja is drawing background, and if not, set it.
+	/* SessionRunning: now check if Peony is drawing background, and if not, set it.
 	 *
-	 * FIXME: We wait a few seconds after the session is up because Caja tells the
+	 * FIXME: We wait a few seconds after the session is up because Peony tells the
 	 * session manager that its ready before it sets the background.
 	 * https://bugzilla.gnome.org/show_bug.cgi?id=568588
 	 */
@@ -500,20 +500,20 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 	p->settings = g_settings_new (MATE_BG_SCHEMA);
 
 	p->usd_can_draw = usd_can_draw_bg (manager);
-	p->caja_can_draw = caja_can_draw_bg (manager);
+	p->peony_can_draw = peony_can_draw_bg (manager);
 
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
 			  G_CALLBACK (on_bg_handling_changed), manager);
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
 			  G_CALLBACK (on_bg_handling_changed), manager);
 
-	/* If Caja is set to draw the background, it is very likely in our session.
-	 * But it might not be started yet, so caja_is_drawing_bg() would fail.
+	/* If Peony is set to draw the background, it is very likely in our session.
+	 * But it might not be started yet, so peony_is_drawing_bg() would fail.
 	 * In this case, we wait till the session is loaded, to avoid double-draws.
 	 */
 	if (p->usd_can_draw)
 	{
-		if (p->caja_can_draw)
+		if (p->peony_can_draw)
 		{
 			draw_bg_after_session_loads (manager);
 		}
