@@ -71,9 +71,9 @@ struct _UsdMediaKeysManagerPrivate
 {
 #ifdef HAVE_LIBMATEMIXER
         /* Volume bits */
-        UkuiMixerContext       *context;
-        UkuiMixerStream        *stream;
-        UkuiMixerStreamControl *control;
+        MateMixerContext       *context;
+        MateMixerStream        *stream;
+        MateMixerStreamControl *control;
 #endif
         GtkWidget        *dialog;
         GSettings        *settings;
@@ -719,8 +719,8 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
 static void
 update_default_output (UsdMediaKeysManager *manager)
 {
-        UkuiMixerStream        *stream;
-        UkuiMixerStreamControl *control = NULL;
+        MateMixerStream        *stream;
+        MateMixerStreamControl *control = NULL;
 
         stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
         if (stream != NULL)
@@ -733,7 +733,7 @@ update_default_output (UsdMediaKeysManager *manager)
         g_clear_object (&manager->priv->control);
 
         if (control != NULL) {
-                UkuiMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
+                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
 
                 /* Do not use the stream if it is not possible to mute it or
                  * change the volume */
@@ -750,7 +750,7 @@ update_default_output (UsdMediaKeysManager *manager)
 }
 
 static void
-on_context_state_notify (UkuiMixerContext    *context,
+on_context_state_notify (MateMixerContext    *context,
                          GParamSpec          *pspec,
                          UsdMediaKeysManager *manager)
 {
@@ -758,7 +758,7 @@ on_context_state_notify (UkuiMixerContext    *context,
 }
 
 static void
-on_context_default_output_notify (UkuiMixerContext    *context,
+on_context_default_output_notify (MateMixerContext    *context,
                                   GParamSpec          *pspec,
                                   UsdMediaKeysManager *manager)
 {
@@ -766,12 +766,12 @@ on_context_default_output_notify (UkuiMixerContext    *context,
 }
 
 static void
-on_context_stream_removed (UkuiMixerContext    *context,
+on_context_stream_removed (MateMixerContext    *context,
                            const gchar         *name,
                            UsdMediaKeysManager *manager)
 {
         if (manager->priv->stream != NULL) {
-                UkuiMixerStream *stream =
+                MateMixerStream *stream =
                         mate_mixer_context_get_stream (manager->priv->context, name);
 
                 if (stream == manager->priv->stream) {
@@ -922,25 +922,25 @@ do_on_screen_keyboard_action (UsdMediaKeysManager *manager)
 }
 
 static void
-do_terminal_action (MsdMediaKeysManager *manager)
+do_terminal_action (UsdMediaKeysManager *manager)
 {
         execute (manager, "mate-terminal",FALSE,FALSE);
 }
 
 static void
-do_screenshot_action (MsdMediaKeysManager *manager)
+do_screenshot_action (UsdMediaKeysManager *manager)
 {
         execute (manager, "mate-screenshot",FALSE,FALSE);
 }
 
 static void
-do_area_screenshot_action (MsdMediaKeysManager *manager)
+do_area_screenshot_action (UsdMediaKeysManager *manager)
 {
         execute (manager, "mate-screenshot -a",FALSE,FALSE);
 }
 
 static void
-do_window_screenshot_action (MsdMediaKeysManager *manager)
+do_window_screenshot_action (UsdMediaKeysManager *manager)
 {
         execute (manager, "mate-screenshot -w",FALSE,FALSE);
 }
