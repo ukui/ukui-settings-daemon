@@ -660,135 +660,135 @@ msgstr "সহায়ক প্রযুক্তি বিশিষ্ট কী
 msgid "Accessibility keyboard plugin"
 msgstr "সহায়ক প্রযুক্তি বিশিষ্ট কী-বোর্ডের প্লাগ-ইন"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:441
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "সাহায্যকারী তথ্য দেখাতে সমস্যা হয়েছে: %s"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:633
 msgid "Do you want to activate Slow Keys?"
 msgstr "আপনি কি ধীর কী সক্রিয় করতে চান?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:634
 msgid "Do you want to deactivate Slow Keys?"
 msgstr "আপনি কি ধীর কী নিষ্ক্রিয় করতে চান?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:635
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
 msgstr "আপনি এইমাত্র Shift কী-কে ৮ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল ধীর কী সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't activate"
 msgstr "সক্রিয় করা হবে না"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't deactivate"
 msgstr "নিষ্ক্রিয় করা হবে না"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Activate"
 msgstr "সক্রিয় করুন"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Deactivate"
 msgstr "নিষ্ক্রিয় করুন"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't activate"
 msgstr "সক্রিয় করবেন না (_n)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't deactivate"
 msgstr "নিষ্ক্রিয় করবেন না (_n)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Activate"
 msgstr "সক্রিয় করুন (_A)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Deactivate"
 msgstr "নিষ্ক্রিয় করুন (_D)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:663
 msgid "Slow Keys Alert"
 msgstr "ধীর কী সম্পর্কিত সতর্কবাণী"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:769
 msgid "Do you want to activate Sticky Keys?"
 msgstr "আপনি কি স্টিকি কী সক্রিয় করতে চান?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:770
 msgid "Do you want to deactivate Sticky Keys?"
 msgstr "আপনি কি স্টিকি কী নিষ্ক্রিয় করতে চান?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:772
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
 msgstr "আপনি এইমাত্র Shift কী-কে ৫ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল স্টিকি কী সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
 msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
 msgstr "আপনি এইমাত্র দুটি কী কে একত্রে চেপে রেখেছিলেন কিংবা Shift কী কে পরপর ৫ বার চেপেছেন।  এর ফলে স্টিকি কী নিষ্ক্রিয় হয়ে যায় যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
 msgstr "স্টিকি কী সম্পর্কিত সতর্কবাণী"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:1
 msgid "Universal Access Preferences"
 msgstr "সার্বজনীন ব্যবহার সংক্রান্ত পছন্দ"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:2
 msgid "Use on-screen _keyboard"
 msgstr "পর্দার মধ্যে উপস্থিত কী-বোর্ড প্রয়োগ করা হবে (_k)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:3
 msgid "Use screen _reader"
 msgstr "পর্দা পাঠের ব্যবস্থা ব্যবহার করা হবে (_r)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:4
 msgid "Use screen _magnifier"
 msgstr "পর্দার বিবর্ধক ব্যবহার করা হবে (_m)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:5
 msgid "Enhance _contrast in colors"
 msgstr "রঙের তারতম্য বৃদ্ধি করা হবে (_c)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:6
 msgid "Make _text larger and easier to read"
 msgstr "সহজে পাঠ করার জন্য হরফের মাপ বৃদ্ধি করা হবে (_t)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
 msgstr "কীবোর্ড শর্ট-কাট চাপার সময় একবারে একটি কি চাপা হবে (স্টিকি-কী) (_P)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
 msgstr "দুইবার কি চাপা হলে তা উপেক্ষা করা হবে (বাউন্স-কী) (_I)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:9
 msgid "Press and _hold keys to accept them (Slow Keys)"
 msgstr "কি গ্রহণ করা জন্য সেগুলি চেপে রাখুন (ধীরগতির কী) (_h)"
 
@@ -816,114 +816,114 @@ msgstr "ডামি"
 msgid "Dummy plugin"
 msgstr "ডামি প্লাগ-ইন"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:65
 msgid "Don't show any warnings again for this file system"
 msgstr ""
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:67
 msgid "Don't show any warnings again"
 msgstr "পুনরায় সতর্কবার্তা প্রদর্শন করা হবে না"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:80
 #, c-format
 msgid "The volume \"%s\" has only %s disk space remaining."
 msgstr "\"%s\" ভলিউমের মধ্যে শুধুমাত্র %s স্থান ডিস্কে অবশিষ্ট রয়েছে।"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:83
 #, c-format
 msgid "This computer has only %s disk space remaining."
 msgstr "এই কম্পিউটারের মধ্যে শুধুমাত্র %s স্থান ডিস্কে অবশিষ্ট রয়েছে।"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:99
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
 msgstr "আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
 msgstr "অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়ে ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
 msgstr "আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
 msgstr "অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়ে ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
 #. Set up all the window stuff here
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:207
 msgid "Low Disk Space"
 msgstr "ডিস্কে উপস্থিত স্থানের পরিমাণ কম"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:450
 msgid "Empty Trash"
 msgstr "আবর্জনার বাক্স ফাঁকা করুন"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:458
 msgid "Examine…"
 msgstr ""
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:465
 msgid "Ignore"
 msgstr "উপেক্ষা করা হবে"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:97
 #, c-format
 msgid "Removing item %lu of %lu"
 msgstr "%lu বস্তুটি মুছে ফেলা হচ্ছে, সর্বমোট %lu"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:117
 #, c-format
 msgid "Removing: %s"
 msgstr ""
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:316
 msgid "Emptying the trash"
 msgstr "আবর্জনার বাক্স ফাঁকা করা হচ্ছে"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:292
 msgid "Preparing to empty trash…"
 msgstr ""
 
 #. Translators: "Emptying trash from <device>"
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:319
 msgid "From: "
 msgstr "থেকে: "
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:371
 msgid "Empty all of the items from the trash?"
 msgstr "আবর্জনার বাক্সে উপস্থিত সকল সামগ্রী মুছে ফেলা হবে কি?"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:374
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "আবর্জনার বাক্স ফাঁকা করা হলে, এর মধ্যে বর্তমানে উপস্থিত সকল সামগ্রী স্থায়ীরূপে মুছে ফেলা হবে। উল্লেখ্য, এই সকল সামগ্রী পৃথকভাবেও মুছে ফেলা যাবে।"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
 msgstr "আবর্জনা বাক্স ফাঁকা করুন (_E)"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#: ../plugins/keybindings/usd-keybindings-manager.c:129
 #, c-format
 msgid "Key binding (%s) is invalid"
 msgstr "কী-বাইন্ডিং (%s) বৈধ নয়"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#: ../plugins/keybindings/usd-keybindings-manager.c:165
 #, c-format
 msgid "Key binding (%s) is incomplete"
 msgstr "কী-বাইন্ডিং (%s) অসম্পূর্ণ"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#: ../plugins/keybindings/usd-keybindings-manager.c:503
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -946,7 +946,7 @@ msgstr "কী-বোর্ড"
 msgid "Keyboard plugin"
 msgstr "কী-বোর্ড প্লাগ-ইন"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:119
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -963,25 +963,25 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:265
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:272
 msgid "Keyboard _Preferences"
 msgstr "কীবোর্ড পছন্দসমূহ (_P)"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:278
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:186
 msgid ""
 "Could not get default terminal. Verify that your default terminal command is"
 " set and points to a valid application."
 msgstr "ডিফল্ট টার্মিনাল প্রাপ্ত করতে ব্যর্থ। অনুগ্রহ করে পরীক্ষা করুন যে ডিফল্ট টার্মিনালের কমান্ড ধার্য করে তা একটি বৈধ অ্যাপ্লিকেশনের প্রতি নির্দেশ করা হয়েছে কি না।"
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:226
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -996,16 +996,16 @@ msgstr "মিডিয়া কী"
 msgid "Media keys plugin"
 msgstr "মিডিয়া-কি প্লাগ-ইন"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1021
 msgid "Could not enable mouse accessibility features"
 msgstr "মাউস ব্যবহারের বিশেষ সহায়ক বৈশিষ্ট্য সক্রিয় করতে ব্যর্থ"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1023
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/msd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1026
 msgid "Mouse Preferences"
 msgstr "মাউস সম্পর্কিত পছন্দ"
 
@@ -1041,19 +1041,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "পর্দার মাপ ও আবর্তন সংক্রান্ত বৈশিষ্ট্য নির্ধারণ করুন"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:373
 msgid "Could not switch the monitor configuration"
 msgstr "মনিটরের কনফিগারেশন পরিবর্তন করতে ব্যর্থ"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:397
 msgid "Could not restore the display's configuration"
 msgstr "ডিসপ্লের কনফিগারেশন পুনরুদ্ধার করতে ব্যর্থ"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:422
 msgid "Could not restore the display's configuration from a backup"
 msgstr "ব্যাক-আপ থেকে ডিসপ্লের কনফিগারেশন পুনরুদ্ধার করতে ব্যর্থ"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:443
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1061,69 +1061,69 @@ msgid_plural ""
 msgstr[0] "%d সেকেন্ড পরে ডিসপ্লের পূর্ববর্তী কনফিগারেশন পুনরায় স্থাপন করা হবে"
 msgstr[1] "%d সেকেন্ড পরে ডিসপ্লের পূর্ববর্তী কনফিগারেশন পুনরায় স্থাপন করা হবে"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:492
 msgid "Does the display look OK?"
 msgstr "ডিসপ্লে কি ঠিক ভাবে প্রদর্শিত হচ্ছে?"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:499
 msgid "_Restore Previous Configuration"
 msgstr "পূর্ববর্তী কনফিগারেশন পুনরুদ্ধার করা হবে (_R)"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Keep This Configuration"
 msgstr "এই কনফিগারেশন প্রয়োগ করা হবে (_K)"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:581
 msgid "The selected configuration for displays could not be applied"
 msgstr "ডিসপ্লের জন্য নির্বাচিত কনফিগারেশন প্রয়োগ করতে ব্যর্থ"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1153
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "পর্দা সংক্রান্ত তথ্য নতুন করে প্রদর্শন করতে ব্যর্থ: %s"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1157
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "তথাপি মনিটর সংক্রান্ত কনফিগারেশন পরিবর্তনের প্রয়াস করা হবে।"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1888
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1944
 msgid "Could not save monitor configuration"
 msgstr "মনিটর সংক্রান্ত কনফিগারেশন সংরক্ষণ করতে ব্যর্থ"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1962
 msgid "Normal"
 msgstr "স্বাভাবিক"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1963
 msgid "Left"
 msgstr "বামদিকে"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1964
 msgid "Right"
 msgstr "ডানদিকে"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1965
 msgid "Upside Down"
 msgstr "উল্টো"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2087
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2140
 msgid "Configure display settings"
 msgstr "পর্দা সংক্রান্ত বৈশিষ্ট্য পরিবর্তন করুন"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2200
 msgid "Could not apply the stored configuration for monitors"
 msgstr "মনিটরের জন্য সংরক্ষিত কনফিগারেশন প্রয়োগ করতে ব্যর্থ"
 
-#: ../plugins/xrdb/msd-xrdb-manager.c:253
-#: ../plugins/xrdb/msd-xrdb-manager.c:322
+#: ../plugins/xrdb/usd-xrdb-manager.c:253
+#: ../plugins/xrdb/usd-xrdb-manager.c:322
 msgid "Cannot determine user's home directory"
 msgstr "ব্যবহারকারীর ব্যক্তিগত ডিরেক্টরি (Home) খুঁজে পাওয়া যাচ্ছে না"
 
@@ -1143,69 +1143,69 @@ msgstr "X সংক্রান্ত বৈশিষ্ট্য"
 msgid "Manage X Settings"
 msgstr "X-এর বৈশিষ্ট্য পরিচালনা করুন"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:167
+#: ../plugins/smartcard/usd-smartcard-manager.c:167
 msgid "Module Path"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:168
+#: ../plugins/smartcard/usd-smartcard-manager.c:168
 msgid "path to smartcard PKCS #11 driver"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:496
+#: ../plugins/smartcard/usd-smartcard-manager.c:496
 msgid "received error or hang up from event source"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#: ../plugins/smartcard/usd-smartcard-manager.c:585
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#: ../plugins/smartcard/usd-smartcard-manager.c:654
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#: ../plugins/smartcard/usd-smartcard-manager.c:674
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#: ../plugins/smartcard/usd-smartcard-manager.c:758
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:154
+#: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:155
+#: ../plugins/smartcard/usd-smartcard.c:155
 msgid "The slot the card is in"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:161
+#: ../plugins/smartcard/usd-smartcard.c:161
 msgid "Slot Series"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:162
+#: ../plugins/smartcard/usd-smartcard.c:162
 msgid "per-slot card identifier"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:168
-#: ../plugins/smartcard/msd-smartcard.c:169
+#: ../plugins/smartcard/usd-smartcard.c:168
+#: ../plugins/smartcard/usd-smartcard.c:169
 msgid "name"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:173
+#: ../plugins/smartcard/usd-smartcard.c:173
 msgid "Module"
 msgstr ""
 
-#: ../plugins/smartcard/msd-smartcard.c:174
+#: ../plugins/smartcard/usd-smartcard.c:174
 msgid "smartcard driver"
 msgstr ""
 

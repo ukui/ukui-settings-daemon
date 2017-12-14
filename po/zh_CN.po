@@ -701,135 +701,135 @@ msgstr "辅助功能键盘"
 msgid "Accessibility keyboard plugin"
 msgstr "辅助功能键盘插件"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:441
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "显示帮助时出错：%s"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:633
 msgid "Do you want to activate Slow Keys?"
 msgstr "您想要激活迟缓按键吗？"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:634
 msgid "Do you want to deactivate Slow Keys?"
 msgstr "您想要禁用迟缓按键吗？"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:635
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
 msgstr "您已经按下了 Shift 键 8 秒。这是迟缓按键功能的快捷键，这将影响您键盘工作的方式。"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't activate"
 msgstr "不激活"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't deactivate"
 msgstr "不禁用"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Activate"
 msgstr "激活"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Deactivate"
 msgstr "禁用"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't activate"
 msgstr "不激活(_N)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't deactivate"
 msgstr "不禁用(_N)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Activate"
 msgstr "激活(_A)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Deactivate"
 msgstr "禁用(_D)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:663
 msgid "Slow Keys Alert"
 msgstr "迟缓按键提醒"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:769
 msgid "Do you want to activate Sticky Keys?"
 msgstr "您想要激活粘滞键吗？"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:770
 msgid "Do you want to deactivate Sticky Keys?"
 msgstr "您想要禁用粘滞键吗？"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:772
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
 msgstr "您刚刚连续按了五次 Shift 键。这是粘滞键特性的快捷键，这将影响您键盘的工作方式。"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
 msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
 msgstr "您刚刚同时按下了两个键，或连续按了五次 Shift 键。这是取消粘滞键特性的快捷键，这将影响您键盘的工作方式。"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
 msgstr "粘滞键提醒"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:1
 msgid "Universal Access Preferences"
 msgstr "通用访问首选项"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:2
 msgid "Use on-screen _keyboard"
 msgstr "使用屏幕键盘(_K)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:3
 msgid "Use screen _reader"
 msgstr "使用屏幕阅读器(_R)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:4
 msgid "Use screen _magnifier"
 msgstr "使用屏幕放大镜(_M)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:5
 msgid "Enhance _contrast in colors"
 msgstr "增强颜色的对比度(_C)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:6
 msgid "Make _text larger and easier to read"
 msgstr "将文本放大以方便阅读(_T)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
 msgstr "请一次一个的按下键盘快捷键(粘滞键)(_P)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
 msgstr "忽略快速重复按键(回键)(_I)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:9
 msgid "Press and _hold keys to accept them (Slow Keys)"
 msgstr "请按住键以接受慢速键(_H)"
 
@@ -857,114 +857,114 @@ msgstr "傻瓜"
 msgid "Dummy plugin"
 msgstr "傻瓜插件"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:65
 msgid "Don't show any warnings again for this file system"
 msgstr "不再为该文件系统显示任何警告"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:67
 msgid "Don't show any warnings again"
 msgstr "不再显示任何警告"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:80
 #, c-format
 msgid "The volume \"%s\" has only %s disk space remaining."
 msgstr "卷 \"%s\" 仅剩余 %s 硬盘空间。"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:83
 #, c-format
 msgid "This computer has only %s disk space remaining."
 msgstr "本计算机仅剩余 %s 硬盘空间。"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:99
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
 msgstr "您可以通过清空回收站，删除无用程序或文件，或者将文件移动到另外的硬盘或分区来增加可用的硬盘空间。"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
 msgstr "您可以通过删除无用程序或文件，或者移动文件到另外的磁盘或分区来增加磁盘空间。"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
 msgstr "您可以通过清空回收站，删除无用程序或文件，或者移动文件到外部的磁盘来增加磁盘空间。"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
 msgstr "您可以通过删除无用程序或文件，或者移动文件到外部的磁盘来增加磁盘空间。"
 
 #. Set up all the window stuff here
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:207
 msgid "Low Disk Space"
 msgstr "磁盘空间小"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:450
 msgid "Empty Trash"
 msgstr "清空回收站"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:458
 msgid "Examine…"
 msgstr "分析..."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:465
 msgid "Ignore"
 msgstr "忽略"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:97
 #, c-format
 msgid "Removing item %lu of %lu"
 msgstr "正在删除 %lu 项目，共 %lu"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:117
 #, c-format
 msgid "Removing: %s"
 msgstr "正在删除：%s"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:316
 msgid "Emptying the trash"
 msgstr "清空回收站"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:292
 msgid "Preparing to empty trash…"
 msgstr "正在准备清空回收站..."
 
 #. Translators: "Emptying trash from <device>"
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:319
 msgid "From: "
 msgstr "来自："
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:371
 msgid "Empty all of the items from the trash?"
 msgstr "删除回收站里的所有项目？"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:374
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "如果您选择清空回收站，里面所有的项目都将永久丢失。请注意您也可以分别删除这些项目。"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
 msgstr "清空回收站(_E)"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#: ../plugins/keybindings/usd-keybindings-manager.c:129
 #, c-format
 msgid "Key binding (%s) is invalid"
 msgstr "键绑定(%s)无效"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#: ../plugins/keybindings/usd-keybindings-manager.c:165
 #, c-format
 msgid "Key binding (%s) is incomplete"
 msgstr "键绑定(%s)不完整"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#: ../plugins/keybindings/usd-keybindings-manager.c:503
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -987,7 +987,7 @@ msgstr "键盘"
 msgid "Keyboard plugin"
 msgstr "键盘插件"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:119
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -1004,25 +1004,25 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr "激活 XKB 配置时发生错误。\n如下情况下可能发生此错误：\n• libxklavier 库中的缺陷\n• X 服务器中的缺陷 (xkbcomp, xmodmap 程序)\n• X 服务器使用了不相容的 libxkbfile 实现\n\nX 服务器版本数据：\n%s\n%d\n如果你希望报告此情况，请包含：\n• <b>%s</b> 的返回结果\n• <b>%s</b> 的返回结果"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:265
 msgid "_Layouts"
 msgstr "布局(_L)"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:272
 msgid "Keyboard _Preferences"
 msgstr "键盘首选项(_P)"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:278
 msgid "Show _Current Layout"
 msgstr "显示当前布局(_C)"
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:186
 msgid ""
 "Could not get default terminal. Verify that your default terminal command is"
 " set and points to a valid application."
 msgstr "无法获得默认终端。请检查您的默认终端是否已设置，并指向有效的应用程序。"
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:226
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -1037,16 +1037,16 @@ msgstr "媒体键"
 msgid "Media keys plugin"
 msgstr "媒体键插件"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1021
 msgid "Could not enable mouse accessibility features"
 msgstr "不能启用鼠标快捷键功能"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1023
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr "鼠标辅助功能需要在您的系统中安装 Mousetweaks。"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1026
 msgid "Mouse Preferences"
 msgstr "鼠标首选项"
 
@@ -1082,88 +1082,88 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "设置屏幕尺寸及旋转"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:373
 msgid "Could not switch the monitor configuration"
 msgstr "无法改变显示器配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:397
 msgid "Could not restore the display's configuration"
 msgstr "无法恢复显示配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:422
 msgid "Could not restore the display's configuration from a backup"
 msgstr "无法从备份中恢复显示配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:443
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
 "The display will be reset to its previous configuration in %d seconds"
 msgstr[0] "显示将会在 %d 秒内恢复之前的配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:492
 msgid "Does the display look OK?"
 msgstr "显示是否正常？"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:499
 msgid "_Restore Previous Configuration"
 msgstr "恢复之前的配置(_R)"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Keep This Configuration"
 msgstr "保持当前配置(_K)"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:581
 msgid "The selected configuration for displays could not be applied"
 msgstr "无法为显示应用选定的配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1153
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "无法刷新屏幕信息：%s"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1157
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "正在尝试改变显示器配置。"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1888
 msgid "Rotation not supported"
 msgstr "不支持旋转"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1944
 msgid "Could not save monitor configuration"
 msgstr "无法保存显示器配置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1962
 msgid "Normal"
 msgstr "普通"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1963
 msgid "Left"
 msgstr "左"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1964
 msgid "Right"
 msgstr "右"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1965
 msgid "Upside Down"
 msgstr "上下倒置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2087
 msgid "_Configure Display Settings…"
 msgstr "配置显示设置(_C)..."
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2140
 msgid "Configure display settings"
 msgstr "配置显示设置"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2200
 msgid "Could not apply the stored configuration for monitors"
 msgstr "无法应用原保存的显示器配置。"
 
-#: ../plugins/xrdb/msd-xrdb-manager.c:253
-#: ../plugins/xrdb/msd-xrdb-manager.c:322
+#: ../plugins/xrdb/usd-xrdb-manager.c:253
+#: ../plugins/xrdb/usd-xrdb-manager.c:322
 msgid "Cannot determine user's home directory"
 msgstr "无法确定用户的主目录"
 
@@ -1183,69 +1183,69 @@ msgstr "X 设置"
 msgid "Manage X Settings"
 msgstr "管理 X 设置"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:167
+#: ../plugins/smartcard/usd-smartcard-manager.c:167
 msgid "Module Path"
 msgstr "模块路径"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:168
+#: ../plugins/smartcard/usd-smartcard-manager.c:168
 msgid "path to smartcard PKCS #11 driver"
 msgstr "智能卡 PKCS #11 驱动程序路径"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:496
+#: ../plugins/smartcard/usd-smartcard-manager.c:496
 msgid "received error or hang up from event source"
 msgstr "从事件源收到错误或挂断"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#: ../plugins/smartcard/usd-smartcard-manager.c:585
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "NSS 安全系统不能被初始化"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#: ../plugins/smartcard/usd-smartcard-manager.c:654
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "找不到合适的智能卡驱动"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#: ../plugins/smartcard/usd-smartcard-manager.c:674
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "智能卡驱动 %s 不能被加载"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#: ../plugins/smartcard/usd-smartcard-manager.c:758
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "不能监视卡插入事件 - %s"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "等待智能卡事件时遇到意外错误"
 
-#: ../plugins/smartcard/msd-smartcard.c:154
+#: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"
 msgstr "插槽 ID"
 
-#: ../plugins/smartcard/msd-smartcard.c:155
+#: ../plugins/smartcard/usd-smartcard.c:155
 msgid "The slot the card is in"
 msgstr "卡在插槽中"
 
-#: ../plugins/smartcard/msd-smartcard.c:161
+#: ../plugins/smartcard/usd-smartcard.c:161
 msgid "Slot Series"
 msgstr "插槽序列"
 
-#: ../plugins/smartcard/msd-smartcard.c:162
+#: ../plugins/smartcard/usd-smartcard.c:162
 msgid "per-slot card identifier"
 msgstr "每个插槽的卡的标识符"
 
-#: ../plugins/smartcard/msd-smartcard.c:168
-#: ../plugins/smartcard/msd-smartcard.c:169
+#: ../plugins/smartcard/usd-smartcard.c:168
+#: ../plugins/smartcard/usd-smartcard.c:169
 msgid "name"
 msgstr "名称"
 
-#: ../plugins/smartcard/msd-smartcard.c:173
+#: ../plugins/smartcard/usd-smartcard.c:173
 msgid "Module"
 msgstr "模块"
 
-#: ../plugins/smartcard/msd-smartcard.c:174
+#: ../plugins/smartcard/usd-smartcard.c:174
 msgid "smartcard driver"
 msgstr "智能卡驱动程序"
 

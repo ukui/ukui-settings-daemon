@@ -657,135 +657,135 @@ msgstr "Papan Kekunci Kebolehcapaian"
 msgid "Accessibility keyboard plugin"
 msgstr "Pemalam papan kekunci kebolehcapaian"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:441
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:441
 #, c-format
 msgid "There was an error displaying help: %s"
 msgstr "Terdapat ralat memapar bantuan: %s"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:569
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:633
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:569
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:633
 msgid "Do you want to activate Slow Keys?"
 msgstr "Anda ingin mengaktifkan Kekunci Perlahan?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:570
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:634
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:570
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:634
 msgid "Do you want to deactivate Slow Keys?"
 msgstr "Anda hendak nyahaktif Kekunci Lambat?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:571
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:635
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:571
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:635
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
 msgstr "Anda baru sahaja menahan kekunci Shift selama 8 saat. Ia merupakan pintasan untuk fitur Kekunci Lambat, yang mempengaruhi cara papan kekunci anda berfungsi."
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't activate"
 msgstr "Jangan aktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:594
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:731
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
 msgid "Don't deactivate"
 msgstr "Jangan nyahaktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Activate"
 msgstr "Aktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:600
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:737
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:600
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:737
 msgid "Deactivate"
 msgstr "Nyahaktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't activate"
 msgstr "Ja_ngan aktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:656
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:795
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:656
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:795
 msgid "Do_n't deactivate"
 msgstr "Ja_ngan nyahaktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Activate"
 msgstr "_Aktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:659
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:798
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:659
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:798
 msgid "_Deactivate"
 msgstr "N_yahaktifkan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:663
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:663
 msgid "Slow Keys Alert"
 msgstr "Amaran Kekunci Perlahan"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:703
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:769
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:703
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:769
 msgid "Do you want to activate Sticky Keys?"
 msgstr "Anda ingin mengaktifkan Kekunci Lekat?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:704
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:770
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:704
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:770
 msgid "Do you want to deactivate Sticky Keys?"
 msgstr "Adakah anda ingin menyahaktifkan Kekunci Lekat?"
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:706
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:772
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:706
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:772
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
 msgstr "Anda baru sahaja menahan kekunci Shift sebanyak 5 kali berturutan. Ia merupakan pintasan untuk fitur Kekunci Lekat, yang mempengaruhi cara papan kekunci anda berfungsi."
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:708
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:774
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
 msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
 msgstr "Anda baru sahaja mengetuk dua kekunci serentak, atau tekan kekunci Shift 5 kali secara berturutan. Ia merupakan pintasan untuk fitur Kekunci Lekat, yang mempengaruhi cara papan kekunci anda berfungsi."
 
-#: ../plugins/a11y-keyboard/msd-a11y-keyboard-manager.c:802
+#: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
 msgstr "Amaran Kekunci Lekat"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.c:763
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:1
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.c:763
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:1
 msgid "Universal Access Preferences"
 msgstr "Keutamaan Capaian Universal"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:2
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:2
 msgid "Use on-screen _keyboard"
 msgstr "Guna papan _kekunci atas-skrin"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:3
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:3
 msgid "Use screen _reader"
 msgstr "Guna pem_baca skrin"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:4
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:4
 msgid "Use screen _magnifier"
 msgstr "Guna pe_mbesar skrin"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:5
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:5
 msgid "Enhance _contrast in colors"
 msgstr "Pertingkat be_za jelas dalam warna"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:6
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:6
 msgid "Make _text larger and easier to read"
 msgstr "Jadikan _teks lebih besar dan lebih mudah dibaca"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:7
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
 msgstr "T_ekan pintasan papan kekunci satu kekunci pada satu masa (Kekunci Lekat)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:8
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
 msgstr "Aba_i penekanan kekunci pendua (Kekunci Lantun)"
 
-#: ../plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui.h:9
+#: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:9
 msgid "Press and _hold keys to accept them (Slow Keys)"
 msgstr "Tekan dan _tahan kekunci untuk menerimanya (Kekunci Lambat)"
 
@@ -813,114 +813,114 @@ msgstr "Semu"
 msgid "Dummy plugin"
 msgstr "Pemalam semu"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:65
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:65
 msgid "Don't show any warnings again for this file system"
 msgstr "Jangan tunjuk sebarang amaran terhadap sistem fail ini"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:67
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:67
 msgid "Don't show any warnings again"
 msgstr "Jangan tunjuk sebarang amaran lagi"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:80
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:80
 #, c-format
 msgid "The volume \"%s\" has only %s disk space remaining."
 msgstr "Volum \"%s\" hanya mempunyai %s ruang cakera berbaki."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:83
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:83
 #, c-format
 msgid "This computer has only %s disk space remaining."
 msgstr "Komputer ini hanya mempunyai %s ruang cakera berbaki."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:99
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:99
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
 msgstr "Anda boleh bebaskan ruang cakera dengan mengosongkan Tong Sampah, membuang program atau fail yang tidak diguna, atau mengalih fail ke cakera atau sekatan lain."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:102
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
 msgstr "Anda boleh bebaskan ruang cakera dengan membuang fail yang tidak diguna, atau mengalih fail ke cakera atau sekatan lain."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:107
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
 msgstr "Anda boleh bebaskan ruang cakera dengan mengosongkan Tong Sampah, membuang program atau fail yang tidak diguna, atau mengalih fail ke cakera luaran."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:110
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
 msgstr "Anda boleh bebaskan ruang cakera dengan membuang program atau fail yang tidak diguna, atau mengalih fail ke cakera luaran."
 
 #. Set up all the window stuff here
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:207
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:207
 msgid "Low Disk Space"
 msgstr "Ruang Cakera Rendah"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:450
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:450
 msgid "Empty Trash"
 msgstr "Kosongkan Tong Sampah"
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:458
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:458
 msgid "Examine…"
 msgstr "Periksa.."
 
-#: ../plugins/housekeeping/msd-ldsm-dialog.c:465
+#: ../plugins/housekeeping/usd-ldsm-dialog.c:465
 msgid "Ignore"
 msgstr "Abai"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:97
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:97
 #, c-format
 msgid "Removing item %lu of %lu"
 msgstr "Membuang item %lu dari %lu"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:117
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:117
 #, c-format
 msgid "Removing: %s"
 msgstr "Membuang: %s"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:247
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:316
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:247
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:316
 msgid "Emptying the trash"
 msgstr "Mengosongkan tong sampah"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:292
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:292
 msgid "Preparing to empty trash…"
 msgstr "Menyediakan tong sampah kosong..."
 
 #. Translators: "Emptying trash from <device>"
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:319
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:319
 msgid "From: "
 msgstr "Dari:"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:371
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:371
 msgid "Empty all of the items from the trash?"
 msgstr "Kosongkan semua item dari tong sampah?"
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:374
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:374
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
 msgstr "Jika anda pilih hendak mengosongkan tong sampah, semua item didalamnya akan kekal hilang. Perhatian, anda juga boleh memadamnya secara berasingan."
 
-#: ../plugins/housekeeping/msd-ldsm-trash-empty.c:381
+#: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
 msgstr "_Kosongkan Tong Sampah"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:129
+#: ../plugins/keybindings/usd-keybindings-manager.c:129
 #, c-format
 msgid "Key binding (%s) is invalid"
 msgstr "Pengikatan kunci (%s) tidak sah"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:165
+#: ../plugins/keybindings/usd-keybindings-manager.c:165
 #, c-format
 msgid "Key binding (%s) is incomplete"
 msgstr "Pengikatan kunci (%s) tidak lengkap"
 
-#: ../plugins/keybindings/msd-keybindings-manager.c:503
+#: ../plugins/keybindings/usd-keybindings-manager.c:503
 #, c-format
 msgid ""
 "Error while trying to run (%s)\n"
@@ -943,7 +943,7 @@ msgstr "Papan Kekunci"
 msgid "Keyboard plugin"
 msgstr "Pemalam papan kekunci"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:119
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -960,25 +960,25 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr "Ralat mengaktifkan konfigurasi XKB.\nIa boleh berlaku atas pelbagai sebab:\n • pepijat dalam pustaka libxklavier\n • pepijat dalam pelayan X (utiliti xkbcomp, xmodmap)\n • pelayan X dengan pelaksanaan libxkbfile yang tidak serasi\n\nData versi pelayan X:\n%s\n%d\nJika anda laporkan situasi ini sebagai pepijat, sila sertakan:\n • Keputusan <b>%s</b>\n • Keputusan <b>%s</b>"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:265
 msgid "_Layouts"
 msgstr "B_entangan"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:272
 msgid "Keyboard _Preferences"
 msgstr "K_eutamaan Papan Kekunci"
 
-#: ../plugins/keyboard/msd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:278
 msgid "Show _Current Layout"
 msgstr "Tunjuk Bentangan _Semasa"
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:186
 msgid ""
 "Could not get default terminal. Verify that your default terminal command is"
 " set and points to a valid application."
 msgstr "Tidak dapatkan terminal lalai. Sahkan sama ada perintah terminal lalai anda ditetapkan dan menuju ke aplikasi yang sah."
 
-#: ../plugins/media-keys/msd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:226
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -993,16 +993,16 @@ msgstr "Kekunci media"
 msgid "Media keys plugin"
 msgstr "Pemalam kekunci media"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1021
 msgid "Could not enable mouse accessibility features"
 msgstr "Tidak dapat benarkan fitur kebolehcapaian tetikus"
 
-#: ../plugins/mouse/msd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1023
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr "Kebolehcapaian tetikus memerlukan Mousetweaks untuk dipasang pada sistem anda."
 
-#: ../plugins/mouse/msd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1026
 msgid "Mouse Preferences"
 msgstr "Keutamaan Tetikus"
 
@@ -1038,88 +1038,88 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Pasang tetapan saiz dan putaran skrin"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:373
 msgid "Could not switch the monitor configuration"
 msgstr "Tidak dapat tukar konfigurasi monitor"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:397
 msgid "Could not restore the display's configuration"
 msgstr "Tidak dapat pulihkan konfigurasi paparan"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:422
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Tidak dapat pulihkan konfigurasi paparan dari sandar"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:443
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
 "The display will be reset to its previous configuration in %d seconds"
 msgstr[0] "Paparan akan ditetap semula ke konfigurasi terdahulu dalam tempoh %d saat"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:492
 msgid "Does the display look OK?"
 msgstr "Adakah paparan kelihatan OK?"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:499
 msgid "_Restore Previous Configuration"
 msgstr "_Pulih Konfigurasi Terdahulu"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Keep This Configuration"
 msgstr "_Kekalkan Konfigurasi Ini"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:581
 msgid "The selected configuration for displays could not be applied"
 msgstr "Konfigurasi terpilih untuk paparan tidak dapat dilaksanakan"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1153
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Tidak dapat segar semula maklumat skrin: %s"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1157
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Cuba menukar konfigurasi monitor jua."
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1888
 msgid "Rotation not supported"
 msgstr "Putaran tidak disokong"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1944
 msgid "Could not save monitor configuration"
 msgstr "Tidak dapat simpan konfigurasi monitor"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1962
 msgid "Normal"
 msgstr "Biasa"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1963
 msgid "Left"
 msgstr "Kiri"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1964
 msgid "Right"
 msgstr "Kanan"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1965
 msgid "Upside Down"
 msgstr "Tunggang Terbalik"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2087
 msgid "_Configure Display Settings…"
 msgstr "_Konfigur Tetapan Paparan..."
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2140
 msgid "Configure display settings"
 msgstr "Konfigur tetapan paparan"
 
-#: ../plugins/xrandr/msd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2200
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Tidak dapat laksana konfigurasi tersimpan untuk monitor"
 
-#: ../plugins/xrdb/msd-xrdb-manager.c:253
-#: ../plugins/xrdb/msd-xrdb-manager.c:322
+#: ../plugins/xrdb/usd-xrdb-manager.c:253
+#: ../plugins/xrdb/usd-xrdb-manager.c:322
 msgid "Cannot determine user's home directory"
 msgstr "Tidak dapat tentukan direktori rumah pengguna"
 
@@ -1139,69 +1139,69 @@ msgstr "Tetapan X"
 msgid "Manage X Settings"
 msgstr "Urus Tetapan X"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:167
+#: ../plugins/smartcard/usd-smartcard-manager.c:167
 msgid "Module Path"
 msgstr "Laluan Modul"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:168
+#: ../plugins/smartcard/usd-smartcard-manager.c:168
 msgid "path to smartcard PKCS #11 driver"
 msgstr "laluan ke pemacu kad pintar PKCS #11"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:496
+#: ../plugins/smartcard/usd-smartcard-manager.c:496
 msgid "received error or hang up from event source"
 msgstr "ralat diterima atau tangguh dari sumber peristiwa"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:585
+#: ../plugins/smartcard/usd-smartcard-manager.c:585
 #, c-format
 msgid "NSS security system could not be initialized"
 msgstr "Sistem keselamatan NSS tidak dapat diawalkan"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:654
+#: ../plugins/smartcard/usd-smartcard-manager.c:654
 #, c-format
 msgid "no suitable smartcard driver could be found"
 msgstr "tiada pemacu kad pintar yang sesuai ditemui"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:674
+#: ../plugins/smartcard/usd-smartcard-manager.c:674
 #, c-format
 msgid "smartcard driver '%s' could not be loaded"
 msgstr "pemacu kad pintar '%s' tidak dapat dimuatkan"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:758
+#: ../plugins/smartcard/usd-smartcard-manager.c:758
 #, c-format
 msgid "could not watch for incoming card events - %s"
 msgstr "tidak dapat pantau peristiwa kad masuk - %s"
 
-#: ../plugins/smartcard/msd-smartcard-manager.c:1105
+#: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
 msgstr "ralat tidak dijangka dihadapi semasa menunggu peristiwa kad pintar"
 
-#: ../plugins/smartcard/msd-smartcard.c:154
+#: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"
 msgstr "ID Slot"
 
-#: ../plugins/smartcard/msd-smartcard.c:155
+#: ../plugins/smartcard/usd-smartcard.c:155
 msgid "The slot the card is in"
 msgstr "Slot kad dimasukkan"
 
-#: ../plugins/smartcard/msd-smartcard.c:161
+#: ../plugins/smartcard/usd-smartcard.c:161
 msgid "Slot Series"
 msgstr "Siri Slot"
 
-#: ../plugins/smartcard/msd-smartcard.c:162
+#: ../plugins/smartcard/usd-smartcard.c:162
 msgid "per-slot card identifier"
 msgstr "pengenalpasti kad per-slot"
 
-#: ../plugins/smartcard/msd-smartcard.c:168
-#: ../plugins/smartcard/msd-smartcard.c:169
+#: ../plugins/smartcard/usd-smartcard.c:168
+#: ../plugins/smartcard/usd-smartcard.c:169
 msgid "name"
 msgstr "nama"
 
-#: ../plugins/smartcard/msd-smartcard.c:173
+#: ../plugins/smartcard/usd-smartcard.c:173
 msgid "Module"
 msgstr "Modul"
 
-#: ../plugins/smartcard/msd-smartcard.c:174
+#: ../plugins/smartcard/usd-smartcard.c:174
 msgid "smartcard driver"
 msgstr "pemacu kad pintar"
 

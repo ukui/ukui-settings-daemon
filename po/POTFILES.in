@@ -25,31 +25,31 @@ data/50-accessibility.xml.in
 data/ukui-settings-daemon.desktop.in.in
 ukui-settings-daemon/main.c
 [type: gettext/ini]plugins/a11y-keyboard/a11y-keyboard.ukui-settings-plugin.in
-plugins/a11y-keyboard/msd-a11y-keyboard-manager.c
-plugins/a11y-keyboard/msd-a11y-preferences-dialog.c
-[type: gettext/glade]plugins/a11y-keyboard/msd-a11y-preferences-dialog.ui
+plugins/a11y-keyboard/usd-a11y-keyboard-manager.c
+plugins/a11y-keyboard/usd-a11y-preferences-dialog.c
+[type: gettext/glade]plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui
 [type: gettext/ini]plugins/background/background.ukui-settings-plugin.in
 [type: gettext/ini]plugins/clipboard/clipboard.ukui-settings-plugin.in
 [type: gettext/ini]plugins/dummy/dummy.ukui-settings-plugin.in
-plugins/housekeeping/msd-disk-space.c
-plugins/housekeeping/msd-ldsm-dialog.c
-plugins/housekeeping/msd-ldsm-trash-empty.c
-plugins/keybindings/msd-keybindings-manager.c
+plugins/housekeeping/usd-disk-space.c
+plugins/housekeeping/usd-ldsm-dialog.c
+plugins/housekeeping/usd-ldsm-trash-empty.c
+plugins/keybindings/usd-keybindings-manager.c
 [type: gettext/ini]plugins/keybindings/keybindings.ukui-settings-plugin.in
 [type: gettext/ini]plugins/keyboard/keyboard.ukui-settings-plugin.in
-plugins/keyboard/msd-keyboard-xkb.c
-plugins/media-keys/msd-media-keys-manager.c
+plugins/keyboard/usd-keyboard-xkb.c
+plugins/media-keys/usd-media-keys-manager.c
 [type: gettext/ini]plugins/media-keys/media-keys.ukui-settings-plugin.in
-plugins/mouse/msd-mouse-manager.c
+plugins/mouse/usd-mouse-manager.c
 [type: gettext/ini]plugins/mouse/mouse.ukui-settings-plugin.in
 [type: gettext/ini]plugins/mpris/mpris.ukui-settings-plugin.in
 [type: gettext/ini]plugins/typing-break/typing-break.ukui-settings-plugin.in
 [type: gettext/ini]plugins/xrandr/xrandr.ukui-settings-plugin.in
-plugins/xrandr/msd-xrandr-manager.c
-plugins/xrdb/msd-xrdb-manager.c
+plugins/xrandr/usd-xrandr-manager.c
+plugins/xrdb/usd-xrdb-manager.c
 [type: gettext/ini]plugins/xrdb/xrdb.ukui-settings-plugin.in
-plugins/xsettings/msd-xsettings-manager.c
+plugins/xsettings/usd-xsettings-manager.c
 [type: gettext/ini]plugins/xsettings/xsettings.ukui-settings-plugin.in
-plugins/smartcard/msd-smartcard-manager.c
-plugins/smartcard/msd-smartcard.c
+plugins/smartcard/usd-smartcard-manager.c
+plugins/smartcard/usd-smartcard.c
 plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in
