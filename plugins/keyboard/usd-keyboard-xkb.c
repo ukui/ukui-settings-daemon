@@ -1,6 +1,7 @@
 /* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
  *
  * Copyright (C) 2001 Udaltsoft
+ * Copyright (C) 2017 Tianjin KYLIN Information Technology Co., Ltd.
  *
  * Written by Sergey V. Oudaltsov <svu@users.sourceforge.net>
  *
