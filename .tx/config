@@ -1,7 +1,0 @@
-[main]
-host = https://wiki.ukui.org/trans
- 
-[MATE.ukui-settings-daemon]
-file_filter = po/<lang>.po
-source_file = po/ukui-settings-daemon.pot
-source_lang = en
