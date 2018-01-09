@@ -5,6 +5,9 @@ usd_gschemas_in = \
 	org.ukui.font-rendering.gschema.xml.in \
 	org.ukui.peripherals-smartcard.gschema.xml.in \
 	org.ukui.peripherals-touchpad.gschema.xml.in \
+	org.ukui.peripherals-keyboard.gschema.xml.in \
+	org.ukui.peripherals-mouse.gschema.xml.in \
+	org.ukui.peripherals-touchscreen.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.background.gschema.xml.in \
