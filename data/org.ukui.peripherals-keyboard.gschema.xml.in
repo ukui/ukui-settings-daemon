@@ -1,5 +1,15 @@
 <?xml version="1.0"?>
 <schemalist gettext-domain="@GETTEXT_PACKAGE@">
+  <enum id="org.ukui.peripherals-keyboard.UsdBellMode">
+    <value nick="on" value="0"/>
+    <value nick="off" value="1"/>
+    <value nick="custom" value="2"/>
+  </enum>
+  <enum id="org.ukui.peripherals-keyboard.UsdNumLockState">
+    <value nick="unknown" value="0"/>
+    <value nick="on" value="1"/>
+    <value nick="off" value="2"/>
+  </enum>
   <schema id="org.ukui.peripherals-keyboard" path="/org/ukui/desktop/peripherals/keyboard/">
     <key name="click" type="b">
       <default>true</default>
