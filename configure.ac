@@ -2,7 +2,7 @@ AC_PREREQ([2.60])
 
 m4_define([usd_api_version_major],[1])
 m4_define([usd_api_version_minor],[1])
-m4_define([usd_api_version_micro],[0])
+m4_define([usd_api_version_micro],[1])
 m4_define([usd_api_version],
 	[usd_api_version_major.usd_api_version_minor.usd_api_version_micro])
 
