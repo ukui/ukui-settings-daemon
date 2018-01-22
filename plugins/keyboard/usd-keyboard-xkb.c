@@ -44,8 +44,8 @@
 
 #define GTK_RESPONSE_PRINT 2
 
-#define MATEKBD_DESKTOP_SCHEMA "org.ukui.peripherals-keyboard-xkb.general"
-#define MATEKBD_KBD_SCHEMA "org.ukui.peripherals-keyboard-xkb.kbd"
+#define MATEKBD_DESKTOP_SCHEMA "org.mate.peripherals-keyboard-xkb.general"
+#define MATEKBD_KBD_SCHEMA "org.mate.peripherals-keyboard-xkb.kbd"
 
 #define KNOWN_FILES_KEY "known-file-list"
 #define DISABLE_INDICATOR_KEY "disable-indicator"
@@ -129,7 +129,7 @@ activation_error (void)
 						     vendor,
 						     release,
 						     "xprop -root | grep XKB",
-						     "gsettings list-keys org.ukui.peripherals-keyboard-xkb.kbd");
+						     "gsettings list-keys org.mate.peripherals-keyboard-xkb.kbd");
 	g_signal_connect (dialog, "response",
 			  G_CALLBACK (gtk_widget_destroy), NULL);
 	usd_delayed_show_dialog (dialog);
