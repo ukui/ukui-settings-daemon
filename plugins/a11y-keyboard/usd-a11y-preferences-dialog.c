@@ -82,7 +82,7 @@
 #define KEY_COLOR_SCHEME       "gtk-color-scheme"
 #define KEY_ICON_THEME         "icon-theme"
 
-#define KEY_MARCO_SCHEMA    "org.ukui.Marco"
+#define KEY_MARCO_SCHEMA    "org.gnome.desktop.wm.preferences"
 #define KEY_MARCO_THEME     "theme"
 
 #define HIGH_CONTRAST_THEME    "HighContrast"
