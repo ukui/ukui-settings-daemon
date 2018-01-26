@@ -2,12 +2,12 @@ NULL =
 
 xrdbdir = $(sysconfdir)/xrdb
 xrdb_DATA =		\
-	General.ad	\
-	Editres.ad	\
-	Emacs.ad	\
-	Motif.ad	\
-	Tk.ad		\
-	Xaw.ad		\
+	General-ukui.ad	\
+	Editres-ukui.ad	\
+	Emacs-ukui.ad	\
+	Motif-ukui.ad	\
+	Tk-ukui.ad		\
+	Xaw-ukui.ad		\
 	$(NULL)
 
 EXTRA_DIST = 		\
