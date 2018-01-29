@@ -72,7 +72,7 @@
 #define CONFIRMATION_DIALOG_SECONDS 30
 
 /* name of the icon files (usd-xrandr.svg, etc.) */
-#define USD_XRANDR_ICON_NAME "usd-xrandr"
+#define USD_XRANDR_ICON_NAME "uksd-xrandr"
 
 /* executable of the control center's display configuration capplet */
 #define USD_XRANDR_DISPLAY_CAPPLET "mate-display-properties"

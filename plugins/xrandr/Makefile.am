@@ -5,11 +5,11 @@ BUILT_SOURCES =				\
 	usd-xrandr-manager-glue.h
 
 ICON_FILES = 			\
-	usd-xrandr-16.png	\
-	usd-xrandr-22.png	\
-	usd-xrandr-24.png	\
-	usd-xrandr-32.png	\
-	usd-xrandr.svg
+	uksd-xrandr-16.png	\
+	uksd-xrandr-22.png	\
+	uksd-xrandr-24.png	\
+	uksd-xrandr-32.png	\
+	uksd-xrandr.svg
 
 install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(sysconfdir)/ukui-settings-daemon/xrandr
