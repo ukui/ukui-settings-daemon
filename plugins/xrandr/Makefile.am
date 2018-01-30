@@ -18,17 +18,17 @@ install-data-local:
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/24x24/$(context)
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/32x32/$(context)
 	$(mkinstalldirs) $(DESTDIR)$(icondir)/scalable/$(context)
-	$(INSTALL_DATA) $(srcdir)/usd-xrandr-16.png $(DESTDIR)$(icondir)/16x16/$(context)/usd-xrandr.png
-	$(INSTALL_DATA) $(srcdir)/usd-xrandr-22.png $(DESTDIR)$(icondir)/22x22/$(context)/usd-xrandr.png
-	$(INSTALL_DATA) $(srcdir)/usd-xrandr-24.png $(DESTDIR)$(icondir)/24x24/$(context)/usd-xrandr.png
-	$(INSTALL_DATA) $(srcdir)/usd-xrandr-32.png $(DESTDIR)$(icondir)/32x32/$(context)/usd-xrandr.png
-	$(INSTALL_DATA) $(srcdir)/usd-xrandr.svg $(DESTDIR)$(icondir)/scalable/$(context)/usd-xrandr.svg
+	$(INSTALL_DATA) $(srcdir)/uksd-xrandr-16.png $(DESTDIR)$(icondir)/16x16/$(context)/uksd-xrandr.png
+	$(INSTALL_DATA) $(srcdir)/uksd-xrandr-22.png $(DESTDIR)$(icondir)/22x22/$(context)/uksd-xrandr.png
+	$(INSTALL_DATA) $(srcdir)/uksd-xrandr-24.png $(DESTDIR)$(icondir)/24x24/$(context)/uksd-xrandr.png
+	$(INSTALL_DATA) $(srcdir)/uksd-xrandr-32.png $(DESTDIR)$(icondir)/32x32/$(context)/uksd-xrandr.png
+	$(INSTALL_DATA) $(srcdir)/uksd-xrandr.svg $(DESTDIR)$(icondir)/scalable/$(context)/uksd-xrandr.svg
 
 uninstall-local:
-	rm -f $(DESTDIR)$(icondir)/16x16/$(context)/usd-xrandr.png
-	rm -f $(DESTDIR)$(icondir)/22x22/$(context)/usd-xrandr.png
-	rm -f $(DESTDIR)$(icondir)/24x24/$(context)/usd-xrandr.png
-	rm -f $(DESTDIR)$(icondir)/32x32/$(context)/usd-xrandr.png
+	rm -f $(DESTDIR)$(icondir)/16x16/$(context)/uksd-xrandr.png
+	rm -f $(DESTDIR)$(icondir)/22x22/$(context)/uksd-xrandr.png
+	rm -f $(DESTDIR)$(icondir)/24x24/$(context)/uksd-xrandr.png
+	rm -f $(DESTDIR)$(icondir)/32x32/$(context)/uksd-xrandr.png
 	rm -f $(DESTDIR)$(icondir)/scalable/$(context)/usd-xrandr.svg
 
 plugin_LTLIBRARIES = \
