@@ -46,8 +46,8 @@
 
 #define USD_DBUS_NAME         "org.ukui.SettingsDaemon"
 
-#define DEBUG_KEY             "ukui-settings-daemon"
-#define DEBUG_SCHEMA          "org.ukui.debug"
+#define DEBUG_KEY             "mate-settings-daemon"
+#define DEBUG_SCHEMA          "org.mate.debug"
 
 #define UKUI_SESSION_DBUS_NAME      "org.gnome.SessionManager"
 #define UKUI_SESSION_DBUS_OBJECT    "/org/gnome/SessionManager"
