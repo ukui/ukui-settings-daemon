@@ -5,8 +5,6 @@ data/50-accessibility.xml.in
 [type: gettext/gsettings]data/org.ukui.font-rendering.gschema.xml.in
 [type: gettext/gsettings]data/org.ukui.peripherals-smartcard.gschema.xml.in
 [type: gettext/gsettings]data/org.ukui.peripherals-touchpad.gschema.xml.in
-[type: gettext/gsettings]data/org.ukui.peripherals-keyboard.gschema.xml.in
-[type: gettext/gsettings]data/org.ukui.peripherals-mouse.gschema.xml.in
 [type: gettext/gsettings]data/org.ukui.peripherals-touchscreen.gschema.xml.in
 [type: gettext/gsettings]data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in
 [type: gettext/gsettings]data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in

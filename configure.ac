@@ -473,8 +473,6 @@ data/ukui-settings-daemon.pc
 data/ukui-settings-daemon-uninstalled.pc
 data/org.ukui.applications-at.gschema.xml
 data/org.ukui.font-rendering.gschema.xml
-data/org.ukui.peripherals-smartcard.gschema.xml
-data/org.ukui.peripherals-touchpad.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.background.gschema.xml
