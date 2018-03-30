@@ -140,7 +140,7 @@ peony_is_drawing_bg (UsdBackgroundManager *manager)
 		return FALSE;
 
 	/* See: peony_desktop_window_new(), in src/peony-desktop-window.c */
-	if (nitems == 20 && after == 0 && format == 8 &&
+	if (nitems == 21 && after == 0 && format == 8 &&
 	    !strcmp((char*) data, "desktop_window") &&
 	    !strcmp((char*) data + strlen((char*) data) + 1, "Peony"))
 	{
