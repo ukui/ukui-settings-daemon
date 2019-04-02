@@ -1,0 +1,11 @@
+ukui-settings-daemon (1.1.6-1fakesync1) disco-proposed; urgency=medium
+
+  * Fake sync due to mismatching orig tarball.
+
+ -- Logan Rosen <logan@ubuntu.com>  Thu, 17 Jan 2019 22:21:48 -0500
+
+ukui-settings-daemon (1.1.6-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903944)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 17 Jul 2018 11:43:08 +0800
