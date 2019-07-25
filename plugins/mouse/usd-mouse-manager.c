@@ -1467,7 +1467,10 @@ set_mouse_settings (UsdMouseManager *manager)
         set_disable_w_typing (manager, g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_DISABLE_W_TYPING));
 
         set_tap_to_click_all (manager);
-        set_click_actions_all (manager);
+/* Do not set click actions since ukwm take over this
+ *
+ *       set_click_actions_all (manager);
+ */
         set_scrolling_all (manager->priv->settings_touchpad);
         set_natural_scroll_all (manager);
         set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
@@ -1519,9 +1522,11 @@ touchpad_callback (GSettings          *settings,
                 || (g_strcmp0 (key, KEY_TOUCHPAD_TWO_FINGER_TAP) == 0)
                 || (g_strcmp0 (key, KEY_TOUCHPAD_THREE_FINGER_TAP) == 0)) {
                 set_tap_to_click_all (manager);
-        } else if ((g_strcmp0 (key, KEY_TOUCHPAD_TWO_FINGER_CLICK) == 0)
-                || (g_strcmp0 (key, KEY_TOUCHPAD_THREE_FINGER_CLICK) == 0)) {
-                set_click_actions_all (manager);
+/* Do not set click actions since ukwm take over this 
+ *        } else if ((g_strcmp0 (key, KEY_TOUCHPAD_TWO_FINGER_CLICK) == 0)
+ *               || (g_strcmp0 (key, KEY_TOUCHPAD_THREE_FINGER_CLICK) == 0)) {
+ *               set_click_actions_all (manager);
+ */
         } else if ((g_strcmp0 (key, KEY_VERT_EDGE_SCROLL) == 0)
                 || (g_strcmp0 (key, KEY_HORIZ_EDGE_SCROLL) == 0)
                 || (g_strcmp0 (key, KEY_VERT_TWO_FINGER_SCROLL) == 0)
