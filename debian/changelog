@@ -1,3 +1,13 @@
+ukui-settings-daemon (1.1.7-1) unstable; urgency=medium
+
+  * Don't set click actions since ukwm take over that.
+  * debian/control:
+    - Bump standards-version to 4.4.0.
+    - Bump compat level to 12.
+    - mate-polkit -> ukui-polkit.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 07 Aug 2019 15:22:43 +0800
+
 ukui-settings-daemon (1.1.6-1fakesync1) disco-proposed; urgency=medium
 
   * Fake sync due to mismatching orig tarball.
