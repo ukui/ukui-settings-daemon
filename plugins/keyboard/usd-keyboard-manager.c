@@ -341,6 +341,19 @@ apply_settings (GSettings          *settings,
                 gchar              *key,
                 UsdKeyboardManager *manager)
 {
+    /**
+     * Fix by HB* system reboot but rnumlock not available;
+    **/
+#ifdef HAVE_X11_EXTENSIONS_XKB_H
+    gboolean rnumlock;
+    rnumlock = g_settings_get_boolean (settings, KEY_NUMLOCK_REMEMBER);
+
+    if (rnumlock == 0 || key == NULL) {
+        if (manager->priv->have_xkb && rnumlock) {
+            numlock_set_xkb_state (numlock_get_settings_state (settings));
+        }
+    }
+#endif /* HAVE_X11_EXTENSIONS_XKB_H */
 	if (g_strcmp0 (key, KEY_CLICK) == 0||
             g_strcmp0 (key, KEY_CLICK_VOLUME) == 0 ||
             g_strcmp0 (key, KEY_BELL_PITCH) == 0 ||
