@@ -1008,7 +1008,8 @@ do_action (UsdMediaKeysManager *manager,
                 execute(manager, "ukui-control-center", FALSE, FALSE);
                 break;
         case FILE_MANAGER_KEY:
-                execute(manager, "peony", FALSE, FALSE);
+                //execute(manager, "peony", FALSE, FALSE);
+		system("peony");
                 break;
         case HELP_KEY:
                 do_url_action (manager, "help");
