@@ -1005,10 +1005,10 @@ do_action (UsdMediaKeysManager *manager,
                 g_free (cmd);
                 break;
         case SETTINGS_KEY:
-                execute(manager, "ukui-control-center --platformtheme gtk3", FALSE, FALSE);
+                execute(manager, "ukui-control-center", FALSE, FALSE);
                 break;
         case FILE_MANAGER_KEY:
-                execute(manager, "peony-qt", FALSE, FALSE);
+                execute(manager, "peony", FALSE, FALSE);
                 break;
         case HELP_KEY:
                 do_url_action (manager, "help");
