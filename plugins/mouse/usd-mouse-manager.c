@@ -997,7 +997,7 @@ set_tap_to_click_all (UsdMouseManager *manager)
         gint three_finger_tap = g_settings_get_int (manager->priv->settings_touchpad, KEY_TOUCHPAD_THREE_FINGER_TAP);
 
         for (i = 0; i < numdevices; i++) {
-                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+//                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
         }
 
         XFreeDeviceList (devicelist);
