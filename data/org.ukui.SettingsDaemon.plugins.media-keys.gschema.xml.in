@@ -75,6 +75,16 @@
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
+    <key name="ukui-control-center" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;i'</default>
+      <summary>Open System Settings</summary>
+      <description>Binding to open system settings.</description>
+    </key>
+    <key name="peony-qt" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;e'</default>
+      <summary>Open File Manager</summary>
+      <description>Binding to open file manager.</description>
+    </key>
     <key name="help" type="s">
       <default>''</default>
       <summary>Launch help browser</summary>

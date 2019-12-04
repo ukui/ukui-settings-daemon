@@ -519,7 +519,7 @@ do_shutdown_action (UsdMediaKeysManager *manager)
 static void
 do_logout_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "ukui-session-save --logout-dialog", FALSE, FALSE);
+        execute (manager, "gnome-system-monitor", FALSE, FALSE);
 }
 
 static void
@@ -1003,6 +1003,12 @@ do_action (UsdMediaKeysManager *manager,
                 }
 
                 g_free (cmd);
+                break;
+        case SETTINGS_KEY:
+                execute(manager, "ukui-control-center --platformtheme gtk3", FALSE, FALSE);
+                break;
+        case FILE_MANAGER_KEY:
+                execute(manager, "peony-qt", FALSE, FALSE);
                 break;
         case HELP_KEY:
                 do_url_action (manager, "help");
