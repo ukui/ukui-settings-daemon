@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Aleksandar Savic <savica@mt.net.mk>, 2003
 # Arangel Angov <arangel@linux.net.mk>, 2007
@@ -16,14 +16,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Macedonian (http://wiki.ukui.org/trans/)\n"
+"Language: mk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: mk\n"
 "Plural-Forms: nplurals=2; plural=(n % 10 == 1 && n % 100 != 11) ? 0 : 1;\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -31,17 +31,17 @@ msgid "Accessibility"
 msgstr ""
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr ""
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr ""
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr ""
 
@@ -77,7 +77,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Резолуцијата користена за конверзија на големината на фонтовите во пикселни големини, во точки на инч."
+msgstr ""
+"Резолуцијата користена за конверзија на големината на фонтовите во пикселни "
+"големини, во точки на инч."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -88,7 +90,10 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Типот на антиалиасинг кој ќе се користи при исцртување на фонтовите: Можни вредности се: „ништо“ за без антиалиасинг, „grayscale“ за стандарден сив антиалиасинг, „rgba“ за субпиксел антиалиасинг (само за LCD екрани)."
+msgstr ""
+"Типот на антиалиасинг кој ќе се користи при исцртување на фонтовите: Можни "
+"вредности се: „ништо“ за без антиалиасинг, „grayscale“ за стандарден сив "
+"антиалиасинг, „rgba“ за субпиксел антиалиасинг (само за LCD екрани)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -96,10 +101,14 @@ msgstr "Совети"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Типот на хинтинг кој ќе се користи за рендерирање на фонтови. Можни вредности се „none“ за без хинтинг, „slight“ основен хинтинг, „medium“ - среден хинтинг и „full“ за целосен хинтинг (кој може да предизвика искривување на формата на фонтот)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Типот на хинтинг кој ќе се користи за рендерирање на фонтови. Можни "
+"вредности се „none“ за без хинтинг, „slight“ основен хинтинг, „medium“ - "
+"среден хинтинг и „full“ за целосен хинтинг (кој може да предизвика "
+"искривување на формата на фонтот)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -107,11 +116,15 @@ msgstr "RGBA редослед"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "Редоследот на подпикселните елементи на LCD екранот; се користи само кога антиалијасингот е поставен на „rgba“. Можни вредности се „rgb“ за црвено на левата страна (вообичаено), „bgr“ за сино на левата страна, „vrgb“ за црвено на врвот и „vbgr“ за црвено на дното."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"Редоследот на подпикселните елементи на LCD екранот; се користи само кога "
+"антиалијасингот е поставен на „rgba“. Можни вредности се „rgb“ за црвено на "
+"левата страна (вообичаено), „bgr“ за сино на левата страна, „vrgb“ за црвено "
+"на врвот и „vbgr“ за црвено на дното."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -129,8 +142,8 @@ msgstr ""
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
 msgstr ""
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
@@ -495,88 +508,142 @@ msgid "Binding to lock the screen."
 msgstr "Поврзување за заклучување на екранот."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Поставувања за X"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Поврзување за отворање на домашната папка."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Поврзување за отворање на домашната папка."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Пушти прелистувач за помош"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Поврзување за лансирање на прелистувачот за помош."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Лансирај калкулатор"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Поврзување за лансирање на калкулаторот"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Пушти веб прелистувач"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Поврзување за лансирање на веб прелистувачот."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Пуштач на музика"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Поврзување за лансирање на пуштачот на медиуми."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Свири (или свири/пауза)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "Поврзување за пуштање на плејбекот (или менување помеѓу пушти/пауза)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Паузирај плејбек"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Поврзување за паузирање на плејбек."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Стопирај плејбек"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Поврзување за стопирање на плејбекот."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Претходна песна"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Поврзување за прескокнување на претходната песна."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Наредна песна"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Поврзување за прескокнување на наредната песна."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Поврзување за заклучување на екранот."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Поврзување за заклучување на екранот."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Поврзување за заклучување на екранот."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -608,8 +675,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -683,7 +750,10 @@ msgstr "Дали сакате да ги деактивирате спорите 
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Го држевте копчето Shift 8 секунди.  Ова е кратенка за опцијата за спори копчиња, која што прави промени на начинот на кој што работи Вашата тастатура."
+msgstr ""
+"Го држевте копчето Shift 8 секунди.  Ова е кратенка за опцијата за спори "
+"копчиња, која што прави промени на начинот на кој што работи Вашата "
+"тастатура."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -744,7 +814,10 @@ msgstr "Дали сакате да ги деактивирате лепливи�
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Го притиснавте копчето Shift 5 пати по ред.  Ова е кратенка за опцијата за лепливи копчиња, која што прави промени на начинот на кој што работи Вашата тастатура."
+msgstr ""
+"Го притиснавте копчето Shift 5 пати по ред.  Ова е кратенка за опцијата за "
+"лепливи копчиња, која што прави промени на начинот на кој што работи Вашата "
+"тастатура."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -752,7 +825,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Притиснавте две копчиа одеднаш, или пак го притиснавте копчето Shift 5 пати по ред.  Ова ја исклучува опцијата за лепливи копчиња, која што прави промени на начинот на работењето на Вашата тастатура."
+msgstr ""
+"Притиснавте две копчиа одеднаш, или пак го притиснавте копчето Shift 5 пати "
+"по ред.  Ова ја исклучува опцијата за лепливи копчиња, која што прави "
+"промени на начинот на работењето на Вашата тастатура."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -785,7 +861,8 @@ msgstr "Направи го текстот _поголем и полесен з�
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "_Притиснете на кратенките на тастатурата едно по едно (лепливи копчиња)"
+msgstr ""
+"_Притиснете на кратенките на тастатурата едно по едно (лепливи копчиња)"
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
@@ -931,7 +1008,9 @@ msgstr "Поврзувањето на копчињата (%s) е некомпл�
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Грешка при обидување да се вклучи (%s)\nкое е поврзано со копчето (%s)"
+msgstr ""
+"Грешка при обидување да се вклучи (%s)\n"
+"кое е поврзано со копчето (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -949,7 +1028,7 @@ msgstr "Тастатура"
 msgid "Keyboard plugin"
 msgstr "Додаток за тастатура"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -966,30 +1045,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Не можам да го добијам стандардниот терминал. Проверете дали Вашата стандардна команда за терминал е поставена и покажува кон валидна апликација."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Не можам да го добијам стандардниот терминал. Проверете дали Вашата "
+"стандардна команда за терминал е поставена и покажува кон валидна апликација."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Не можам да ја извршам командата: %s\nОсигурајте се дека оваа команда е валидна."
+msgstr ""
+"Не можам да ја извршам командата: %s\n"
+"Осигурајте се дека оваа команда е валидна."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -999,16 +1082,16 @@ msgstr "Музички копчиња"
 msgid "Media keys plugin"
 msgstr "Додаток за копчињата за музика"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Не можам да ги вклучам особините за пристапност на глушецот"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Параметри на глушецот"
 
@@ -1044,19 +1127,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Постави ги поставувањата за големина на екранот и ротацијата"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1064,64 +1147,64 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Нормално"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Лево"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Десно"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Отпревртено"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Конфигурирај ги поставувањата за приказот"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr ""
 

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Israt Jahan <israt@ankur.org.bd>, 2010
 # Loba Yeasmeen <loba@ankur.org.bd>, 2010
@@ -13,14 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Bengali (http://wiki.ukui.org/trans/)\n"
+"Language: bn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: bn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -28,17 +28,17 @@ msgid "Accessibility"
 msgstr "স্বাচ্ছন্দ্যকরণ"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "বিবর্ধক টগল করা হবে"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "পর্দা পাঠের ব্যবস্থা টগল করা হবে"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "পর্দার কী-বোর্ড টগল করা হবে"
 
@@ -74,7 +74,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "ফন্টের মাপকে পিক্সেলের মাপে পরিবর্তনের জন্য ব্যবহৃত রেসোলিউশন, প্রতি ইঞ্চে বিন্দুর সংখ্যা অনুযায়ী গণনা করা হয়েছে।"
+msgstr ""
+"ফন্টের মাপকে পিক্সেলের মাপে পরিবর্তনের জন্য ব্যবহৃত রেসোলিউশন, প্রতি ইঞ্চে বিন্দুর "
+"সংখ্যা অনুযায়ী গণনা করা হয়েছে।"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -85,7 +87,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "ফন্ট রেন্ডার করার সময় ব্যবহারযোগ্য অ্যান্টি-অ্যালায়েসিংয়ের ধরন। সম্ভাব্য মানগুলি হল: অ্যান্টি-অ্যালয়েসিং ব্যবহার না করার জন্য \"none\", সাধারণ সাদা-কালো অ্যান্টি-অ্যালায়েসিংয়ের জন্য \"grayscale\", ও সাব-পিক্সেল অ্যান্টি-অ্যালায়েসিংয়ের জন্য (শুধুমাত্র LCD পর্দায় প্রযোজ্য) \"rgba\"।"
+msgstr ""
+"ফন্ট রেন্ডার করার সময় ব্যবহারযোগ্য অ্যান্টি-অ্যালায়েসিংয়ের ধরন। সম্ভাব্য মানগুলি হল: "
+"অ্যান্টি-অ্যালয়েসিং ব্যবহার না করার জন্য \"none\", সাধারণ সাদা-কালো অ্যান্টি-"
+"অ্যালায়েসিংয়ের জন্য \"grayscale\", ও সাব-পিক্সেল অ্যান্টি-অ্যালায়েসিংয়ের জন্য "
+"(শুধুমাত্র LCD পর্দায় প্রযোজ্য) \"rgba\"।"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -93,10 +99,14 @@ msgstr "হিন্টিং"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "ফন্ট রেন্ডার করার সময় ব্যবহারযোগ্য হিন্টিংয়ের ধরন। সম্ভাব্য মানগুলি হল: অ্যান্টি-অ্যালয়েসিং ব্যবহার না করার জন্য \"none\", সাধারণ সাদা-কালো অ্যান্টি-অ্যালায়েসিংয়ের জন্য \"grayscale\", ও সাব-পিক্সেল অ্যান্টি-অ্যালায়েসিংয়ের জন্য (শুধুমাত্র LCD পর্দায় প্রযোজ্য) \"rgba\"।"
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"ফন্ট রেন্ডার করার সময় ব্যবহারযোগ্য হিন্টিংয়ের ধরন। সম্ভাব্য মানগুলি হল: অ্যান্টি-"
+"অ্যালয়েসিং ব্যবহার না করার জন্য \"none\", সাধারণ সাদা-কালো অ্যান্টি-অ্যালায়েসিংয়ের "
+"জন্য \"grayscale\", ও সাব-পিক্সেল অ্যান্টি-অ্যালায়েসিংয়ের জন্য (শুধুমাত্র LCD পর্দায় "
+"প্রযোজ্য) \"rgba\"।"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -104,11 +114,15 @@ msgstr "RGBA ক্রম"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "LCD পর্দায় উপস্থিত সাব-পিক্সেল বস্তুর অনুক্রম; অ্যান্টি-অ্যালায়েসিংয়ের মান \"rgba\" নির্ধারিত হলে এটি ব্যবহার করা হবে। সম্ভাব্য মান হল: বাঁদিকে লাল ব্যবহারের জন্য \"rgb\" (সবচেয়ে বেশি ব্যবহৃত মান), বাঁদিকে নীল ব্যবহারের জন্য \"bgr\", উপরে লাল ব্যবহারের জন্য \"vrgb\", নীচে লাল ব্যবহারের জন্য \"vbgr\"।"
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"LCD পর্দায় উপস্থিত সাব-পিক্সেল বস্তুর অনুক্রম; অ্যান্টি-অ্যালায়েসিংয়ের মান \"rgba\" "
+"নির্ধারিত হলে এটি ব্যবহার করা হবে। সম্ভাব্য মান হল: বাঁদিকে লাল ব্যবহারের জন্য \"rgb"
+"\" (সবচেয়ে বেশি ব্যবহৃত মান), বাঁদিকে নীল ব্যবহারের জন্য \"bgr\", উপরে লাল "
+"ব্যবহারের জন্য \"vrgb\", নীচে লাল ব্যবহারের জন্য \"vbgr\"।"
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -126,9 +140,10 @@ msgstr "টাইপ করার সময় টাচ-প্যাড নিষ�
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "টাইপ করার সময় ভুলবসত টাচ-প্যাড ছুঁয়ে ফেলার সমস্যা থাকলে এই মান TRUE  ধার্য করুন।"
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"টাইপ করার সময় ভুলবসত টাচ-প্যাড ছুঁয়ে ফেলার সমস্যা থাকলে এই মান TRUE  ধার্য করুন।"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -137,7 +152,8 @@ msgstr "টাচ-প্যাডের সাথে মাউস ক্লি�
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "টাচ-প্যাডের মধ্যে টোকা মেরে মাউসের ক্লিকের অনুকরণের জন্য এই মান TRUE ধার্য করুন।"
+msgstr ""
+"টাচ-প্যাডের মধ্যে টোকা মেরে মাউসের ক্লিকের অনুকরণের জন্য এই মান TRUE ধার্য করুন।"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -341,7 +357,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
 msgid "Free percentage notify threshold"
-msgstr "সতর্কতামূলক সূচনা উৎপন্ন করার জন্য চিহ্নিত অবশিষ্ট শতাংশের পরিমাণের প্রান্তিক মাপ"
+msgstr ""
+"সতর্কতামূলক সূচনা উৎপন্ন করার জন্য চিহ্নিত অবশিষ্ট শতাংশের পরিমাণের প্রান্তিক মাপ"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:6
 msgid ""
@@ -361,7 +378,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
 msgid "Free space no notify threshold"
-msgstr "সতর্কতামূলক সূচনা উৎপন্ন না করার জন্য চিহ্নিত অবশিষ্ট শতাংশের পরিমাণের প্রান্তিক মাপ"
+msgstr ""
+"সতর্কতামূলক সূচনা উৎপন্ন না করার জন্য চিহ্নিত অবশিষ্ট শতাংশের পরিমাণের প্রান্তিক মাপ"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:10
 msgid ""
@@ -377,7 +395,9 @@ msgstr "নিয়মিত সর্তকতামূলক বার্তা�
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "মিনিট অনুযায়ী সময় ধার্য করুন। কোনো ভলিউম সম্পর্কে সতর্কতামূলক বার্তাগুলি প্রদর্শন এই সময়ের অবকাল অবধি সীমিত রাখা হবে।"
+msgstr ""
+"মিনিট অনুযায়ী সময় ধার্য করুন। কোনো ভলিউম সম্পর্কে সতর্কতামূলক বার্তাগুলি প্রদর্শন এই "
+"সময়ের অবকাল অবধি সীমিত রাখা হবে।"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -492,88 +512,144 @@ msgid "Binding to lock the screen."
 msgstr "পর্দা লক করার জন্য বাইন্ড করুন।"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X সংক্রান্ত বৈশিষ্ট্য"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "ব্যক্তিগত ফোল্ডার খোলার জন্য বাইন্ড করুন।"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "ব্যক্তিগত ফোল্ডার খোলার জন্য বাইন্ড করুন।"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "সহায়িকা প্রদর্শক ব্রাউজার চালু করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "সহায়ক তথ্যের ব্রাউজার আরম্ভ করতে বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "ক্যালকুলেটর আরম্ভ করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "ক্যালকুলেটর আরম্ভের জন্য বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "ওয়েব ব্রাউজার চালু করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "ওয়েব ব্রাউজার আরম্ভ করতে বাউন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "মিডিয়া প্লেয়ার আরম্ভ করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "মিডিয়া প্লেয়ার আরম্ভ করতে বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "বাজাও (বা বাজাও/বিরতি)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "প্লে-ব্যাক অর্থাৎ চালনার আরম্ভের জন্য বাইন্ড করুন (অথবা চালনা/স্থগিত কর্মের মধ্যে পরিবর্তন)।"
+msgstr ""
+"প্লে-ব্যাক অর্থাৎ চালনার আরম্ভের জন্য বাইন্ড করুন (অথবা চালনা/স্থগিত কর্মের মধ্যে "
+"পরিবর্তন)।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "প্লে-ব্যাক স্থগিত করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "প্লে-ব্যাক স্থগিত করার জন্য বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "প্লে-ব্যাক বন্ধ করুন"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "প্লে-ব্যাক বন্ধ করার জন্য বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "পূর্ববর্তী গান"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "পূর্ববর্তী গানে পিছিয়ে যাওয়ার জন্য বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "পরবর্তী গান"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "পরবর্তী গানে এগিয়ে চলনার জন্য বাইন্ড করুন।"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "পর্দা লক করার জন্য বাইন্ড করুন।"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "পর্দা লক করার জন্য বাইন্ড করুন।"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "পর্দা লক করার জন্য বাইন্ড করুন।"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -605,8 +681,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -680,7 +756,9 @@ msgstr "আপনি কি ধীর কী নিষ্ক্রিয় কর�
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "আপনি এইমাত্র Shift কী-কে ৮ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল ধীর কী সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
+msgstr ""
+"আপনি এইমাত্র Shift কী-কে ৮ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল ধীর কী "
+"সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -741,7 +819,9 @@ msgstr "আপনি কি স্টিকি কী নিষ্ক্রি�
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "আপনি এইমাত্র Shift কী-কে ৫ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল স্টিকি কী সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
+msgstr ""
+"আপনি এইমাত্র Shift কী-কে ৫ সেকেন্ড যাবত চেপে রেখেছিলেন।  এটি হল স্টিকি কী "
+"সক্রিয়কারক শর্টকাট যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -749,7 +829,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "আপনি এইমাত্র দুটি কী কে একত্রে চেপে রেখেছিলেন কিংবা Shift কী কে পরপর ৫ বার চেপেছেন।  এর ফলে স্টিকি কী নিষ্ক্রিয় হয়ে যায় যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ করবে তা নির্ধারণ করে।"
+msgstr ""
+"আপনি এইমাত্র দুটি কী কে একত্রে চেপে রেখেছিলেন কিংবা Shift কী কে পরপর ৫ বার "
+"চেপেছেন।  এর ফলে স্টিকি কী নিষ্ক্রিয় হয়ে যায় যা সম্পূর্ণ কীবোর্ড ব্যবস্থা কীভাবে কাজ "
+"করবে তা নির্ধারণ করে।"
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -838,25 +921,34 @@ msgstr "এই কম্পিউটারের মধ্যে শুধুম
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা যাবে।"
+msgstr ""
+"আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, "
+"ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা "
+"যাবে।"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়ে ডিস্কের স্থান বৃদ্ধি করা যাবে।"
+msgstr ""
+"অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও অন্য কোনো ডিস্ক অথবা পার্টিশনে ফাইল সরিয়ে "
+"ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা যাবে।"
+msgstr ""
+"আবর্জনার বাক্স ফাঁকা করে আপনি ডিস্কের স্থান বৃদ্ধি করতে করতে পারেন। অব্যবহৃত প্রোগ্রাম, "
+"ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়েও ডিস্কের স্থান বৃদ্ধি করা যাবে।"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়ে ডিস্কের স্থান বৃদ্ধি করা যাবে।"
+msgstr ""
+"অব্যবহৃত প্রোগ্রাম, ফাইল মুছে ফেলে ও কোনো বহিস্থিত ডিস্কে ফাইল সরিয়ে ডিস্কের স্থান "
+"বৃদ্ধি করা যাবে।"
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -907,7 +999,9 @@ msgstr "আবর্জনার বাক্সে উপস্থিত সক
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "আবর্জনার বাক্স ফাঁকা করা হলে, এর মধ্যে বর্তমানে উপস্থিত সকল সামগ্রী স্থায়ীরূপে মুছে ফেলা হবে। উল্লেখ্য, এই সকল সামগ্রী পৃথকভাবেও মুছে ফেলা যাবে।"
+msgstr ""
+"আবর্জনার বাক্স ফাঁকা করা হলে, এর মধ্যে বর্তমানে উপস্থিত সকল সামগ্রী স্থায়ীরূপে মুছে "
+"ফেলা হবে। উল্লেখ্য, এই সকল সামগ্রী পৃথকভাবেও মুছে ফেলা যাবে।"
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -928,7 +1022,9 @@ msgstr "কী-বাইন্ডিং (%s) অসম্পূর্ণ"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "কী (key) (%s) এর সাথে যুক্ত\n(%s) চালাতে সমস্যা হয়েছে"
+msgstr ""
+"কী (key) (%s) এর সাথে যুক্ত\n"
+"(%s) চালাতে সমস্যা হয়েছে"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -946,7 +1042,7 @@ msgstr "কী-বোর্ড"
 msgid "Keyboard plugin"
 msgstr "কী-বোর্ড প্লাগ-ইন"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -963,30 +1059,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "কীবোর্ড পছন্দসমূহ (_P)"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "ডিফল্ট টার্মিনাল প্রাপ্ত করতে ব্যর্থ। অনুগ্রহ করে পরীক্ষা করুন যে ডিফল্ট টার্মিনালের কমান্ড ধার্য করে তা একটি বৈধ অ্যাপ্লিকেশনের প্রতি নির্দেশ করা হয়েছে কি না।"
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"ডিফল্ট টার্মিনাল প্রাপ্ত করতে ব্যর্থ। অনুগ্রহ করে পরীক্ষা করুন যে ডিফল্ট টার্মিনালের "
+"কমান্ড ধার্য করে তা একটি বৈধ অ্যাপ্লিকেশনের প্রতি নির্দেশ করা হয়েছে কি না।"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "চিহ্নিত কমান্ডটি চালানো যায়নি: %s\nকমান্ডের বৈধতা নিশ্চিত করুন।"
+msgstr ""
+"চিহ্নিত কমান্ডটি চালানো যায়নি: %s\n"
+"কমান্ডের বৈধতা নিশ্চিত করুন।"
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -996,16 +1096,16 @@ msgstr "মিডিয়া কী"
 msgid "Media keys plugin"
 msgstr "মিডিয়া-কি প্লাগ-ইন"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "মাউস ব্যবহারের বিশেষ সহায়ক বৈশিষ্ট্য সক্রিয় করতে ব্যর্থ"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "মাউস সম্পর্কিত পছন্দ"
 
@@ -1041,19 +1141,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "পর্দার মাপ ও আবর্তন সংক্রান্ত বৈশিষ্ট্য নির্ধারণ করুন"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "মনিটরের কনফিগারেশন পরিবর্তন করতে ব্যর্থ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "ডিসপ্লের কনফিগারেশন পুনরুদ্ধার করতে ব্যর্থ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "ব্যাক-আপ থেকে ডিসপ্লের কনফিগারেশন পুনরুদ্ধার করতে ব্যর্থ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1061,64 +1161,64 @@ msgid_plural ""
 msgstr[0] "%d সেকেন্ড পরে ডিসপ্লের পূর্ববর্তী কনফিগারেশন পুনরায় স্থাপন করা হবে"
 msgstr[1] "%d সেকেন্ড পরে ডিসপ্লের পূর্ববর্তী কনফিগারেশন পুনরায় স্থাপন করা হবে"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "ডিসপ্লে কি ঠিক ভাবে প্রদর্শিত হচ্ছে?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "পূর্ববর্তী কনফিগারেশন পুনরুদ্ধার করা হবে (_R)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "এই কনফিগারেশন প্রয়োগ করা হবে (_K)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "ডিসপ্লের জন্য নির্বাচিত কনফিগারেশন প্রয়োগ করতে ব্যর্থ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "পর্দা সংক্রান্ত তথ্য নতুন করে প্রদর্শন করতে ব্যর্থ: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "তথাপি মনিটর সংক্রান্ত কনফিগারেশন পরিবর্তনের প্রয়াস করা হবে।"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "মনিটর সংক্রান্ত কনফিগারেশন সংরক্ষণ করতে ব্যর্থ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "স্বাভাবিক"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "বামদিকে"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "ডানদিকে"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "উল্টো"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "পর্দা সংক্রান্ত বৈশিষ্ট্য পরিবর্তন করুন"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "মনিটরের জন্য সংরক্ষিত কনফিগারেশন প্রয়োগ করতে ব্যর্থ"
 

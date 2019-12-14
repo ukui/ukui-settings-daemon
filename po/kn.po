@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # karthik holla <karthikholla87@gmail.com>, 2017
 # shankar <svenkate@redhat.com>, 2008, 2009, 2010
@@ -9,14 +9,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2017-01-08 05:13+0000\n"
 "Last-Translator: karthik holla <karthikholla87@gmail.com>\n"
 "Language-Team: Kannada (http://wiki.ukui.org/trans/)\n"
+"Language: kn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: kn\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -24,17 +24,17 @@ msgid "Accessibility"
 msgstr "ನಿಲುಕಣೆ"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "ಮ್ಯಾಗ್ನಿಫೈಯರ್ ಅನ್ನು ಟಾಗಲ್ ಮಾಡು"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "ತೆರೆ ಓದುಗನನ್ನು ಟಾಗಲ್ ಮಾಡು"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "ತೆರೆಯ ಮೇಲಣ ಕೀಲಿ ಮಣೆಯನ್ನು ಟಾಗಲ್ ಮಾಡು"
 
@@ -70,7 +70,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "ಅಕ್ಷರ ಶೈಲಿಯ ಗಾತ್ರಗಳನ್ನು ಪಿಕ್ಸೆಲ್‌ ಗಾತ್ರಗಳಾಗಿ ಬದಲಾಯಿಸಲು ಬಳಸಬೇಕಿರುವ ರೆಸಲ್ಯೂಶನ್, ಪ್ರತಿ ಇಂಚಿನಲ್ಲಿನ ಚುಕ್ಕಿಗಳ ಆಧಾರದಲ್ಲಿ."
+msgstr ""
+"ಅಕ್ಷರ ಶೈಲಿಯ ಗಾತ್ರಗಳನ್ನು ಪಿಕ್ಸೆಲ್‌ ಗಾತ್ರಗಳಾಗಿ ಬದಲಾಯಿಸಲು ಬಳಸಬೇಕಿರುವ ರೆಸಲ್ಯೂಶನ್, ಪ್ರತಿ "
+"ಇಂಚಿನಲ್ಲಿನ ಚುಕ್ಕಿಗಳ ಆಧಾರದಲ್ಲಿ."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -81,7 +83,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "ಅಕ್ಷರಶೈಲಿಗಳನ್ನು ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಮಾಡುವಾಗ ಬಳಸಬೇಕಿರುವ ಬಗೆಗಳು. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: ಯಾವುದೆ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಬೇಡವಾದಲ್ಲಿ \"ಯಾವುದೂ ಇಲ್ಲ\", ಮಾನ್ಯವಾದ ಗ್ರೇಸ್ಕೇಲ್ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್‌ಗಾಗಿ \"ಗ್ರೇಸ್ಕೇಲ್\", ಹಾಗು ಸಬ್‌ಪಿಕ್ಸೆಲ್ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್‌ಗಾಗಿ \"rgba\" (ಕೇವಲ LCD ತೆರೆಗಳಿಗೆ ಮಾತ್ರ)."
+msgstr ""
+"ಅಕ್ಷರಶೈಲಿಗಳನ್ನು ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಮಾಡುವಾಗ ಬಳಸಬೇಕಿರುವ ಬಗೆಗಳು. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: "
+"ಯಾವುದೆ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಬೇಡವಾದಲ್ಲಿ \"ಯಾವುದೂ ಇಲ್ಲ\", ಮಾನ್ಯವಾದ ಗ್ರೇಸ್ಕೇಲ್ "
+"ಆಂಟಿಅಲಿಯಾಸಿಂಗ್‌ಗಾಗಿ \"ಗ್ರೇಸ್ಕೇಲ್\", ಹಾಗು ಸಬ್‌ಪಿಕ್ಸೆಲ್ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್‌ಗಾಗಿ \"rgba"
+"\" (ಕೇವಲ LCD ತೆರೆಗಳಿಗೆ ಮಾತ್ರ)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -89,10 +95,14 @@ msgstr "ಹಿಂಟಿಂಗ್"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "ಅಕ್ಷರಶೈಲಿಗಳನ್ನು ರೆಂಡರಿಂಗ್ ಮಾಡಲು ಬಳಸಬೇಕಿರುವ ಹಿಂಟಿಂಗ್ ಪ್ರಕಾರ. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: ಯಾವುದೆ ಹಿಂಟಿಂಗ್ ಬೇಡವಾದಲ್ಲಿ \"ಯಾವುದೂ ಇಲ್ಲ\", ಆರಂಭಿಕ ಮಟ್ಟಕ್ಕಾಗಿ \"ಕೊಂಚ\", ಮಧ್ಯಮ ಮಟ್ಟಕ್ಕಾಗಿ \"ಮಧ್ಯಮ\", ಹಾಗು ಗರಿಷ್ಟ ಹಿಂಟಿಂಗ್‌ಗಾಗಿ \"ಸಂಪೂರ್ಣ\" (ಇದು ಅಕ್ಷರಗಳನ್ನು ವಿರೂಪಗೊಳಿಸಬಹುದು)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"ಅಕ್ಷರಶೈಲಿಗಳನ್ನು ರೆಂಡರಿಂಗ್ ಮಾಡಲು ಬಳಸಬೇಕಿರುವ ಹಿಂಟಿಂಗ್ ಪ್ರಕಾರ. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: "
+"ಯಾವುದೆ ಹಿಂಟಿಂಗ್ ಬೇಡವಾದಲ್ಲಿ \"ಯಾವುದೂ ಇಲ್ಲ\", ಆರಂಭಿಕ ಮಟ್ಟಕ್ಕಾಗಿ \"ಕೊಂಚ\", ಮಧ್ಯಮ "
+"ಮಟ್ಟಕ್ಕಾಗಿ \"ಮಧ್ಯಮ\", ಹಾಗು ಗರಿಷ್ಟ ಹಿಂಟಿಂಗ್‌ಗಾಗಿ \"ಸಂಪೂರ್ಣ\" (ಇದು ಅಕ್ಷರಗಳನ್ನು "
+"ವಿರೂಪಗೊಳಿಸಬಹುದು)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -100,11 +110,15 @@ msgstr "RGBA ಕ್ರಮ"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "ಒಂದು LCD ತೆರೆಯಲ್ಲಿ ಸಬ್‌ಪಿಕ್ಸೆಲ್‌ ಘಟಕಗಳ ಕ್ರಮ; ಕೇವಲ \"rgba\" ಗೆ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಮಾಡುವಾಗ ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: ಎಡಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"rgb\" (ಸರ್ವೆ ಸಾಮಾನ್ಯ), ಎಡಭಾಗದಲ್ಲಿ ನೀಲಿಗಾಗಿ \"bgr\", ಮೇಲ್ಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"vrgb\", ಅಡಿಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"vbgr\"."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"ಒಂದು LCD ತೆರೆಯಲ್ಲಿ ಸಬ್‌ಪಿಕ್ಸೆಲ್‌ ಘಟಕಗಳ ಕ್ರಮ; ಕೇವಲ \"rgba\" ಗೆ ಆಂಟಿಅಲಿಯಾಸಿಂಗ್ ಮಾಡುವಾಗ "
+"ಮಾತ್ರ ಬಳಸಲಾಗುತ್ತದೆ. ಸಾಧ್ಯವಿರುವ ಮೌಲ್ಯಗಳೆಂದರೆ: ಎಡಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"rgb\" (ಸರ್ವೆ "
+"ಸಾಮಾನ್ಯ), ಎಡಭಾಗದಲ್ಲಿ ನೀಲಿಗಾಗಿ \"bgr\", ಮೇಲ್ಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"vrgb\", "
+"ಅಡಿಭಾಗದಲ್ಲಿ ಕೆಂಪಿಗಾಗಿ \"vbgr\"."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -122,9 +136,10 @@ msgstr "ಟೈಪ್ ಮಾಡುವಾಗ ಟಚ್‌ಪ್ಯಾಡನ್ನ�
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "ಟೈಪಿಸುವಾಗ ಆಕಸ್ಮಿಕವಾಗಿ ಟಚ್‌ಪ್ಯಾಡ್ ಗೆ ಕೈ ತಾಗುವ ತೊಂದರೆ ಇದ್ದರೆ ಇದನ್ನು TRUE ಗೆ ಬದಲಾಯಿಸಿ."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"ಟೈಪಿಸುವಾಗ ಆಕಸ್ಮಿಕವಾಗಿ ಟಚ್‌ಪ್ಯಾಡ್ ಗೆ ಕೈ ತಾಗುವ ತೊಂದರೆ ಇದ್ದರೆ ಇದನ್ನು TRUE ಗೆ ಬದಲಾಯಿಸಿ."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -133,7 +148,9 @@ msgstr "ಟಚ್‌ಪ್ಯಾಡಿನಿಂದ ಮೌಸ್‌ಕ್ಲಿ�
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "ಟಚ್‌ಪ್ಯಾಡ್‌ನಲ್ಲಿ ಮೆಲ್ಲಗೆ ತಟ್ಟುವುದರ ಮೂಲಕ ಮೌಸ್‌ ಕ್ಲಿಕ್‌ಗಳನ್ನು ಕಳುಹಿಸುವುದನ್ನು ಶಕ್ತಗೊಳಿಸಲು ಇದನ್ನು TRUE ಗೆ ಬದಲಾಯಿಸಿ."
+msgstr ""
+"ಟಚ್‌ಪ್ಯಾಡ್‌ನಲ್ಲಿ ಮೆಲ್ಲಗೆ ತಟ್ಟುವುದರ ಮೂಲಕ ಮೌಸ್‌ ಕ್ಲಿಕ್‌ಗಳನ್ನು ಕಳುಹಿಸುವುದನ್ನು ಶಕ್ತಗೊಳಿಸಲು ಇದನ್ನು "
+"TRUE ಗೆ ಬದಲಾಯಿಸಿ."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -373,7 +390,9 @@ msgstr "ಪುನರಾವರ್ತಿತ ಎಚ್ಚರಿಕೆಗಳ ಕನ�
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "ಸಮಯವನ್ನು ನಿಮಿಷದಲ್ಲಿ ಸೂಚಿಸಿ. ಒಂದು ಪರಿಮಾಣಕ್ಕೆ ತರುವಾಯದ ಎಚ್ಚರಿಕೆಗಳು ಈ ಕಾಲಾವಧಿಯ ನಂತರ ಕಾಣಿಸಿಕೊಳ್ಳುವುದಿಲ್ಲ."
+msgstr ""
+"ಸಮಯವನ್ನು ನಿಮಿಷದಲ್ಲಿ ಸೂಚಿಸಿ. ಒಂದು ಪರಿಮಾಣಕ್ಕೆ ತರುವಾಯದ ಎಚ್ಚರಿಕೆಗಳು ಈ ಕಾಲಾವಧಿಯ ನಂತರ "
+"ಕಾಣಿಸಿಕೊಳ್ಳುವುದಿಲ್ಲ."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -381,7 +400,8 @@ msgstr "ಆಲಕ್ಷಿಸಬೇಕಿರುವ ಆರೋಹಣಾ ಮಾರ�
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "ಸ್ಥಳಾವಕಾಶವು ಕಡಿಮೆ ಇದ್ದಾಗ ಯಾವ ಆರೋಹಣಾ ಮಾರ್ಗಗಳ ಪಟ್ಟಿಯನ್ನು ಆಲಕ್ಷಿಸಬೇಕು ಎಂದು ಸೂಚಿಸಿ."
+msgstr ""
+"ಸ್ಥಳಾವಕಾಶವು ಕಡಿಮೆ ಇದ್ದಾಗ ಯಾವ ಆರೋಹಣಾ ಮಾರ್ಗಗಳ ಪಟ್ಟಿಯನ್ನು ಆಲಕ್ಷಿಸಬೇಕು ಎಂದು ಸೂಚಿಸಿ."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -488,88 +508,143 @@ msgid "Binding to lock the screen."
 msgstr "ತೆರೆಯನ್ನು ಲಾಕ್ ಮಾಡಲು ಬದ್ಧವಾಗಿದೆ."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X ಸಿದ್ಧತೆಗಳು"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "ನೆಲೆ ಕಡತಕೋಶವನ್ನು ತೆರೆಯಲು ಬದ್ಧವಾಗಿದೆ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "ನೆಲೆ ಕಡತಕೋಶವನ್ನು ತೆರೆಯಲು ಬದ್ಧವಾಗಿದೆ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "ನೆರವಿನ ವೀಕ್ಷಕವನ್ನು ಆರಂಭಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "ನೆರವಿನ ವೀಕ್ಷಕವನ್ನು ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "ಕ್ಯಾಲ್ಕುಲೇಟರನ್ನು ಆರಂಭಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "ಕ್ಯಾಲ್ಕುಲೇಟರನ್ನು ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "ಜಾಲ ವೀಕ್ಷಕವನ್ನು ಆರಂಭಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "ಜಾಲ ವೀಕ್ಷಕವನ್ನು ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "ಮೀಡಿಯಾ ಪ್ಲೇಯರನ್ನು ಆರಂಭಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "ಮೀಡಿಯಾ ಪ್ಲೇಯರನ್ನು ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "ಪ್ಲೇ (ಅಥವ ಪ್ಲೇ/ತಾತ್ಕಾಲಿಕ ಸ್ಥಗಿತ)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ಅನ್ನು(ಅಥವ ಪ್ಲೇ/ತಾತ್ಕಾಲಿಕ ಸ್ಥಗಿತದ ನಡುವೆ ಬದಲಾಯಿಸಲು) ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
+msgstr ""
+"ಪ್ಲೇಬ್ಯಾಕ್ ಅನ್ನು(ಅಥವ ಪ್ಲೇ/ತಾತ್ಕಾಲಿಕ ಸ್ಥಗಿತದ ನಡುವೆ ಬದಲಾಯಿಸಲು) ಆರಂಭಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "ಪ್ಲೇಬ್ಯಾಕನ್ನು ತಾತ್ಕಾಲಿಕವಾಗಿ ಸ್ಥಗಿತಗೊಳಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ಅನ್ನು ತಾತ್ಕಾಲಿಕವಗಿ ಸ್ಥಗಿತಗೊಳಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "ಪ್ಲೇಬ್ಯಾಕನ್ನು ನಿಲ್ಲಿಸು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "ಪ್ಲೇಬ್ಯಾಕ್ ಅನ್ನು ನಿಲ್ಲಿಸಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "ಹಿಂದಿನ ಹಾಡು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "ಹಿಂದಿನ ಹಾಡಿಗೆ ಹೋಗಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "ಮುಂದಿನ ಹಾಡು"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "ಮುಂದಿನ ಹಾಡಿಗೆ ಹೋಗಲು ಬದ್ಧವಾಗಿದೆ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr "ತೆರೆ ವರ್ಧಕವನ್ನು ತೋರಿಸಲು ಬದ್ಧವಾಗಿದೆ"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "ತೆರೆಯನ್ನು ಲಾಕ್ ಮಾಡಲು ಬದ್ಧವಾಗಿದೆ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "ತೆರೆಯನ್ನು ಲಾಕ್ ಮಾಡಲು ಬದ್ಧವಾಗಿದೆ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "ತೆರೆ ವರ್ಧಕವನ್ನು ತೋರಿಸಲು ಬದ್ಧವಾಗಿದೆ"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -601,8 +676,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -676,7 +751,10 @@ msgstr "ನಿಧಾನ ಕೀಲಿಗಳನ್ನು ನೀವು ನಿಷ್
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "ನೀವು ಈಗತಾನ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಎಂಟು ಸೆಕೆಂಡುಗಳ ಕಾಲ ಒತ್ತಿ ಹಿಡಿದಿದ್ದೀರಿ.  ಈ ಶಾರ್ಟ್-ಕಟ್, ನಿಧಾನ ಕೀಲಿಗಳ ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
+msgstr ""
+"ನೀವು ಈಗತಾನ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಎಂಟು ಸೆಕೆಂಡುಗಳ ಕಾಲ ಒತ್ತಿ ಹಿಡಿದಿದ್ದೀರಿ.  ಈ ಶಾರ್ಟ್-ಕಟ್, "
+"ನಿಧಾನ ಕೀಲಿಗಳ ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ ಮೇಲೆ ಇದು ಪರಿಣಾಮ "
+"ಬೀರುತ್ತದೆ."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -737,7 +815,9 @@ msgstr "ನೀವು ಸ್ಟಿಕಿ ಕೀಲಿಗಳನ್ನು ನಿಷ
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "ನೀವು ಈಗತಾನ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಕ್ರಮವಾಗಿ ಐದು ಬಾರಿ ಒತ್ತಿದ್ದೀರಿ.  ಈ ಶಾರ್ಟ್-ಕಟ್ ಸ್ಟಿಕಿ ಕೀಲಿಗಳ ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
+msgstr ""
+"ನೀವು ಈಗತಾನ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಕ್ರಮವಾಗಿ ಐದು ಬಾರಿ ಒತ್ತಿದ್ದೀರಿ.  ಈ ಶಾರ್ಟ್-ಕಟ್ ಸ್ಟಿಕಿ ಕೀಲಿಗಳ "
+"ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -745,7 +825,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "ನೀವು ಈಗತಾನೆ ಎರಡು ಕೀಲಿಗಳನ್ನು ಒಂದೆ ಬಾರಿಗೆ, ಅಥವ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಕ್ರಮವಾಗಿ ಐದು ಬಾರಿ ಒತ್ತಿದ್ದೀರಿ  ಈ ಶಾರ್ಟ್-ಕಟ್, ಸ್ಟಿಕಿ ಕೀಲಿಗಳ ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
+msgstr ""
+"ನೀವು ಈಗತಾನೆ ಎರಡು ಕೀಲಿಗಳನ್ನು ಒಂದೆ ಬಾರಿಗೆ, ಅಥವ ಶಿಫ್ಟ್‍ ಕೀಲಿಯನ್ನು ಕ್ರಮವಾಗಿ ಐದು ಬಾರಿ "
+"ಒತ್ತಿದ್ದೀರಿ  ಈ ಶಾರ್ಟ್-ಕಟ್, ಸ್ಟಿಕಿ ಕೀಲಿಗಳ ಸವಲತ್ತಾಗಿದ್ದು, ನಿಮ್ಮ ಕೀಲಿಮಣೆ ಕೆಲಸಮಾಡುವ ರೀತಿಯ "
+"ಮೇಲೆ ಇದು ಪರಿಣಾಮ ಬೀರುತ್ತದೆ."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -834,25 +917,35 @@ msgstr "ಈ ಗಣಕದಲ್ಲಿ ಕೇವಲ %s ಡಿಸ್ಕ್ ಸ್�
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "ಕಸದಬುಟ್ಟಿಯನ್ನು ಖಾಲಿ ಮಾಡುವ ಮೂಲಕ, ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಇನ್ನೊಂದು ಡಿಸ್ಕಿಗೆ ಅಥವ ವಿಭಾಗಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
+msgstr ""
+"ಕಸದಬುಟ್ಟಿಯನ್ನು ಖಾಲಿ ಮಾಡುವ ಮೂಲಕ, ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ "
+"ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಇನ್ನೊಂದು ಡಿಸ್ಕಿಗೆ ಅಥವ ವಿಭಾಗಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ "
+"ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಬೇರೊಂದು ಡಿಸ್ಕಿಗೆ ಅಥವ ವಿಭಾಗಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
+msgstr ""
+"ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಬೇರೊಂದು "
+"ಡಿಸ್ಕಿಗೆ ಅಥವ ವಿಭಾಗಕ್ಕೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "ಕಸದಬುಟ್ಟಿಯನ್ನು ಖಾಲಿ ಮಾಡುವ ಮೂಲಕ, ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಒಂದು ಹೊರಗಿನ ಡಿಸ್ಕಿಗೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
+msgstr ""
+"ಕಸದಬುಟ್ಟಿಯನ್ನು ಖಾಲಿ ಮಾಡುವ ಮೂಲಕ, ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ "
+"ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಒಂದು ಹೊರಗಿನ ಡಿಸ್ಕಿಗೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು "
+"ಮುಕ್ತಗೊಳಿಸಬಹುದು."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಒಂದು ಹೊರಗಿನ ಡಿಸ್ಕಿಗೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
+msgstr ""
+"ಬಳಕೆಗೆ ಬಾರದ ಪ್ರೊಗ್ರಾಮ್‌ಗಳನ್ನು ಅಥವ ಕಡತಗಳನ್ನು ತೆಗೆಯುವ ಮೂಲಕ, ಅಥವ ಕಡತಗಳನ್ನು ಒಂದು ಹೊರಗಿನ "
+"ಡಿಸ್ಕಿಗೆ ಸ್ಥಳಾಂತರಿಸುವ ಮೂಲಕ ಡಿಸ್ಕಿನಲ್ಲಿ ಸ್ಥಳವನ್ನು ಮುಕ್ತಗೊಳಿಸಬಹುದು."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -903,7 +996,10 @@ msgstr "ಕಸದಬುಟ್ಟಿಯಲ್ಲಿನ ಎಲ್ಲಾ ಅಂಶ�
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "ನೀವು ಕಸದಬುಟ್ಟಿಯ ಅಂಶಗಳನ್ನು ಖಾಲಿ ಮಾಡಲು ಆಯ್ಕೆ ಮಾಡಿದಲ್ಲಿ, ಅದರಲ್ಲಿ ಎಲ್ಲಾ ಅಂಶಗಳು ಶಾಶ್ವತವಾಗಿ ನಾಶಗೊಳ್ಳುತ್ತವೆ. ಅವನ್ನು ನೀವು ಪ್ರತ್ಯೇಕವಾಗಿಯೂ ಸಹ ಅಳಿಸಲು ಸಾಧ್ಯ ಎನ್ನುವದನ್ನು ದಯವಿಟ್ಟು ಗಮನಿಸಿ."
+msgstr ""
+"ನೀವು ಕಸದಬುಟ್ಟಿಯ ಅಂಶಗಳನ್ನು ಖಾಲಿ ಮಾಡಲು ಆಯ್ಕೆ ಮಾಡಿದಲ್ಲಿ, ಅದರಲ್ಲಿ ಎಲ್ಲಾ ಅಂಶಗಳು "
+"ಶಾಶ್ವತವಾಗಿ ನಾಶಗೊಳ್ಳುತ್ತವೆ. ಅವನ್ನು ನೀವು ಪ್ರತ್ಯೇಕವಾಗಿಯೂ ಸಹ ಅಳಿಸಲು ಸಾಧ್ಯ ಎನ್ನುವದನ್ನು "
+"ದಯವಿಟ್ಟು ಗಮನಿಸಿ."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -924,7 +1020,9 @@ msgstr "ಕೀಲಿಬದ್ಧತೆ (%s) ಪೂರ್ಣವಾಗಿಲ್ಲ
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "(%s) ಅನ್ನು ಚಲಾಯಿಸುವಾಗ ದೋಷ\nಎದುರಾಗಿದೆ. ಅದು (%s) ಕೀಲಿಗೆ ಹೊಂದಿಕೊಂಡಿದೆ"
+msgstr ""
+"(%s) ಅನ್ನು ಚಲಾಯಿಸುವಾಗ ದೋಷ\n"
+"ಎದುರಾಗಿದೆ. ಅದು (%s) ಕೀಲಿಗೆ ಹೊಂದಿಕೊಂಡಿದೆ"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -942,7 +1040,7 @@ msgstr "ಕೀಲಿ ಮಣೆ"
 msgid "Keyboard plugin"
 msgstr "ಕೀಲಿ ಮಣೆ ಪ್ಲಗ್ಇನ್"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -959,30 +1057,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "ಕೀಲಿಮಣೆ ಆದ್ಯತೆಗಳು(_P)"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "ಪೂರ್ವನಿಯೋಜಿತಟರ್ಮಿನಲ್ ಪಡೆಯಲಾಗಿಲ್ಲ. ನಿಮ್ಮ ಪೂರ್ವನಿಯೋಜಿತ ಟರ್ಮಿನಲ್ ಆಜ್ಞೆಯನ್ನು ಹೊಂದಿಸಲಾಗಿದೆ ಹಾಗು ಒಂದು ಮಾನ್ಯವಾದ ಅನ್ವಯಕ್ಕೆ ಸೂಚಿತಗೊಂಡಿದೆ ಎಂದು ಪರಿಶೀಲಿಸಿ."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"ಪೂರ್ವನಿಯೋಜಿತಟರ್ಮಿನಲ್ ಪಡೆಯಲಾಗಿಲ್ಲ. ನಿಮ್ಮ ಪೂರ್ವನಿಯೋಜಿತ ಟರ್ಮಿನಲ್ ಆಜ್ಞೆಯನ್ನು ಹೊಂದಿಸಲಾಗಿದೆ "
+"ಹಾಗು ಒಂದು ಮಾನ್ಯವಾದ ಅನ್ವಯಕ್ಕೆ ಸೂಚಿತಗೊಂಡಿದೆ ಎಂದು ಪರಿಶೀಲಿಸಿ."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "ಆಜ್ಞೆಯನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s\nಇದು ಒಂದು ಮಾನ್ಯವಾದ ಆಜ್ಞೆಯಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
+msgstr ""
+"ಆಜ್ಞೆಯನ್ನು ಕಾರ್ಯಗತಗೊಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ: %s\n"
+"ಇದು ಒಂದು ಮಾನ್ಯವಾದ ಆಜ್ಞೆಯಾಗಿದೆ ಎಂದು ಖಚಿತಪಡಿಸಿಕೊಳ್ಳಿ."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -992,16 +1094,16 @@ msgstr "ಮೀಡಿಯಾ ಕೀಲಿಗಳು"
 msgid "Media keys plugin"
 msgstr "ಮೀಡಿಯಾ ಕೀಲಿಗಳು ಪ್ಲಗ್ಇನ್"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "ಮೌಸ್‌ ನಿಲುಕಣಾ ಸೌಕರ್ಯಗಳನ್ನು ಶಕ್ತಗೊಳಿಸಲಾಗಿಲ್ಲ"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "ಮೌಸ್ ಆದ್ಯತೆಗಳು"
 
@@ -1037,83 +1139,83 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "ತೆರೆಯ ಗಾತ್ರ ಹಾಗು ಸುತ್ತುವಿಕೆಯನ್ನು ಹೊಂದಿಸು"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "ತೆರೆಯ ಸಂರಚನೆಯನ್ನು ಬದಲಾಯಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "ಪ್ರದರ್ಶಕದ ಸಂರಚನೆಯನ್ನು ಮರಳಿ ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "ಪ್ರದರ್ಶಕದ ಸಂರಚನೆಯನ್ನು ಬ್ಯಾಕ್‌ಅಪ್‌ನಿಂದ ಮರಳಿ ಸ್ಥಾಪಿಸಲಾಗಿಲ್ಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
 "The display will be reset to its previous configuration in %d seconds"
 msgstr[0] ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "ಪ್ರದರ್ಶಕವು ಸರಿಯಾಗಿ ಕಾಣಿಸುತ್ತಿದೆಯೆ?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "ಹಿಂದಿನ ಸಂರಚನೆಯನ್ನು ಮರಳಿ ಸ್ಥಾಪಿಸು(_R)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "ಈ ಸಂರಚನೆಯನ್ನು ಇರಿಸಿಕೊ(_K)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "ಆಯ್ಕೆ ಮಾಡಲಾದ ಪ್ರದರ್ಶಕದ ಸಂರಚನೆಯನ್ನು ಅನ್ವಯಿಸಲಾಗಿಲ್ಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "ತೆರೆಯ ಮಾಹಿತಿಯನ್ನು ಪುನಶ್ಚೇತನಗೊಳಿಸಲಾಗಲಿಲ್ಲ: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "ಆದರೂ ಸಹ ತೆರೆಯ ಸಂರಚನೆಯನ್ನು ಬದಲಾಯಿಸಲು ಪ್ರಯತ್ನಿಸಲಾಗುತ್ತಿದೆ."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "ತೆರೆಯ ಸಂರಚನೆಯನ್ನು ಉಳಿಸಲು ಸಾಧ್ಯವಾಗಿಲ್ಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "ಸಾಮಾನ್ಯ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "ಎಡ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "ಬಲ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "ತಲೆ ಕೆಳಗೆ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "ಪ್ರದರ್ಶನ ಸಿದ್ಧತೆಗಳನ್ನು ಸಂರಚಿಸು"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "ತೆರೆಗಳಿಗಾಗಿ ಶೇಖರಿಸಲಾದ ಸಂರಚನೆಯನ್ನು ಅನ್ವಯಿಸಲಾಗಿಲ್ಲ"
 

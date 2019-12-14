@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Ivan Vilata i Balaguer <ivan@selidor.net>, 1999, 2000
 # Jordi Mallach <jordi@sindominio.net>, 2002, 2003, 2004, 2005
@@ -13,14 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2017-02-15 11:40+0000\n"
 "Last-Translator: Robert Antoni Buj Gelonch <rbuj@fedoraproject.org>\n"
 "Language-Team: Catalan (http://wiki.ukui.org/trans/)\n"
+"Language: ca\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ca\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -28,17 +28,17 @@ msgid "Accessibility"
 msgstr "Accessibilitat"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Commuta l'ampliador"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Commuta el lector de pantalla"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Commuta el teclat a la pantalla"
 
@@ -74,7 +74,9 @@ msgstr "PPP"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "La resolució que s'utilitzarà per convertir les mides de les lletres a mides en píxels, als punts per polzada."
+msgstr ""
+"La resolució que s'utilitzarà per convertir les mides de les lletres a mides "
+"en píxels, als punts per polzada."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -85,7 +87,12 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "El tipus d'antialiàsing que s'utilitzarà per renderitzar les lletres. Els valors possibles són: «none» (cap) per a cap antialiàsing, «grayscale» (escala de grisos) per l'antialiàsing estàndard d'escala de grisos i «RGBA» per a l'antialiàsing dels subpíxels (només per a les pantalles LCD)."
+msgstr ""
+"El tipus d'antialiàsing que s'utilitzarà per renderitzar les lletres. Els "
+"valors possibles són: «none» (cap) per a cap antialiàsing, "
+"«grayscale» (escala de grisos) per l'antialiàsing estàndard d'escala de "
+"grisos i «RGBA» per a l'antialiàsing dels subpíxels (només per a les "
+"pantalles LCD)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -93,10 +100,14 @@ msgstr "Contorn"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "El tipus de contorn que s'utilitzarà per renderitzar les lletres. Els valors possibles són: «none» (cap) cap contorn, «slight» (lleu) contorn petit, «medium» (mitjà) contorn moderat i «full» (complet) màxim contorn (pot produir distorsió en les formes de les lletres)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"El tipus de contorn que s'utilitzarà per renderitzar les lletres. Els valors "
+"possibles són: «none» (cap) cap contorn, «slight» (lleu) contorn petit, "
+"«medium» (mitjà) contorn moderat i «full» (complet) màxim contorn (pot "
+"produir distorsió en les formes de les lletres)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -104,11 +115,15 @@ msgstr "Ordre del RGBA"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "L'ordenació dels elements dels subpíxels en una pantalla LCD. Només s'utilitza quan l'antialiàsing és «RGBA». Els valors possibles són: «RGB» per al vermell a l'esquerra (el més comú), «BGR» per al blau a l'esquerra, «VRGB» per al vermell a dalt, «VBGR» per al vermell a baix."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"L'ordenació dels elements dels subpíxels en una pantalla LCD. Només "
+"s'utilitza quan l'antialiàsing és «RGBA». Els valors possibles són: «RGB» "
+"per al vermell a l'esquerra (el més comú), «BGR» per al blau a l'esquerra, "
+"«VRGB» per al vermell a dalt, «VBGR» per al vermell a baix."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -126,9 +141,11 @@ msgstr "Inhabilita el ratolí tàctil mentre s'escriu"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Establiu-ho a TRUE per si accidentalment toqueu el ratolí tàctil mentre escriviu."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Establiu-ho a TRUE per si accidentalment toqueu el ratolí tàctil mentre "
+"escriviu."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -137,7 +154,9 @@ msgstr "Permet fer clic amb el ratolí tàctil"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Establiu-ho a TRUE per permetre enviar clics de ratolí en prémer al ratolí tàctil."
+msgstr ""
+"Establiu-ho a TRUE per permetre enviar clics de ratolí en prémer al ratolí "
+"tàctil."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -169,7 +188,8 @@ msgstr "Habilita el desplaçament horitzontal amb dos dits"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:12
 msgid "Set this to TRUE to allow horizontal two-finger scrolling"
-msgstr "Establiu-ho a TRUE per permetre el desplaçament horitzontal amb dos dits"
+msgstr ""
+"Establiu-ho a TRUE per permetre el desplaçament horitzontal amb dos dits"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:13
 msgid "Natural scrolling"
@@ -177,7 +197,9 @@ msgstr "Desplaçament natural"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:14
 msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
-msgstr "Establiu-ho a TRUE per habilitar el desplaçament natural (invers) per als ratolins tàctils"
+msgstr ""
+"Establiu-ho a TRUE per habilitar el desplaçament natural (invers) per als "
+"ratolins tàctils"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:15
 msgid "Enable touchpad"
@@ -377,7 +399,9 @@ msgstr "Període mínim entre notificacions d'advertències repetides"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Especifica un temps en minuts. Els pròxims avisos per a un volum no apareixeran abans d'aquest període de temps."
+msgstr ""
+"Especifica un temps en minuts. Els pròxims avisos per a un volum no "
+"apareixeran abans d'aquest període de temps."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -385,7 +409,9 @@ msgstr "Camins de muntatge a ignorar"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Especifica una llista de camins de muntatge a ignorar quan els queda poc espai lliure."
+msgstr ""
+"Especifica una llista de camins de muntatge a ignorar quan els queda poc "
+"espai lliure."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -492,88 +518,144 @@ msgid "Binding to lock the screen."
 msgstr "Vinculació per bloquejar la pantalla."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Ajusts de les X"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Vinculació per obrir la carpeta de l'usuari."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Vinculació per obrir la carpeta de l'usuari."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Executa el navegador de l'ajuda"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Vinculació per executar el navegador de l'ajuda."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Executa la calculadora"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Vinculació per executar la calculadora."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Executa el navegador web"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Vinculació per executar el navegador web."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Executa el reproductor multimèdia"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Vinculació per executar el reproductor multimèdia."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Reprodueix (reprodueix/fes una pausa)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "Vinculació per iniciar el reproductor (o commutar entre reproducció/en pausa)."
+msgstr ""
+"Vinculació per iniciar el reproductor (o commutar entre reproducció/en "
+"pausa)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Fes una pausa en la reproducció"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Vinculació per fer una pausa a la reproducció."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Atura la reproducció"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Vinculació per aturar la reproducció."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Anterior pista"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Vinculació per saltar a l'anterior pista."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Següent pista"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Vinculació per saltar a la següent pista."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr "Vinculació per mostrar el magnificador de pantalla"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr "Vinculació per iniciar el lector de pantalla."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr "Vinculació per mostrar el teclat a la pantalla."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Vinculació per bloquejar la pantalla."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Vinculació per iniciar el lector de pantalla."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Vinculació per iniciar el lector de pantalla."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -605,19 +687,24 @@ msgstr "Engega el monitor extern després de l'arrencada del sistema"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
-msgstr "Engega el monitor extern després de l'arrencada del sistema, si l'usuari connecta el monitor extern en l'arrencada del sistema."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+"Engega el monitor extern després de l'arrencada del sistema, si l'usuari "
+"connecta el monitor extern en l'arrencada del sistema."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
-msgstr "Engega el monitor de l'ordinador portàtil després de l'arrencada del sistema"
+msgstr ""
+"Engega el monitor de l'ordinador portàtil després de l'arrencada del sistema"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:12
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
-msgstr "Engega el monitor de l'ordinador portàtil després de l'arrencada del sistema, si l'usuari connecta el monitor extern en l'arrencada del sistema."
+msgstr ""
+"Engega el monitor de l'ordinador portàtil després de l'arrencada del "
+"sistema, si l'usuari connecta el monitor extern en l'arrencada del sistema."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
@@ -680,7 +767,10 @@ msgstr "Voleu desactivar les «tecles lentes»?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Heu mantingut premuda la tecla de majúscules durant 8 segons.  Aquesta és la drecera per a la funcionalitat «tecles lentes», que afecta la forma de funcionar del teclat."
+msgstr ""
+"Heu mantingut premuda la tecla de majúscules durant 8 segons.  Aquesta és la "
+"drecera per a la funcionalitat «tecles lentes», que afecta la forma de "
+"funcionar del teclat."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -741,7 +831,10 @@ msgstr "Voleu desactivar les «tecles enganxoses»?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Heu premut la tecla de majúscules 5 vegades seguides. Aquesta és la drecera per a la funcionalitat «tecles enganxoses», que afecta la forma de funcionar del teclat."
+msgstr ""
+"Heu premut la tecla de majúscules 5 vegades seguides. Aquesta és la drecera "
+"per a la funcionalitat «tecles enganxoses», que afecta la forma de funcionar "
+"del teclat."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -749,7 +842,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Heu premut dues tecles alhora, o heu premut la tecla de majúscules 5 vegades seguides. Això desactiva les «tecles enganxoses», que afecten la forma de funcionar del teclat."
+msgstr ""
+"Heu premut dues tecles alhora, o heu premut la tecla de majúscules 5 vegades "
+"seguides. Això desactiva les «tecles enganxoses», que afecten la forma de "
+"funcionar del teclat."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -838,25 +934,35 @@ msgstr "Aquest ordinador només li resta %s d'espai de disc."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Podeu alliberar espai de disc amb el buidament de la paperera, amb la supressió de programes o fitxers que no utilitzeu, o amb el trasllat de fitxers a un altre disc o partició."
+msgstr ""
+"Podeu alliberar espai de disc amb el buidament de la paperera, amb la "
+"supressió de programes o fitxers que no utilitzeu, o amb el trasllat de "
+"fitxers a un altre disc o partició."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Podeu alliberar espai de disc amb la supressió de programes o fitxers que no utilitzeu, o amb el trasllat de fitxers a un altre disc o partició."
+msgstr ""
+"Podeu alliberar espai de disc amb la supressió de programes o fitxers que no "
+"utilitzeu, o amb el trasllat de fitxers a un altre disc o partició."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Podeu alliberar espai de disc amb el buidament de la paperera, amb la supressió de programes o fitxers que no utilitzeu, o amb el trasllat de fitxers a un disc extern."
+msgstr ""
+"Podeu alliberar espai de disc amb el buidament de la paperera, amb la "
+"supressió de programes o fitxers que no utilitzeu, o amb el trasllat de "
+"fitxers a un disc extern."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Podeu alliberar espai de disc amb la supressió de programes o fitxers que no utilitzeu, o amb el trasllat de fitxers a un disc extern."
+msgstr ""
+"Podeu alliberar espai de disc amb la supressió de programes o fitxers que no "
+"utilitzeu, o amb el trasllat de fitxers a un disc extern."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -907,7 +1013,9 @@ msgstr "Voleu buidar tots els elements de la paperera?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Si buideu la paperera, se'n perdran tots els elements per sempre. Tingueu en compte que també podeu eliminar-los per separat."
+msgstr ""
+"Si buideu la paperera, se'n perdran tots els elements per sempre. Tingueu en "
+"compte que també podeu eliminar-los per separat."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -928,7 +1036,9 @@ msgstr "La vinculació de tecla (%s) és incompleta"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "S'ha produït un error en intentar executar (%s)\nque està enllaçat a la tecla (%s)"
+msgstr ""
+"S'ha produït un error en intentar executar (%s)\n"
+"que està enllaçat a la tecla (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -946,7 +1056,7 @@ msgstr "Teclat"
 msgid "Keyboard plugin"
 msgstr "Connector del teclat"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -963,30 +1073,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "_Disposicions"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "_Preferències del teclat"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Mostra la disposició a_ctual"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "No s'ha pogut obtenir el terminal per defecte. Verifiqueu que l'ordre que teniu establerta per al terminal per defecte existeixi."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"No s'ha pogut obtenir el terminal per defecte. Verifiqueu que l'ordre que "
+"teniu establerta per al terminal per defecte existeixi."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "No s'ha pogut executar l'ordre: %s\nVerifiqueu que sigui una ordre vàlida."
+msgstr ""
+"No s'ha pogut executar l'ordre: %s\n"
+"Verifiqueu que sigui una ordre vàlida."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -996,16 +1110,19 @@ msgstr "Tecles multimèdia"
 msgid "Media keys plugin"
 msgstr "Connector de les tecles multimèdia"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
-msgstr "No s'han pogut habilitar les funcionalitats d'accessibilitat del ratolí"
+msgstr ""
+"No s'han pogut habilitar les funcionalitats d'accessibilitat del ratolí"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
-msgstr "L'accessibilitat del ratolí requereix que s'instal·li Mousetweaks al vostre sistema."
+msgstr ""
+"L'accessibilitat del ratolí requereix que s'instal·li Mousetweaks al vostre "
+"sistema."
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Preferències del ratolí"
 
@@ -1041,84 +1158,88 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Configura els ajusts de pantalla de la mida i de la rotació"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "No s'ha pogut commutar la configuració del monitor"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "No s'ha pogut restaurar la configuració de la pantalla"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
-msgstr "No s'ha pogut restaurar la configuració de la pantalla des d'una còpia de seguretat"
+msgstr ""
+"No s'ha pogut restaurar la configuració de la pantalla des d'una còpia de "
+"seguretat"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
 "The display will be reset to its previous configuration in %d seconds"
 msgstr[0] "La pantalla es restablirà a l'anterior configuració d'aquí %d segon"
-msgstr[1] "La pantalla es restablirà a l'anterior configuració d'aquí %d segons"
+msgstr[1] ""
+"La pantalla es restablirà a l'anterior configuració d'aquí %d segons"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Es visualitza correctament la pantalla?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Restaura l'anterior configuració"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Mantén aquesta configuració"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "No s'ha pogut aplicar la configuració seleccionada per a pantalles"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "No s'ha pogut refrescar la informació de la pantalla: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
-msgstr "S'està intentant commutar la configuració del monitor de totes maneres."
+msgstr ""
+"S'està intentant commutar la configuració del monitor de totes maneres."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "No és compatible amb la rotació"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "No s'ha pogut desar la configuració del monitor"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normal"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Esquerra"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Dreta"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "De cap per avall"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Configura els ajusts de la pantalla..."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Configura els ajusts de la pantalla"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "No s'ha pogut aplicar la configuració emmagatzemada per als monitors"
 
@@ -1163,7 +1284,8 @@ msgstr ""
 #: ../plugins/smartcard/usd-smartcard-manager.c:654
 #, c-format
 msgid "no suitable smartcard driver could be found"
-msgstr "no s'ha pogut trobar cap controlador adequat per a la targeta intel·ligent"
+msgstr ""
+"no s'ha pogut trobar cap controlador adequat per a la targeta intel·ligent"
 
 #: ../plugins/smartcard/usd-smartcard-manager.c:674
 #, c-format
@@ -1173,12 +1295,15 @@ msgstr "no s'ha pogut carregar el controlador de la targeta intel·ligent «%s»
 #: ../plugins/smartcard/usd-smartcard-manager.c:758
 #, c-format
 msgid "could not watch for incoming card events - %s"
-msgstr "no s'ha pogut observar si hi ha esdeveniments d'entrada de targeta - %s"
+msgstr ""
+"no s'ha pogut observar si hi ha esdeveniments d'entrada de targeta - %s"
 
 #: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "es va trobar un error inesperat en l'espera d'esdeveniments de targetes intel·ligents"
+msgstr ""
+"es va trobar un error inesperat en l'espera d'esdeveniments de targetes "
+"intel·ligents"
 
 #: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"

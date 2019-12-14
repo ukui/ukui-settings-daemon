@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Antón Méixome <meixome@mancomun.org>, 2009
 # Fran Diéguez <frandieguez@ubuntu.com>, 2010
@@ -17,14 +17,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Galician (http://wiki.ukui.org/trans/)\n"
+"Language: gl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gl\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -32,17 +32,17 @@ msgid "Accessibility"
 msgstr "Accesibilidade"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Alternar a lupa"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Alternar o lector de pantalla"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Alternar o teclado en pantalla"
 
@@ -78,7 +78,9 @@ msgstr "PPP"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "A resolución que se usa para converter os tamaños dos tipos de letra en puntos por polgada."
+msgstr ""
+"A resolución que se usa para converter os tamaños dos tipos de letra en "
+"puntos por polgada."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -89,7 +91,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "O tipo de suavizado que usar ao renderizar os tipos de letra. Os valores posíbeis son: «ningún» para usar ningún suavizado, «escala de grises» para o suavizado estándar de escala de grises e «rgba» para o suavizado de subpíxeles (só para pantallas LCD)."
+msgstr ""
+"O tipo de suavizado que usar ao renderizar os tipos de letra. Os valores "
+"posíbeis son: «ningún» para usar ningún suavizado, «escala de grises» para o "
+"suavizado estándar de escala de grises e «rgba» para o suavizado de "
+"subpíxeles (só para pantallas LCD)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -97,10 +103,14 @@ msgstr "Optimización"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "O tipo de suavizado que usar para renderizar os tipos de letras. Os valores posíbeis son: «ningún» para non usar ningún suavizado, «lixeiro» para o básico, «medio» para o moderado e «total» para o suavizado máximo (pode distorsionar as formas das letras)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"O tipo de suavizado que usar para renderizar os tipos de letras. Os valores "
+"posíbeis son: «ningún» para non usar ningún suavizado, «lixeiro» para o "
+"básico, «medio» para o moderado e «total» para o suavizado máximo (pode "
+"distorsionar as formas das letras)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -108,11 +118,15 @@ msgstr "Orde RGBA"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "A orde dos elementos de subpíxeles nunha pantalla LCD; só se usa cando o suavizado se define como «rgba». Os valores posíbeis son: «rgb» para o vermello na esquerda (o máis común), «bgr» para o azul na esquerda, «vrgb» para o vermello arriba, «vbgr» para o vermello abaixo."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"A orde dos elementos de subpíxeles nunha pantalla LCD; só se usa cando o "
+"suavizado se define como «rgba». Os valores posíbeis son: «rgb» para o "
+"vermello na esquerda (o máis común), «bgr» para o azul na esquerda, «vrgb» "
+"para o vermello arriba, «vbgr» para o vermello abaixo."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -122,7 +136,10 @@ msgstr "Acción ao extraer a tarxeta intelixente"
 msgid ""
 "Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
 "action will get performed when the smartcard used for log in is removed."
-msgstr "Estabelecer isto a «ningún», «bloquear pantalla» ou «forzar saída». A acción levarase a cabo cando a tarxeta intelixente usada para iniciar a sesión se extraia."
+msgstr ""
+"Estabelecer isto a «ningún», «bloquear pantalla» ou «forzar saída». A acción "
+"levarase a cabo cando a tarxeta intelixente usada para iniciar a sesión se "
+"extraia."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:1
 msgid "Disable touchpad while typing"
@@ -130,9 +147,11 @@ msgstr "Desactivar a superficie táctil mentres se escribe"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Estabeleza isto como VERDADEIRO se ten problemas cos saltos accidentais na superficie táctil mentres escribe."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Estabeleza isto como VERDADEIRO se ten problemas cos saltos accidentais na "
+"superficie táctil mentres escribe."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -141,7 +160,9 @@ msgstr "Activar os clics do rato coa superficie táctil"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Estabeleza isto como VERDADEIRO para poder enviar clics de rato dando toques na superficie táctil."
+msgstr ""
+"Estabeleza isto como VERDADEIRO para poder enviar clics de rato dando toques "
+"na superficie táctil."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -341,7 +362,9 @@ msgstr "Prioridade de uso deste engadido"
 #: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
 #: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
 msgid "Priority to use for this plugin in ukui-settings-daemon startup queue"
-msgstr "Prioridade que usar para este engadido na cola de inicio de ukui-settings-daemon"
+msgstr ""
+"Prioridade que usar para este engadido na cola de inicio de ukui-settings-"
+"daemon"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
 msgid "Free percentage notify threshold"
@@ -351,7 +374,9 @@ msgstr "Limiar de notificación de porcentaxe libre"
 msgid ""
 "Percentage free space threshold for initial warning of low disk space. If "
 "the percentage free space drops below this, a warning will be shown."
-msgstr "Limiar de porcentaxe de espazo libre para iniciar o aviso de pouco espazo en disco. Se a porcentaxe de espazo libre cae por baixo del, amosarase un aviso."
+msgstr ""
+"Limiar de porcentaxe de espazo libre para iniciar o aviso de pouco espazo en "
+"disco. Se a porcentaxe de espazo libre cae por baixo del, amosarase un aviso."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
 msgid "Subsequent free percentage notify threshold"
@@ -361,7 +386,9 @@ msgstr "Limiar de notificación de porcentaxe libre subsecuente"
 msgid ""
 "Specify the percentage that the free disk space should reduce by before "
 "issuing a subsequent warning."
-msgstr "Especificar a porcentaxe do espazo libre que se debería reducir antes de producir o aviso subsecuente"
+msgstr ""
+"Especificar a porcentaxe do espazo libre que se debería reducir antes de "
+"producir o aviso subsecuente"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
 msgid "Free space no notify threshold"
@@ -371,7 +398,9 @@ msgstr "Limiar de non notificación de espazo libre"
 msgid ""
 "Specify an amount in GB. If the amount of free space is more than this, no "
 "warning will be shown."
-msgstr "Especificar unha cantidade en GB. Se a cantidade de espazo libre é maior ca esta, non se amosará ningún aviso."
+msgstr ""
+"Especificar unha cantidade en GB. Se a cantidade de espazo libre é maior ca "
+"esta, non se amosará ningún aviso."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
 msgid "Minimum notify period for repeated warnings"
@@ -381,7 +410,9 @@ msgstr "Período mínimo de notificación para avisos repetidos"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Especificar tempo en minutos. Os avisos subsecuentes para un volume non se repetirán máis a miúdo que ese período."
+msgstr ""
+"Especificar tempo en minutos. Os avisos subsecuentes para un volume non se "
+"repetirán máis a miúdo que ese período."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -389,7 +420,9 @@ msgstr "Montar as rutas para ignorar"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Especificar unha lista de rutas de montaxe para ignorar cando estean baixos de espazo."
+msgstr ""
+"Especificar unha lista de rutas de montaxe para ignorar cando estean baixos "
+"de espazo."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -496,88 +529,144 @@ msgid "Binding to lock the screen."
 msgstr "Combinación para bloquear a pantalla."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Configuracións de X"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Combinación para abrir o cartafol persoal."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Combinación para abrir o cartafol persoal."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Iniciar o navegador de axuda"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Combinación para iniciar o navegador de axuda."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Iniciar a calculadora"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Combinación para iniciar a calculadora."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Iniciar o navegador web"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Combinación para iniciar o navegador web."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Iniciar o reprodutor de son"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Combinación para iniciar o reprodutor multimedia."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Reproducir (ou reproducir/deter)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "Combinación para comezar a reprodución (ou alternar entre reproducir e deter)."
+msgstr ""
+"Combinación para comezar a reprodución (ou alternar entre reproducir e "
+"deter)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Deter a reprodución"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Combinación para deter a reprodución."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Deter a reprodución"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Combinación para deter a reprodución."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Pista anterior"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Combinación para saltar á pista anterior."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Pista seguinte"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Combinación para pasar á pista seguinte."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Combinación para bloquear a pantalla."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Combinación para bloquear a pantalla."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Combinación para bloquear a pantalla."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -587,7 +676,9 @@ msgstr "Amosar as pantallas na área de notificación"
 msgid ""
 "Whether a notification icon with display-related things should be shown in "
 "the panel."
-msgstr "Indica se debería amosarse no panel unha icona de notificación con elementos relacionados coa pantalla."
+msgstr ""
+"Indica se debería amosarse no panel unha icona de notificación con elementos "
+"relacionados coa pantalla."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
 msgid "Do not touch monitor configuration"
@@ -601,7 +692,13 @@ msgid ""
 "cloning/side-by-side mode. Setting this key to True disables this, and the "
 "monitor settings are not touched at all (unless there is an explicit user "
 "configuration)."
-msgstr "Normalmente, ukui-settings-daemon configura os monitores internos e externos conforme as opcións «acender os monitores externos ao arrincar» e «acender o monitor do portátil ao arrincar» na configuración de inicio e determina o modo máis axeitado clonado/cara-a-cara. Ao estabelecer esta clave a «verdadeiro» desactiva isto, e a configuración do monitor non é modificada (a non ser que haxa unha configuración explícita do usuario)."
+msgstr ""
+"Normalmente, ukui-settings-daemon configura os monitores internos e externos "
+"conforme as opcións «acender os monitores externos ao arrincar» e «acender o "
+"monitor do portátil ao arrincar» na configuración de inicio e determina o "
+"modo máis axeitado clonado/cara-a-cara. Ao estabelecer esta clave a "
+"«verdadeiro» desactiva isto, e a configuración do monitor non é modificada "
+"(a non ser que haxa unha configuración explícita do usuario)."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
 msgid "Turn on external monitor after system boot"
@@ -609,9 +706,11 @@ msgstr "Acender o monitor externo despois de arrincar o sistema"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
-msgstr "Acender o monitor externo despois de arrincar o sistema se o usuario conecta o monitor externo cando o sistema arrinca."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+"Acender o monitor externo despois de arrincar o sistema se o usuario conecta "
+"o monitor externo cando o sistema arrinca."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
@@ -621,7 +720,9 @@ msgstr "Acender o monitor do portátil despois de arrincar o sistema"
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
-msgstr "Acender o monitor do portátil despois de arrincar o sistema se o usuario conecta o monitor externo cando o sistema arrinca."
+msgstr ""
+"Acender o monitor do portátil despois de arrincar o sistema se o usuario "
+"conecta o monitor externo cando o sistema arrinca."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
@@ -634,7 +735,12 @@ msgid ""
 "normally gets stored in users' home directories. If a user does not have "
 "such a file, or has one that does not match the user's setup of monitors, "
 "then the file specified by this key will be used instead."
-msgstr "O engadido XRANDR buscará pola configuración predeterminada no ficheiro especificado por esta chave. É semellante ao ~/.config/monitors.xml que normalmente almacenase no cartafol persoal dos usuarios. Se un usuario non ten dito ficheiro ou non ten unha configuración de usuario dos monitores, usarase no seu canto o ficheiro especificado nesta chave."
+msgstr ""
+"O engadido XRANDR buscará pola configuración predeterminada no ficheiro "
+"especificado por esta chave. É semellante ao ~/.config/monitors.xml que "
+"normalmente almacenase no cartafol persoal dos usuarios. Se un usuario non "
+"ten dito ficheiro ou non ten unha configuración de usuario dos monitores, "
+"usarase no seu canto o ficheiro especificado nesta chave."
 
 #: ../data/ukui-settings-daemon.desktop.in.in.h:1
 msgid "UKUI Settings Daemon"
@@ -684,7 +790,10 @@ msgstr "Quere desactivar a opción Teclas lentas?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Ven de premer a tecla Maiús durante oito segundos. Este é o atallo de teclado para a opción Teclas lentas que afecta á forma en que funciona o seu teclado."
+msgstr ""
+"Ven de premer a tecla Maiús durante oito segundos. Este é o atallo de "
+"teclado para a opción Teclas lentas que afecta á forma en que funciona o seu "
+"teclado."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -745,7 +854,10 @@ msgstr "Quere desactivar a opción Teclas persistentes?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Ven de premer a tecla Maiús cinco veces seguidas. Este é o atallo de teclado para a opción Teclas persistentes que afecta á forma en que funciona o seu teclado."
+msgstr ""
+"Ven de premer a tecla Maiús cinco veces seguidas. Este é o atallo de teclado "
+"para a opción Teclas persistentes que afecta á forma en que funciona o seu "
+"teclado."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -753,7 +865,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Ven de premer dúas teclas ao mesmo tempo ou premeu a tecla Maiús cinco veces seguidas. Isto desactivará a opción Teclas persistentes que afecta á forma en que funciona o seu teclado."
+msgstr ""
+"Ven de premer dúas teclas ao mesmo tempo ou premeu a tecla Maiús cinco veces "
+"seguidas. Isto desactivará a opción Teclas persistentes que afecta á forma "
+"en que funciona o seu teclado."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -786,7 +901,8 @@ msgstr "Aumentar o tamaño do _texto para facilitar a lectura"
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "_Premer os atallos de teclado unha tecla de cada vez (teclas persistentes)"
+msgstr ""
+"_Premer os atallos de teclado unha tecla de cada vez (teclas persistentes)"
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
@@ -842,25 +958,34 @@ msgstr "A este computador só lle queda %s espazo de disco."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Pode liberar espazo de disco baleirando o cesto do lixo, eliminando programas ou ficheiros que non use, ou movendo ficheiros a outro disco ou partición."
+msgstr ""
+"Pode liberar espazo de disco baleirando o cesto do lixo, eliminando "
+"programas ou ficheiros que non use, ou movendo ficheiros a outro disco ou "
+"partición."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Pode liberar espazo de disco eliminando programas ou ficheiros que non use, ou movendo ficheiros a outro disco ou partición."
+msgstr ""
+"Pode liberar espazo de disco eliminando programas ou ficheiros que non use, "
+"ou movendo ficheiros a outro disco ou partición."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Pode liberar espazo de disco baleirando o cesto do lixo, eliminando programas ou ficheiros que non use, ou movendo ficheiros a un disco externo."
+msgstr ""
+"Pode liberar espazo de disco baleirando o cesto do lixo, eliminando "
+"programas ou ficheiros que non use, ou movendo ficheiros a un disco externo."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Pode liberar espazo de disco eliminando programas ou ficheiros que non use, ou movendo ficheiros a un disco externo."
+msgstr ""
+"Pode liberar espazo de disco eliminando programas ou ficheiros que non use, "
+"ou movendo ficheiros a un disco externo."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -911,7 +1036,9 @@ msgstr "Quere eliminar todos os elementos do lixo?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Se escolle baleirar o cesto do lixo, todos os elementos nel perdéranse de xeito permanente. Teña en conta que tamén pode eliminalos por separado."
+msgstr ""
+"Se escolle baleirar o cesto do lixo, todos os elementos nel perdéranse de "
+"xeito permanente. Teña en conta que tamén pode eliminalos por separado."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -932,7 +1059,9 @@ msgstr "A combinación de teclas (%s) está incompleta"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Produciuse un erro ao tentar executar (%s)\nque está ligado á chave (%s)"
+msgstr ""
+"Produciuse un erro ao tentar executar (%s)\n"
+"que está ligado á chave (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -950,7 +1079,7 @@ msgstr "Teclado"
 msgid "Keyboard plugin"
 msgstr "Engadido do teclado"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -967,30 +1096,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "_Disposicións"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "Preferencias do _teclado"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Amosar a _disposición actual"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Non foi posíbel obter o terminal predeterminado. Verifique que a orde do seu terminal predeterminado está definida e que apunta a un aplicativo correcto."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Non foi posíbel obter o terminal predeterminado. Verifique que a orde do seu "
+"terminal predeterminado está definida e que apunta a un aplicativo correcto."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Non é posíbel executar a orde: %s\nVerifique que esta é unha orde válida."
+msgstr ""
+"Non é posíbel executar a orde: %s\n"
+"Verifique que esta é unha orde válida."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -1000,16 +1133,17 @@ msgstr "Teclas multimedia"
 msgid "Media keys plugin"
 msgstr "Engadido das teclas multimedia"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Non foi posíbel activar as opcións de accesibilidade do rato"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
-msgstr "A accesibilidade de rato require ter instalado mousetweaks no seu sistema."
+msgstr ""
+"A accesibilidade de rato require ter instalado mousetweaks no seu sistema."
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Preferencias do rato"
 
@@ -1045,19 +1179,21 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Definir o tamaño da pantalla e as configuracións de rotación"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Non foi posíbel cambiar a configuración da pantalla"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Non foi posíbel restaurar a configuración de pantalla"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
-msgstr "Non foi posíbel restaurar a configuración de pantalla desde a copia de seguranza"
+msgstr ""
+"Non foi posíbel restaurar a configuración de pantalla desde a copia de "
+"seguranza"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1065,64 +1201,64 @@ msgid_plural ""
 msgstr[0] "Restabelecerase a configuración de pantalla anterior en %d segundo"
 msgstr[1] "Restabelecerase a configuración de pantalla anterior en %d segundos"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Vese correctamente a pantalla?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Restabelecer a configuración anterior"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Manter esta configuración"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Non é posíbel aplicar a configuración seleccionada para as pantallas"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Non foi posíbel actualizar a información de pantalla: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Tentando mudar a configuración da pantalla de todas formas."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "A rotación non está permitida"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Non foi posíbel gardar a configuración do monitor"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normal"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Esquerda"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Dereita"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Inverter"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Configurar as opcións da pantalla…"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Configurar as características da pantalla"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Non se lle puido aplicar a configuración almacenada aos monitores"
 
@@ -1182,7 +1318,9 @@ msgstr "non foi posíbel supervisar as accións entrantes de tarxetas - %s"
 #: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "atopáronse erros non agardados ao agardar polas accións da tarxeta intelixente"
+msgstr ""
+"atopáronse erros non agardados ao agardar polas accións da tarxeta "
+"intelixente"
 
 #: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"

@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Åsmund Skjæveland <aasmunds@fys.uio.no>, 2003, 2004, 2006
 # Copyright (C) Roy-Magne Mo <rmo@sunnmore.net>, 2001
@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Norwegian Nynorsk (http://wiki.ukui.org/trans/)\n"
+"Language: nn\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: nn\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -26,17 +26,17 @@ msgid "Accessibility"
 msgstr "Tilgjenge"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Slå forstørrar av og på"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Slå skjermlesar av og på"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Slå tastatur på skjermen av og på"
 
@@ -72,7 +72,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Oppløysing som brukast for å konvertera skriftstorleikar til pikselstorleikar i punkt per tomme."
+msgstr ""
+"Oppløysing som brukast for å konvertera skriftstorleikar til "
+"pikselstorleikar i punkt per tomme."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -83,7 +85,10 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Type utjamning som skal brukast ved teikning av skrifter. Moglege verdiar er: «none» for inga utjamning, «grayscale» for vanleg gråtoneutjamning og «rgba» for underpikselutjamning (berre LCD-skjermer)."
+msgstr ""
+"Type utjamning som skal brukast ved teikning av skrifter. Moglege verdiar "
+"er: «none» for inga utjamning, «grayscale» for vanleg gråtoneutjamning og "
+"«rgba» for underpikselutjamning (berre LCD-skjermer)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -91,10 +96,13 @@ msgstr "Hinting"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Type hinting som skal brukast ved rendring av skrifter. Moglege verdiar er «none» for inga hinting, «slight» for grunnleggjande, «medium» for moderat, og «full» for maksimal hinting (kan forårsake forvrenging av bokstavformer)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Type hinting som skal brukast ved rendring av skrifter. Moglege verdiar er "
+"«none» for inga hinting, «slight» for grunnleggjande, «medium» for moderat, "
+"og «full» for maksimal hinting (kan forårsake forvrenging av bokstavformer)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -102,11 +110,15 @@ msgstr "RGBA-rekkjefølgja"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "Rekkjefølgja for underpikselelementer på ein LCD-skjerm; brukast berre når utjevning er sett til «rgba». Moglege verdiar er «rgb» for raud til venstre (mest vanleg), «bgr» for blå til venstre, «vrgb» for raud øvst, «vbgr» for raud nedst."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"Rekkjefølgja for underpikselelementer på ein LCD-skjerm; brukast berre når "
+"utjevning er sett til «rgba». Moglege verdiar er «rgb» for raud til venstre "
+"(mest vanleg), «bgr» for blå til venstre, «vrgb» for raud øvst, «vbgr» for "
+"raud nedst."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -124,9 +136,11 @@ msgstr "Slå av styreplata medan du skriv"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Set denne til TRUE viss du har problem med at du uheldigvis treff skriveplata medan du skriv."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Set denne til TRUE viss du har problem med at du uheldigvis treff "
+"skriveplata medan du skriv."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -135,7 +149,8 @@ msgstr "Slå på museklikk med styreplata"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Set denne til TRUE for å kunna klikka med musa ved å trykkja på styreplata."
+msgstr ""
+"Set denne til TRUE for å kunna klikka med musa ved å trykkja på styreplata."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -375,7 +390,9 @@ msgstr "Minimal tid mellom åtvaringar"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Oppgje ei tid i minutt. Etterfølgjande varsel for ei lagringseining vil ikkje visast oftare enn den gjevne tida."
+msgstr ""
+"Oppgje ei tid i minutt. Etterfølgjande varsel for ei lagringseining vil "
+"ikkje visast oftare enn den gjevne tida."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -383,7 +400,8 @@ msgstr "Monteringsstiger å ignorera"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Oppgje ei liste med monteringsstiger å oversjå når dei har lite diskplass."
+msgstr ""
+"Oppgje ei liste med monteringsstiger å oversjå når dei har lite diskplass."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -490,88 +508,142 @@ msgid "Binding to lock the screen."
 msgstr "Snøggtast for å låsa skjermen."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Innstillingar for X"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Snøggtast for å opna heimemappa."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Snøggtast for å opna heimemappa."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Start hjelplesar"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Snøggtast for å starta hjelplesar."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Start kalkulator"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Snøggtast for å starta kalkulator."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Start nettlesar"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Snøggtast for å starta nettlesar."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Start mediaavspelar"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Snøggtast for å starta mediaspelar."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Spel (eller spel/pause)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "Snøggtast for å starta avspeling (eller byte mellom avspeling/pause)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Pause avspeling"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Snøggtast for å setja avspeling på pause."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Stopp avspeling"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Snøggtast for å stoppa avspeling."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Førre spor"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Snøggtast for å hoppa til førre spor."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Neste spor"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Snøggtast for å hoppa til neste spor."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Snøggtast for å låsa skjermen."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Snøggtast for å låsa skjermen."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Snøggtast for å låsa skjermen."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -603,8 +675,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -678,7 +750,9 @@ msgstr "Vil du slå av trege tastar?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Du heldt nede Shift-tasten i 8 sekund. Dette er snøggtasten for trege tastar-funksjonen, som påverkar korleis tastaturet ditt virkar."
+msgstr ""
+"Du heldt nede Shift-tasten i 8 sekund. Dette er snøggtasten for trege tastar-"
+"funksjonen, som påverkar korleis tastaturet ditt virkar."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -739,7 +813,9 @@ msgstr "Vil du slå av seige tastar?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Du trykte Shift fem gongar på rad. Det er snøggtasten til seige tastar-eigenskapen, som påverkar korleis tastaturet ditt fungerer."
+msgstr ""
+"Du trykte Shift fem gongar på rad. Det er snøggtasten til seige tastar-"
+"eigenskapen, som påverkar korleis tastaturet ditt fungerer."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -747,7 +823,9 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Du trykte to tastar på ein gong, eller trykte Shift fem gongar på rad. Det slår av seige tastareigenskapen, som påverkar korleis tastaturet fungerer."
+msgstr ""
+"Du trykte to tastar på ein gong, eller trykte Shift fem gongar på rad. Det "
+"slår av seige tastareigenskapen, som påverkar korleis tastaturet fungerer."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -836,25 +914,33 @@ msgstr "Denne datamaskina har berre %s diskplass att."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Du kan frigjera diskplass ved å tømma papirkorga, fjerna ubrukte program og filer, eller flytta filer til ei anna lagringseining eller partisjon."
+msgstr ""
+"Du kan frigjera diskplass ved å tømma papirkorga, fjerna ubrukte program og "
+"filer, eller flytta filer til ei anna lagringseining eller partisjon."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Du kan frigjera diskplass ved å fjerna ubrukte program og filer, eller flytta filer til ei anna lagringseining eller partisjon."
+msgstr ""
+"Du kan frigjera diskplass ved å fjerna ubrukte program og filer, eller "
+"flytta filer til ei anna lagringseining eller partisjon."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Du kan frigjera diskplass ved å tømma papirkorga, fjerna ubrukte program og filer, eller flytta filer til ei ekstern lagringseining."
+msgstr ""
+"Du kan frigjera diskplass ved å tømma papirkorga, fjerna ubrukte program og "
+"filer, eller flytta filer til ei ekstern lagringseining."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Du kan frigjera diskplass ved å fjerna ubrukte program og filer, eller flytta filer til ei ekstern lagringseining."
+msgstr ""
+"Du kan frigjera diskplass ved å fjerna ubrukte program og filer, eller "
+"flytta filer til ei ekstern lagringseining."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -905,7 +991,9 @@ msgstr "Slett alle oppføringane i papirkorga?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Dersom du tømmar papirkorga, vert oppføringane sletta for godt. Legg merke til at du kan velja kva for filer du vil sletta."
+msgstr ""
+"Dersom du tømmar papirkorga, vert oppføringane sletta for godt. Legg merke "
+"til at du kan velja kva for filer du vil sletta."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -926,7 +1014,9 @@ msgstr "Snøggtast «%s» er ufullstendig"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Feil i freistnad på å køyra «%s»\nsom er bunde til tasten «%s»"
+msgstr ""
+"Feil i freistnad på å køyra «%s»\n"
+"som er bunde til tasten «%s»"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -944,7 +1034,7 @@ msgstr "Tastatur"
 msgid "Keyboard plugin"
 msgstr "Tillegg for tastatur"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -961,30 +1051,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "_Brukarval for tastatur"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Klarte ikkje finna forvald terminal. Sjekk at kommando for forvald terminal er sett og peikar til eit gyldig program."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Klarte ikkje finna forvald terminal. Sjekk at kommando for forvald terminal "
+"er sett og peikar til eit gyldig program."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Klarte ikkje køyra kommandoen: %s\nSjekk om dette er ein gyldig kommando."
+msgstr ""
+"Klarte ikkje køyra kommandoen: %s\n"
+"Sjekk om dette er ein gyldig kommando."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -994,16 +1088,16 @@ msgstr "Mediatastar"
 msgid "Media keys plugin"
 msgstr "Tillegg for medietastar"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Klarte ikkje aktivera tilgjengefunksjonar for mus"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Eigenskapar for mus"
 
@@ -1039,19 +1133,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Rediger innstillingar for skjermstørrelse og rotasjon"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Klarte ikkje byta innstillingane til skjermen"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Klarte ikkje gjenoppretta innstillingane til skjermen"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Klarte ikkje gjenoppretta skjerminnstillingane frå ein reservekopi"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1059,64 +1153,64 @@ msgid_plural ""
 msgstr[0] "Skjermen vil gjenoppretta tidlegare innstillingar om %d sekund"
 msgstr[1] "Skjermen vil gjenoppretta tidlegare innstillingar om %d sekund"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Ser skjermen grei ut?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Gjenopprett tidlegare innstiingar"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Held fast ved desse innstillingane"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Dei valde skjerminnstillingane kunne ikkje brukast"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Klarte ikkje oppfriska skjerminformasjonen: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Prøver å byta skjerminnstillingar likevel."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Klarte ikkje lagra av skjerminnstillingar"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normal"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Venstre"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Høgre:"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Opp-ned"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Still inn skjermen"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Klarte ikkje å bruka dei lagra innstillingane for skjermar"
 

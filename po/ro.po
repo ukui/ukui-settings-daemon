@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Adi Roiban https://launchpad.net/~adiroiban, 2008, 2009
 # corneliu.e <corneliueva@yahoo.com>, 2014
@@ -15,32 +15,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Romanian (http://wiki.ukui.org/trans/)\n"
+"Language: ro\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ro\n"
-"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?2:1));\n"
+"Plural-Forms: nplurals=3; plural=(n==1?0:(((n%100>19)||((n%100==0)&&(n!=0)))?"
+"2:1));\n"
 
 #: ../data/50-accessibility.xml.in.h:1
 msgid "Accessibility"
 msgstr "Accesibilitate"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Comută lupa"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Activare / Dezactivare  cititor ecran"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Activare  / Dezactivare tastatură pe ecran"
 
@@ -76,7 +77,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Rezoluția folosită pentru conversia mărimii literelor din pixeli, în puncte per țol."
+msgstr ""
+"Rezoluția folosită pentru conversia mărimii literelor din pixeli, în puncte "
+"per țol."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -87,7 +90,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Tipul de antialiasing folosit la redarea caracterelor de literă. Valori posibile sunt: „none” pentru dezactivare antialiasing, „grayscale” pentru antialiasing standard în nuanțe de gri și „rgba” pentru antialiasing la nivel de sub-pixeli (doar pentru ecranele LCD)."
+msgstr ""
+"Tipul de antialiasing folosit la redarea caracterelor de literă. Valori "
+"posibile sunt: „none” pentru dezactivare antialiasing, „grayscale” pentru "
+"antialiasing standard în nuanțe de gri și „rgba” pentru antialiasing la "
+"nivel de sub-pixeli (doar pentru ecranele LCD)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -95,10 +102,14 @@ msgstr "Hinting"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Tipul de indiciu folosit la afișarea fonturilor. Valorile posibile sunt: „none” pentru niciun indiciu, „slight” pentru cel de bază, „medium” pentru moderat și  „full” pentru maxim (poate cauza distorsionarea formei literelor)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Tipul de indiciu folosit la afișarea fonturilor. Valorile posibile sunt: "
+"„none” pentru niciun indiciu, „slight” pentru cel de bază, „medium” pentru "
+"moderat și  „full” pentru maxim (poate cauza distorsionarea formei "
+"literelor)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -106,11 +117,15 @@ msgstr "Ordine RGBA"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "Ordinea elementelor subpixeli dintr-un ecran LCD; folosit doar când antialiasing-ul este setat pe „rgba”. Valorile posibile sunt: „rgb” pentru roșu la stânga (cel mai comun), „bgr” pentru albastru la stânga, „vrgb” pentru roșu sus, „vbgr” pentru roșu jos."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"Ordinea elementelor subpixeli dintr-un ecran LCD; folosit doar când "
+"antialiasing-ul este setat pe „rgba”. Valorile posibile sunt: „rgb” pentru "
+"roșu la stânga (cel mai comun), „bgr” pentru albastru la stânga, „vrgb” "
+"pentru roșu sus, „vbgr” pentru roșu jos."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -120,7 +135,9 @@ msgstr "Acțiune la scoaterea smartcardului"
 msgid ""
 "Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
 "action will get performed when the smartcard used for log in is removed."
-msgstr "Definiți această cheie la „none”, „lock_screen” sau „force_logout”. Acțiunea va fi efectuată când smartcardul utilizat la autentificare este scos."
+msgstr ""
+"Definiți această cheie la „none”, „lock_screen” sau „force_logout”. Acțiunea "
+"va fi efectuată când smartcardul utilizat la autentificare este scos."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:1
 msgid "Disable touchpad while typing"
@@ -128,9 +145,11 @@ msgstr "Dezactivare zonă tactilă în timpul tastării"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Definiți ca „TRUE” dacă aveți probleme cu atingerea accidentală a zonei tactile în timp ce tastați."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Definiți ca „TRUE” dacă aveți probleme cu atingerea accidentală a zonei "
+"tactile în timp ce tastați."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -139,7 +158,9 @@ msgstr "Activare clic maus cu zona tactilă"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Definiți ca „TRUE” pentru a putea trimite clicuri de maus prin atingerea zonei tactile."
+msgstr ""
+"Definiți ca „TRUE” pentru a putea trimite clicuri de maus prin atingerea "
+"zonei tactile."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -179,7 +200,9 @@ msgstr "Derulare naturală"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:14
 msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
-msgstr "Definiți ca adevărat pentru a activa derularea naturală (inversă) pentru zonele tactile"
+msgstr ""
+"Definiți ca adevărat pentru a activa derularea naturală (inversă) pentru "
+"zonele tactile"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:15
 msgid "Enable touchpad"
@@ -339,7 +362,9 @@ msgstr "Prioritatea de folosit pentru acest plugin"
 #: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:4
 #: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:4
 msgid "Priority to use for this plugin in ukui-settings-daemon startup queue"
-msgstr "Prioritatea de folosit pentru acest plugin în coada de start a ukui-settings-daemon"
+msgstr ""
+"Prioritatea de folosit pentru acest plugin în coada de start a ukui-settings-"
+"daemon"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:5
 msgid "Free percentage notify threshold"
@@ -349,7 +374,10 @@ msgstr "Prag pentru notificare procent liber"
 msgid ""
 "Percentage free space threshold for initial warning of low disk space. If "
 "the percentage free space drops below this, a warning will be shown."
-msgstr "Procentul pragului de spațiu liber pentru avertizarea inițială de spațiu liber redus pe disc. Dacă procentul spațiului liber scade sub această valoare, se va afișa o avertizare."
+msgstr ""
+"Procentul pragului de spațiu liber pentru avertizarea inițială de spațiu "
+"liber redus pe disc. Dacă procentul spațiului liber scade sub această "
+"valoare, se va afișa o avertizare."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
 msgid "Subsequent free percentage notify threshold"
@@ -359,7 +387,9 @@ msgstr "Prag procentaj spațiu liber pentru notificare subsecventă"
 msgid ""
 "Specify the percentage that the free disk space should reduce by before "
 "issuing a subsequent warning."
-msgstr "Specifică procentajul de reducere a spațiului liber înainte de a trimite un o nouă avertizare."
+msgstr ""
+"Specifică procentajul de reducere a spațiului liber înainte de a trimite un "
+"o nouă avertizare."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
 msgid "Free space no notify threshold"
@@ -369,7 +399,9 @@ msgstr "Prag fără notificare procent liber"
 msgid ""
 "Specify an amount in GB. If the amount of free space is more than this, no "
 "warning will be shown."
-msgstr "Specifică o valoare în GB. Dacă spațiul liber este mai mare, nu se va afișa nicio avertizare."
+msgstr ""
+"Specifică o valoare în GB. Dacă spațiul liber este mai mare, nu se va afișa "
+"nicio avertizare."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
 msgid "Minimum notify period for repeated warnings"
@@ -379,7 +411,9 @@ msgstr "Perioada minimă de notificare pentru avertizările repetitive"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Specifică un interval de timp în minute. Avertizări repetate pentru un volum nu vor apărea mai des decât acest interval."
+msgstr ""
+"Specifică un interval de timp în minute. Avertizări repetate pentru un volum "
+"nu vor apărea mai des decât acest interval."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -387,7 +421,9 @@ msgstr "Căi de montare de ignorat"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Specifică o listă de căi pentru montare ce vor fi ignorate atunci când mai au puțin spațiu liber."
+msgstr ""
+"Specifică o listă de căi pentru montare ce vor fi ignorate atunci când mai "
+"au puțin spațiu liber."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -395,7 +431,9 @@ msgstr "Arată notificare pe ecran"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:4
 msgid "Whether an OSD notification is shown to notify about changes"
-msgstr "Dacă să fie afișată o notificare pe ecran pentru a vă informa despre schimbări"
+msgstr ""
+"Dacă să fie afișată o notificare pe ecran pentru a vă informa despre "
+"schimbări"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:7
 msgid "Volume step"
@@ -494,88 +532,142 @@ msgid "Binding to lock the screen."
 msgstr "Asociere pentru blocarea ecranului."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Configurări X"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Asociere pentru deschiderea dosarului personal."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Asociere pentru deschiderea dosarului personal."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Lansare fereastră de ajutor"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Asociere pentru pornirea programului de ajutor."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Lansare calculator"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Asociere pentru pornirea calculatorului."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Lansare navigator web"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Asociere pentru pornirea navigatorului Web."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Lansare lector multimedia"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Asociere pentru pornirea lectorului media."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Redare (sau redare/pauză)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "Asociere pentru pornire redare (sau comutare redare/pauză)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Suspendă redarea"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Asociere pentru pauză redare."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Oprire redare"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Asociere pentru oprire redare."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Piesa precedentă"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Asociere pentru salt la piesa precedentă."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Piesa următoare"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Asociere pentru salt la piesa următoare."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr "Asociere pentru afișarea lupei"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr "Asociere pentru pornirea cititorului de ecran"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr "Asociere pentru afișarea tastaturii pe ecran"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Asociere pentru blocarea ecranului."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Asociere pentru pornirea cititorului de ecran"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Asociere pentru pornirea cititorului de ecran"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -585,7 +677,9 @@ msgstr "Arată monitoarele în zona de notificare"
 msgid ""
 "Whether a notification icon with display-related things should be shown in "
 "the panel."
-msgstr "Dacă să fie afișată în panou o pictogramă de notificare cu informații legate de ecran."
+msgstr ""
+"Dacă să fie afișată în panou o pictogramă de notificare cu informații legate "
+"de ecran."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
 msgid "Do not touch monitor configuration"
@@ -599,7 +693,13 @@ msgid ""
 "cloning/side-by-side mode. Setting this key to True disables this, and the "
 "monitor settings are not touched at all (unless there is an explicit user "
 "configuration)."
-msgstr "De obicei,  ukui-settings-daemon configurează monitoarele interne și externe după stabilirile turn_on_external_monitors_at_startup și  turn_on_laptop_monitor_at_startup și determină astfel o aranjare de tip unul-langă-altul sau de tip clonă.  Setând valoarea acestei chei ca True, se  dezactivează acest comportament, iar stabilirile monitorului vor rămâne neatinse (în caz că nu există o configurare explicită facută de utilizator)."
+msgstr ""
+"De obicei,  ukui-settings-daemon configurează monitoarele interne și externe "
+"după stabilirile turn_on_external_monitors_at_startup și  "
+"turn_on_laptop_monitor_at_startup și determină astfel o aranjare de tip unul-"
+"langă-altul sau de tip clonă.  Setând valoarea acestei chei ca True, se  "
+"dezactivează acest comportament, iar stabilirile monitorului vor rămâne "
+"neatinse (în caz că nu există o configurare explicită facută de utilizator)."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
 msgid "Turn on external monitor after system boot"
@@ -607,9 +707,11 @@ msgstr "Pornește monitorul extern după pornirea sistemului"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
-msgstr "Pornește monitorul extern după pornirea sistemului dacă utilizatorul conectează un monitor la pornirea sistemului."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+"Pornește monitorul extern după pornirea sistemului dacă utilizatorul "
+"conectează un monitor la pornirea sistemului."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
@@ -619,7 +721,9 @@ msgstr "Pornește monitorul laptopului după pornirea sistemului"
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
-msgstr "Pornește monitorul laptopului după pornirea sistemului dacă utilizatorul conectează un monitor la pornirea sistemului."
+msgstr ""
+"Pornește monitorul laptopului după pornirea sistemului dacă utilizatorul "
+"conectează un monitor la pornirea sistemului."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
@@ -632,7 +736,12 @@ msgid ""
 "normally gets stored in users' home directories. If a user does not have "
 "such a file, or has one that does not match the user's setup of monitors, "
 "then the file specified by this key will be used instead."
-msgstr "Modulul XRandR va căuta configurația implicită în fișierul specificat de această cheie. Este similar cu ~/.config/monitors.xml care în mod normal este stocat în dosarul personal al utilizatorului. Dacă un utilizator nu are un astfel de fișier, sau dacă acesta nu se potrivește cu configurația monitoarelor, se va utiliza fișierul specificat de această cheie."
+msgstr ""
+"Modulul XRandR va căuta configurația implicită în fișierul specificat de "
+"această cheie. Este similar cu ~/.config/monitors.xml care în mod normal "
+"este stocat în dosarul personal al utilizatorului. Dacă un utilizator nu are "
+"un astfel de fișier, sau dacă acesta nu se potrivește cu configurația "
+"monitoarelor, se va utiliza fișierul specificat de această cheie."
 
 #: ../data/ukui-settings-daemon.desktop.in.in.h:1
 msgid "UKUI Settings Daemon"
@@ -682,7 +791,9 @@ msgstr "Doriți să dezactivați „Tastele încete”?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Ați ținut tasta Shift apăsată timp de opt secunde. Aceasta este tasta ce activează „Tastele încete” și schimbă modul de funcționare al tastaturii."
+msgstr ""
+"Ați ținut tasta Shift apăsată timp de opt secunde. Aceasta este tasta ce "
+"activează „Tastele încete” și schimbă modul de funcționare al tastaturii."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -743,7 +854,9 @@ msgstr "Doriți să dezactivați „Modificatorii persistenți”?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Ați apăsat Shift de cinci ori la rând. Aceasta este combinația ce activează „Modificatorii persistenți” și schimbă modul de funcționare al tastaturii."
+msgstr ""
+"Ați apăsat Shift de cinci ori la rând. Aceasta este combinația ce activează "
+"„Modificatorii persistenți” și schimbă modul de funcționare al tastaturii."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -751,7 +864,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Ați apăsat două taste în același timp sau ați apăsat Shift de cinci ori la rând. Aceste acțiuni inactivează „Modificatorii persistenți” și schimbă modul de funcționare al tastaturii."
+msgstr ""
+"Ați apăsat două taste în același timp sau ați apăsat Shift de cinci ori la "
+"rând. Aceste acțiuni inactivează „Modificatorii persistenți” și schimbă "
+"modul de funcționare al tastaturii."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -840,25 +956,36 @@ msgstr "Acest calculator mai are doar %s spațiu liber pe disc."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Puteți obține mai mult spațiu liber prin golirea coșului de gunoi, ștergerea programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un alt disc sau partiție."
+msgstr ""
+"Puteți obține mai mult spațiu liber prin golirea coșului de gunoi, ștergerea "
+"programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un alt "
+"disc sau partiție."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Puteți obține mai mult spațiu liber prin ștergerea programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un alt disc sau partiție."
+msgstr ""
+"Puteți obține mai mult spațiu liber prin ștergerea programelor sau "
+"fișierelor nefolosite sau prin mutarea fișierelor pe un alt disc sau "
+"partiție."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Puteți obține mai mult spațiu liber prin golirea coșului de gunoi, ștergerea programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un disc extern."
+msgstr ""
+"Puteți obține mai mult spațiu liber prin golirea coșului de gunoi, ștergerea "
+"programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un disc "
+"extern."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Puteți obține mai mult spațiu liber prin ștergerea programelor sau fișierelor nefolosite sau prin mutarea fișierelor pe un disc extern."
+msgstr ""
+"Puteți obține mai mult spațiu liber prin ștergerea programelor sau "
+"fișierelor nefolosite sau prin mutarea fișierelor pe un disc extern."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -909,7 +1036,9 @@ msgstr "Goliți cu totul coșul de gunoi?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Dacă alegeți să goliți coșul de gunoi, toate elementele vor fi șterse definitiv. De asemenea puteți să ștergeți elementele și individual."
+msgstr ""
+"Dacă alegeți să goliți coșul de gunoi, toate elementele vor fi șterse "
+"definitiv. De asemenea puteți să ștergeți elementele și individual."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -930,7 +1059,9 @@ msgstr "Asocierea de taste (%s) este incompletă"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Eroare la pornirea (%s)\ncare este mapat cheii (%s)"
+msgstr ""
+"Eroare la pornirea (%s)\n"
+"care este mapat cheii (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -948,7 +1079,7 @@ msgstr "Tastatură"
 msgid "Keyboard plugin"
 msgstr "Modul tastatură"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -965,30 +1096,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "Aran_jamente"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "_Preferințe tastatură"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Afișează aranjamentul a_ctual"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Nu s-a putut obține terminalul implicit. Asigurați-vă că terminalul implicit e setat și conectat la o aplicație valabilă."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Nu s-a putut obține terminalul implicit. Asigurați-vă că terminalul implicit "
+"e setat și conectat la o aplicație valabilă."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Nu s-a putut executa comanda: %s\nAsigurați-vă că aceasta este o comandă validă."
+msgstr ""
+"Nu s-a putut executa comanda: %s\n"
+"Asigurați-vă că aceasta este o comandă validă."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -998,16 +1133,18 @@ msgstr "Taste media"
 msgid "Media keys plugin"
 msgstr "Modul taste media"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Nu s-au putut activa facilitățile pentru accesibilitatea mausului"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
-msgstr "Accesibilitățile mausului necesită instalarea Mousetweaks în sistemul dumneavoastră."
+msgstr ""
+"Accesibilitățile mausului necesită instalarea Mousetweaks în sistemul "
+"dumneavoastră."
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Preferințe maus"
 
@@ -1043,19 +1180,20 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Definire dimensiune și rotire ecran"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Nu s-a putut comuta configurația monitorului"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Nu s-a putut restaura configurația ecranului"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
-msgstr "Nu s-a putut restaura configurația ecranului dintr-o copie de siguranță"
+msgstr ""
+"Nu s-a putut restaura configurația ecranului dintr-o copie de siguranță"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1064,64 +1202,64 @@ msgstr[0] "Ecranul va fi restaurat la configurația anterioară în %d secundă"
 msgstr[1] "Ecranul va fi restaurat la configurația anterioară în %d secunde"
 msgstr[2] "Ecranul va fi restaurat la configurația anterioară în %d de secunde"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Ecranul arată bine?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Restaurează configurația anterioară"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Păstrează această configurație"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Configurația aleasă pentru ecrane nu a putut fi aplicată"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Nu s-a putut reîncărca informația ecranului: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Se încearcă oricum comutarea configurării monitorului."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "Rotirea nu este suportată"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Nu s-a putut salva configurația monitorului"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normal"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Stânga"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Dreapta"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Răsturnat"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Configurare preferințe ecran…"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Configurare preferințe ecran"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Nu s-a putut aplica configurația stocată pentru monitoare"
 
@@ -1181,7 +1319,9 @@ msgstr "nu se pot urmări evenimentele inițiate de card - %s"
 #: ../plugins/smartcard/usd-smartcard-manager.c:1105
 #, c-format
 msgid "encountered unexpected error while waiting for smartcard events"
-msgstr "s-a întâlnit o eroare neașteptată în timp ce se așteptau evenimente de la smartcard"
+msgstr ""
+"s-a întâlnit o eroare neașteptată în timp ce se așteptau evenimente de la "
+"smartcard"
 
 #: ../plugins/smartcard/usd-smartcard.c:154
 msgid "Slot ID"
@@ -1234,4 +1374,5 @@ msgstr "Configurează ceasul fizic al calculatorului"
 
 #: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:6
 msgid "Privileges are required to configure the hardware clock."
-msgstr "Sunt necesare privilegii pentru a modifica ceasul fizic al calculatorului."
+msgstr ""
+"Sunt necesare privilegii pentru a modifica ceasul fizic al calculatorului."

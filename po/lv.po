@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Artis Trops <hornet@navigators.lv>, 2001
 # Raivis Dejus <orvils@gmail.com>, 2006, 2007
@@ -10,32 +10,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Latvian (http://wiki.ukui.org/trans/)\n"
+"Language: lv\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lv\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
+"2);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
 msgid "Accessibility"
 msgstr "Pieejamība"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Ieslēgt/izslēgt palielinātāju"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Ieslēgt/izslēgt ekrāna lasītāju"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Ieslēgt/izslēgt ekrāna tastatūru"
 
@@ -71,7 +72,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Izmantojamā izšķirtspēja, kad pārveido fontu izmērus uz pikseļu izmēriem. Norāda punktus collā."
+msgstr ""
+"Izmantojamā izšķirtspēja, kad pārveido fontu izmērus uz pikseļu izmēriem. "
+"Norāda punktus collā."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -82,7 +85,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Kāda veida kropļojumnovērsi izmantot, kad renderē fontus. Iespējamās vērtības ir: \"none\", lai neizmantotu kropļojumnovērsi, \"grayscale\" standarta pelēktoņu kropļojumnovērsei, un \"rgba\" apakšpikseļu kropļojumnovērsei (tikai LCD ekrāniem)."
+msgstr ""
+"Kāda veida kropļojumnovērsi izmantot, kad renderē fontus. Iespējamās "
+"vērtības ir: \"none\", lai neizmantotu kropļojumnovērsi, \"grayscale\" "
+"standarta pelēktoņu kropļojumnovērsei, un \"rgba\" apakšpikseļu "
+"kropļojumnovērsei (tikai LCD ekrāniem)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -90,10 +97,13 @@ msgstr "Norādīšana"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Kāda veida norādīšanu izmantot, kad renderē fontus. Iespējamās vērtības ir \"none\" – bez norādīšanas, \"slight\" vienkāršai, \"medium\" vidējai, \"full\" maksimālai norādīšanai (var radīt kropļojumus burtu formās)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Kāda veida norādīšanu izmantot, kad renderē fontus. Iespējamās vērtības ir "
+"\"none\" – bez norādīšanas, \"slight\" vienkāršai, \"medium\" vidējai, \"full"
+"\" maksimālai norādīšanai (var radīt kropļojumus burtu formās)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -101,11 +111,15 @@ msgstr "RGBA secība"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "Apakšpikseļu secība LCD ekrānā; tiek izmantots tikai, kad kropļojumnovērse ir iestatīta uz \"rgba\". Iespējamās  vērtības ir \"rgb\", kad pa kreisi ir sarkanā (visizplatītākā), \"bgr\", kad pa kreisi ir zilā, \"vbgr\", kad sarkanā ir apakšā."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"Apakšpikseļu secība LCD ekrānā; tiek izmantots tikai, kad kropļojumnovērse "
+"ir iestatīta uz \"rgba\". Iespējamās  vērtības ir \"rgb\", kad pa kreisi ir "
+"sarkanā (visizplatītākā), \"bgr\", kad pa kreisi ir zilā, \"vbgr\", kad "
+"sarkanā ir apakšā."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -123,9 +137,11 @@ msgstr "Atslēgt skārienpaliktni, kad raksta"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Iestatiet šo uz PATIESS, ja jums ir problēmas ar netīšu skārienpaliktņa nospiešanu, kamēr rakstāt."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Iestatiet šo uz PATIESS, ja jums ir problēmas ar netīšu skārienpaliktņa "
+"nospiešanu, kamēr rakstāt."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -134,7 +150,9 @@ msgstr "Ieslēgt peles klikšķus ar skārienpaliktni"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Iestatiet šo uz PATIESS, lai varētu sūtīt peles klikšķus, uzsitot uz skārienpaliktņa."
+msgstr ""
+"Iestatiet šo uz PATIESS, lai varētu sūtīt peles klikšķus, uzsitot uz "
+"skārienpaliktņa."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -374,7 +392,9 @@ msgstr "Minimālais paziņojumu periods atkārtotiem brīdinājumiem"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Norādiet laiku minūtēs. Atkārtojošies brīdinājumi netiks rādīti biežāk kā norādītajā periodā."
+msgstr ""
+"Norādiet laiku minūtēs. Atkārtojošies brīdinājumi netiks rādīti biežāk kā "
+"norādītajā periodā."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -382,7 +402,9 @@ msgstr "Montēšanas ceļi, kurus ignorēt"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Norādiet sarakstu ar montēšanas ceļiem, kuriem neskatīties, cik atlicis brīvās vietas."
+msgstr ""
+"Norādiet sarakstu ar montēšanas ceļiem, kuriem neskatīties, cik atlicis "
+"brīvās vietas."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -489,88 +511,142 @@ msgid "Binding to lock the screen."
 msgstr "Sasaiste, lai noslēgtu ekrānu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X iestatījumi"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Sasaiste, lai atvērtu mājas mapi."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Sasaiste, lai atvērtu mājas mapi."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Palaist palīdzības pārlūku"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Sasaiste, lai palaistu palīdzības pārlūku."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Palaist kalkulatoru"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Sasaiste, lai palaistu kalkulatoru."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Palaist tīmekļa pārlūku"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Sasaiste, lai palaistu tīmekļa pārlūku."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Palaist mediju atskaņotāju"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Sasaiste, lai mediju atskaņotāju."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Atskaņot (vai atskaņot/pauzēt)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "Sasaiste, lai sāktu atskaņošanu (vai pārslēgtu atskaņot/pauzēt)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Pauzēt atskaņošanu"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Sasaiste, lai pauzētu atskaņošanu."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Apturēt atskaņošanu"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Sasaiste, lai apturētu atskaņošanu."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Iepriekšējais celiņš"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Sasaiste, lai pārietu uz iepriekšējo celiņu."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Nākamais celiņš"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Sasaiste, lai pārietu uz nākamo celiņu."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Sasaiste, lai noslēgtu ekrānu."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Sasaiste, lai noslēgtu ekrānu."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Sasaiste, lai noslēgtu ekrānu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -602,8 +678,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -677,7 +753,10 @@ msgstr "Vai vēlaties deaktivizēt lēnos taustiņus?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Jūs nupat noturējāt Shift taustiņu piespiestu vairāk kā 8 sekundes. Tā ir tastatūras lēno taustiņu funkcijas saīsne, kas ietekmē to, kā darbojas jūsu tastatūra."
+msgstr ""
+"Jūs nupat noturējāt Shift taustiņu piespiestu vairāk kā 8 sekundes. Tā ir "
+"tastatūras lēno taustiņu funkcijas saīsne, kas ietekmē to, kā darbojas jūsu "
+"tastatūra."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -738,7 +817,9 @@ msgstr "Vai vēlaties deaktivizēt lipīgo taustiņu funkciju?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Jūs tikko piespiedāt Shift taustiņu 5 reizes pēc kārtas.  Tā ir klaviatūras Lipīgo taustiņu funkcijas saīsne, kas ietekmē to kā darbojas jūsu klaviatūra."
+msgstr ""
+"Jūs tikko piespiedāt Shift taustiņu 5 reizes pēc kārtas.  Tā ir klaviatūras "
+"Lipīgo taustiņu funkcijas saīsne, kas ietekmē to kā darbojas jūsu klaviatūra."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -746,7 +827,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Jūs tikko vienlaicīgi piespiedāt divus taustiņus vai Shift taustiņu 5 reizes pēc kārtas.  Tas atslēdz klaviatūras lipīgo taustiņu funkciju, kas ietekmē to kā darbojas jūsu klaviatūra."
+msgstr ""
+"Jūs tikko vienlaicīgi piespiedāt divus taustiņus vai Shift taustiņu 5 reizes "
+"pēc kārtas.  Tas atslēdz klaviatūras lipīgo taustiņu funkciju, kas ietekmē "
+"to kā darbojas jūsu klaviatūra."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -835,25 +919,33 @@ msgstr "Šajā datorā ir atlicis tikai %s diska vietas."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Jūs varat atbrīvot diska vietu, iztukšojot miskasti, noņemot neizmantotas programmas vai failus, vai pārvietojot failus uz citu disku vai sadaļu."
+msgstr ""
+"Jūs varat atbrīvot diska vietu, iztukšojot miskasti, noņemot neizmantotas "
+"programmas vai failus, vai pārvietojot failus uz citu disku vai sadaļu."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Jūs varat atbrīvot diska vietu, noņemot neizmantotas programmas vai failus, vai pārvietojot failus uz citu disku vai sadaļu."
+msgstr ""
+"Jūs varat atbrīvot diska vietu, noņemot neizmantotas programmas vai failus, "
+"vai pārvietojot failus uz citu disku vai sadaļu."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Jūs varat atbrīvot diska vietu, iztukšojot miskasti, noņemot neizmantotas programmas vai failus, vai pārvietojot failus uz ārējo cieto disku."
+msgstr ""
+"Jūs varat atbrīvot diska vietu, iztukšojot miskasti, noņemot neizmantotas "
+"programmas vai failus, vai pārvietojot failus uz ārējo cieto disku."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Jūs varat atbrīvot diska vietu, noņemot neizmantotas programmas vai failus, vai pārvietojot failus uz ārējo cieto disku."
+msgstr ""
+"Jūs varat atbrīvot diska vietu, noņemot neizmantotas programmas vai failus, "
+"vai pārvietojot failus uz ārējo cieto disku."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -904,7 +996,9 @@ msgstr "Iztukšot visu miskasti?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Ja izvēlēsieties iztukšot miskasti, visas vienības tajā tiks neatgriezeniski zaudētas. Atcerieties, ka tās iespējams dzēst atsevišķi."
+msgstr ""
+"Ja izvēlēsieties iztukšot miskasti, visas vienības tajā tiks neatgriezeniski "
+"zaudētas. Atcerieties, ka tās iespējams dzēst atsevišķi."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -925,7 +1019,9 @@ msgstr "Taustiņu sasaiste (%s) ir nepilnīga"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Kļūda, mēģinot palaist (%s),\nkurš ir saistīts ar taustiņu (%s)"
+msgstr ""
+"Kļūda, mēģinot palaist (%s),\n"
+"kurš ir saistīts ar taustiņu (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -943,7 +1039,7 @@ msgstr "Tastatūra"
 msgid "Keyboard plugin"
 msgstr "Tastatūras spraudnis"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -960,30 +1056,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "Tastatūras _iestatījumi"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Nevarēja iegūt noklusēto termināli. Pārliecinieties, ka jūsu noklusētā termināļa komanda ir iestatīta un norāda uz derīgu lietotni."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Nevarēja iegūt noklusēto termināli. Pārliecinieties, ka jūsu noklusētā "
+"termināļa komanda ir iestatīta un norāda uz derīgu lietotni."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Nevarēja izpildīt komandu: %s\nPārliecinieties, ka tā ir derīga komanda."
+msgstr ""
+"Nevarēja izpildīt komandu: %s\n"
+"Pārliecinieties, ka tā ir derīga komanda."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -993,16 +1093,16 @@ msgstr "Mediju taustiņi"
 msgid "Media keys plugin"
 msgstr "Mediju taustiņu spraudnis"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Nevarēja aktivizēt peles pieejamības iespējas"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Peles iestatījumi"
 
@@ -1038,19 +1138,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Iestatiet ekrāna izmēra un pagriešanas iestatījumus"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Nevarēja pārslēgt monitora konfigurāciju"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Nevarēja atjaunot displeja konfigurāciju"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Nevarēja atjaunot displeja konfigurāciju no rezerves kopijas"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1059,64 +1159,64 @@ msgstr[0] "Ekrāns tiks atstatīts uz iepriekšējo konfigurāciju pēc %d sekun
 msgstr[1] "Ekrāns tiks atstatīts uz iepriekšējo konfigurāciju pēc %d sekundēm"
 msgstr[2] "Ekrāns tiks atstatīts uz iepriekšējo konfigurāciju pēc %d sekundēm"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Vai ekrāns izskatās labi?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "Atjaunot iep_riekšējo konfigurāciju"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "Paturēt šo _konfigurāciju"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Izvēlēto ekrānu konfigurāciju nevarēja pielietot"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Nevar atsvaidzināt ekrāna informāciju: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Mēģina tāpat pārslēgt monitora konfigurāciju."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Nevar saglabāt monitora konfigurāciju"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normāls"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Pa kreisi"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Pa labi"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Apgriezt otrādi"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Konfigurēt ekrāna iestatījumus..."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Nevarēja piemērot monitoriem saglabāto konfigurāciju"
 

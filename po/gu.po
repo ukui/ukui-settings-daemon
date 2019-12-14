@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Ankit Patel <ankit644@yahoo.com>, 2005, 2006
 # Ankit Patel <ankit@redhat.com>, 2006, 2007, 2009
@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Gujarati (http://wiki.ukui.org/trans/)\n"
+"Language: gu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: gu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -25,17 +25,17 @@ msgid "Accessibility"
 msgstr "સુલભતા"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "વિસ્તારક બદલો"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "ટોગલ સ્ક્રીન વાંચક"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "ટોગલ ઓનસ્ક્રીન કીબોર્ડ"
 
@@ -71,7 +71,8 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "ફોન્ટ માપોને પિક્સેલ માપોમાં ફેરવવા માટે વાપરવામાં આવતું રીઝોલ્યુશન, ઈંચ પ્રતિ ડોટમાં."
+msgstr ""
+"ફોન્ટ માપોને પિક્સેલ માપોમાં ફેરવવા માટે વાપરવામાં આવતું રીઝોલ્યુશન, ઈંચ પ્રતિ ડોટમાં."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -82,7 +83,10 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "જ્યારે ફોન્ટ રેન્ડર કરી રહ્યા હોય ત્યારે વાપરવાનો એન્ટીએલીઆઝીંગ પ્રકાર. શક્ય કિંમતો: કોઈપણ એન્ટીએલીઆઝીંગ નહિં હોય તે માટે \"કંઈનહિં\", પ્રમાણભૂત ગ્રેસ્કેલ એન્ટીએલિઆઝીંગ માટે \"ગ્રેસ્કેલ\", અને ઉપપિક્સેલ એન્ટીએલિઆઝીંગ માટે \"rgba\" (માત્ર LCD સ્ક્રીન જ)."
+msgstr ""
+"જ્યારે ફોન્ટ રેન્ડર કરી રહ્યા હોય ત્યારે વાપરવાનો એન્ટીએલીઆઝીંગ પ્રકાર. શક્ય કિંમતો: "
+"કોઈપણ એન્ટીએલીઆઝીંગ નહિં હોય તે માટે \"કંઈનહિં\", પ્રમાણભૂત ગ્રેસ્કેલ એન્ટીએલિઆઝીંગ માટે "
+"\"ગ્રેસ્કેલ\", અને ઉપપિક્સેલ એન્ટીએલિઆઝીંગ માટે \"rgba\" (માત્ર LCD સ્ક્રીન જ)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -90,10 +94,13 @@ msgstr "હિંટીંગ"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "જ્યારે ફોન્ટ રેન્ડર કરી રહ્યા હોય ત્યારે વાપરવાનો હીંટીંગ પ્રકાર. શક્ય કિંમતો: કોઈપણ હીંટીંગ નહિં હોય તે માટે \"કંઈનહિં\", મૂળભૂત માટે \"આછું\", મધ્યમ માટે \"મધ્યમ\", મહત્તમ હીંટીંગ માટે \"પૂર્ણ\" (અક્ષર સ્વરૂપોના ભંગાણનું કારણ સર્જી શકશે)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"જ્યારે ફોન્ટ રેન્ડર કરી રહ્યા હોય ત્યારે વાપરવાનો હીંટીંગ પ્રકાર. શક્ય કિંમતો: કોઈપણ "
+"હીંટીંગ નહિં હોય તે માટે \"કંઈનહિં\", મૂળભૂત માટે \"આછું\", મધ્યમ માટે \"મધ્યમ\", મહત્તમ "
+"હીંટીંગ માટે \"પૂર્ણ\" (અક્ષર સ્વરૂપોના ભંગાણનું કારણ સર્જી શકશે)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -101,11 +108,14 @@ msgstr "RGBA ક્રમ"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "LCD સ્ક્રીન પર ઉપપિક્સેલ ઘટકોનો ક્રમ; માત્ર ત્યારે જ વપરાય છે જ્યારે એન્ટીએલિઆઝીંગ \"rgba\" માં સુયોજીત થયેલ હોય. શક્ય કિંમતો: ડાબી બાજુએ લાલ માટે \"rgb\" (એકદમ સામાન્ય), ડાબી બાજુએ ભૂરા માટે \"bgr\", ટોચ પર લાલ માટે \"vrgb\", તળિયે લાલ માટે \"vbgr\"."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"LCD સ્ક્રીન પર ઉપપિક્સેલ ઘટકોનો ક્રમ; માત્ર ત્યારે જ વપરાય છે જ્યારે એન્ટીએલિઆઝીંગ \"rgba"
+"\" માં સુયોજીત થયેલ હોય. શક્ય કિંમતો: ડાબી બાજુએ લાલ માટે \"rgb\" (એકદમ સામાન્ય), "
+"ડાબી બાજુએ ભૂરા માટે \"bgr\", ટોચ પર લાલ માટે \"vrgb\", તળિયે લાલ માટે \"vbgr\"."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -123,9 +133,11 @@ msgstr "જ્યારે ટાઇપ કરતા હોય ત્યાર�
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "જ્યારે ટાઇપ કરતા હોય ત્યારે ટચપેડ સાથે આકસ્મિક રીતે અથડાવાથી જો તમને સમસ્યા હોય તો આ TRUE ને સુયોજિત કરો."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"જ્યારે ટાઇપ કરતા હોય ત્યારે ટચપેડ સાથે આકસ્મિક રીતે અથડાવાથી જો તમને સમસ્યા હોય તો આ "
+"TRUE ને સુયોજિત કરો."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -134,7 +146,8 @@ msgstr "ટચપેડ સાથે માઉસ ક્લિકોને સ�
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "ટચપેડ પર ટેપીંગ દ્દારા માઉસ ક્લિકોને મોકલવાનું સક્ષમ કરવા માટે આ TRUE ને સુયોજિત કરો."
+msgstr ""
+"ટચપેડ પર ટેપીંગ દ્દારા માઉસ ક્લિકોને મોકલવાનું સક્ષમ કરવા માટે આ TRUE ને સુયોજિત કરો."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -374,7 +387,9 @@ msgstr "પુનરાવર્તિત ચેતવણીઓ માટે ન
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "મિનિટોમાં સમયને સ્પષ્ટ કરો. અવાજ માટે અનુગામી ચેતવણીઓ આ સમયગાળા કરતા વધારે વારંવાર દેખાશે નહિં."
+msgstr ""
+"મિનિટોમાં સમયને સ્પષ્ટ કરો. અવાજ માટે અનુગામી ચેતવણીઓ આ સમયગાળા કરતા વધારે વારંવાર "
+"દેખાશે નહિં."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -382,7 +397,8 @@ msgstr "અવગણવા માટે માઉન્ટ પાથો"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "જ્યારે જગ્યા પર ઓછાને ચલાવતા હોય ત્યારે અવગણવા માટે માઉન્ટ પાથોની યાદીને સ્પષ્ટ કરો."
+msgstr ""
+"જ્યારે જગ્યા પર ઓછાને ચલાવતા હોય ત્યારે અવગણવા માટે માઉન્ટ પાથોની યાદીને સ્પષ્ટ કરો."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -489,88 +505,142 @@ msgid "Binding to lock the screen."
 msgstr "સ્ક્રીન ને તાળુ મારવા માટે જોડાણ."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X સુયોજનો"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "ઘરનાં ફોલ્ડરને ખોલવા માટે જોડાણ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "ઘરનાં ફોલ્ડરને ખોલવા માટે જોડાણ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "મદદ બ્રાઉઝર લાવો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "મદદ બ્રાઉઝર ને શરૂ કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "ક્લેક્યુલેટરની શરૂઆત કરો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "કેલ્ક્યુલેટરને શરૂ કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "વેબ બ્રાઉઝર લાવો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "વેબ બ્રાઉઝર ની શરૂઆત કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "મીડિયા પ્લેયર ની શરૂઆત કરો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "મીડિયા પ્લેયર ને શરૂ કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "વગાડો (અથવા વગાડો/અટકાવો)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "પ્લેબેક (અથવા ટોગલ વગાડો/અટકાવો) ને શરૂ કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "પ્લેબેક ને અટકાવો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "પ્લેબેક ને અટકાવવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "વગાડવાનું અટકાવો"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "પ્લેબેક ને બંધ કરવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "પહેલાંના ટ્રેક"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "પહેલાંના ટ્રેક ને છોડી દેવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "આગળના ટ્રેક"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "આગળના ટ્રેક ને છોડી દેવા માટે જોડાણ."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "સ્ક્રીન ને તાળુ મારવા માટે જોડાણ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "સ્ક્રીન ને તાળુ મારવા માટે જોડાણ."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "સ્ક્રીન ને તાળુ મારવા માટે જોડાણ."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -602,8 +672,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -677,7 +747,9 @@ msgstr "શું તમે આ ધીમી કીઓને નિષ્ક્�
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "તમારે ફક્ત ૮ સેકન્ડો સુધી Shift કી દબાવી રાખવી પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
+msgstr ""
+"તમારે ફક્ત ૮ સેકન્ડો સુધી Shift કી દબાવી રાખવી પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ "
+"છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -738,7 +810,9 @@ msgstr "શું તમે આ સ્ટીકી કીઓને નિષ્�
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "તમારે ફક્ત ૫ સેકન્ડો સુધી Shift કી દબાવી રાખવી પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
+msgstr ""
+"તમારે ફક્ત ૫ સેકન્ડો સુધી Shift કી દબાવી રાખવી પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ "
+"છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -746,7 +820,9 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "તમારે ફક્ત એક સાથે બે કીઓ દબાવી રાખવી પડશે અથવા ૫ વખત Shift કી હરોળમાં દબાવી રાખવી પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
+msgstr ""
+"તમારે ફક્ત એક સાથે બે કીઓ દબાવી રાખવી પડશે અથવા ૫ વખત Shift કી હરોળમાં દબાવી રાખવી "
+"પડશે. આ ધીમી કીના લક્ષણો માટેનુ ટુંકાણ છે, કે જે તમારા કીબોર્ડને કામ કરવામાં અસર કરશે."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -835,19 +911,25 @@ msgstr "આ કમ્પ્યૂટર પાસે ફક્ત %s ડિસ�
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "કચરાપેટીને ખાલી કરતી વખતે, બિનઉપયોગી પ્રક્રિયાઓ અથવા ફાઇલો, અથવા બીજા ડિસ્ક અથવા પાર્ટીશનમાં ફાઇલોને ખસેડતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો."
+msgstr ""
+"કચરાપેટીને ખાલી કરતી વખતે, બિનઉપયોગી પ્રક્રિયાઓ અથવા ફાઇલો, અથવા બીજા ડિસ્ક અથવા "
+"પાર્ટીશનમાં ફાઇલોને ખસેડતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "બિનઉપયોગી પ્રક્રિયાઓ અને ફાઇલોને દૂર કરતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો, અથવા બીજી ડિસ્ક અથવા પાર્ટીશનમાં ફાઇલોને ખસેડી રહ્યા છે."
+msgstr ""
+"બિનઉપયોગી પ્રક્રિયાઓ અને ફાઇલોને દૂર કરતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો, અથવા "
+"બીજી ડિસ્ક અથવા પાર્ટીશનમાં ફાઇલોને ખસેડી રહ્યા છે."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "કચરાપેટીને ખાલી કરતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો, બિનઉપયોગી પ્રક્રિયાઓ અને ફાઇલોને દૂર કરી રહ્યા છે, અથવા બહારની ડિસ્ક માં ફાઇલોને ખસેડી રહ્યા છે."
+msgstr ""
+"કચરાપેટીને ખાલી કરતી વખતે તમે ડિસ્ક જગ્યાને ખાલી કરી શકો છો, બિનઉપયોગી પ્રક્રિયાઓ અને "
+"ફાઇલોને દૂર કરી રહ્યા છે, અથવા બહારની ડિસ્ક માં ફાઇલોને ખસેડી રહ્યા છે."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
@@ -904,7 +986,9 @@ msgstr "શું કચરાપેટી માંથી બધી વસ્�
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "જો તમે કચરાપેટીને ખાલી કરવા માટે પસંદ કરો તો, તેમાં બધી વસ્તુઓને કાયમ માટે ગુમાવવી પડશે. મહેરબાની કરીને નોંધો કે જે તમે તેઓને અલગ રીતે પણ કાઢી શકો છો."
+msgstr ""
+"જો તમે કચરાપેટીને ખાલી કરવા માટે પસંદ કરો તો, તેમાં બધી વસ્તુઓને કાયમ માટે ગુમાવવી પડશે. "
+"મહેરબાની કરીને નોંધો કે જે તમે તેઓને અલગ રીતે પણ કાઢી શકો છો."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -925,7 +1009,9 @@ msgstr "કી જોડાણ (%s) અધૂરુ છે"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "(%s) ને ચલાવવાના પ્રયત્નમાં ભૂલ થઈ\nકે જે કી (%s) સાથે સંકળાયેલ છે"
+msgstr ""
+"(%s) ને ચલાવવાના પ્રયત્નમાં ભૂલ થઈ\n"
+"કે જે કી (%s) સાથે સંકળાયેલ છે"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -943,7 +1029,7 @@ msgstr "કીબોર્ડ"
 msgid "Keyboard plugin"
 msgstr "કીબોર્ડ પ્લગઇન"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -960,30 +1046,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "મૂળભૂત ટર્મિનલ મેળવી શક્યા નહિં. ખાતરી કરો કે તમારો મૂળભૂત ટર્મિનલ આદેશ સુયોજિત છે અને માન્ય કાર્યક્રમનો નિર્દેશ કરે છે."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"મૂળભૂત ટર્મિનલ મેળવી શક્યા નહિં. ખાતરી કરો કે તમારો મૂળભૂત ટર્મિનલ આદેશ સુયોજિત છે અને "
+"માન્ય કાર્યક્રમનો નિર્દેશ કરે છે."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "આદેશ ચલાવી શક્યા નહિં: %s\nખાતરી કરો કે આ માન્ય આદેશ છે."
+msgstr ""
+"આદેશ ચલાવી શક્યા નહિં: %s\n"
+"ખાતરી કરો કે આ માન્ય આદેશ છે."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -993,16 +1083,16 @@ msgstr "મીડિયા કીઓ"
 msgid "Media keys plugin"
 msgstr "મીડિયા કી પલ્ગઇન"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "માઉસ પ્રાપ્ય લાક્ષણિકતાઓને સક્રિય કરી શકાયુ નહિં"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "માઉસની પસંદગીઓ"
 
@@ -1038,19 +1128,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "સ્ક્રીન માપ અને ફેરવણી સુયોજનો સુયોજીત કરો"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "મોનીટર રૂપરેખાંકન બદલી શક્યા નહિં"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "દર્શાવનાં રૂપરેખાંકનને ફરીથી સંગ્રહ કરી શકાયુ નહિં"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "બેકઅપ માંથી દર્શાવોનાં રૂપરેખાંકનને ફરીથી સંગ્રહ કરી શકાયુ નહિં"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1058,64 +1148,64 @@ msgid_plural ""
 msgstr[0] "દર્શાવ તેના પહેલાંના રૂપરેખાંકનમાં %d સેકન્ડમાં પુનઃસુયોજીત થઈ જશે"
 msgstr[1] "દર્શાવ તેના પહેલાંના રૂપરેખાંકનમાં %d સેકન્ડોમાં પુનઃસુયોજીત થઈ જશે"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "શું આ દર્શાવ બરાબર લાગે છે?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "પહેલાનાં રૂપરેખાંકનને ફરી સંગ્રહો (_R)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "આ રૂપરેખાંકનને રાખો (_K)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "દર્શાવો માટે પસંદ થયેલ રૂપરેખાંકન ને લાગુ કરી શકાયુ નહિં"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "સ્ક્રીનની જાણકારી ને ફરીથી તાજી કરી શકાઇ નહિં: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "મોનીટર રૂપરેખાંકનને ગમે તે રીતે બદલવાનો પ્રયાસ કરી રહ્યા છીએ."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "મોનિટર રૂપરેખાંકનનો સંગ્રહ કરી શકાયો નહિં"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "સામાન્ય"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "ડાબું"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "જમણું"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "ઉપરથી નીચે"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "દર્શાવ સુયોજનો ને રૂપરેખાંકિત કરો"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "મોનિટરો માટે સંગ્રહ થયેલ રૂપરેખાંકન ને લાગુ કરી શકાયુ નહિં"
 

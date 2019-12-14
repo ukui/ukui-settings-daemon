@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Asier Iturralde Sarasola <asier.iturralde@gmail.com>, 2012
 # Hizkuntza Politikarako Sailburuordetza <hizkpol@ej-gv.es>, 2004, 2005
@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Basque (http://wiki.ukui.org/trans/)\n"
+"Language: eu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: eu\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -26,17 +26,17 @@ msgid "Accessibility"
 msgstr "Erabilerraztasuna"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Txandakatu lupa"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Txandakatu pantaila irakurlea"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Txandakatu pantailako teklatua"
 
@@ -72,7 +72,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Bereizmena letra-tamainak pixel-tamainetara bihurtzean erabiltzeko (puntu/hazbeteko)"
+msgstr ""
+"Bereizmena letra-tamainak pixel-tamainetara bihurtzean erabiltzeko (puntu/"
+"hazbeteko)"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -83,7 +85,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Antialiasing mota letrak errendatzean erabiltzeko. Balio erabilgarriak: \"none\" (ezer ez), antialiasing gabe; \"grayscale\" (gris-eskala), gris-eskala estandarreko antialiasing-a; \"rgba\" (gbua), azpipixeleko antialiasing-a (LCD pantailetan bakarrik)."
+msgstr ""
+"Antialiasing mota letrak errendatzean erabiltzeko. Balio erabilgarriak: "
+"\"none\" (ezer ez), antialiasing gabe; \"grayscale\" (gris-eskala), gris-"
+"eskala estandarreko antialiasing-a; \"rgba\" (gbua), azpipixeleko "
+"antialiasing-a (LCD pantailetan bakarrik)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -91,10 +97,14 @@ msgstr "Hizkien tartea"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Hizkien arteko tarte mota letrak errendatzean erabiltzeko. Balio erabilgarriak: \"none\" (ezer ez), hizkien arteko tarterik ez; \"slight\", \"medium\" eta \"full\" ahalik eta hizkien arteko tarte handiena (letra-formak distortsionatzea eragin dezake)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Hizkien arteko tarte mota letrak errendatzean erabiltzeko. Balio "
+"erabilgarriak: \"none\" (ezer ez), hizkien arteko tarterik ez; \"slight\", "
+"\"medium\" eta \"full\" ahalik eta hizkien arteko tarte handiena (letra-"
+"formak distortsionatzea eragin dezake)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -102,11 +112,15 @@ msgstr "GBUA ordena"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "LCD pantailako azpipixel elementuen ordena, antialiasing-a \"rgba\" (gbua)balioarekin ezartzean bakarrik erabiltzen da. Balio erabilgarriak: \"rgb\" (gbu) - gorrian ezkerrean (erabiliena); \"bgr\" (ubg) - urdina ezkerrean; \"vrgb\" (bgbu) gorrian goian; \"vbgr\" (bubg) - gorria behean."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"LCD pantailako azpipixel elementuen ordena, antialiasing-a \"rgba"
+"\" (gbua)balioarekin ezartzean bakarrik erabiltzen da. Balio erabilgarriak: "
+"\"rgb\" (gbu) - gorrian ezkerrean (erabiliena); \"bgr\" (ubg) - urdina "
+"ezkerrean; \"vrgb\" (bgbu) gorrian goian; \"vbgr\" (bubg) - gorria behean."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -124,9 +138,11 @@ msgstr "Desgaitu touchpad-a idaztean"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Ezarri hau TRUE (egia) gisa idazten duzun bitartean ustekabean touchpad-a ukitzeak arazoak sortzen badizkizu."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Ezarri hau TRUE (egia) gisa idazten duzun bitartean ustekabean touchpad-a "
+"ukitzeak arazoak sortzen badizkizu."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -135,7 +151,9 @@ msgstr "Gaitu saguaren klik egitea 'touchpad'-arekin"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Ezarri hau TRUE (egia) gisa saguaren klik-ak bidaltzeko touchpad-ean kolpetxoak ematean."
+msgstr ""
+"Ezarri hau TRUE (egia) gisa saguaren klik-ak bidaltzeko touchpad-ean "
+"kolpetxoak ematean."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -349,7 +367,9 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
 msgid "Subsequent free percentage notify threshold"
-msgstr "Leku librearen ehunekoaren jakinarazpenaren atalasearen geroztiko abisuen errepikapena"
+msgstr ""
+"Leku librearen ehunekoaren jakinarazpenaren atalasearen geroztiko abisuen "
+"errepikapena"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:8
 msgid ""
@@ -365,7 +385,9 @@ msgstr "Leku librea ez jakinarazteko atalasea"
 msgid ""
 "Specify an amount in GB. If the amount of free space is more than this, no "
 "warning will be shown."
-msgstr "Zehaztu kopuru bat GB-etan. Leku librea hau baino handiagoa bada ez da oharrik erakutsiko."
+msgstr ""
+"Zehaztu kopuru bat GB-etan. Leku librea hau baino handiagoa bada ez da "
+"oharrik erakutsiko."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
 msgid "Minimum notify period for repeated warnings"
@@ -375,7 +397,9 @@ msgstr "Gutxieneko jakinarazpen aldiak abisu errepikakorrentzat"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Zehaztu denbora minututan. Ondorengo abisuak ez dira epe hori baino lehenago agertuko."
+msgstr ""
+"Zehaztu denbora minututan. Ondorengo abisuak ez dira epe hori baino lehenago "
+"agertuko."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -383,7 +407,9 @@ msgstr "Muntaien bide-izenak ezikusi egiteko"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Zehaztu muntaien bide-izenen zerrenda bat, leku gutxi dagoenean hauei ezikusi egiteko."
+msgstr ""
+"Zehaztu muntaien bide-izenen zerrenda bat, leku gutxi dagoenean hauei "
+"ezikusi egiteko."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -490,88 +516,143 @@ msgid "Binding to lock the screen."
 msgstr "Lotura pantaila blokeatzeko."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Xen ezarpenak"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Lotura karpeta nagusia irekitzeko."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Lotura karpeta nagusia irekitzeko."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Abiatu laguntza-arakatzailea"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Lotura laguntza-arakatzailea abiarazteko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Abiarazi kalkulagailua"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Lotura kalkulagailua abiarazteko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Abiatu web arakatzailea"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Lotura web arakatzailea abiarazteko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Abiarazi multimedia-erreproduzitzailea"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Lotura multimedia-erreproduzitzailea abiarazteko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Erreproduzitu (edo Erreprod./Pausarazi)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "Lotura erreprodukzioa hasteko (edo erreproduzitu/pausarazi txandakatzeko)."
+msgstr ""
+"Lotura erreprodukzioa hasteko (edo erreproduzitu/pausarazi txandakatzeko)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Pausarazi erreprodukzioa"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Lotura erreprodukzioa pausarazteko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Gelditu erreprodukzioa"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Lotura erreprodukzioa gelditzeko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Aurreko pista"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Lotura aurreko pistara saltatzeko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Hurrengo pista"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Lotura hurrengo pistara saltatzeko."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Lotura pantaila blokeatzeko."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Lotura pantaila blokeatzeko."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Lotura pantaila blokeatzeko."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -603,9 +684,11 @@ msgstr "Piztu kanpoko monitorea sistema abiatu ondoren"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
-msgstr "Piztu kanpoko monitorea sistema abiatu ondoren, erabiltzaileak abioan kanpoko monitorea konektatzen badu."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+"Piztu kanpoko monitorea sistema abiatu ondoren, erabiltzaileak abioan "
+"kanpoko monitorea konektatzen badu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
@@ -615,7 +698,9 @@ msgstr "Piztu eramangarriaren pantaila sistema abiatu ondoren"
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
-msgstr "Piztu eramangarriaren pantaila sistema abiatu ondoren, erabiltzaileak abioan kanpoko monitorea konektatzen badu."
+msgstr ""
+"Piztu eramangarriaren pantaila sistema abiatu ondoren, erabiltzaileak abioan "
+"kanpoko monitorea konektatzen badu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
@@ -678,7 +763,9 @@ msgstr "Tekla geldoak desaktibatzea nahi duzu?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Maius tekla 8 segundoz sakatuta eduki duzu. Tekla motelen eginbidearen laster-tekla da eta teklatuaren funtzionamenduari eragiten dio."
+msgstr ""
+"Maius tekla 8 segundoz sakatuta eduki duzu. Tekla motelen eginbidearen "
+"laster-tekla da eta teklatuaren funtzionamenduari eragiten dio."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -739,7 +826,9 @@ msgstr "Tekla itsaskorrak desaktibatzea nahi duzu?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Maius tekla 5 aldiz segidan sakatu duzu. Tekla itsaskorren eginbidearen laster-tekla da eta teklatuaren funtzionamenduari eragiten dio."
+msgstr ""
+"Maius tekla 5 aldiz segidan sakatu duzu. Tekla itsaskorren eginbidearen "
+"laster-tekla da eta teklatuaren funtzionamenduari eragiten dio."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -747,7 +836,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Bi tekla batera sakatu dituzu edo Maius tekla 5 aldiz segidan sakatu duzu. Horrek Tekla itsasgarrien eginbidea desaktibatzen du eta horrek teklatuaren funtzionamenduari eragiten dio."
+msgstr ""
+"Bi tekla batera sakatu dituzu edo Maius tekla 5 aldiz segidan sakatu duzu. "
+"Horrek Tekla itsasgarrien eginbidea desaktibatzen du eta horrek teklatuaren "
+"funtzionamenduari eragiten dio."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -836,25 +928,35 @@ msgstr "Ordenagailu honen leku librea: %s"
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Leku librea gehiago lor dezakezu Zakarrontzia hustutzen baduzu, eta erabili gabeko programak edo fitxategiak kentzen edo beste disko edo partizio batera eramaten badituzu."
+msgstr ""
+"Leku librea gehiago lor dezakezu Zakarrontzia hustutzen baduzu, eta erabili "
+"gabeko programak edo fitxategiak kentzen edo beste disko edo partizio batera "
+"eramaten badituzu."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Leku librea gehiago lor dezakezu erabili gabeko programak edo fitxategiak kentzen edo beste disko edo partizio batera eramaten badituzu."
+msgstr ""
+"Leku librea gehiago lor dezakezu erabili gabeko programak edo fitxategiak "
+"kentzen edo beste disko edo partizio batera eramaten badituzu."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Leku librea gehiago lor dezakezu Zakarrontzia hustutzen baduzu, eta erabili gabeko programak edo fitxategiak kentzen edo beste kanpoko disko batera eramaten badituzu."
+msgstr ""
+"Leku librea gehiago lor dezakezu Zakarrontzia hustutzen baduzu, eta erabili "
+"gabeko programak edo fitxategiak kentzen edo beste kanpoko disko batera "
+"eramaten badituzu."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Leku librea gehiago lor dezakezu erabili gabeko programak edo fitxategiak kentzen edo beste kanpoko disko batera eramaten badituzu."
+msgstr ""
+"Leku librea gehiago lor dezakezu erabili gabeko programak edo fitxategiak "
+"kentzen edo beste kanpoko disko batera eramaten badituzu."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -905,7 +1007,9 @@ msgstr "Zakarrontziko elementu guztiak betiko ezabatu?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Zakarrontzia hustutzen baduzu, elementuak betirako ezabatuko dira. Kontutan izan bakoitza banaka ezaba daitekela."
+msgstr ""
+"Zakarrontzia hustutzen baduzu, elementuak betirako ezabatuko dira. Kontutan "
+"izan bakoitza banaka ezaba daitekela."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -926,7 +1030,9 @@ msgstr "%s laster-tekla ez dago osorik"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Errorea gertatu da '%s' exekutatzen saiatzean\neta hori '%s' teklari lotuta dago"
+msgstr ""
+"Errorea gertatu da '%s' exekutatzen saiatzean\n"
+"eta hori '%s' teklari lotuta dago"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -944,7 +1050,7 @@ msgstr "Teklatua"
 msgid "Keyboard plugin"
 msgstr "Teklatuaren plugina"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -961,30 +1067,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "_Diseinuak"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "Teklatuaren _hobespenak"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Erakutsi _uneko diseinua"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Ezin izan da terminal lehenetsia eskuratu. Ziurtatu terminal lehenetsiaren komandoa ezarrita dagoela eta baliozko aplikaziora bideratzen duela."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Ezin izan da terminal lehenetsia eskuratu. Ziurtatu terminal lehenetsiaren "
+"komandoa ezarrita dagoela eta baliozko aplikaziora bideratzen duela."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Ezin izan da komandoa exekutatu: %s\nEgiaztatu baliozko komandoa dela."
+msgstr ""
+"Ezin izan da komandoa exekutatu: %s\n"
+"Egiaztatu baliozko komandoa dela."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -994,16 +1104,16 @@ msgstr "Multimedia-teklak"
 msgid "Media keys plugin"
 msgstr "Multimedia-teklen plugina"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Ezin izan da saguaren erabilerraztasunaren eginbideak gaitu"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Saguaren hobespenak"
 
@@ -1039,19 +1149,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Konfiguratu pantailaren tamaina eta biraketa"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Ezin izan da pantailaren konfigurazioa aldatu"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Ezin izan da pantailaren konfigurazioa leheneratu"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Ezin izan da pantailaren konfigurazioa leheneratu babeskopiatik"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1059,64 +1169,64 @@ msgid_plural ""
 msgstr[0] "Pantaila bere aurreko konfiguraziora leheneratuko da segundo %dean"
 msgstr[1] "Pantaila bere aurreko konfiguraziora leheneratuko da %d segundotan"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Pantaila ongi ikusten da?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Leheneratu aurreko konfigurazioa"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Mantendu konfigurazio hau"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Hautatutako pantailen konfigurazioa ezin izan da aplikatu"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Ezin izan da pantailaren informazioa freskatu: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Hala ere, pantailaren konfigurazioa aldatzen saiatzen."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "Biraketa ez da onartzen"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Ezin izan da pantailaren konfigurazioa gorde"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normala"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Ezkerrean"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Eskuinean"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Buruz behera"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Konfiguratu bistaratze ezarpenak..."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Konfiguratu pantailaren ezarpenak"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Ezin izan da pantailen gordetako konfigurazioa aplikatu"
 

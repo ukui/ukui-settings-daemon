@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # nab <nab@mail.by>, 2003-2004
 # Hotellook, 2014
@@ -10,32 +10,34 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Belarusian (http://wiki.ukui.org/trans/)\n"
+"Language: be\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: be\n"
-"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n%100>=11 && n%100<=14)? 2 : 3);\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
 msgid "Accessibility"
 msgstr "Тэхналогіі даступнасці"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Уключыць павелічальнік"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Уключыць чытанне з экрану"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Укл./адкл. экранную клавіятуру"
 
@@ -90,9 +92,9 @@ msgstr "Хінтынг"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
 msgstr ""
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
@@ -101,10 +103,10 @@ msgstr "Паслядоўнасць RGBA"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
 msgstr ""
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
@@ -123,8 +125,8 @@ msgstr "Адключаць тачпад падчас набірання"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
 msgstr ""
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
@@ -489,88 +491,141 @@ msgid "Binding to lock the screen."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
-msgid "Launch help browser"
-msgstr "Запуск даведкі"
+#, fuzzy
+msgid "Open System Settings"
+msgstr "Настáўленні X-оў"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
-msgid "Binding to launch the help browser."
+msgid "Binding to open system settings."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
-msgid "Launch calculator"
-msgstr "Запуск калькулятара"
-
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
-msgid "Binding to launch the calculator."
+msgid "Open File Manager"
 msgstr ""
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Скарот для паказу павелічальніка экрану"
+
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
-msgid "Launch web browser"
-msgstr "Запуск браўзэра"
+msgid "Launch help browser"
+msgstr "Запуск даведкі"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
-msgid "Binding to launch the web browser."
+msgid "Binding to launch the help browser."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
-msgid "Launch media player"
-msgstr "Запуск медыяплэера"
+msgid "Launch calculator"
+msgstr "Запуск калькулятара"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
-msgid "Binding to launch the media player."
+msgid "Binding to launch the calculator."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
-msgid "Play (or play/pause)"
-msgstr "Граць (ці Граць/Прыпыніць)"
+msgid "Launch web browser"
+msgstr "Запуск браўзэра"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
-msgid "Binding to start playback (or toggle play/pause)."
+msgid "Binding to launch the web browser."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
-msgid "Pause playback"
-msgstr "Прыпыніць гранне"
+msgid "Launch media player"
+msgstr "Запуск медыяплэера"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
-msgid "Binding to pause playback."
+msgid "Binding to launch the media player."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
-msgid "Stop playback"
-msgstr "Спыніць гранне"
+msgid "Play (or play/pause)"
+msgstr "Граць (ці Граць/Прыпыніць)"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
-msgid "Binding to stop playback."
+msgid "Binding to start playback (or toggle play/pause)."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
-msgid "Previous track"
-msgstr "Папярэдні трэк"
+msgid "Pause playback"
+msgstr "Прыпыніць гранне"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
-msgid "Binding to skip to previous track."
+msgid "Binding to pause playback."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+msgid "Stop playback"
+msgstr "Спыніць гранне"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+msgid "Binding to stop playback."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+msgid "Previous track"
+msgstr "Папярэдні трэк"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+msgid "Binding to skip to previous track."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Наступны трэк"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr "Скарот для паказу павелічальніка экрану"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr "Скарот для запуску _чытання з экрану"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr "Скарот для паказу _экраннай клавіятуры"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Скарот для запуску _чытання з экрану"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Скарот для запуску _чытання з экрану"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Скарот для запуску _чытання з экрану"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -602,8 +657,8 @@ msgstr "Уключыць вонкавы манітор пасля загрузк
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -677,7 +732,10 @@ msgstr "Хочаце скасаваць дзейнасць запаволены�
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Вы толькі што трымалі кнопку Shift 8 секунд. Гэта хуткая кнопка для здольнасці \"Запаволеныя кнопкі\", што ўплывае на рэжым працы вашай клавіятуры."
+msgstr ""
+"Вы толькі што трымалі кнопку Shift 8 секунд. Гэта хуткая кнопка для "
+"здольнасці \"Запаволеныя кнопкі\", што ўплывае на рэжым працы вашай "
+"клавіятуры."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -738,7 +796,9 @@ msgstr "Хочаце скасаваць дзейнасць ліпучых кно
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Вы націснулі кнопку Shift 5 разоў запар. Гэта хуткія кнопкі здольнасці \"Ліпучыя кнопкі\", што ўплывае на працу вашай клавіятуры."
+msgstr ""
+"Вы націснулі кнопку Shift 5 разоў запар. Гэта хуткія кнопкі здольнасці "
+"\"Ліпучыя кнопкі\", што ўплывае на працу вашай клавіятуры."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -746,7 +806,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Вы націснулі адначасова дзве кнопкі ці 5 раз запар кнопку Shift. Гэта адключыла здольнасць \"Ліпучыя кнопкі\", што ўплывае на працу вашай клавіятуры."
+msgstr ""
+"Вы націснулі адначасова дзве кнопкі ці 5 раз запар кнопку Shift. Гэта "
+"адключыла здольнасць \"Ліпучыя кнопкі\", што ўплывае на працу вашай "
+"клавіятуры."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -835,25 +898,33 @@ msgstr "На гэтым камп'ютары засталося ўсяго %s п�
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Каб вызваліць дыскавую прастору, можна спустошыць сметніцу, выдаліць непатрэбныя праграмы ці файлы або перанесці файлы на іншы дыск ці партыцыю."
+msgstr ""
+"Каб вызваліць дыскавую прастору, можна спустошыць сметніцу, выдаліць "
+"непатрэбныя праграмы ці файлы або перанесці файлы на іншы дыск ці партыцыю."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Каб вызваліць дыскавую прастору, можна выдаліць непатрэбныя праграмы ці файлы або перанесці файлы на іншы дыск ці партыцыю."
+msgstr ""
+"Каб вызваліць дыскавую прастору, можна выдаліць непатрэбныя праграмы ці "
+"файлы або перанесці файлы на іншы дыск ці партыцыю."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Каб вызваліць дыскавую прастору, можна спустошыць сметніцу, выдаліць непатрэбныя праграмы ці файлы, або перанесці файлы на вонкавы дыск."
+msgstr ""
+"Каб вызваліць дыскавую прастору, можна спустошыць сметніцу, выдаліць "
+"непатрэбныя праграмы ці файлы, або перанесці файлы на вонкавы дыск."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Каб вызваліць дыскавую прастору, можна выдаліць непатрэбныя праграмы ці файлы або перанесці файлы на вонкавы дыск."
+msgstr ""
+"Каб вызваліць дыскавую прастору, можна выдаліць непатрэбныя праграмы ці "
+"файлы або перанесці файлы на вонкавы дыск."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -904,7 +975,9 @@ msgstr "Выдаліць усе аб'екты са сметніцы?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Пасля спусташэння сметніцы усе ейныя аб'екты страцяцца назаўсёды. Заўважце, што вы можаце выдаліць іх паасобку."
+msgstr ""
+"Пасля спусташэння сметніцы усе ейныя аб'екты страцяцца назаўсёды. Заўважце, "
+"што вы можаце выдаліць іх паасобку."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -925,7 +998,9 @@ msgstr ""
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Памылка падчас спробы выканаць загад (%s),\nякі звязаны з кнопкай (%s)"
+msgstr ""
+"Памылка падчас спробы выканаць загад (%s),\n"
+"які звязаны з кнопкай (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -943,7 +1018,7 @@ msgstr "Клавіятура"
 msgid "Keyboard plugin"
 msgstr "Плагін клавіятуры"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -960,25 +1035,25 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "_Раскладкі"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "Настáўленні _клавіятуры"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Паказаць _дзейную раскладку"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
@@ -993,16 +1068,16 @@ msgstr "Медыя-кнопкі"
 msgid "Media keys plugin"
 msgstr "Плагін медыя-кнопак"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Не выйшла ўключыць тэхналогіі даступнасці мышы"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr "Каб уключыць дапаможныя тэхналогіі мышы, трэба ўсталяваць Mousetweaks."
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Настáўленні мышы"
 
@@ -1038,19 +1113,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Наставіць памеры і паварот экрану"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Не выйшла пераключыць канфігурацыю манітораў"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Не выйшла аднавіць канфігурацыю экрана"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Не выйшла аднавіць канфігурацыю экрана з рэзервовай копіі"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1060,64 +1135,64 @@ msgstr[1] "Настáўленні дысплею будуць вернуты п�
 msgstr[2] "Настáўленні дысплею будуць вернуты праз %d секунд"
 msgstr[3] "Настáўленні дысплею будуць вернуты праз %d секунд"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "З дысплеем усё добра?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Аднавіць папярэднюю канфігурацыю"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Пакінуць такую канфігурацыю"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "Паварот не падтрымліваецца"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Не выйшла захаваць канфігурацыю манітораў"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Нармальны"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Улева"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Управа"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Дагары нагамі"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Настáўленні экрану..."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Задаць настáўленні экрану"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr ""
 

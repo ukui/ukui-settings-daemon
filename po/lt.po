@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Džiugas Grėbliūnas <dziugas.grebliunas@gmail.com>, 2014
 # Gintautas Miliauskas <gintautas@miliauskas.lt>, 2006, 2007, 2008, 2009
@@ -14,32 +14,33 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2017-02-07 20:04+0000\n"
 "Last-Translator: Moo\n"
 "Language-Team: Lithuanian (http://wiki.ukui.org/trans/)\n"
+"Language: lt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: lt\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && (n"
+"%100<10 || n%100>=20) ? 1 : 2);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
 msgid "Accessibility"
 msgstr "Pritaikymas neįgaliesiems"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "Įjungti/išjungti lupą"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "Perjungti ekrano _skaityklę"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "Perjungti ekraninę klaviatūrą"
 
@@ -75,7 +76,8 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "Raiška, naudojama verčiant šriftų dydžius į dydį pikseliais, taškais į colį."
+msgstr ""
+"Raiška, naudojama verčiant šriftų dydžius į dydį pikseliais, taškais į colį."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -86,7 +88,10 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "Glodinimo tipas naudojamas atvaizduojant šriftus. Galimos vertės: „none“ – neglodinti, „grayscale“ – standartinis glodinimas, „rgba“ – popikselinis glotninimas (tik skystųjų kristalų vaizduokliams)."
+msgstr ""
+"Glodinimo tipas naudojamas atvaizduojant šriftus. Galimos vertės: „none“ – "
+"neglodinti, „grayscale“ – standartinis glodinimas, „rgba“ – popikselinis "
+"glotninimas (tik skystųjų kristalų vaizduokliams)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -94,10 +99,13 @@ msgstr "Taškinė korekcija"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "Taškinės korekcijos tipas šriftams atvaizduoti. Galimos vertės yra: „none“ – netaikyti taškinės korekcijos, „slight“ – bazinė, „medium“ – vidutinė ir „full“ – didžiausia galima (gali iškraipyti kai kurių raidžių formą)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"Taškinės korekcijos tipas šriftams atvaizduoti. Galimos vertės yra: „none“ – "
+"netaikyti taškinės korekcijos, „slight“ – bazinė, „medium“ – vidutinė ir "
+"„full“ – didžiausia galima (gali iškraipyti kai kurių raidžių formą)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -105,11 +113,15 @@ msgstr "RGBA tvarka"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "Subpikselinių elementų tvarka skystųjų kristalų ekrane; naudojama tik tada, kai glodinimo vertė yra „rgba“. Galimos vertės: „rgb“ – raudona kairėje (dažniausiai pasitaikantis tipas), „bgr“ – mėlyna kairėje, „vrgb“ – raudona viršuje, ir „vbgr“ – raudona apačioje."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"Subpikselinių elementų tvarka skystųjų kristalų ekrane; naudojama tik tada, "
+"kai glodinimo vertė yra „rgba“. Galimos vertės: „rgb“ – raudona kairėje "
+"(dažniausiai pasitaikantis tipas), „bgr“ – mėlyna kairėje, „vrgb“ – raudona "
+"viršuje, ir „vbgr“ – raudona apačioje."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -119,7 +131,9 @@ msgstr "Lustinės kortelės išėmimo veiksmas"
 msgid ""
 "Set this to one of \"none\", \"lock_screen\", or \"force_logout\". The "
 "action will get performed when the smartcard used for log in is removed."
-msgstr "Galimos reikšmės: „none“, „lock_screen“ ir „force_logout“. Šis veiksmas bus vykdomas išėmus prisijungimui naudojamą lustinę kortelę."
+msgstr ""
+"Galimos reikšmės: „none“, „lock_screen“ ir „force_logout“. Šis veiksmas bus "
+"vykdomas išėmus prisijungimui naudojamą lustinę kortelę."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:1
 msgid "Disable touchpad while typing"
@@ -127,9 +141,11 @@ msgstr "Išjungti jutiklinį kilimėlį teksto rinkimo metu"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "Nustatykite teigiamą, jei kartais rašydami tekstą netyčia kliudote jutiklinį kilimėlį."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"Nustatykite teigiamą, jei kartais rašydami tekstą netyčia kliudote jutiklinį "
+"kilimėlį."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -138,7 +154,9 @@ msgstr "Įjungti pelės spustelėjimus naudojant jutiklinį kilimėlį"
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:4
 msgid ""
 "Set this to TRUE to be able to send mouse clicks by tapping on the touchpad."
-msgstr "Nustatykite teigiamą, jei norite atlikti spragtelėjimus trumpai paliesdami jutiklinį kilimėlį."
+msgstr ""
+"Nustatykite teigiamą, jei norite atlikti spragtelėjimus trumpai paliesdami "
+"jutiklinį kilimėlį."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:5
 msgid "Enable vertical edge scrolling"
@@ -162,7 +180,8 @@ msgstr "Įjungti vertikalią slinktį dviem pirštais"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:10
 msgid "Set this to TRUE to allow vertical two-finger scrolling"
-msgstr "Nustatykite TEIGIAMĄ, jei norite leisti vertikalią slinktį dviem pirštais"
+msgstr ""
+"Nustatykite TEIGIAMĄ, jei norite leisti vertikalią slinktį dviem pirštais"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:11
 msgid "Enable horizontal two-finger scrolling"
@@ -170,7 +189,8 @@ msgstr "Įjungti horizontalią slinktį dviem pirštais"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:12
 msgid "Set this to TRUE to allow horizontal two-finger scrolling"
-msgstr "Nustatykite TEIGIAMĄ, jei norite leisti horizontalią slinktį dviem pirštais"
+msgstr ""
+"Nustatykite TEIGIAMĄ, jei norite leisti horizontalią slinktį dviem pirštais"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:13
 msgid "Natural scrolling"
@@ -178,7 +198,9 @@ msgstr "Natūrali slinktis"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:14
 msgid "Set this to true to enable natural (reverse) scrolling for touchpads"
-msgstr "Nustatykite teigiamą, kad jutikliniams kilimėliams įjungtumėte natūralią (apverstą) slinktį"
+msgstr ""
+"Nustatykite teigiamą, kad jutikliniams kilimėliams įjungtumėte natūralią "
+"(apverstą) slinktį"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:15
 msgid "Enable touchpad"
@@ -208,7 +230,10 @@ msgstr "Vieno piršto bakstelėjimo mygtukas"
 msgid ""
 "Select the button mapping for one-finger tap. Supported values are: 1: left "
 "mouse button 2: middle mouse button 3: right mouse button"
-msgstr "Pasirinkite mygtuko atvaizdį, skirtą vieno piršto bakstelėjimui. Palaikomos reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: dešinysis pelės mygtukas"
+msgstr ""
+"Pasirinkite mygtuko atvaizdį, skirtą vieno piršto bakstelėjimui. Palaikomos "
+"reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: "
+"dešinysis pelės mygtukas"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:22
 msgid "Two finger tap button"
@@ -218,7 +243,10 @@ msgstr "Dviejų pirštų bakstelėjimo mygtukas"
 msgid ""
 "Select the button mapping for two-finger tap. Supported values are: 1: left "
 "mouse button 2: middle mouse button 3: right mouse button"
-msgstr "Pasirinkite mygtuko atvaizdį, skirtą dviejų pirštų bakstelėjimui. Palaikomos reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: dešinysis pelės mygtukas"
+msgstr ""
+"Pasirinkite mygtuko atvaizdį, skirtą dviejų pirštų bakstelėjimui. Palaikomos "
+"reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: "
+"dešinysis pelės mygtukas"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:24
 msgid "Three finger tap button"
@@ -228,7 +256,10 @@ msgstr "Trijų pirštų bakstelėjimo mygtukas"
 msgid ""
 "Select the button mapping for three-finger tap. Supported values are: 1: "
 "left mouse button 2: middle mouse button 3: right mouse button"
-msgstr "Pasirinkite mygtuko atvaizdį, skirtą trijų pirštų bakstelėjimui. Palaikomos reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: dešinysis pelės mygtukas"
+msgstr ""
+"Pasirinkite mygtuko atvaizdį, skirtą trijų pirštų bakstelėjimui. Palaikomos "
+"reikšmės yra: 1: kairysis pelės mygtukas 2: vidurinysis pelės mygtukas 3: "
+"dešinysis pelės mygtukas"
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:26
 msgid "Touchpad button orientation"
@@ -238,7 +269,10 @@ msgstr "Jutiklinio kilimėlio mygtukų orientacija"
 msgid ""
 "Swap left and right buttons for left-handed touchpads with 'left', 'right' "
 "for right-handed, 'mouse' to follow the mouse setting."
-msgstr "Apkeiskite kairįjį ir dešinįjį mygtuką kairiarankiams jutikliniams kilimėliams, naudodami \"left\", dešiniarankiams kilimėliams, naudodami \"right\", o norėdami sekti pelės nustatymu, naudokite \"mouse\"."
+msgstr ""
+"Apkeiskite kairįjį ir dešinįjį mygtuką kairiarankiams jutikliniams "
+"kilimėliams, naudodami \"left\", dešiniarankiams kilimėliams, naudodami "
+"\"right\", o norėdami sekti pelės nustatymu, naudokite \"mouse\"."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:28
 msgid "Motion Acceleration"
@@ -248,7 +282,9 @@ msgstr "Judesio greitėjimas"
 msgid ""
 "Acceleration multiplier for touchpad motion. A value of -1 is the system "
 "default."
-msgstr "Jutiklinio kilimėlio greitėjimo koeficientas. Numatytoji sistemos reikšmė yra -1."
+msgstr ""
+"Jutiklinio kilimėlio greitėjimo koeficientas. Numatytoji sistemos reikšmė "
+"yra -1."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:30
 msgid "Motion Threshold"
@@ -258,7 +294,9 @@ msgstr "Traukos slenkstis"
 msgid ""
 "Distance in pixels the pointer must move before accelerated touchpad motion "
 "is activated. A value of -1 is the system default."
-msgstr "Atstumas pikseliais, kurį žymeklis turi įveikti, kad įsijungtų jutiklinio kilimėlio greito judėjimo veiksena. Sistemos numatytoji reikšmė yra -1."
+msgstr ""
+"Atstumas pikseliais, kurį žymeklis turi įveikti, kad įsijungtų jutiklinio "
+"kilimėlio greito judėjimo veiksena. Sistemos numatytoji reikšmė yra -1."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
@@ -298,7 +336,8 @@ msgstr "Šio papildinio aktyvavimas"
 #: ../data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml.in.h:2
 #: ../data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml.in.h:2
 msgid "Whether this plugin would be activated by ukui-settings-daemon or not"
-msgstr "Kada šį papildinį turėtų arba neturėtų aktyvinti „ukui-settings-daemon“"
+msgstr ""
+"Kada šį papildinį turėtų arba neturėtų aktyvinti „ukui-settings-daemon“"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:3
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:3
@@ -348,7 +387,9 @@ msgstr "Laisvos vietos nuošimčių pranešimo slenkstis"
 msgid ""
 "Percentage free space threshold for initial warning of low disk space. If "
 "the percentage free space drops below this, a warning will be shown."
-msgstr "Laisvos vietos nuošimčių slenkstis pradiniam įspėjimui apie vietos trūkumą diske. Jei laisvos vietos bus mažiau negu nurodyta, bus parodytas įspėjimas."
+msgstr ""
+"Laisvos vietos nuošimčių slenkstis pradiniam įspėjimui apie vietos trūkumą "
+"diske. Jei laisvos vietos bus mažiau negu nurodyta, bus parodytas įspėjimas."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:7
 msgid "Subsequent free percentage notify threshold"
@@ -358,7 +399,9 @@ msgstr "Tolesnė laisvos vietos nuošimčių pranešimo riba"
 msgid ""
 "Specify the percentage that the free disk space should reduce by before "
 "issuing a subsequent warning."
-msgstr "Nurodykite procentais, kiek turi sumažėti laisva disko vieta prieš parodant tolesnį įspėjimą."
+msgstr ""
+"Nurodykite procentais, kiek turi sumažėti laisva disko vieta prieš parodant "
+"tolesnį įspėjimą."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:9
 msgid "Free space no notify threshold"
@@ -368,7 +411,9 @@ msgstr "Laisvos vietos nuošimčių nepranešinėjimo slenkstis"
 msgid ""
 "Specify an amount in GB. If the amount of free space is more than this, no "
 "warning will be shown."
-msgstr "Nurodykite kiekį gigabaitais. Jei laisvos vietos skaičius didesnis, pranešimas nebus rodomas."
+msgstr ""
+"Nurodykite kiekį gigabaitais. Jei laisvos vietos skaičius didesnis, "
+"pranešimas nebus rodomas."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:11
 msgid "Minimum notify period for repeated warnings"
@@ -378,7 +423,9 @@ msgstr "Mažiausias pranešimų periodas kartojamiems įspėjimams"
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "Nurodykite laiką minutėmis. Tolesni pranešimai tomui bus rodomi ne dažniau kaip tokiu periodu."
+msgstr ""
+"Nurodykite laiką minutėmis. Tolesni pranešimai tomui bus rodomi ne dažniau "
+"kaip tokiu periodu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -386,7 +433,9 @@ msgstr "Nepaisytini prijungimo keliai"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:14
 msgid "Specify a list of mount paths to ignore when they run low on space."
-msgstr "Nurodykite prijungimo kelius, kuriuose laisvos vietos trūkumas turėtų būti ignoruojamas."
+msgstr ""
+"Nurodykite prijungimo kelius, kuriuose laisvos vietos trūkumas turėtų būti "
+"ignoruojamas."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:3
 msgid "Show OSD notification"
@@ -493,88 +542,142 @@ msgid "Binding to lock the screen."
 msgstr "Susiejimas ekranui užrakinti."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X serverio nustatymai"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "Susiejimas namų aplankui atverti."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "Susiejimas namų aplankui atverti."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "Paleisti žinyno naršyklę"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "Susiejimas pagalbos žinynui paleisti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "Paleisti skaičiuotuvą"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "Susiejimas skaičiuotuvui paleisti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "Paleisti saityno naršyklę"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "Susiejimas saityno naršyklei paleisti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "Paleisti medijos leistuvą"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "Susiejimas medijos leistuvui paleisti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "Groti (arba groti/pauzė)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "Susiejimas grojimui pradėti (ar grojimui/pristabdymui perjungti)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "Pristabdyti grojimą"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "Susiejimas grojimui pristabdyti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "Sustabdyti grojimą"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "Susiejimas grojimui sustabdyti."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "Ankstesnis takelis"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "Susiejimas pereiti prie ankstesnio takelio."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "Kitas takelis"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "Susiejimas pereiti prie kito takelio."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr "Susiejimas, skirtas rodyti ekrano lupą"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr "Susiejimas, skirtas paleisti ekrano skaityklę."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr "Susiejimas, skirtas rodyti ekraninę klaviatūrą"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "Susiejimas ekranui užrakinti."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "Susiejimas, skirtas paleisti ekrano skaityklę."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "Susiejimas, skirtas paleisti ekrano skaityklę."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -584,7 +687,8 @@ msgstr "Rodyti ekranus pranešimų srityje"
 msgid ""
 "Whether a notification icon with display-related things should be shown in "
 "the panel."
-msgstr "Ar skydelyje rodyti pranešimų piktogramą, susijusią su ekrano nustatymais."
+msgstr ""
+"Ar skydelyje rodyti pranešimų piktogramą, susijusią su ekrano nustatymais."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:7
 msgid "Do not touch monitor configuration"
@@ -598,7 +702,12 @@ msgid ""
 "cloning/side-by-side mode. Setting this key to True disables this, and the "
 "monitor settings are not touched at all (unless there is an explicit user "
 "configuration)."
-msgstr "Įprastai ukui-settings-daemon tvarko vidinius ir išorinius vaizduoklius pagal turn_on_external_monitors_at_startup ir turn_on_laptop_monitor_at_startup nustatymus bei numato tinkamą rodymo veikseną. Tai išjungia šio parametro įgalinimas ir monitoriams nedaroma jokios įtakos (nebent yra atskira naudotojo konfigūracija)"
+msgstr ""
+"Įprastai ukui-settings-daemon tvarko vidinius ir išorinius vaizduoklius "
+"pagal turn_on_external_monitors_at_startup ir "
+"turn_on_laptop_monitor_at_startup nustatymus bei numato tinkamą rodymo "
+"veikseną. Tai išjungia šio parametro įgalinimas ir monitoriams nedaroma "
+"jokios įtakos (nebent yra atskira naudotojo konfigūracija)"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:9
 msgid "Turn on external monitor after system boot"
@@ -606,9 +715,11 @@ msgstr "Įjungti išorinį vaizduoklį įkėlus sistemą"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
-msgstr "Įjungti išorinį vaizduoklį įkėlus sistemą, jei naudotojas prijungia išorinį vaizduoklį sistemos įkelties metu."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
+msgstr ""
+"Įjungti išorinį vaizduoklį įkėlus sistemą, jei naudotojas prijungia išorinį "
+"vaizduoklį sistemos įkelties metu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
 msgid "Turn on laptop monitor after system boot"
@@ -618,7 +729,9 @@ msgstr "Įjungti nešiojamojo kompiuterio ekraną įkėlus sistemą"
 msgid ""
 "Turn on laptop monitor after system boot if user plugs in external monitor "
 "on system boot."
-msgstr "Įjungti nešiojamojo kompiuterio ekraną įkėlus sistemą, jei naudotojas prijungia išorinį vaizduoklį sistemos įkelties metu."
+msgstr ""
+"Įjungti nešiojamojo kompiuterio ekraną įkėlus sistemą, jei naudotojas "
+"prijungia išorinį vaizduoklį sistemos įkelties metu."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:13
 msgid "File for default configuration for RandR"
@@ -631,7 +744,12 @@ msgid ""
 "normally gets stored in users' home directories. If a user does not have "
 "such a file, or has one that does not match the user's setup of monitors, "
 "then the file specified by this key will be used instead."
-msgstr "XRandR įskiepis ieškos numatytųjų nustatymų faile, nurodytame šiame rakte. Jis panašus į ~/.config/monitors.xml failą, kuris paprastai saugomas naudotojo namų kataloge. Jeigu naudotojas neturi tokio failo arba jo turimas failas nesutampa su naudotojo vaizduoklių sąranka, tuomet vietoje to bus naudojamas šio rakto nurodytas failas."
+msgstr ""
+"XRandR įskiepis ieškos numatytųjų nustatymų faile, nurodytame šiame rakte. "
+"Jis panašus į ~/.config/monitors.xml failą, kuris paprastai saugomas "
+"naudotojo namų kataloge. Jeigu naudotojas neturi tokio failo arba jo turimas "
+"failas nesutampa su naudotojo vaizduoklių sąranka, tuomet vietoje to bus "
+"naudojamas šio rakto nurodytas failas."
 
 #: ../data/ukui-settings-daemon.desktop.in.in.h:1
 msgid "UKUI Settings Daemon"
@@ -681,7 +799,9 @@ msgstr "Ar norite išjungti lėtuosius klavišus?"
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "Jūs laikėte nuspaudę Shift klavišą 8 sekundes. Tai yra šaukinys lėtųjų klavišų funkcijai, pakeičiančiai jūsų klaviatūros veikimą, įjungti."
+msgstr ""
+"Jūs laikėte nuspaudę Shift klavišą 8 sekundes. Tai yra šaukinys lėtųjų "
+"klavišų funkcijai, pakeičiančiai jūsų klaviatūros veikimą, įjungti."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -742,7 +862,10 @@ msgstr "Ar norite išjungti atmeniuosius klavišus?"
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "Ką tik paspaudėte Shift klavišą 5 kartus iš eilės. Tai yra atmeniųjų klavišų funkcijos šaukinys. Atmenieji klavišai leidžia jums kitaip naudotis klaviatūra."
+msgstr ""
+"Ką tik paspaudėte Shift klavišą 5 kartus iš eilės. Tai yra atmeniųjų klavišų "
+"funkcijos šaukinys. Atmenieji klavišai leidžia jums kitaip naudotis "
+"klaviatūra."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -750,7 +873,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "Ką tik paspaudėte du klavišus vienu metu, arba Shift klavišą 5 kartus iš eilės. Tai išjungia atmeniųjų klavišų funkciją, leidžiančią jums kitaip naudotis klaviatūra."
+msgstr ""
+"Ką tik paspaudėte du klavišus vienu metu, arba Shift klavišą 5 kartus iš "
+"eilės. Tai išjungia atmeniųjų klavišų funkciją, leidžiančią jums kitaip "
+"naudotis klaviatūra."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -839,25 +965,34 @@ msgstr "Kompiuteryje liko tik %s vietos."
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "Galite atlaisvinti vietos diske išvalydami šiukšlinę, ištrindami nenaudojamas programas ir failus arba perkeldami failus į kitą kaupiklį ar skaidinį."
+msgstr ""
+"Galite atlaisvinti vietos diske išvalydami šiukšlinę, ištrindami "
+"nenaudojamas programas ir failus arba perkeldami failus į kitą kaupiklį ar "
+"skaidinį."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "Galite atlaisvinti vietos ištrindami nenaudojamas programas ir failus arba perkeldami failus į kitą kaupiklį ar skaidinį."
+msgstr ""
+"Galite atlaisvinti vietos ištrindami nenaudojamas programas ir failus arba "
+"perkeldami failus į kitą kaupiklį ar skaidinį."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "Galite atlaisvinti vietos diske išvalydami šiukšlinę, ištrindami nenaudojamas programas ir failus arba perkeldami failus į išorinį kaupiklį."
+msgstr ""
+"Galite atlaisvinti vietos diske išvalydami šiukšlinę, ištrindami "
+"nenaudojamas programas ir failus arba perkeldami failus į išorinį kaupiklį."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "Galite atlaisvinti vietos diske ištrindami nenaudojamas programas ir failus arba perkeldami failus į išorinį kaupiklį."
+msgstr ""
+"Galite atlaisvinti vietos diske ištrindami nenaudojamas programas ir failus "
+"arba perkeldami failus į išorinį kaupiklį."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -908,7 +1043,9 @@ msgstr "Išvalyti visus failus iš šiukšlinės?"
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "Jei išvalysite šiukšlinę, visi joje esantys duomenys bus prarasti. Beje, juos galite ištrinti atskirai."
+msgstr ""
+"Jei išvalysite šiukšlinę, visi joje esantys duomenys bus prarasti. Beje, "
+"juos galite ištrinti atskirai."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -929,7 +1066,9 @@ msgstr "Klavišų susiejimas (%s) nevisas"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "Klaida bandant paleisti (%s),\nsusietą su klavišu (%s)"
+msgstr ""
+"Klaida bandant paleisti (%s),\n"
+"susietą su klavišu (%s)"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -947,7 +1086,7 @@ msgstr "Klaviatūra"
 msgid "Keyboard plugin"
 msgstr "Klaviatūros įskiepis"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -962,32 +1101,49 @@ msgid ""
 "If you report this situation as a bug, please include:\n"
 " • The result of <b>%s</b>\n"
 " • The result of <b>%s</b>"
-msgstr "Klaida įjungiant XKB konfigūraciją.\nTai gali nutikti įvairiomis aplinkybėmis:\n • klaida libxklavier bibliotekoje\n • klaida X serveryje (xkbcomp, xmodmap programose)\n • X serveris su nesuderinamu libxkbfile įgyvendinimu\n\n\nX serverio versijos duomenys:\n%s\n%d\nJei pranešite apie šią klaidą, pateikite šią informaciją:\n • <b>%s</b> rezultatą\n • <b>%s</b> rezultatą"
+msgstr ""
+"Klaida įjungiant XKB konfigūraciją.\n"
+"Tai gali nutikti įvairiomis aplinkybėmis:\n"
+" • klaida libxklavier bibliotekoje\n"
+" • klaida X serveryje (xkbcomp, xmodmap programose)\n"
+" • X serveris su nesuderinamu libxkbfile įgyvendinimu\n"
+"\n"
+"\n"
+"X serverio versijos duomenys:\n"
+"%s\n"
+"%d\n"
+"Jei pranešite apie šią klaidą, pateikite šią informaciją:\n"
+" • <b>%s</b> rezultatą\n"
+" • <b>%s</b> rezultatą"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "_Išdėstymai"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "Klaviatūros _nuostatos"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr "Rodyti _dabartinį išdėstymą"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "Nepavyko gauti numatytojo teminalo. Patikrinkite, ar jūsų numatytojo terminalo komanda yra nustatyta ir nurodo tinkamą programą."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"Nepavyko gauti numatytojo teminalo. Patikrinkite, ar jūsų numatytojo "
+"terminalo komanda yra nustatyta ir nurodo tinkamą programą."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "Nepavyko paleisti komandos: %s\nĮsitikinkite, kad tai tinkama komanda."
+msgstr ""
+"Nepavyko paleisti komandos: %s\n"
+"Įsitikinkite, kad tai tinkama komanda."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -997,16 +1153,18 @@ msgstr "Multimedijos klavišai"
 msgid "Media keys plugin"
 msgstr "Multimedijos klavišų įskiepis"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "Nepavyko įjungti pelės pritaikymo neįgaliesiems ypatybių"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
-msgstr "Norint pritaikyti pelę neįgaliesiems, sistemoje turi būti įdiegta Mousetweaks programa."
+msgstr ""
+"Norint pritaikyti pelę neįgaliesiems, sistemoje turi būti įdiegta "
+"Mousetweaks programa."
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "Pelės nuostatos"
 
@@ -1042,19 +1200,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "Nustatyti ekrano dydį ir pasukimą"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "Nepavyko pakeisti vaizduoklio nustatymų"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "Nepavyko atkurti ekrano nustatymų"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "Nepavyko atkurti ekrano nustatymų iš atsarginės kopijos"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1063,64 +1221,64 @@ msgstr[0] "Ankstesni ekrano nustatymai bus grąžinti už %d sekundės"
 msgstr[1] "Ankstesni ekrano nustatymai bus grąžinti už %d sekundžių"
 msgstr[2] "Ankstesni ekrano nustatymai bus grąžinti už %d sekundžių"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "Ar ekrane vaizdas atrodo gerai?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "_Atkurti ankstesnius nustatymus"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "_Palikti šiuos nustatymus"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "Nepavyko pritaikyti pasirinktų ekranų nustatymų"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "Nepavyko atnaujinti ekrano informacijos: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "Vis vien bandoma pakeisti vaizduoklio nustatymus."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr "Pasukimas nepalaikomas"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "Nepavyko įrašyti vaizduoklio nustatymų"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "Normalus"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "Kairė"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "Dešinė"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "Apverstas"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "_Keisti ekranų nustatymus…"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "Keisti ekranų nustatymus"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "Nepavyko pritaikyti įrašytų vaizduoklių nustatymų"
 
@@ -1217,7 +1375,8 @@ msgstr "Keisti sistemos laiko juostą"
 
 #: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:2
 msgid "Privileges are required to change the system time zone."
-msgstr "Norint pakeisti sistemos laiko juostą, reikia administratoriaus teisių."
+msgstr ""
+"Norint pakeisti sistemos laiko juostą, reikia administratoriaus teisių."
 
 #: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:3
 msgid "Change system time"
@@ -1233,4 +1392,5 @@ msgstr "Konfigūruoti aparatinį laikrodį"
 
 #: ../plugins/datetime/org.ukui.settingsdaemon.datetimemechanism.policy.in.h:6
 msgid "Privileges are required to configure the hardware clock."
-msgstr "Norint konfigūruoti aparatinį laikrodį, reikia administratoriaus teisių."
+msgstr ""
+"Norint konfigūruoti aparatinį laikrodį, reikia administratoriaus teisių."

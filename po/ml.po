@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Ani Peter <peter.ani@gmail.com>, 2007, 2009
 # Anivar Aravind|അനിവര്‍ അരവിന്ദ് <anivar@movingrepublic.org>, 2007
@@ -13,14 +13,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Malayalam (http://wiki.ukui.org/trans/)\n"
+"Language: ml\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: ml\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -28,17 +28,17 @@ msgid "Accessibility"
 msgstr "സാമീപ്യത "
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "മാഗ്നിഫയര്‍ ടൊഗിള്‍ ചെയ്യുക"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "സ്ക്രീന്‍ റീഡര്‍ ടൊഗിള്‍ ചെയ്യുക"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "ഓണ്‍ സ്ക്രീന്‍ കീബോര്‍ഡ് ടൊഗിള്‍ ചെയ്യുക"
 
@@ -74,7 +74,9 @@ msgstr "ഡി.പി.ഐ"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "ലിപി-വലിപ്പങ്ങള്‍ പിക്സെല്‍ (ചിത്ര-അണു) വലിപ്പങ്ങളായി മാറ്റാനുള്ള റെസലൂഷന്‍, ഇഞ്ചില്‍ എത്ര ബിന്ദുക്കള്‍ എന്ന എണ്ണത്തില്‍ (ഡോട്സ് പര്‍ ഇഞ്ച്)"
+msgstr ""
+"ലിപി-വലിപ്പങ്ങള്‍ പിക്സെല്‍ (ചിത്ര-അണു) വലിപ്പങ്ങളായി മാറ്റാനുള്ള റെസലൂഷന്‍, ഇഞ്ചില്‍ എത്ര "
+"ബിന്ദുക്കള്‍ എന്ന എണ്ണത്തില്‍ (ഡോട്സ് പര്‍ ഇഞ്ച്)"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -85,7 +87,11 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം ആന്റി-എലയാസിങ്ങ്. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   \"none\"(\"ഒന്നും അല്ല\") ആന്റി-എലയാസിങ്ങ് വേണ്ടെങ്കില്‍, \"grayscale\"(\"ഗ്രേസ്കേല്‍\") സാധാരണ ഗ്രേസ്കേല്‍ ആന്റി-എലയാസിങ്ങിനായ്,\"rgba\"( \"ആര്‍.ജി.ബി.എ\") സബ്-പിക്സെല്‍ (രണ്ടാം തരം ചിത്ര-അണു) എലയാസിങ്ങിനായ് (എല്‍.സി.ഡി സ്ക്രീനിനു മാത്രം)."
+msgstr ""
+"ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം ആന്റി-എലയാസിങ്ങ്. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   "
+"\"none\"(\"ഒന്നും അല്ല\") ആന്റി-എലയാസിങ്ങ് വേണ്ടെങ്കില്‍, \"grayscale\"(\"ഗ്രേസ്കേല്‍\") "
+"സാധാരണ ഗ്രേസ്കേല്‍ ആന്റി-എലയാസിങ്ങിനായ്,\"rgba\"( \"ആര്‍.ജി.ബി.എ\") സബ്-പിക്സെല്‍ (രണ്ടാം "
+"തരം ചിത്ര-അണു) എലയാസിങ്ങിനായ് (എല്‍.സി.ഡി സ്ക്രീനിനു മാത്രം)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -93,10 +99,14 @@ msgstr "<b>ഹിന്റിങ്ങ്(നിര്‍ദ്ദേശം ക�
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം നിര്‍ദ്ദേശങ്ങള്‍. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   \"none\"(\"ഒന്നും അല്ല\") നിര്‍ദ്ദേശങ്ങള്‍ വേണ്ടെങ്കില്‍, \"slight\"(\"ചെറുതായിട്ട്\") അടിസ്ഥാനപരമായതിന്,\"medium\"( \"പരിമിതം\") പരിമിതമായതിനായ് ,\"full\"( \"മുഴുവന്‍\") ഏറ്റവും കൂടുതല്‍ നിര്‍ദ്ദേശങ്ങള്‍ക്കായ് (അക്ഷര രൂപങ്ങളില്‍ വ്യത്യാസം വരുത്തിയേക്കാം)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"ലിപികള്‍ അവതരിപ്പിക്കുംബോള്‍ ഉപയോഗിക്കേണ്ട തരം നിര്‍ദ്ദേശങ്ങള്‍. ഉപയോഗിക്കാവുന്ന വിലകള്‍ :   "
+"\"none\"(\"ഒന്നും അല്ല\") നിര്‍ദ്ദേശങ്ങള്‍ വേണ്ടെങ്കില്‍, \"slight\"(\"ചെറുതായിട്ട്\") "
+"അടിസ്ഥാനപരമായതിന്,\"medium\"( \"പരിമിതം\") പരിമിതമായതിനായ് ,\"full\"( \"മുഴുവന്‍\") "
+"ഏറ്റവും കൂടുതല്‍ നിര്‍ദ്ദേശങ്ങള്‍ക്കായ് (അക്ഷര രൂപങ്ങളില്‍ വ്യത്യാസം വരുത്തിയേക്കാം)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -104,11 +114,16 @@ msgstr "ആര്‍.ജി.ബി.എ ക്രമം"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "രണ്ടാം തരം പിക്സെലുകള്‍ (ചിത്ര-അണുക്കള്‍) ഒരു എല്‍.സി.ഡി സ്ക്രീനേല്‍ വരുന്ന ക്രമം; ഉപയോഗിക്കുന്നത് ആന്റി-എലയാസിങ്ങ് \"rgba\" (\"ആര്‍.ജി.ബി.എ\") ആക്കുംബോള്‍ മാത്രം. എടുക്കാവുന്ന വിലകള്‍ : \"rgb\"(\"ആര്‍.ജി.ബി\") ചുവപ്പ് ഇടതു വശത്തേക്കായ് (പൊതുവേ ഉള്ള തരം),\"bgr\"(\"ബി.ജി.ആര്‍\") നീല വലതുവശത്തേക്കായ്,\"vrgb\"(\"വി.ആര്‍.ജി.ബി\") മുകളിലായ്, \"vbgr\" (\"വി.ബി.ജി.ആര്‍\" ) ചുവപ്പ് താഴെയായ് വരാന്‍."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"രണ്ടാം തരം പിക്സെലുകള്‍ (ചിത്ര-അണുക്കള്‍) ഒരു എല്‍.സി.ഡി സ്ക്രീനേല്‍ വരുന്ന ക്രമം; ഉപയോഗിക്കുന്നത് "
+"ആന്റി-എലയാസിങ്ങ് \"rgba\" (\"ആര്‍.ജി.ബി.എ\") ആക്കുംബോള്‍ മാത്രം. എടുക്കാവുന്ന വിലകള്‍ : \"rgb"
+"\"(\"ആര്‍.ജി.ബി\") ചുവപ്പ് ഇടതു വശത്തേക്കായ് (പൊതുവേ ഉള്ള തരം),\"bgr\"(\"ബി.ജി.ആര്‍\") "
+"നീല വലതുവശത്തേക്കായ്,\"vrgb\"(\"വി.ആര്‍.ജി.ബി\") മുകളിലായ്, \"vbgr\" (\"വി.ബി.ജി.ആര്‍"
+"\" ) ചുവപ്പ് താഴെയായ് വരാന്‍."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -126,9 +141,11 @@ msgstr "ടൈപ്പ് ചെയ്യുമ്പോള്‍ ടച്ച�
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
-msgstr "ടൈപ്പ് ചെയ്യുമ്പോള്‍ അബന്ധത്തില്‍ ടച്ച്പാഡില്‍ ഹിറ്റ് ചെയ്യുന്നതു് പ്രശ്നമുണ്ടാക്കുന്നുണ്ടെങ്കില്‍, ഇതു് TRUE ആയി സജ്ജമാക്കുക. "
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
+msgstr ""
+"ടൈപ്പ് ചെയ്യുമ്പോള്‍ അബന്ധത്തില്‍ ടച്ച്പാഡില്‍ ഹിറ്റ് ചെയ്യുന്നതു് പ്രശ്നമുണ്ടാക്കുന്നുണ്ടെങ്കില്‍, ഇതു് TRUE "
+"ആയി സജ്ജമാക്കുക. "
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
 msgid "Enable mouse clicks with touchpad"
@@ -377,7 +394,9 @@ msgstr "ആവര്‍ത്തിച്ചുള്ള മുന്നറി�
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "സമയം മിനിറ്റുകളില്‍ വ്യക്തമാക്കുക. ഈ സമയത്തിലല്ലാതെ, ഒരു വോള്യത്തിനുള്ള മുന്നറിയിപ്പുകള്‍ ലഭ്യമാകുന്നതല്ല."
+msgstr ""
+"സമയം മിനിറ്റുകളില്‍ വ്യക്തമാക്കുക. ഈ സമയത്തിലല്ലാതെ, ഒരു വോള്യത്തിനുള്ള മുന്നറിയിപ്പുകള്‍ "
+"ലഭ്യമാകുന്നതല്ല."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -492,88 +511,143 @@ msgid "Binding to lock the screen."
 msgstr "സ്ക്രീന്‍ പൂട്ടാനുള്ള ബന്ധം"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "എക്സ് സജ്ജീകരണങ്ങള്‍"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "'വീട്' അറ തുറക്കാനുള്ള ബന്ധം"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "'വീട്' അറ തുറക്കാനുള്ള ബന്ധം"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "സഹായകബ്രൌസര്‍ തുറക്കുക"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "സഹായകബ്രൌസര്‍ തുടങ്ങുവാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "കാല്‍ക്കുലേറ്റര്‍ തുടങ്ങുക"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "കാല്‍കുലേറ്റര്‍ തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "ബ്രൌസര്‍ തുറക്കുക"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "ബ്രൌസര്‍ തുടങ്ങുവാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "ചലച്ചിത്രദര്‍ശിനി തുടങ്ങുക"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "മാധ്യമ പ്ലേയര്‍ തുടങ്ങാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "പാടുക"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
-msgstr "പ്ലേബാക്ക് തുടങ്ങാനുള്ള ബന്ധം (അല്ലെങ്കില്‍ തുടങ്ങുക/താല്‍കാലികമായി നിര്‍ത്തുക തമ്മില്‍ മാറാനുള്ളത്)"
+msgstr ""
+"പ്ലേബാക്ക് തുടങ്ങാനുള്ള ബന്ധം (അല്ലെങ്കില്‍ തുടങ്ങുക/താല്‍കാലികമായി നിര്‍ത്തുക തമ്മില്‍ മാറാനുള്ളത്)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "പ്ലേബാക്ക് താല്‍കാലികമായി നിര്‍ത്താനുള്ള കീ"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "പ്ലേബാക്ക് താല്‍കാലികമായി നിര്‍ത്താനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "പ്ലേബാക്ക് നിര്‍ത്താനുള്ള കീ"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "പ്ലേബാക്ക് നിര്‍ത്താനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "മുമ്പുളള ട്രാക്"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "മുമ്പുളളതിലേയ്ക്കു് പോകുവാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "അടുത്ത ട്രാക്ക്"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "അടുത്ത ട്രാക്കിലേയ്ക്കു് പോകുവാനുള്ള ബന്ധം"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "സ്ക്രീന്‍ പൂട്ടാനുള്ള ബന്ധം"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "സ്ക്രീന്‍ പൂട്ടാനുള്ള ബന്ധം"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "സ്ക്രീന്‍ പൂട്ടാനുള്ള ബന്ധം"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -605,8 +679,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -680,7 +754,9 @@ msgstr "നിങ്ങള്‍ക്ക് വേഗത കുറഞ്ഞ ക
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "നിങ്ങള്‍ ഷിഫ്റ്റ് കീ 8 സെക്കന്റ് നേരത്തേക്ക് അമര്‍ത്തിപ്പിടിച്ചു. ഇത് സ്ലോ കീ സൌകര്യത്തിനുള്ള കുറുക്കു കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന രീതിയെ ഇത് ബാധിക്കും. "
+msgstr ""
+"നിങ്ങള്‍ ഷിഫ്റ്റ് കീ 8 സെക്കന്റ് നേരത്തേക്ക് അമര്‍ത്തിപ്പിടിച്ചു. ഇത് സ്ലോ കീ സൌകര്യത്തിനുള്ള കുറുക്കു "
+"കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന രീതിയെ ഇത് ബാധിക്കും. "
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -741,7 +817,9 @@ msgstr "നിങ്ങള്‍ക്ക് സ്റ്റിക്കി ക�
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "നിങ്ങള്‍ ഷിഫ്റ്റ് കീ 5 തവണ ഒരു വരിയില്‍ അമര്‍ത്തിപ്പിടിച്ചു. ഇത് സ്റ്റിക്കി കീ സൌകര്യത്തിനുള്ള കുറുക്കു കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന രീതിയെ ഇത് ബാധിക്കും. "
+msgstr ""
+"നിങ്ങള്‍ ഷിഫ്റ്റ് കീ 5 തവണ ഒരു വരിയില്‍ അമര്‍ത്തിപ്പിടിച്ചു. ഇത് സ്റ്റിക്കി കീ സൌകര്യത്തിനുള്ള കുറുക്കു "
+"കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന രീതിയെ ഇത് ബാധിക്കും. "
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -749,7 +827,10 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "നിങ്ങള്‍ രണ്ട് കീ ഒരേ സമയം അമര്‍ത്തി അല്ലെങ്കില്‍ ഷിഫ്റ്റ് കീ 5 തവണ ഒരു വരിയില്‍ അമര്‍ത്തിപ്പിടിച്ചു. ഇത് സ്റ്റിക്കി കീ സൌകര്യം നിര്‍ത്താനുള്ള കുറുക്കു കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന രീതിയെ ഇത് ബാധിക്കും. "
+msgstr ""
+"നിങ്ങള്‍ രണ്ട് കീ ഒരേ സമയം അമര്‍ത്തി അല്ലെങ്കില്‍ ഷിഫ്റ്റ് കീ 5 തവണ ഒരു വരിയില്‍ അമര്‍"
+"ത്തിപ്പിടിച്ചു. ഇത് സ്റ്റിക്കി കീ സൌകര്യം നിര്‍ത്താനുള്ള കുറുക്കു കീ ആണ്. കീബോര്‍ഡ് പ്രവര്‍ത്തിക്കുന്ന "
+"രീതിയെ ഇത് ബാധിക്കും. "
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -782,7 +863,9 @@ msgstr "(_t)അക്ഷരങ്ങള്‍ വലുതും വായിക
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:7
 msgid "_Press keyboard shortcuts one key at a time (Sticky Keys)"
-msgstr "കീബോര്‍ട് ചുരുക്കവഴി-കീകള്‍ ഓരോന്നായി അമര്‍ത്തുക (സ്റ്റിക്കി കീകള്‍)_Press keyboard shortcuts one key at a time (Sticky Keys)"
+msgstr ""
+"കീബോര്‍ട് ചുരുക്കവഴി-കീകള്‍ ഓരോന്നായി അമര്‍ത്തുക (സ്റ്റിക്കി കീകള്‍)_Press keyboard shortcuts "
+"one key at a time (Sticky Keys)"
 
 #: ../plugins/a11y-keyboard/usd-a11y-preferences-dialog.ui.h:8
 msgid "_Ignore duplicate keypresses (Bounce Keys)"
@@ -838,25 +921,34 @@ msgstr "%s ഡിസ്ക് സ്പെയിസ് മാത്രമേ ഈ
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "ചവറ്റുകുട്ട കാലിയാക്കി അല്ലെങ്കില്‍ ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്ക് അല്ലെങ്കില്‍ പാര്‍ട്ടീഷനിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
+msgstr ""
+"ചവറ്റുകുട്ട കാലിയാക്കി അല്ലെങ്കില്‍ ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് "
+"അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്ക് അല്ലെങ്കില്‍ പാര്‍ട്ടീഷനിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ "
+"സ്ഥലം ലഭ്യമാക്കാം."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്ക് അല്ലെങ്കില്‍ പാര്‍ട്ടീഷനിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
+msgstr ""
+"ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്ക് "
+"അല്ലെങ്കില്‍ പാര്‍ട്ടീഷനിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "ചവറ്റുകുട്ട കാലിയാക്കി അല്ലെങ്കില്‍ ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്കിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
+msgstr ""
+"ചവറ്റുകുട്ട കാലിയാക്കി അല്ലെങ്കില്‍ ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് "
+"അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്കിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്കിലേക്ക് ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
+msgstr ""
+"ഉപയോഗിക്കാത്ത പ്രോഗ്രാമുകള്‍ അല്ലെങ്കില്‍ ഫയലുകള്‍ നീക്കം ചെയ്തു് അല്ലെങ്കില്‍ പുറമേയുള്ളൊരു ഡിസ്കിലേക്ക് "
+"ഫയലുകള്‍ മാറ്റി നിങ്ങള്‍ക്കു് ഡിസ്കില്‍ സ്ഥലം ലഭ്യമാക്കാം."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -907,7 +999,9 @@ msgstr "ചവറ്റുകുട്ടയില്‍ നിന്നും �
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "ചവറ്റുകട്ട കാലിയാക്കിയാല്‍, എല്ലാ വസ്തുക്കളും എന്നേക്കുമായി നഷ്ടമാകുന്നു. നിങ്ങള്‍ക്കിവ വേവ്വേറയായും വെട്ടി നീക്കുവാന്‍ സാധ്യമാണു് എന്നു് പ്രത്യേകം ഓര്‍ക്കുക."
+msgstr ""
+"ചവറ്റുകട്ട കാലിയാക്കിയാല്‍, എല്ലാ വസ്തുക്കളും എന്നേക്കുമായി നഷ്ടമാകുന്നു. നിങ്ങള്‍ക്കിവ വേവ്വേറയായും "
+"വെട്ടി നീക്കുവാന്‍ സാധ്യമാണു് എന്നു് പ്രത്യേകം ഓര്‍ക്കുക."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -928,7 +1022,9 @@ msgstr "കീ ബന്ധനം(%s) അപൂര്‍ണ്ണമാണ്"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "(%s) പ്രവര്‍ത്തിപ്പിക്കുന്നതില്‍ പിശക് ,\nഇത് (%s) കീയുമായി ലിങ്ക് ചെയ്തിരിക്കുന്നു."
+msgstr ""
+"(%s) പ്രവര്‍ത്തിപ്പിക്കുന്നതില്‍ പിശക് ,\n"
+"ഇത് (%s) കീയുമായി ലിങ്ക് ചെയ്തിരിക്കുന്നു."
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -946,7 +1042,7 @@ msgstr "കീബോര്‍ഡ്"
 msgid "Keyboard plugin"
 msgstr "കീബോര്‍ഡ് സംയോജകം"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -963,30 +1059,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "സഹജമായ ടെര്‍മിനല്‍ കിട്ടിയില്ല. സഹജമായ ടെര്‍മിനലിനുള്ള  ആജ്ഞ ക്രമീകരിച്ചിരിക്കുന്നുവെന്നും, അത് ശരിയായ പ്രയോഗത്തിലേയ്ക്കാണ് ചൂണ്ടുന്നതെന്നും ഉറപ്പുവരുത്തുക"
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"സഹജമായ ടെര്‍മിനല്‍ കിട്ടിയില്ല. സഹജമായ ടെര്‍മിനലിനുള്ള  ആജ്ഞ ക്രമീകരിച്ചിരിക്കുന്നുവെന്നും, അത് "
+"ശരിയായ പ്രയോഗത്തിലേയ്ക്കാണ് ചൂണ്ടുന്നതെന്നും ഉറപ്പുവരുത്തുക"
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "ആജ്ഞ നടപ്പിലാക്കാന്‍ പറ്റിയില്ല.:  %s\n ഈ ആജ്ഞ നിലവിലുണ്ടെന്ന് ഉറപ്പുവരുത്തുക"
+msgstr ""
+"ആജ്ഞ നടപ്പിലാക്കാന്‍ പറ്റിയില്ല.:  %s\n"
+" ഈ ആജ്ഞ നിലവിലുണ്ടെന്ന് ഉറപ്പുവരുത്തുക"
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -996,16 +1096,16 @@ msgstr "മാധ്യമ സംയോജകം"
 msgid "Media keys plugin"
 msgstr " സംയോജകം"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "മൌസ് ഉപയുക്തി സവിശേഷതകള്‍  പ്രാവര്‍ത്തികമാക്കാനായില്ല"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "മൌസ് മുന്‍‌ഗണനകള്‍"
 
@@ -1041,19 +1141,19 @@ msgstr "XRandR(എക്സ്-റാന്റ്-ആര്‍)"
 msgid "Set up screen size and rotation settings"
 msgstr "സ്ക്രീന്‍ വലിപ്പവും തിരിക്കലും സജ്ജീകരിക്കുക"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "മോണിറ്റര്‍ ക്രമീകരണം സ്വിച്ച് ചെയ്യുവാന്‍ സാധ്യമായില്ല"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "പ്രദര്‍ശനത്തിനുള്ള ക്രമീകരണം വീണ്ടെടുക്കുവാന്‍ സാധ്യമല്ല"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "ഒരു ബാക്കപ്പില്‍ നിന്നും പ്രദര്‍ശനത്തിനുള്ള ക്രമീകരണം വീണ്ടെടുക്കുവാന്‍ സാധ്യമല്ല"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1061,64 +1161,64 @@ msgid_plural ""
 msgstr[0] "%d സെക്കന്‍ഡില്‍ ഡിസ്പ്ലെ മുമ്പുള്ള ക്രമീകരണത്തിലേക്കു് സജ്ജമാക്കപ്പെടുന്നു."
 msgstr[1] "%d സെക്കന്‍ഡില്‍ ഡിസ്പ്ലെ മുമ്പുള്ള ക്രമീകരണത്തിലേക്കു് സജ്ജമാക്കപ്പെടുന്നു."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "പ്രദര്‍ശനം ശരിയാണോ?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "മുമ്പുള്ള ക്രമീകരണം _വീണ്ടെടുക്കുക"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "ഈ ക്രമീകരണം _സൂക്ഷിക്കുക"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "പ്രദര്‍ശനത്തിനായി തെരഞ്ഞെടുത്ത ക്രമീകരണം പ്രായോഗികമാക്കാനായില്ല"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "സ്ക്രീന്‍ വിവരം പുതുക്കുവാന്‍ സാധ്യമായില്ല: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "മോണിറ്റര്‍ ക്രമീകരണം എങ്ങനെയെങ്കിലും സ്വിച്ച് ചെയ്യുവാന്‍ ശ്രമിക്കുക."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "മോണിറ്റര്‍ ക്രമീകരണം സൂക്ഷിക്കുവാന്‍ സാധ്യമായില്ല"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "സാധാരണ"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "ഇടത്"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "വലത്ത്"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "തല തിരിച്ചു്"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "അവതരണ സജ്ജീകരണങ്ങള്‍ ക്രമീകരിക്കുക"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "മോണിറ്ററുകള്‍ക്കുള്ള സൂക്ഷിച്ചിട്ടുള്ള ക്രമീകരണം പ്രായോഗികമാക്കുവാന്‍ സാധ്യമായില്ല"
 

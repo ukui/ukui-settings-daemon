@@ -1,7 +1,7 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# 
+#
 # Translators:
 # Rahul Bhalerao <b.rahul.pm@gmail.com>, 2006
 # Sandeep Shedmake <sandeep.shedmake@gmail.com>, 2008, 2009
@@ -11,14 +11,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-12-06 01:02+0300\n"
+"POT-Creation-Date: 2019-12-14 14:02+0800\n"
 "PO-Revision-Date: 2016-12-05 22:04+0000\n"
 "Last-Translator: monsta <monsta@inbox.ru>\n"
 "Language-Team: Marathi (http://wiki.ukui.org/trans/)\n"
+"Language: mr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Language: mr\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: ../data/50-accessibility.xml.in.h:1
@@ -26,17 +26,17 @@ msgid "Accessibility"
 msgstr "सुलभता"
 
 #: ../data/50-accessibility.xml.in.h:2
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
 msgid "Toggle magnifier"
 msgstr "टॉगल वर्धक"
 
 #: ../data/50-accessibility.xml.in.h:3
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:55
 msgid "Toggle screen reader"
 msgstr "स्क्रीन रिडर टॉगल करा"
 
 #: ../data/50-accessibility.xml.in.h:4
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:53
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:57
 msgid "Toggle on-screen keyboard"
 msgstr "ऑन-स्क्रीन कळफलक टॉगल करा"
 
@@ -72,7 +72,9 @@ msgstr "DPI"
 msgid ""
 "The resolution used for converting font sizes to pixel sizes, in dots per "
 "inch."
-msgstr "फॉन्ट आकारला पीक्सेल आकारात रूपांतरीत करण्याकरीता वापरण्याजोगी रेजोल्यूशन, डॉटस् दर इंच नुरूप."
+msgstr ""
+"फॉन्ट आकारला पीक्सेल आकारात रूपांतरीत करण्याकरीता वापरण्याजोगी रेजोल्यूशन, डॉटस् दर इंच "
+"नुरूप."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:3
 msgid "Antialiasing"
@@ -83,7 +85,10 @@ msgid ""
 "The type of antialiasing to use when rendering fonts. Possible values are: "
 "\"none\" for no antialiasing, \"grayscale\" for standard grayscale "
 "antialiasing, and \"rgba\" for subpixel antialiasing (LCD screens only)."
-msgstr "फॉन्ट दर्शवितेवेळी वापरण्याजोगी ऍन्टीअलायसींग प्रकार. संभाव्य मुल्य खालिल नुरूप आहे: \"none\" ऍन्टीअलायसींग करीता, \"grayscale\" मानक ग्रेस्केल ऍन्टीअलायसींग करीता, व \"rgba\" उपपीक्सेल ऍन्टीअलायसींग करीता (फक्त LCD पडदा)."
+msgstr ""
+"फॉन्ट दर्शवितेवेळी वापरण्याजोगी ऍन्टीअलायसींग प्रकार. संभाव्य मुल्य खालिल नुरूप आहे: \"none"
+"\" ऍन्टीअलायसींग करीता, \"grayscale\" मानक ग्रेस्केल ऍन्टीअलायसींग करीता, व \"rgba\" "
+"उपपीक्सेल ऍन्टीअलायसींग करीता (फक्त LCD पडदा)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:5
 msgid "Hinting"
@@ -91,10 +96,13 @@ msgstr "हिंटींग"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:6
 msgid ""
-"The type of hinting to use when rendering fonts. Possible values are: "
-"\"none\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and "
-"\"full\" for maximum hinting (may cause distortion of letter forms)."
-msgstr "फॉन्ट दर्शवितेवेळी वापरण्याजोगी हिन्टींगचा प्रकार. संभाव्य मुल्य खालिल नुरूप आहे: \"none\" शून्य हिन्टींग करीता, \"slight\" मुलभूत करीता, \"medium\" मध्य करीता, व \"rgba\" उपपीक्सेल अलायसींग करीता (फक्त LCD पडदा करीता)."
+"The type of hinting to use when rendering fonts. Possible values are: \"none"
+"\" for no hinting, \"slight\" for basic, \"medium\" for moderate, and \"full"
+"\" for maximum hinting (may cause distortion of letter forms)."
+msgstr ""
+"फॉन्ट दर्शवितेवेळी वापरण्याजोगी हिन्टींगचा प्रकार. संभाव्य मुल्य खालिल नुरूप आहे: \"none\" "
+"शून्य हिन्टींग करीता, \"slight\" मुलभूत करीता, \"medium\" मध्य करीता, व \"rgba\" "
+"उपपीक्सेल अलायसींग करीता (फक्त LCD पडदा करीता)."
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:7
 msgid "RGBA order"
@@ -102,11 +110,15 @@ msgstr "RGBA क्रमवारी"
 
 #: ../data/org.ukui.font-rendering.gschema.xml.in.h:8
 msgid ""
-"The order of subpixel elements on an LCD screen; only used when antialiasing"
-" is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
-"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red"
-" on bottom."
-msgstr "LCD पडद्यावरील उपपीक्सेल घटकांची क्रमवारी; फक्त ऍन्टीअलायसींग यास \"rgba\" करीता निश्चित केल्यावरच वापरले जाते. संभाव्य मुल्य खालिल प्रमाणे आहे: \"rgb\" डावीकडील लाल करीता (सर्वाधीक सर्वसाधारनरित्या), \"bgr\" डावीकडील नीळ्या करीता, \"vrgb\" वरील लाल करीता, \"vbgr\" तळातील लाल करीता."
+"The order of subpixel elements on an LCD screen; only used when antialiasing "
+"is set to \"rgba\". Possible values are: \"rgb\" for red on left (most "
+"common), \"bgr\" for blue on left, \"vrgb\" for red on top, \"vbgr\" for red "
+"on bottom."
+msgstr ""
+"LCD पडद्यावरील उपपीक्सेल घटकांची क्रमवारी; फक्त ऍन्टीअलायसींग यास \"rgba\" करीता "
+"निश्चित केल्यावरच वापरले जाते. संभाव्य मुल्य खालिल प्रमाणे आहे: \"rgb\" डावीकडील लाल "
+"करीता (सर्वाधीक सर्वसाधारनरित्या), \"bgr\" डावीकडील नीळ्या करीता, \"vrgb\" वरील "
+"लाल करीता, \"vbgr\" तळातील लाल करीता."
 
 #: ../data/org.ukui.peripherals-smartcard.gschema.xml.in.h:1
 msgid "Smartcard removal action"
@@ -124,8 +136,8 @@ msgstr "टाईपकरतेवेळी टचपॅड अकार्य�
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:2
 msgid ""
-"Set this to TRUE if you have problems with accidentally hitting the touchpad"
-" while typing."
+"Set this to TRUE if you have problems with accidentally hitting the touchpad "
+"while typing."
 msgstr "टाईप करतेवेळी टचपॅडला चुकीने हात लागल्यास यांस TRUE सेट करा."
 
 #: ../data/org.ukui.peripherals-touchpad.gschema.xml.in.h:3
@@ -375,7 +387,9 @@ msgstr "सतत सावधानतासाठी कमाल सूचन
 msgid ""
 "Specify a time in minutes. Subsequent warnings for a volume will not appear "
 "more often than this period."
-msgstr "वेळ मिनीटांत निर्देशीत करा. खंडकरीता या कालावधीपेक्षा जास्तवेळी सावधानता वारंवार आढळणार नाही."
+msgstr ""
+"वेळ मिनीटांत निर्देशीत करा. खंडकरीता या कालावधीपेक्षा जास्तवेळी सावधानता वारंवार "
+"आढळणार नाही."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml.in.h:13
 msgid "Mount paths to ignore"
@@ -490,88 +504,142 @@ msgid "Binding to lock the screen."
 msgstr "पडदा कुलूपबंद करण्याकरीता बांधणी."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
+#, fuzzy
+msgid "Open System Settings"
+msgstr "X संयोजना"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#, fuzzy
+msgid "Binding to open system settings."
+msgstr "मुख्य संचयीका उघढण्याकरीता बांधणी."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+msgid "Open File Manager"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#, fuzzy
+msgid "Binding to open file manager."
+msgstr "मुख्य संचयीका उघढण्याकरीता बांधणी."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
 msgid "Launch help browser"
 msgstr "मदत ब्राऊजर दाखल करा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
 msgid "Binding to launch the help browser."
 msgstr "मदत ब्राऊजर दाखलन करीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
 msgid "Launch calculator"
 msgstr "गणनयंत्र दाखल करा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
 msgid "Binding to launch the calculator."
 msgstr "गणनायंत्र दाखलन करीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:35
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
 msgid "Launch web browser"
 msgstr "वेब ब्राऊर दाखल करा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:36
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
 msgid "Binding to launch the web browser."
 msgstr "वेब ब्राऊजर दाखलन करीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:37
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
 msgid "Launch media player"
 msgstr "मिडीया वादक दाखल करा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:38
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
 msgid "Binding to launch the media player."
 msgstr "मिडीया वादक दाखलन करीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:39
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
 msgid "Play (or play/pause)"
 msgstr "चालवा (किंवा चालवा/स्तब्ध)"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:40
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
 msgid "Binding to start playback (or toggle play/pause)."
 msgstr "प्लेबॅक चालविण्याकरीता बांधणी (किंवा चालवा/स्तब्ध बदल लागू करा)."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:41
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
 msgid "Pause playback"
 msgstr "आवाज स्तब्ध करा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:42
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
 msgid "Binding to pause playback."
 msgstr "प्लेबॅक स्तब्ध करण्याकरीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:43
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
 msgid "Stop playback"
 msgstr "गाणी थांबवा"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:44
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
 msgid "Binding to stop playback."
 msgstr "प्लेबॅक थांबविण्याकरीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:45
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:49
 msgid "Previous track"
 msgstr "पूर्वीचे गाणी"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:46
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
 msgid "Binding to skip to previous track."
 msgstr "पूर्वीचे गाणी वगळण्याकरीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:47
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:51
 msgid "Next track"
 msgstr "पुढचे गाणी"
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:48
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
 msgid "Binding to skip to next track."
 msgstr "पुढची गाणी वगळण्याकरीता बांधणी."
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:50
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
 msgid "Binding to show the screen magnifier"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:52
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:56
 msgid "Binding to start the screen reader"
 msgstr ""
 
-#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:54
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:58
 msgid "Binding to show the on-screen keyboard"
 msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
+msgid "Terminal"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
+msgid "Open mate terminal."
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
+msgid "Take a screenshot"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
+#, fuzzy
+msgid "Binding to take a screenshot."
+msgstr "पडदा कुलूपबंद करण्याकरीता बांधणी."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
+msgid "Take a screenshot of a window"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
+#, fuzzy
+msgid "Binding to take a screenshot of a window."
+msgstr "पडदा कुलूपबंद करण्याकरीता बांधणी."
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
+msgid "Take a screenshot of an area"
+msgstr ""
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
+#, fuzzy
+msgid "Binding to take a screenshot of an area."
+msgstr "पडदा कुलूपबंद करण्याकरीता बांधणी."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
@@ -603,8 +671,8 @@ msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:10
 msgid ""
-"Turn on external monitor after system boot if user plugs in external monitor"
-" on system boot."
+"Turn on external monitor after system boot if user plugs in external monitor "
+"on system boot."
 msgstr ""
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:11
@@ -678,7 +746,9 @@ msgstr "तुम्हाला हळुवार कि निष्क्र
 msgid ""
 "You just held down the Shift key for 8 seconds.  This is the shortcut for "
 "the Slow Keys feature, which affects the way your keyboard works."
-msgstr "तुम्ही नुकतेच Shift कि 8 सेकंद करीता दाबून ठेवले आहे.  हे हळुवार कि करीता शार्टकट आहे, ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
+msgstr ""
+"तुम्ही नुकतेच Shift कि 8 सेकंद करीता दाबून ठेवले आहे.  हे हळुवार कि करीता शार्टकट आहे, "
+"ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:594
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:731
@@ -739,7 +809,9 @@ msgstr "तुम्हाला स्टिकी कि निष्क्र
 msgid ""
 "You just pressed the Shift key 5 times in a row.  This is the shortcut for "
 "the Sticky Keys feature, which affects the way your keyboard works."
-msgstr "तुम्ही नुकतेच Shift कि 5 वेळा एका ओळीत दाबून ठेवले होते.  हे हळुवार कि करीता शार्टकट आहे, ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
+msgstr ""
+"तुम्ही नुकतेच Shift कि 5 वेळा एका ओळीत दाबून ठेवले होते.  हे हळुवार कि करीता शार्टकट आहे, "
+"ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:708
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:774
@@ -747,7 +819,9 @@ msgid ""
 "You just pressed two keys at once, or pressed the Shift key 5 times in a "
 "row.  This turns off the Sticky Keys feature, which affects the way your "
 "keyboard works."
-msgstr "तुम्ही नुकतेच दोन कि एकाच वेळा, किंवा Shift कि 5 सेकंद करीता दाबून ठेवले होते.  या हळुवार कि अकार्यक्षम होते, ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
+msgstr ""
+"तुम्ही नुकतेच दोन कि एकाच वेळा, किंवा Shift कि 5 सेकंद करीता दाबून ठेवले होते.  या हळुवार "
+"कि अकार्यक्षम होते, ज्यामुळे कळफलकच्या कार्यपद्धतीवर प्रभाव पडतो."
 
 #: ../plugins/a11y-keyboard/usd-a11y-keyboard-manager.c:802
 msgid "Sticky Keys Alert"
@@ -836,25 +910,33 @@ msgstr "या संगणकावर फक्त %s डिस्क जा�
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to another disk or partition."
-msgstr "कचरापेटी रिकामी करून, न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला इतर डिस्क किंवा पार्टिशनवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
+msgstr ""
+"कचरापेटी रिकामी करून, न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला इतर डिस्क "
+"किंवा पार्टिशनवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:102
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to another disk or partition."
-msgstr "न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला इतर डिस्क किंवा पार्टिशनवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
+msgstr ""
+"न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला इतर डिस्क किंवा पार्टिशनवर हलवून "
+"तुम्ही डिस्क जागा मोकळी करू शकता."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:107
 msgid ""
 "You can free up disk space by emptying the Trash, removing unused programs "
 "or files, or moving files to an external disk."
-msgstr "कचरापेटी रिकामी करून, न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला बाहेर डिस्कवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
+msgstr ""
+"कचरापेटी रिकामी करून, न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला बाहेर "
+"डिस्कवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:110
 msgid ""
 "You can free up disk space by removing unused programs or files, or by "
 "moving files to an external disk."
-msgstr "न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला बाहेरील डिस्कवर हलवून तुम्ही डिस्क जागा मोकळी करू शकता."
+msgstr ""
+"न वापरलेले कार्यक्रम किंवा फाइल्स् काढून, किंवा फाइल्स्ला बाहेरील डिस्कवर हलवून तुम्ही डिस्क "
+"जागा मोकळी करू शकता."
 
 #. Set up all the window stuff here
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:207
@@ -905,7 +987,9 @@ msgstr "कचरापेटीतून सर्व घटके रिका
 msgid ""
 "If you choose to empty the trash, all items in it will be permanently lost. "
 "Please note that you can also delete them separately."
-msgstr "कचरापेटी रिकामी करायचे ठरवल्यास, त्यातील सर्व घटके नेहमीकरीता नाहीसे होतील. तुम्ही त्यांस वेगळ्याप्रकारे नष्ट करू शकता कृपया हे लक्षात ठेवा."
+msgstr ""
+"कचरापेटी रिकामी करायचे ठरवल्यास, त्यातील सर्व घटके नेहमीकरीता नाहीसे होतील. तुम्ही "
+"त्यांस वेगळ्याप्रकारे नष्ट करू शकता कृपया हे लक्षात ठेवा."
 
 #: ../plugins/housekeeping/usd-ldsm-trash-empty.c:381
 msgid "_Empty Trash"
@@ -926,7 +1010,9 @@ msgstr "कि बांधणी (%s) अपूरे आहे"
 msgid ""
 "Error while trying to run (%s)\n"
 "which is linked to the key (%s)"
-msgstr "(%s) चालवितेवेळी त्रुटी आढळली\nजे कि (%s) सह जुळली आहे"
+msgstr ""
+"(%s) चालवितेवेळी त्रुटी आढळली\n"
+"जे कि (%s) सह जुळली आहे"
 
 #: ../plugins/keybindings/keybindings.ukui-settings-plugin.in.h:1
 msgid "Keybindings"
@@ -944,7 +1030,7 @@ msgstr "कळफलक"
 msgid "Keyboard plugin"
 msgstr "कळफलक प्लगइन"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:119
+#: ../plugins/keyboard/usd-keyboard-xkb.c:120
 #, c-format
 msgid ""
 "Error activating XKB configuration.\n"
@@ -961,30 +1047,34 @@ msgid ""
 " • The result of <b>%s</b>"
 msgstr ""
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:265
+#: ../plugins/keyboard/usd-keyboard-xkb.c:269
 msgid "_Layouts"
 msgstr "मांडणी (_L)"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:272
+#: ../plugins/keyboard/usd-keyboard-xkb.c:276
 msgid "Keyboard _Preferences"
 msgstr "कळफलक पसंती (_P)"
 
-#: ../plugins/keyboard/usd-keyboard-xkb.c:278
+#: ../plugins/keyboard/usd-keyboard-xkb.c:282
 msgid "Show _Current Layout"
 msgstr ""
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:186
+#: ../plugins/media-keys/usd-media-keys-manager.c:187
 msgid ""
-"Could not get default terminal. Verify that your default terminal command is"
-" set and points to a valid application."
-msgstr "मुलभूत टर्मिनल प्राप्त करू शकत नाही. तुमचे मुलभूत टर्मिनल आदेश निश्चित केले आहे व वैध अनुप्रयोग करीता निर्देशीत आहे याची तपासणी करा."
+"Could not get default terminal. Verify that your default terminal command is "
+"set and points to a valid application."
+msgstr ""
+"मुलभूत टर्मिनल प्राप्त करू शकत नाही. तुमचे मुलभूत टर्मिनल आदेश निश्चित केले आहे व वैध अनुप्रयोग "
+"करीता निर्देशीत आहे याची तपासणी करा."
 
-#: ../plugins/media-keys/usd-media-keys-manager.c:226
+#: ../plugins/media-keys/usd-media-keys-manager.c:227
 #, c-format
 msgid ""
 "Couldn't execute command: %s\n"
 "Verify that this is a valid command."
-msgstr "आदेश चालवू शकत नाही: %s\nहे वैध आदेश आहे याची तपासणी करा."
+msgstr ""
+"आदेश चालवू शकत नाही: %s\n"
+"हे वैध आदेश आहे याची तपासणी करा."
 
 #: ../plugins/media-keys/media-keys.ukui-settings-plugin.in.h:1
 msgid "Media keys"
@@ -994,16 +1084,16 @@ msgstr "मिडीया कि"
 msgid "Media keys plugin"
 msgstr "मिडीया कि पल्गइन"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1021
+#: ../plugins/mouse/usd-mouse-manager.c:1440
 msgid "Could not enable mouse accessibility features"
 msgstr "कळफलक सुलभता वैशिष्ट्ये कार्यान्वीत करा(_E)"
 
-#: ../plugins/mouse/usd-mouse-manager.c:1023
+#: ../plugins/mouse/usd-mouse-manager.c:1442
 msgid ""
 "Mouse accessibility requires Mousetweaks to be installed on your system."
 msgstr ""
 
-#: ../plugins/mouse/usd-mouse-manager.c:1026
+#: ../plugins/mouse/usd-mouse-manager.c:1445
 msgid "Mouse Preferences"
 msgstr "माउस प्राधान्यता"
 
@@ -1039,19 +1129,19 @@ msgstr "XRandR"
 msgid "Set up screen size and rotation settings"
 msgstr "पडदा आकार व चक्राकार संयोजना निश्चित करा"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:373
+#: ../plugins/xrandr/usd-xrandr-manager.c:374
 msgid "Could not switch the monitor configuration"
 msgstr "मॉनीटर संयोजना बदलविणे शक्य नाही"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:397
+#: ../plugins/xrandr/usd-xrandr-manager.c:398
 msgid "Could not restore the display's configuration"
 msgstr "दृष्यची संयोजना पूर्ववत करण्यास अशक्य"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:422
+#: ../plugins/xrandr/usd-xrandr-manager.c:423
 msgid "Could not restore the display's configuration from a backup"
 msgstr "बॅकअप पासून दृष्यची संयोजना पूर्ववत करण्यास अशक्य"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:443
+#: ../plugins/xrandr/usd-xrandr-manager.c:444
 #, c-format
 msgid "The display will be reset to its previous configuration in %d second"
 msgid_plural ""
@@ -1059,64 +1149,64 @@ msgid_plural ""
 msgstr[0] "%d सेकंदात दृष्य मागील संरचना प्रमाणे पूर्ववत् केले जाईल"
 msgstr[1] "%d सेकंदात दृष्य मागील संरचना प्रमाणे पूर्ववत् केले जाईल"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:492
+#: ../plugins/xrandr/usd-xrandr-manager.c:493
 msgid "Does the display look OK?"
 msgstr "दृष्य ठिक दिसते?"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:499
+#: ../plugins/xrandr/usd-xrandr-manager.c:500
 msgid "_Restore Previous Configuration"
 msgstr "मागील संयोजना पूर्ववत करा (_R)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:500
+#: ../plugins/xrandr/usd-xrandr-manager.c:501
 msgid "_Keep This Configuration"
 msgstr "ही संयोजना जपवा (_K)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:581
+#: ../plugins/xrandr/usd-xrandr-manager.c:588
 msgid "The selected configuration for displays could not be applied"
 msgstr "दृष्य करीता निवडलेली संयोजना लागू करणे शक्य नाही"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1153
+#: ../plugins/xrandr/usd-xrandr-manager.c:1160
 #, c-format
 msgid "Could not refresh the screen information: %s"
 msgstr "पडदा माहिती पुन्ह दाखल करण्यास अशक्य: %s"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1157
+#: ../plugins/xrandr/usd-xrandr-manager.c:1164
 msgid "Trying to switch the monitor configuration anyway."
 msgstr "मॉनीटर संयोजना कसेही करून बदलविण्याचा प्रयत्न करत आहे."
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1888
+#: ../plugins/xrandr/usd-xrandr-manager.c:1895
 msgid "Rotation not supported"
 msgstr ""
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1944
+#: ../plugins/xrandr/usd-xrandr-manager.c:1951
 msgid "Could not save monitor configuration"
 msgstr "मॉनीटर संयोजना साठविणे शक्य नाही"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1962
+#: ../plugins/xrandr/usd-xrandr-manager.c:1969
 msgid "Normal"
 msgstr "सर्वसाधारण"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1963
+#: ../plugins/xrandr/usd-xrandr-manager.c:1970
 msgid "Left"
 msgstr "डावी"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1964
+#: ../plugins/xrandr/usd-xrandr-manager.c:1971
 msgid "Right"
 msgstr "उजवी"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:1965
+#: ../plugins/xrandr/usd-xrandr-manager.c:1972
 msgid "Upside Down"
 msgstr "वर खाली"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2087
+#: ../plugins/xrandr/usd-xrandr-manager.c:2094
 msgid "_Configure Display Settings…"
 msgstr "दृश्य संयोजना संयोजीत करा (_C)"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2140
+#: ../plugins/xrandr/usd-xrandr-manager.c:2147
 msgid "Configure display settings"
 msgstr "दृश्य संयोजना संयोजीत करा"
 
-#: ../plugins/xrandr/usd-xrandr-manager.c:2200
+#: ../plugins/xrandr/usd-xrandr-manager.c:2207
 msgid "Could not apply the stored configuration for monitors"
 msgstr "मॉनीटर करीता साठविलेली संयोजना लागू करणे शक्य नाही"
 
