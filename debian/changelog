@@ -5,7 +5,7 @@ ukui-settings-daemon (1.2.0-1) unstable; urgency=medium
     - Bump standards-version to 4.5.0.
     - Use debhelper-compat.
   * debian/copyright:
-    - Remove COPYIN from copyright.
+    - Remove COPYING from copyright.
 
  -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 24 Feb 2020 11:47:45 +0800
 
