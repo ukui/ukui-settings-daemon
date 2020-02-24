@@ -1,3 +1,14 @@
+ukui-settings-daemon (1.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Bump standards-version to 4.5.0.
+    - Use debhelper-compat.
+  * debian/copyright:
+    - Remove COPYIN from copyright.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 24 Feb 2020 11:47:45 +0800
+
 ukui-settings-daemon (1.1.7-2) unstable; urgency=medium
 
   * Don't set click actions since ukwm take over that.
