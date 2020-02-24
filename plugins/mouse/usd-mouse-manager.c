@@ -56,7 +56,7 @@
 #define KEY_MOTION_THRESHOLD             "motion-threshold"
 
 /* Mouse settings */
-#define UKUI_MOUSE_SCHEMA                "org.mate.peripherals-mouse"
+#define UKUI_MOUSE_SCHEMA                "org.ukui.peripherals-mouse"
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
 

@@ -46,7 +46,7 @@
 
 #define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, UkuiXSettingsManagerPrivate))
 
-#define MOUSE_SCHEMA          "org.mate.peripherals-mouse"
+#define MOUSE_SCHEMA          "org.ukui.peripherals-mouse"
 #define INTERFACE_SCHEMA      "org.mate.interface"
 #define SOUND_SCHEMA          "org.mate.sound"
 
