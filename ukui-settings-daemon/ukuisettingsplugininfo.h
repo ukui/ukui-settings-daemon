@@ -9,34 +9,44 @@
 class UkuiSettingsPluginInfo
 {
 public:
-    UkuiSettingsPluginInfo();
-
-    UkuiSettingsPluginInfo *ukuiSettingsPluginInfoNewFromFile (const char *filename);
-    gboolean         ukui_settings_plugin_info_activate        (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_deactivate      (UkuiSettingsPluginInfo *info);
-
-    gboolean         ukui_settings_plugin_info_is_active       (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_get_enabled     (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_is_available    (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_name        (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_description (UkuiSettingsPluginInfo *info);
-    const char     **ukui_settings_plugin_info_get_authors     (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_website     (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_copyright   (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_location    (UkuiSettingsPluginInfo *info);
-    void             ukui_settings_plugin_info_set_schema      (UkuiSettingsPluginInfo *info,
-                                                                gchar                  *schema);
-
-
-public:
     enum {
         ACTIVATED,
         DEACTIVATED,
         LAST_SIGNAL
     };
 
+    UkuiSettingsPluginInfo();
+    UkuiSettingsPluginInfo(QString& fileName); // ukui_settings_plugin_info_new_from_file (const char *filename);
+
+    gboolean ukuiSettingsPluginInfoActivate ();
+    gboolean ukuiSettingsPluginInfoDeactivate ();
+    gboolean ukuiSettingsPluginInfoIsactivate ();
+    gboolean ukuiSettingsPluginInfoGetEnabled ();
+    gboolean ukuiSettingsPluginInfoIsAvailable ();
+
+    const char* ukuiSettingsPluginInfoGetName ();
+    const char* ukuiSettingsPluginInfoGetDescription ();
+    const char** ukuiSettingsPluginInfoGetAuthors ();
+    const char* ukuiSettingsPluginInfoGetWebsite ();
+    const char* ukuiSettingsPluginInfoGetCopyright ();
+    const char* ukuiSettingsPluginInfoGetLocation ();
+
+    int ukuiSettingsPluginInfoGetPriority ();
+
+    void ukuiSettingsPluginInfoSetPriority (int priority);
+    void ukuiSettingsPluginInfoSetSchema (gchar* schema);
+
+    GType ukuiSettingsPluginInfoGetType (void) G_GNUC_CONST;
+
 private:
-    char                    *file;
+    gboolean activatePlugin();
+    gboolean loadPluginModule();
+    void deactivatePlugin();
+    gboolean pluginEnabledCB(GSettings* settings, gchar* key, UkuiSettingsPluginInfo*);
+
+private:
+    QString file;
+
     GSettings               *settings;
 
     char                    *location;
