@@ -1,6 +1,10 @@
 #ifndef UKUISETTINGSPROFILE_H
 #define UKUISETTINGSPROFILE_H
 
+//
+#define ukui_settings_profile_start(...)
+#define ukui_settings_profile_end(...)
+#define ukui_settings_profile_msg(...)
 
 class UkuiSettingsProfile
 {
