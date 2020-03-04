@@ -40,6 +40,7 @@ UkuiSettingsManager* UkuiSettingsManager::ukuiSettingsManagerNew()
     if (nullptr == mUkuiSettingsManager) {
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mUkuiSettingsManager = new UkuiSettingsManager;
+        mPlugin = new QList<UkuiSettingsPluginInfo*>();
     }
 
     registerManager();
