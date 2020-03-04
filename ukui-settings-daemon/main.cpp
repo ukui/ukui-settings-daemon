@@ -1,13 +1,12 @@
-#include <iostream>
-#include <syslog.h>
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <libmate-desktop/mate-gsettings.h>
-#include <QtWidgets/QApplication>
 
 #include "ukuisettingsmanager.h"
+#include "clib_syslog.h"
 
-
+#include <iostream>
+#include <QApplication>
 #define USD_DBUS_NAME         "org.ukui.SettingsDaemon"
 #define DEBUG_KEY             "mate-settings-daemon"
 #define DEBUG_SCHEMA          "org.mate.debug"
@@ -56,16 +55,22 @@ int main (int argc, char* argv[])
     GError*                 error = NULL;
     GSettings*              debug_settings = NULL;
 
-    // ukui_settings_profile_start (NULL);
+    syslog_init("ukui-settings-daemon", LOG_LOCAL6);
 
+    CT_SYSLOG(LOG_DEBUG, "starting...");
+
+
+    CT_SYSLOG(LOG_DEBUG, "本地化开始...");
     // bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
     // bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     // textdomain (GETTEXT_PACKAGE);
     // setlocale (LC_ALL, "");
+    CT_SYSLOG(LOG_DEBUG, "本地化结束!");
 
-
+    CT_SYSLOG(LOG_DEBUG, "解析命令行参数开始...");
     // FIXME:// QT parse command line
     parse_args (&argc, &argv);
+    CT_SYSLOG(LOG_DEBUG, "解析命令行参数结束!");
 
     QApplication app(argc, argv);
 
