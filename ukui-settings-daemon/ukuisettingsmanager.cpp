@@ -64,12 +64,13 @@ gboolean UkuiSettingsManager::ukuiSettingsManagerStart(GError **error)
 void UkuiSettingsManager::ukuiSettingsManagerStop()
 {
     CT_SYSLOG(LOG_DEBUG, "Stopping settings manager");
-    // unloadAll()
+     unloadAll();
 }
 
 gboolean UkuiSettingsManager::ukuiSettingsManagerAwake()
 {
-    return TRUE;
+    CT_SYSLOG(LOG_DEBUG, "Awake called")
+    return this->ukuiSettingsManagerStart(NULL);
 }
 
 void UkuiSettingsManager::onPluginActivated(QString &name)
@@ -173,6 +174,11 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     if (info != NULL) {
         delete info;
     }
+}
+
+void UkuiSettingsManager::unloadAll()
+{
+    while (!mPlugin->isEmpty()) delete mPlugin->takeFirst();
 }
 
 static bool is_item_in_schema (const char* const* items, QString& item)

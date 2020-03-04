@@ -20,6 +20,11 @@ private:
     UkuiSettingsManager();
     UkuiSettingsManager(UkuiSettingsManager&)=delete;
     UkuiSettingsManager& operator= (const UkuiSettingsManager&)=delete;
+    static gboolean registerManager();
+    void loadAll ();
+    void loadDir (QString& path);
+    void loadFile (QString& fileName);
+    void unloadAll ();
 
 public:
     ~UkuiSettingsManager();
@@ -29,10 +34,10 @@ public:
     gboolean ukuiSettingsManagerStart (GError **error);     // DD-OK!
 
     // ukui_settings_manager_stop
-    void ukuiSettingsManagerStop ();
+    void ukuiSettingsManagerStop ();                        // DD-OK!
 
     // ukui_settings_manager_awake
-    gboolean ukuiSettingsManagerAwake ();
+    gboolean ukuiSettingsManagerAwake ();                   // DO-OK!
 
 signals:
     void pluginActivated (QString& name);
@@ -41,12 +46,6 @@ signals:
 public slots:
     void onPluginActivated (QString& name);
     void onPluginDeactivated (QString& name);
-
-private:
-    static gboolean registerManager();
-    void loadAll ();
-    void loadDir (QString& path);
-    void loadFile (QString& fileName);
 
 private:
     static QList<UkuiSettingsPluginInfo*>* mPlugin;
