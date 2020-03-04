@@ -6,9 +6,18 @@ CONFIG -= app_bundle
 
 INCLUDEPATH += \
         -I ukui-settings-daemon/ \
-        -I /usr/include/glib-2.0/ \
-        -I /usr/include/dbus-1.0
+        -I /usr/include/glib-2.0/\
+        -I /usr/lib/glib-2.0/include\
+        -I /usr/include/dbus-1.0 \
+        -I /usr/lib/dbus-1.0/include/
 
+LIBS += \
+        -lglib-2.0\
+        -ldbus-1\
+        -lgobject-2.0\
+        -lgio-2.0\
+        -L /lib64\
+        -ldbus-glib-1
 
 SOURCES += \
         ukui-settings-daemon/main.cpp \

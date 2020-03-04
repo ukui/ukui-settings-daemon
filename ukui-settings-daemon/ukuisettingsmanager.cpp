@@ -2,6 +2,7 @@
 #include "ukuisettingsplugininfo.h"
 #include "ukuisettingsprofile.h"
 #include <gio/gio.h>
+#include <dbus/dbus-glib.h>
 #include <glib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -15,6 +16,9 @@
 #define USD_MANAGER_DBUS_PATH "/org/ukui/SettingsDaemon"
 #define DEFAULT_SETTINGS_PREFIX "org.ukui.SettingsDaemon"
 #define PLUGIN_EXT ".ukui-settings-plugin"
+
+UkuiSettingsManager* UkuiSettingsManager::mUkuiSettingsManager = NULL;
+DBusGConnection* UkuiSettingsManager::connection = NULL;
 
 UkuiSettingsManager::UkuiSettingsManager()
 {
@@ -49,6 +53,27 @@ gboolean UkuiSettingsManager::ukuiSettingsManagerStart(GError **error)
     return TRUE;
 }
 
+void UkuiSettingsManager::ukuiSettingsManagerStop()
+{
+    g_debug ("Stopping settings manager");
+    // unloadAll()
+}
+
+gboolean UkuiSettingsManager::ukuiSettingsManagerAwake()
+{
+    return TRUE;
+}
+
+void UkuiSettingsManager::pluginActivated(QString name)
+{
+
+}
+
+void UkuiSettingsManager::pluginDeactivated(QString name)
+{
+
+}
+
 gboolean UkuiSettingsManager::registerManager()
 {
     GError* error = NULL;
@@ -65,10 +90,12 @@ gboolean UkuiSettingsManager::registerManager()
     return TRUE;
 }
 
+// FIXME://
 void UkuiSettingsManager::loadAll()
 {
     // ukui_settings_profile_start (NULL);
-    loadDir (UKUI_SETTINGS_PLUGINDIR G_DIR_SEPARATOR_S);
+    QString p("/data/p");
+    loadDir (p);
 
     // ukui_settings_profile_end (NULL);
 }
@@ -79,7 +106,7 @@ void UkuiSettingsManager::loadDir(QString &path)
     GDir*       dir = NULL;
     const char* name = NULL;
 
-    g_debug ("Loading settings plugins from dir: %s", path.data());
+    g_debug ("Loading settings plugins from dir: %s", (char*)path.data());
 
     // ukui_settings_profile_start (NULL);
     dir = g_dir_open ((char*)path.data(), 0, &error);

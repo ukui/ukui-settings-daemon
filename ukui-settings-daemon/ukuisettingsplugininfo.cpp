@@ -235,8 +235,10 @@ gboolean UkuiSettingsPluginInfo::loadPluginModule()
     dirname = g_path_get_dirname((char*)this->file.data());
     if (NULL == dirname) return FALSE;
 
-    path = g_module_build_path(dirname, this->location);
-    g_free(dirname);
+    // FIXME://
+
+//    path = g_module_build_path(dirname, this->location);
+//    g_free(dirname);
     g_return_val_if_fail(NULL != path, FALSE);
 
     // 新建模块

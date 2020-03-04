@@ -23,6 +23,17 @@ public:
     // ukui_settings_manager_start
     gboolean ukuiSettingsManagerStart (GError **error);
 
+    // ukui_settings_manager_stop
+    void ukuiSettingsManagerStop ();
+
+    // ukui_settings_manager_awake
+    gboolean ukuiSettingsManagerAwake ();
+
+
+protected:
+    void pluginActivated (QString name);
+    void pluginDeactivated (QString name);
+
 private:
     static gboolean registerManager();
     void loadAll ();
