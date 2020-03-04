@@ -26,7 +26,7 @@ public:
     static UkuiSettingsManager* ukuiSettingsManagerNew();   // DD-OK!
 
     // ukui_settings_manager_start
-    gboolean ukuiSettingsManagerStart (GError **error);
+    gboolean ukuiSettingsManagerStart (GError **error);     // DD-OK!
 
     // ukui_settings_manager_stop
     void ukuiSettingsManagerStop ();

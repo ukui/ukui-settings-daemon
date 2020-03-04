@@ -21,17 +21,17 @@ public:
     gboolean ukuiSettingsPluginInfoGetEnabled ();
     gboolean ukuiSettingsPluginInfoIsAvailable ();
 
-    const char* ukuiSettingsPluginInfoGetName ();
-    const char* ukuiSettingsPluginInfoGetDescription ();
+    QString& ukuiSettingsPluginInfoGetName ();
+    QString& ukuiSettingsPluginInfoGetDescription ();
     const char** ukuiSettingsPluginInfoGetAuthors ();
-    const char* ukuiSettingsPluginInfoGetWebsite ();
-    const char* ukuiSettingsPluginInfoGetCopyright ();
-    const char* ukuiSettingsPluginInfoGetLocation ();
+    QString& ukuiSettingsPluginInfoGetWebsite ();
+    QString& ukuiSettingsPluginInfoGetCopyright ();
+    QString& ukuiSettingsPluginInfoGetLocation ();
 
-    int ukuiSettingsPluginInfoGetPriority ();
+    int& ukuiSettingsPluginInfoGetPriority ();
 
     void ukuiSettingsPluginInfoSetPriority (int priority);
-    void ukuiSettingsPluginInfoSetSchema (gchar* schema);
+    void ukuiSettingsPluginInfoSetSchema (QString& schema);
 
     GType ukuiSettingsPluginInfoGetType (void) G_GNUC_CONST;
 
@@ -46,18 +46,18 @@ private:
     gboolean pluginEnabledCB(GSettings* settings, gchar* key, UkuiSettingsPluginInfo*);
 
 private:
-    QString file;
-
+    /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
+    int                     mPriority;
+    QString                 mFile;
+    QString                 mLocation;
+    QString                 mName;
+    QString                 mDesc;
+    QString                 mCopyright;
+    QString                 mWebsite;
     GSettings               *settings;
-
-    char                    *location;
-    GTypeModule             *module;
-
-    char                    *name;
-    char                    *desc;
     char                   **authors;
-    char                    *copyright;
-    char                    *website;
+
+    GTypeModule             *module;
 
     UkuiSettingsPlugin     *plugin;
 
@@ -70,9 +70,7 @@ private:
 
     guint                    enabled_notification_id;
 
-    /* Priority determines the order in which plugins are started and
-     * stopped. A lower number means higher priority. */
-    guint                    priority;
+
 };
 
 #endif // UKUISETTINGSPLUGININFO_H

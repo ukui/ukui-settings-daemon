@@ -23,7 +23,7 @@ DBusGConnection* UkuiSettingsManager::mConnection = NULL;
 QList<UkuiSettingsPluginInfo*>* UkuiSettingsManager::mPlugin = NULL;
 UkuiSettingsManager* UkuiSettingsManager::mUkuiSettingsManager = NULL;
 
-bool is_schema (const char* schema);
+bool is_schema (QString& schema);
 
 UkuiSettingsManager::UkuiSettingsManager()
 {
@@ -141,7 +141,7 @@ void UkuiSettingsManager::loadDir(QString &path)
 void UkuiSettingsManager::loadFile(QString &fileName)
 {
     UkuiSettingsPluginInfo* info = NULL;
-    char*                   schema = NULL;
+    QString                 schema;
     GSList*                 l = NULL;
 
     CT_SYSLOG(LOG_DEBUG, "Loading plugin: %s", fileName.toLatin1().data());
@@ -159,16 +159,15 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     }
 
     // check plugin's schema
-    schema = g_strdup_printf ("%s.plugins.%s", DEFAULT_SETTINGS_PREFIX, info->ukuiSettingsPluginInfoGetLocation());
+    schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->ukuiSettingsPluginInfoGetLocation().toUtf8().data());
     if (is_schema (schema)) {
        mPlugin->insert(0, info);
        QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
        QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
        info->ukuiSettingsPluginInfoSetSchema(schema);
     } else {
-           CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema);
+        CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema.toLatin1().data());
     }
-    g_free (schema);
 
  out:
     if (info != NULL) {
@@ -176,15 +175,16 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     }
 }
 
-static bool is_item_in_schema (const char* const* items, const char* item)
+static bool is_item_in_schema (const char* const* items, QString& item)
 {
     while (*items) {
-       if (g_strcmp0 (*items++, item) == 0) return true;
+       if (g_strcmp0 (*items++, item.toLatin1().data()) == 0) return true;
     }
     return false;
 }
 
-bool is_schema (const char* schema)
+bool is_schema (QString& schema)
 {
+    CT_SYSLOG(LOG_DEBUG, "schema: '%s'", schema.toLatin1().data());
     return is_item_in_schema (g_settings_list_schemas(), schema);
 }
