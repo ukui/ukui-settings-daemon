@@ -6,47 +6,58 @@
 #include <gmodule.h>
 #include <gio/gio.h>
 
-class UkuiSettingsPluginInfo
+#include <QObject>
+
+class UkuiSettingsPluginInfo : public QObject
 {
+    Q_OBJECT
 public:
     UkuiSettingsPluginInfo();
+    UkuiSettingsPluginInfo(QString& fileName); // ukui_settings_plugin_info_new_from_file (const char *filename);
 
-    UkuiSettingsPluginInfo *ukuiSettingsPluginInfoNewFromFile (const char *filename);
-    gboolean         ukui_settings_plugin_info_activate        (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_deactivate      (UkuiSettingsPluginInfo *info);
+    gboolean ukuiSettingsPluginInfoActivate ();
+    gboolean ukuiSettingsPluginInfoDeactivate ();
+    gboolean ukuiSettingsPluginInfoIsactivate ();
+    gboolean ukuiSettingsPluginInfoGetEnabled ();
+    gboolean ukuiSettingsPluginInfoIsAvailable ();
 
-    gboolean         ukui_settings_plugin_info_is_active       (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_get_enabled     (UkuiSettingsPluginInfo *info);
-    gboolean         ukui_settings_plugin_info_is_available    (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_name        (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_description (UkuiSettingsPluginInfo *info);
-    const char     **ukui_settings_plugin_info_get_authors     (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_website     (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_copyright   (UkuiSettingsPluginInfo *info);
-    const char      *ukui_settings_plugin_info_get_location    (UkuiSettingsPluginInfo *info);
-    void             ukui_settings_plugin_info_set_schema      (UkuiSettingsPluginInfo *info,
-                                                                gchar                  *schema);
+    QString& ukuiSettingsPluginInfoGetName ();
+    QString& ukuiSettingsPluginInfoGetDescription ();
+    const char** ukuiSettingsPluginInfoGetAuthors ();
+    QString& ukuiSettingsPluginInfoGetWebsite ();
+    QString& ukuiSettingsPluginInfoGetCopyright ();
+    QString& ukuiSettingsPluginInfoGetLocation ();
 
+    int& ukuiSettingsPluginInfoGetPriority ();
 
-public:
-    enum {
-        ACTIVATED,
-        DEACTIVATED,
-        LAST_SIGNAL
-    };
+    void ukuiSettingsPluginInfoSetPriority (int priority);
+    void ukuiSettingsPluginInfoSetSchema (QString& schema);
+
+    GType ukuiSettingsPluginInfoGetType (void) G_GNUC_CONST;
+
+signals:
+    void activated(QString&);
+    void deactivated(QString&);
 
 private:
-    char                    *file;
+    gboolean activatePlugin();
+    gboolean loadPluginModule();
+    void deactivatePlugin();
+    gboolean pluginEnabledCB(GSettings* settings, gchar* key, UkuiSettingsPluginInfo*);
+
+private:
+    /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
+    int                     mPriority;
+    QString                 mFile;
+    QString                 mLocation;
+    QString                 mName;
+    QString                 mDesc;
+    QString                 mCopyright;
+    QString                 mWebsite;
     GSettings               *settings;
-
-    char                    *location;
-    GTypeModule             *module;
-
-    char                    *name;
-    char                    *desc;
     char                   **authors;
-    char                    *copyright;
-    char                    *website;
+
+    GTypeModule             *module;
 
     UkuiSettingsPlugin     *plugin;
 
@@ -59,9 +70,7 @@ private:
 
     guint                    enabled_notification_id;
 
-    /* Priority determines the order in which plugins are started and
-     * stopped. A lower number means higher priority. */
-    guint                    priority;
+
 };
 
 #endif // UKUISETTINGSPLUGININFO_H

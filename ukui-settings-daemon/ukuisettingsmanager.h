@@ -1,11 +1,56 @@
 #ifndef UKUISETTINGSMANAGER_H
 #define UKUISETTINGSMANAGER_H
 
+#include "global.h"
+#include "ukuisettingsplugininfo.h"
 
-class UkuiSettingsManager
+#include <glib.h>
+#define DBUS_API_SUBJECT_TO_CHANGE
+#include <dbus/dbus-glib.h>
+#include <dbus/dbus-glib-lowlevel.h>
+
+#include <QList>
+#include <QString>
+#include <QObject>
+
+class UkuiSettingsManager : QObject
 {
-public:
+    Q_OBJECT
+private:
     UkuiSettingsManager();
+    UkuiSettingsManager(UkuiSettingsManager&)=delete;
+    UkuiSettingsManager& operator= (const UkuiSettingsManager&)=delete;
+    static gboolean registerManager();
+    void loadAll ();
+    void loadDir (QString& path);
+    void loadFile (QString& fileName);
+    void unloadAll ();
+
+public:
+    ~UkuiSettingsManager();
+    static UkuiSettingsManager* ukuiSettingsManagerNew();   // DD-OK!
+
+    // ukui_settings_manager_start
+    gboolean ukuiSettingsManagerStart (GError **error);     // DD-OK!
+
+    // ukui_settings_manager_stop
+    void ukuiSettingsManagerStop ();                        // DD-OK!
+
+    // ukui_settings_manager_awake
+    gboolean ukuiSettingsManagerAwake ();                   // DO-OK!
+
+signals:
+    void pluginActivated (QString& name);
+    void pluginDeactivated (QString& name);
+
+public slots:
+    void onPluginActivated (QString& name);
+    void onPluginDeactivated (QString& name);
+
+private:
+    static QList<UkuiSettingsPluginInfo*>* mPlugin;
+    static UkuiSettingsManager* mUkuiSettingsManager;
+    static DBusGConnection*     mConnection;
 };
 
 #endif // UKUISETTINGSMANAGER_H
