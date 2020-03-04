@@ -6,15 +6,12 @@
 #include <gmodule.h>
 #include <gio/gio.h>
 
-class UkuiSettingsPluginInfo
-{
-public:
-    enum {
-        ACTIVATED,
-        DEACTIVATED,
-        LAST_SIGNAL
-    };
+#include <QObject>
 
+class UkuiSettingsPluginInfo : public QObject
+{
+    Q_OBJECT
+public:
     UkuiSettingsPluginInfo();
     UkuiSettingsPluginInfo(QString& fileName); // ukui_settings_plugin_info_new_from_file (const char *filename);
 
@@ -37,6 +34,10 @@ public:
     void ukuiSettingsPluginInfoSetSchema (gchar* schema);
 
     GType ukuiSettingsPluginInfoGetType (void) G_GNUC_CONST;
+
+signals:
+    void activated(QString&);
+    void deactivated(QString&);
 
 private:
     gboolean activatePlugin();

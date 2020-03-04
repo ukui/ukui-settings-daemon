@@ -36,6 +36,7 @@ SOURCES += \
 
 HEADERS += \
         ukui-settings-daemon/clib_syslog.h\
+        ukui-settings-daemon/global.h \
         ukui-settings-daemon/ukuisettingsmanager.h \
         ukui-settings-daemon/ukuisettingsmodule.h \
         ukui-settings-daemon/ukuisettingsplugin.h \
