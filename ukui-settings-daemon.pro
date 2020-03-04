@@ -20,7 +20,8 @@ LIBS += \
         -lgobject-2.0\
         -lgio-2.0\
         -L /lib64\
-        -ldbus-glib-1
+        -ldbus-glib-1\
+        -lmate-desktop-2
 
 SOURCES += \
         ukui-settings-daemon/main.cpp \
