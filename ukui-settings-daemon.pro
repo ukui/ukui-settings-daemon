@@ -4,6 +4,8 @@ CONFIG += console c++11
 CONFIG -= app_bundle
 #CONFIG -= qt
 
+greaterThan(QT_MAJOR_VERSION, 5): QT += widgets
+
 INCLUDEPATH += \
         -I ukui-settings-daemon/ \
         -I /usr/include/glib-2.0/\

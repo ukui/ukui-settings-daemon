@@ -3,6 +3,7 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <libmate-desktop/mate-gsettings.h>
+#include <QtWidgets/QApplication>
 
 #include "ukuisettingsmanager.h"
 
@@ -66,6 +67,8 @@ int main (int argc, char* argv[])
     // FIXME:// QT parse command line
     parse_args (&argc, &argv);
 
+    QApplication app(argc, argv);
+
     /* Allows to enable/disable debug from GSettings only if it is not set from argument */
     if (mate_gsettings_schema_exists (DEBUG_SCHEMA)) {
         debug_settings = g_settings_new (DEBUG_SCHEMA);
@@ -127,7 +130,7 @@ out:
 
 
     std::cout << "Hello World!" << std::endl;
-    return 0;
+    return app.exec();;
 }
 
 static void parse_args (int *argc, char ***argv)
