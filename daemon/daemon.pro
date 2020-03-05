@@ -3,6 +3,7 @@ TEMPLATE = app
 QT += core gui
 CONFIG += console c++11
 CONFIG -= app_bundle
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 INCLUDEPATH += \
@@ -24,17 +25,17 @@ LIBS += \
         -lmate-desktop-2
 
 SOURCES += \
-        clib_syslog.c\
-        main.cpp \
-        ukuisettingsmanager.cpp \
-        ukuisettingsmodule.cpp \
-        ukuisettingsplugin.cpp \
-        ukuisettingsplugininfo.cpp
+        $$PWD/main.cpp \
+        $$PWD/clib_syslog.c\
+        $$PWD/ukuisettingsmodule.cpp \
+        $$PWD/ukuisettingsplugin.cpp \
+        $$PWD/ukuisettingsmanager.cpp \
+        $$PWD/ukuisettingsplugininfo.cpp
 
 HEADERS += \
-        clib_syslog.h\
-        global.h \
-        ukuisettingsmanager.h \
-        ukuisettingsmodule.h \
-        ukuisettingsplugin.h \
-        ukuisettingsplugininfo.h
+        $$PWD/global.h \
+        $$PWD/clib_syslog.h\
+        $$PWD/ukuisettingsmodule.h \
+        $$PWD/ukuisettingsplugin.h \
+        $$PWD/ukuisettingsmanager.h \
+        $$PWD/ukuisettingsplugininfo.h

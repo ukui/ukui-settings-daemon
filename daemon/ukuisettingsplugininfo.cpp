@@ -13,25 +13,23 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
     GKeyFile*   pluginFile = NULL;
     char*       str = NULL;
     int         priority;
-    gboolean    ret;
+    GError*     error = NULL;
 
-    // ukui_settings_profile_start ("%s", filename);
-    ret = FALSE;
-
+    //FIXME://
     this->mFile = QString(fileName);
 
     pluginFile = g_key_file_new();
-    if (!g_key_file_load_from_file(pluginFile, (char*)fileName.data(), G_KEY_FILE_NONE, NULL)) {
-        g_warning("Bad plugin file: %s", fileName.toLatin1().data());
+    if (!g_key_file_load_from_file(pluginFile, (char*)fileName.toLatin1().data(), G_KEY_FILE_NONE, &error)) {
+        CT_SYSLOG(LOG_ERR, "Bad plugin file:'%s',error:'%s'", fileName.toLatin1().data(), error->message);
         goto out;
     }
     if (!g_key_file_has_key(pluginFile, PLUGIN_GROUP, "IAge", NULL)) {
-        g_debug ("IAge key does not exist in file: %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "IAge key does not exist in file: %s", fileName.toLatin1().data());
         goto out;
     }
     /* Check IAge=2 */
     if (g_key_file_get_integer (pluginFile, PLUGIN_GROUP, "IAge", NULL) != 0) {
-        g_debug ("Wrong IAge in file: %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Wrong IAge in file: %s", fileName.toLatin1().data());
         goto out;
     }
 
@@ -41,7 +39,7 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
         this->mLocation = str;
     } else {
         g_free (str);
-        g_warning ("Could not find 'Module' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Module' in %s", fileName.toLatin1().data());
         goto out;
     }
     /* Get Name */
@@ -49,7 +47,7 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
     if (str != NULL) {
         this->mName = str;
     } else {
-        g_warning ("Could not find 'Name' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Name' in %s", fileName.toLatin1().data());
         goto out;
     }
 
@@ -58,13 +56,13 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
     if (str != NULL) {
         this->mDesc = str;
     } else {
-        g_debug ("Could not find 'Description' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Description' in %s", fileName.toLatin1().data());
     }
 
     /* Get Authors */
     this->authors = g_key_file_get_string_list (pluginFile, PLUGIN_GROUP, "Authors", NULL, NULL);
     if (this->authors == NULL) {
-        g_debug ("Could not find 'Authors' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Authors' in %s", fileName.toLatin1().data());
     }
 
     /* Get Copyright */
@@ -72,7 +70,7 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
     if (str != NULL) {
         this->mCopyright = str;
     } else {
-        g_debug ("Could not find 'Copyright' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Copyright' in %s", fileName.toLatin1().data());
     }
 
     /* Get Website */
@@ -80,7 +78,7 @@ UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString &fileName)
     if (str != NULL) {
          this->mWebsite = str;
     } else {
-        g_debug ("Could not find 'Website' in %s", fileName.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Website' in %s", fileName.toLatin1().data());
     }
 
     /* Get Priority */

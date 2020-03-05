@@ -7,8 +7,8 @@ class UkuiSettingsPlugin
 {
 public:
     UkuiSettingsPlugin();
+    virtual ~UkuiSettingsPlugin();
 
-    // void            (*deactivate)                   (UkuiSettingsPlugin *plugin);
     virtual void activate () = 0;
     virtual void deactivate () = 0;
 

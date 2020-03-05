@@ -4,3 +4,8 @@ UkuiSettingsPlugin::UkuiSettingsPlugin()
 {
 
 }
+
+UkuiSettingsPlugin::~UkuiSettingsPlugin()
+{
+
+}

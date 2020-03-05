@@ -107,6 +107,8 @@ void UkuiSettingsManager::loadAll()
     QString p(UKUI_SETTINGS_PLUGINDIR);
     loadDir (p);
     //FIXME://
+
+    CT_SYSLOG(LOG_ERR, "okkkkkkkkkkkkkkkkkkkkkkkkkk");
 }
 
 void UkuiSettingsManager::loadDir(QString &path)
@@ -117,6 +119,7 @@ void UkuiSettingsManager::loadDir(QString &path)
 
     CT_SYSLOG(LOG_DEBUG, "Loading settings plugins from dir: %s", (char*)path.toLatin1().data());
 
+    CT_SYSLOG(LOG_ERR, "");
     dir = g_dir_open ((char*)path.toLatin1().data(), 0, &error);
     if (NULL == dir) {
         CT_SYSLOG(LOG_ERR, "%s", error->message);
@@ -143,10 +146,10 @@ void UkuiSettingsManager::loadFile(QString &fileName)
 {
     UkuiSettingsPluginInfo* info = NULL;
     QString                 schema;
-    GSList*                 l = NULL;
 
     CT_SYSLOG(LOG_DEBUG, "Loading plugin: %s", fileName.toLatin1().data());
 
+    // FIXME://
     info = new UkuiSettingsPluginInfo(fileName);
     if (info == NULL) {
         goto out;
