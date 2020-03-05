@@ -513,13 +513,13 @@ do_media_action (UsdMediaKeysManager *manager)
 static void
 do_shutdown_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "ukui-session-save --shutdown-dialog", FALSE, FALSE);
+        execute (manager, "ukui-session-tools", FALSE, FALSE);
 }
 
 static void
 do_logout_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "gnome-system-monitor", FALSE, FALSE);
+        execute (manager, "ukui-session-tools", FALSE, FALSE);
 }
 
 static void
