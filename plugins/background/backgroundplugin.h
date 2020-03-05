@@ -5,16 +5,16 @@
 
 // Q_DECL_EXPORT
 
-class Q_DECL_EXPORT BackgroundPlugin : public UkuiSettingsPlugin
-{
-public:
-    BackgroundPlugin();
-    ~BackgroundPlugin();
+//class Q_DECL_EXPORT BackgroundPlugin : public UkuiSettingsPlugin
+//{
+//public:
+//    BackgroundPlugin();
+//    ~BackgroundPlugin();
 
-    virtual void activate ();
-    virtual void deactivate ();
+//    virtual void activate ();
+//    virtual void deactivate ();
 
-    void registerSettingsPlugin ();
-};
+//    void registerSettingsPlugin ();
+//};
 
 #endif // BACKGROUNDPLUGIN_H

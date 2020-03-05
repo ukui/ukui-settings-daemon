@@ -8,11 +8,9 @@ class UkuiSettingsPlugin
 public:
     UkuiSettingsPlugin();
 
+    // void            (*deactivate)                   (UkuiSettingsPlugin *plugin);
     virtual void activate () = 0;
     virtual void deactivate () = 0;
-
-    void ukuiSettingsPluginActivate ();
-    void ukuiSettingsPluginDeactivate ();
 
 protected:
     QString pluginName;

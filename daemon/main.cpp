@@ -6,6 +6,7 @@
 #include "clib_syslog.h"
 
 #include <QApplication>
+
 #define USD_DBUS_NAME         "org.ukui.SettingsDaemon"
 #define DEBUG_KEY             "mate-settings-daemon"
 #define DEBUG_SCHEMA          "org.mate.debug"
