@@ -75,13 +75,13 @@ gboolean UkuiSettingsManager::ukuiSettingsManagerAwake()
 
 void UkuiSettingsManager::onPluginActivated(QString &name)
 {
-    CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toLatin1().data());
+    CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toUtf8().data());
     emit pluginActivated(name);
 }
 
 void UkuiSettingsManager::onPluginDeactivated(QString &name)
 {
-    CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toLatin1().data());
+    CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());
     emit pluginDeactivated(name);
 }
 
@@ -104,9 +104,19 @@ gboolean UkuiSettingsManager::registerManager()
 
 void UkuiSettingsManager::loadAll()
 {
+    UkuiSettingsPluginInfo* info = NULL;
+
     QString p(UKUI_SETTINGS_PLUGINDIR);
     loadDir (p);
-    //FIXME://
+
+    // FIXME:// sort plugin
+
+    CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
+    for (int i = 0; i < mPlugin->size(); ++i) {
+        info = mPlugin->at(i);
+        CT_SYSLOG(LOG_ERR, "activity plugin: %s", info->ukuiSettingsPluginInfoGetName().toUtf8().data());
+        info->ukuiSettingsPluginInfoActivate();
+    }
 }
 
 void UkuiSettingsManager::loadDir(QString &path)
@@ -143,10 +153,10 @@ void UkuiSettingsManager::loadFile(QString &fileName)
 {
     UkuiSettingsPluginInfo* info = NULL;
     QString                 schema;
-    GSList*                 l = NULL;
 
     CT_SYSLOG(LOG_DEBUG, "Loading plugin: %s", fileName.toLatin1().data());
 
+    // FIXME://
     info = new UkuiSettingsPluginInfo(fileName);
     if (info == NULL) {
         goto out;
@@ -162,15 +172,19 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     // check plugin's schema
     schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->ukuiSettingsPluginInfoGetLocation().toUtf8().data());
     if (is_schema (schema)) {
-       mPlugin->insert(0, info);
        QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
        QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
        info->ukuiSettingsPluginInfoSetSchema(schema);
+       mPlugin->insert(0, info);
     } else {
         CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema.toLatin1().data());
     }
 
- out:
+    CT_SYSLOG(LOG_ERR, "PLUGIN NUMBER:%d", mPlugin->size());
+
+    return;
+
+out:
     if (info != NULL) {
         delete info;
     }

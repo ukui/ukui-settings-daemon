@@ -7,12 +7,10 @@ class UkuiSettingsPlugin
 {
 public:
     UkuiSettingsPlugin();
+    virtual ~UkuiSettingsPlugin();
 
     virtual void activate () = 0;
     virtual void deactivate () = 0;
-
-    void ukuiSettingsPluginActivate ();
-    void ukuiSettingsPluginDeactivate ();
 
 protected:
     QString pluginName;

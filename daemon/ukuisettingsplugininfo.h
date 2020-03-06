@@ -4,22 +4,25 @@
 
 #include <glib-object.h>
 #include <gmodule.h>
+
 #include <gio/gio.h>
 
+#include <QLibrary>
 #include <QObject>
+#include <string>
 
 class UkuiSettingsPluginInfo : public QObject
 {
     Q_OBJECT
 public:
-    UkuiSettingsPluginInfo();
-    UkuiSettingsPluginInfo(QString& fileName); // ukui_settings_plugin_info_new_from_file (const char *filename);
+    UkuiSettingsPluginInfo()=delete;
+    UkuiSettingsPluginInfo(QString& fileName); // DD-OKK // ukui_settings_plugin_info_new_from_file (const char *filename);
 
-    gboolean ukuiSettingsPluginInfoActivate ();
-    gboolean ukuiSettingsPluginInfoDeactivate ();
-    gboolean ukuiSettingsPluginInfoIsactivate ();
-    gboolean ukuiSettingsPluginInfoGetEnabled ();
-    gboolean ukuiSettingsPluginInfoIsAvailable ();
+    bool ukuiSettingsPluginInfoActivate ();
+    bool ukuiSettingsPluginInfoDeactivate ();
+    bool ukuiSettingsPluginInfoIsactivate ();
+    bool ukuiSettingsPluginInfoGetEnabled ();
+    bool ukuiSettingsPluginInfoIsAvailable ();
 
     QString& ukuiSettingsPluginInfoGetName ();
     QString& ukuiSettingsPluginInfoGetDescription ();
@@ -40,37 +43,31 @@ signals:
     void deactivated(QString&);
 
 private:
-    gboolean activatePlugin();
-    gboolean loadPluginModule();
+    bool activatePlugin();
+    bool loadPluginModule();
     void deactivatePlugin();
-    gboolean pluginEnabledCB(GSettings* settings, gchar* key, UkuiSettingsPluginInfo*);
+    bool pluginEnabledCB(GSettings* settings, gchar* key, UkuiSettingsPluginInfo*);
 
 private:
     /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
     int                     mPriority;
+
+    bool                    mActive;
+    bool                    mEnabled;
+    bool                    mAvailable;
+
     QString                 mFile;
-    QString                 mLocation;
     QString                 mName;
     QString                 mDesc;
-    QString                 mCopyright;
     QString                 mWebsite;
-    GSettings               *settings;
-    char                   **authors;
+    QString                 mLocation;
+    QString                 mCopyright;
+    GSettings*              mSettings;
+    UkuiSettingsPlugin*     mPlugin;
+    QLibrary*               mModule;
 
-    GTypeModule             *module;
-
-    UkuiSettingsPlugin     *plugin;
-
-    int                      enabled : 1;
-    int                      active : 1;
-
-    /* A plugin is unavailable if it is not possible to activate it
-       due to an error loading the plugin module */
-    int                      available : 1;
-
-    guint                    enabled_notification_id;
-
-
+    char**                  mAuthors;             // FIXME://
+    guint                   enabled_notification_id;
 };
 
 #endif // UKUISETTINGSPLUGININFO_H
