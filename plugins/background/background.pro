@@ -2,7 +2,7 @@ TEMPLATE = lib
 TARGET = background
 
 QT -= gui
-CONFIG += c++11
+CONFIG += c++11 plugin
 CONFIG -= app_bundle
 
 DEFINES += QT_DEPRECATED_WARNINGS
@@ -24,11 +24,11 @@ INCLUDEPATH += \
 
 SOURCES += \
         $$PWD/../../daemon/clib_syslog.c\
-        $$PWD/backgroundmanager.cpp \
+#        $$PWD/backgroundmanager.cpp \
         $$PWD/backgroundplugin.cpp
 #        $$PWD/main.cpp
 
 HEADERS += \
         $$PWD/../../daemon/clib_syslog.h\
-        $$PWD/backgroundmanager.h \
+#        $$PWD/backgroundmanager.h \
         $$PWD/backgroundplugin.h

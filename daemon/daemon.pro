@@ -1,7 +1,7 @@
 TEMPLATE = app
 
 QT += core gui
-CONFIG += console c++11
+CONFIG += c++11
 CONFIG -= app_bundle
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -22,15 +22,17 @@ LIBS += \
         -lgio-2.0\
         -L /lib64\
         -ldbus-glib-1\
-        -lmate-desktop-2
+        -lmate-desktop-2\
+        -lgmodule-2.0
 
 SOURCES += \
-        $$PWD/main.cpp \
+#        $$PWD/main.cpp \
         $$PWD/clib_syslog.c\
         $$PWD/ukuisettingsmodule.cpp \
         $$PWD/ukuisettingsplugin.cpp \
         $$PWD/ukuisettingsmanager.cpp \
-        $$PWD/ukuisettingsplugininfo.cpp
+        $$PWD/ukuisettingsplugininfo.cpp \
+        a.cpp
 
 HEADERS += \
         $$PWD/global.h \
