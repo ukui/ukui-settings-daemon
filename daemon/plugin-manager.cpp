@@ -84,7 +84,7 @@ void PluginManager::onPluginDeactivated(QString &name)
 
 gboolean PluginManager::registerManager()
 {
-    GError* error = NULL;
+    GError* managerStart = NULL;
     mConnection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
     if (NULL == mConnection) {
         if (NULL == error) {

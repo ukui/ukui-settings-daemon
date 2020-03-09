@@ -104,7 +104,7 @@ int main (int argc, char* argv[])
     /* If we aren't started by dbus then load the plugins automatically.  Otherwise, wait for an Awake etc. */
     if (g_getenv ("DBUS_STARTER_BUS_TYPE") == NULL) {
         error = NULL;
-        res = manager->managerStart(&error);
+        res = manager->managerStart();
         if (! res) {
             CT_SYSLOG(LOG_ERR, "Unable to start: %s", error->message);
             g_error_free (error);
