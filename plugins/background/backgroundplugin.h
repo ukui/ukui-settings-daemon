@@ -1,7 +1,7 @@
 #ifndef BACKGROUNDPLUGIN_H
 #define BACKGROUNDPLUGIN_H
-#include <ukuisettingsplugin.h>
-//#include <QtCore/QtGlobal>
+#include "ukuisettingsplugin.h"
+#include <QtCore/QtGlobal>
 
 // Q_DECL_EXPORT
 
@@ -22,8 +22,8 @@ private:
     static UkuiSettingsPlugin* mInstance;
 };
 
-// create a plugin
+extern "C" {
 Q_DECL_EXPORT UkuiSettingsPlugin* createSettingsPlugin();
-
+}
 
 #endif // BACKGROUNDPLUGIN_H

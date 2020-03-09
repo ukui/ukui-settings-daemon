@@ -172,8 +172,8 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     // check plugin's schema
     schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->ukuiSettingsPluginInfoGetLocation().toUtf8().data());
     if (is_schema (schema)) {
-       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
-       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
+//       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
+//       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
        info->ukuiSettingsPluginInfoSetSchema(schema);
        mPlugin->insert(0, info);
     } else {

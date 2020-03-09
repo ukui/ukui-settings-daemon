@@ -5,12 +5,12 @@ UkuiSettingsPlugin* BackgroundPlugin::mInstance = nullptr;
 
 BackgroundPlugin::BackgroundPlugin()
 {
-
+    CT_SYSLOG(LOG_DEBUG, "background plugin init...");
 }
 
 BackgroundPlugin::~BackgroundPlugin()
 {
-
+    CT_SYSLOG(LOG_DEBUG, "background plugin free...");
 }
 
 UkuiSettingsPlugin *BackgroundPlugin::getInstance()
