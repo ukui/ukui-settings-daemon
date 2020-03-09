@@ -6,6 +6,8 @@ CONFIG -= app_bundle
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+include($$PWD/../common/common.pri)
+
 INCLUDEPATH += \
         -I $$PWD/../common/\
         -I /usr/include/glib-2.0/\
@@ -24,18 +26,16 @@ LIBS += \
         -lgio-2.0\
         -ldbus-glib-1\
         -lmate-desktop-2\
-        -lgmodule-2.0\
-        -lbaseplugin
+        -lgmodule-2.0
 
 SOURCES += \
-        $$PWD/main.cpp \
-        $$PWD/ukuisettingsmodule.cpp \
-        $$PWD/ukuisettingsmanager.cpp \
-        $$PWD/ukuisettingsplugininfo.cpp \
-#        a.cpp
+        $$PWD/main.cpp\
+#        $$PWD/module.cpp\
+        $$PWD/plugin-info.cpp\
+        $$PWD/plugin-manager.cpp
 
 HEADERS += \
-        $$PWD/global.h \
-        $$PWD/ukuisettingsmodule.h \
-        $$PWD/ukuisettingsmanager.h \
-        $$PWD/ukuisettingsplugininfo.h
+#        $$PWD/module.h\
+        $$PWD/plugin-info.h\
+        $$PWD/plugin-manager.h
+

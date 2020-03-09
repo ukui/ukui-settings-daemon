@@ -1,9 +1,8 @@
-#include "ukuisettingsmanager.h"
-#include "ukuisettingsprofile.h"
-#include "ukuisettingsplugininfo.h"
+#include "plugin-manager.h"
+#include "plugin-info.h"
 
 #include "global.h"
-#include "clib_syslog.h"
+#include "clib-syslog.h"
 
 #include <glib.h>
 #include <stdio.h>
@@ -19,36 +18,36 @@
 
 #include <QDebug>
 
-DBusGConnection* UkuiSettingsManager::mConnection = NULL;
-QList<UkuiSettingsPluginInfo*>* UkuiSettingsManager::mPlugin = NULL;
-UkuiSettingsManager* UkuiSettingsManager::mUkuiSettingsManager = NULL;
+DBusGConnection* PluginManager::mConnection = NULL;
+QList<PluginInfo*>* PluginManager::mPlugin = NULL;
+PluginManager* PluginManager::mPluginManager = NULL;
 
 bool is_schema (QString& schema);
 
-UkuiSettingsManager::UkuiSettingsManager()
+PluginManager::PluginManager()
 {
 
 }
 
-UkuiSettingsManager::~UkuiSettingsManager()
+PluginManager::~PluginManager()
 {
 
 }
 
-UkuiSettingsManager* UkuiSettingsManager::ukuiSettingsManagerNew()
+PluginManager* PluginManager::getInstance()
 {
-    if (nullptr == mUkuiSettingsManager) {
+    if (nullptr == mPluginManager) {
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
-        mUkuiSettingsManager = new UkuiSettingsManager;
-        mPlugin = new QList<UkuiSettingsPluginInfo*>();
+        mPluginManager = new PluginManager;
+        mPlugin = new QList<PluginInfo*>();
     }
 
     registerManager();
 
-    return mUkuiSettingsManager;
+    return mPluginManager;
 }
 
-gboolean UkuiSettingsManager::ukuiSettingsManagerStart(GError **error)
+gboolean PluginManager::managerStart(GError **error)
 {
     gboolean ret;
 
@@ -61,31 +60,31 @@ gboolean UkuiSettingsManager::ukuiSettingsManagerStart(GError **error)
     return TRUE;
 }
 
-void UkuiSettingsManager::ukuiSettingsManagerStop()
+void PluginManager::managerStop()
 {
     CT_SYSLOG(LOG_DEBUG, "Stopping settings manager");
      unloadAll();
 }
 
-gboolean UkuiSettingsManager::ukuiSettingsManagerAwake()
+gboolean PluginManager::managerAwake()
 {
     CT_SYSLOG(LOG_DEBUG, "Awake called")
-    return this->ukuiSettingsManagerStart(NULL);
+    return this->managerStart(NULL);
 }
 
-void UkuiSettingsManager::onPluginActivated(QString &name)
+void PluginManager::onPluginActivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toUtf8().data());
     emit pluginActivated(name);
 }
 
-void UkuiSettingsManager::onPluginDeactivated(QString &name)
+void PluginManager::onPluginDeactivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());
     emit pluginDeactivated(name);
 }
 
-gboolean UkuiSettingsManager::registerManager()
+gboolean PluginManager::registerManager()
 {
     GError* error = NULL;
     mConnection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
@@ -102,9 +101,9 @@ gboolean UkuiSettingsManager::registerManager()
     return TRUE;
 }
 
-void UkuiSettingsManager::loadAll()
+void PluginManager::loadAll()
 {
-    UkuiSettingsPluginInfo* info = NULL;
+    PluginInfo* info = NULL;
 
     QString p(UKUI_SETTINGS_PLUGINDIR);
     loadDir (p);
@@ -114,12 +113,12 @@ void UkuiSettingsManager::loadAll()
     CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
     for (int i = 0; i < mPlugin->size(); ++i) {
         info = mPlugin->at(i);
-        CT_SYSLOG(LOG_ERR, "activity plugin: %s", info->ukuiSettingsPluginInfoGetName().toUtf8().data());
-        info->ukuiSettingsPluginInfoActivate();
+        CT_SYSLOG(LOG_ERR, "activity plugin: %s", info->getPluginName().toUtf8().data());
+        info->pluginActivate();
     }
 }
 
-void UkuiSettingsManager::loadDir(QString &path)
+void PluginManager::loadDir(QString &path)
 {
     GError*     error = NULL;
     GDir*       dir = NULL;
@@ -149,15 +148,15 @@ void UkuiSettingsManager::loadDir(QString &path)
     g_dir_close(dir);
 }
 
-void UkuiSettingsManager::loadFile(QString &fileName)
+void PluginManager::loadFile(QString &fileName)
 {
-    UkuiSettingsPluginInfo* info = NULL;
+    PluginInfo* info = NULL;
     QString                 schema;
 
     CT_SYSLOG(LOG_DEBUG, "Loading plugin: %s", fileName.toLatin1().data());
 
     // FIXME://
-    info = new UkuiSettingsPluginInfo(fileName);
+    info = new PluginInfo(fileName);
     if (info == NULL) {
         goto out;
     }
@@ -170,11 +169,11 @@ void UkuiSettingsManager::loadFile(QString &fileName)
     }
 
     // check plugin's schema
-    schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->ukuiSettingsPluginInfoGetLocation().toUtf8().data());
+    schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
     if (is_schema (schema)) {
 //       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
 //       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
-       info->ukuiSettingsPluginInfoSetSchema(schema);
+       info->setPluginSchema(schema);
        mPlugin->insert(0, info);
     } else {
         CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema.toLatin1().data());
@@ -190,7 +189,7 @@ out:
     }
 }
 
-void UkuiSettingsManager::unloadAll()
+void PluginManager::unloadAll()
 {
     while (!mPlugin->isEmpty()) delete mPlugin->takeFirst();
 }

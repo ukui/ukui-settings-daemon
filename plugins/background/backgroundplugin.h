@@ -1,15 +1,13 @@
 #ifndef BACKGROUNDPLUGIN_H
 #define BACKGROUNDPLUGIN_H
-#include "ukuisettingsplugin.h"
+#include "plugin-interface.h"
 #include <QtCore/QtGlobal>
 
-// Q_DECL_EXPORT
-
-class Q_DECL_EXPORT BackgroundPlugin : public UkuiSettingsPlugin
+class BackgroundPlugin : public PluginInterface
 {
 public:
     ~BackgroundPlugin();
-    static UkuiSettingsPlugin* getInstance();
+    static PluginInterface* getInstance();
 
 private:
     BackgroundPlugin();
@@ -19,11 +17,10 @@ private:
     virtual void deactivate ();
 
 private:
-    static UkuiSettingsPlugin* mInstance;
+    static PluginInterface* mInstance;
 };
 
-extern "C" {
-Q_DECL_EXPORT UkuiSettingsPlugin* createSettingsPlugin();
-}
+extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();
+
 
 #endif // BACKGROUNDPLUGIN_H

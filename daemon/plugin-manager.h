@@ -1,8 +1,8 @@
-#ifndef UKUISETTINGSMANAGER_H
-#define UKUISETTINGSMANAGER_H
+#ifndef PLUGIN_MANAGER_H
+#define PLUGIN_MANAGER_H
 
 #include "global.h"
-#include "ukuisettingsplugininfo.h"
+#include "plugin-info.h"
 
 #include <glib.h>
 #define DBUS_API_SUBJECT_TO_CHANGE
@@ -13,13 +13,17 @@
 #include <QString>
 #include <QObject>
 
-class UkuiSettingsManager : QObject
+namespace UkuiSettingsDaemon {
+class PluginManager;
+}
+
+class PluginManager : QObject
 {
     Q_OBJECT
 private:
-    UkuiSettingsManager();
-    UkuiSettingsManager(UkuiSettingsManager&)=delete;
-    UkuiSettingsManager& operator= (const UkuiSettingsManager&)=delete;
+    PluginManager();
+    PluginManager(PluginManager&)=delete;
+    PluginManager& operator= (const PluginManager&)=delete;
     static gboolean registerManager();
     void loadAll ();
     void loadDir (QString& path);
@@ -27,17 +31,17 @@ private:
     void unloadAll ();
 
 public:
-    ~UkuiSettingsManager();
-    static UkuiSettingsManager* ukuiSettingsManagerNew();   // DD-OK!
+    ~PluginManager();
+    static PluginManager* getInstance();   // DD-OK!
 
     // ukui_settings_manager_start
-    gboolean ukuiSettingsManagerStart (GError **error);     // DD-OK!
+    gboolean managerStart (GError **error);     // DD-OK!
 
     // ukui_settings_manager_stop
-    void ukuiSettingsManagerStop ();                        // DD-OK!
+    void managerStop ();                        // DD-OK!
 
     // ukui_settings_manager_awake
-    gboolean ukuiSettingsManagerAwake ();                   // DO-OK!
+    gboolean managerAwake ();                   // DO-OK!
 
 signals:
     void pluginActivated (QString& name);
@@ -48,9 +52,9 @@ public slots:
     void onPluginDeactivated (QString& name);
 
 private:
-    static QList<UkuiSettingsPluginInfo*>* mPlugin;
-    static UkuiSettingsManager* mUkuiSettingsManager;
+    static QList<PluginInfo*>* mPlugin;
+    static PluginManager* mPluginManager;
     static DBusGConnection*     mConnection;
 };
 
-#endif // UKUISETTINGSMANAGER_H
+#endif // PLUGIN_MANAGER_H

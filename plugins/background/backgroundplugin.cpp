@@ -1,10 +1,11 @@
 #include "backgroundplugin.h"
-#include "clib_syslog.h"
+#include "clib-syslog.h"
 
-UkuiSettingsPlugin* BackgroundPlugin::mInstance = nullptr;
+PluginInterface* BackgroundPlugin::mInstance = nullptr;
 
 BackgroundPlugin::BackgroundPlugin()
 {
+    syslog_init("ukui-settings-daemon-background", LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG, "background plugin init...");
 }
 
@@ -13,7 +14,7 @@ BackgroundPlugin::~BackgroundPlugin()
     CT_SYSLOG(LOG_DEBUG, "background plugin free...");
 }
 
-UkuiSettingsPlugin *BackgroundPlugin::getInstance()
+PluginInterface *BackgroundPlugin::getInstance()
 {
     if (nullptr == mInstance) {
         mInstance = new BackgroundPlugin();
@@ -31,7 +32,7 @@ void BackgroundPlugin::deactivate()
     CT_SYSLOG (LOG_DEBUG, "Deactivating background plugin");
 }
 
-UkuiSettingsPlugin *createSettingsPlugin()
+PluginInterface* createSettingsPlugin()
 {
     return BackgroundPlugin::getInstance();
 }
