@@ -22,5 +22,4 @@ private:
 
 extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();
 
-
 #endif // BACKGROUNDPLUGIN_H

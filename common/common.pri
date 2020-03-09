@@ -13,7 +13,6 @@ SOURCES += \
 
 
 HEADERS += \
-    $$PWD/global.h\
     $$PWD/clib-syslog.h \
     $$PWD/plugin-interface.h
 

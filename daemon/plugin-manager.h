@@ -32,16 +32,16 @@ private:
 
 public:
     ~PluginManager();
-    static PluginManager* getInstance();   // DD-OK!
+    static PluginManager* getInstance();    // DD-OK!
 
     // ukui_settings_manager_start
-    gboolean managerStart (GError **error);     // DD-OK!
+    bool managerStart ();                   // DD-OK!
 
     // ukui_settings_manager_stop
-    void managerStop ();                        // DD-OK!
+    void managerStop ();                    // DD-OK!
 
     // ukui_settings_manager_awake
-    gboolean managerAwake ();                   // DO-OK!
+    bool managerAwake ();                   // DO-OK!
 
 signals:
     void pluginActivated (QString& name);
@@ -52,8 +52,8 @@ public slots:
     void onPluginDeactivated (QString& name);
 
 private:
-    static QList<PluginInfo*>* mPlugin;
-    static PluginManager* mPluginManager;
+    static QList<PluginInfo*>*  mPlugin;
+    static PluginManager*       mPluginManager;
     static DBusGConnection*     mConnection;
 };
 

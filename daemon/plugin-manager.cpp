@@ -47,17 +47,15 @@ PluginManager* PluginManager::getInstance()
     return mPluginManager;
 }
 
-gboolean PluginManager::managerStart(GError **error)
+bool PluginManager::managerStart()
 {
-    gboolean ret;
-
     CT_SYSLOG(LOG_DEBUG, "Starting settings manager");
 
     // FIXME:// maybe check system if support for plugin functionality
 
     loadAll();
 
-    return TRUE;
+    return true;
 }
 
 void PluginManager::managerStop()
@@ -66,10 +64,10 @@ void PluginManager::managerStop()
      unloadAll();
 }
 
-gboolean PluginManager::managerAwake()
+bool PluginManager::managerAwake()
 {
     CT_SYSLOG(LOG_DEBUG, "Awake called")
-    return this->managerStart(NULL);
+    return this->managerStart();
 }
 
 void PluginManager::onPluginActivated(QString &name)
@@ -113,7 +111,7 @@ void PluginManager::loadAll()
     CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
     for (int i = 0; i < mPlugin->size(); ++i) {
         info = mPlugin->at(i);
-        CT_SYSLOG(LOG_ERR, "activity plugin: %s", info->getPluginName().toUtf8().data());
+        CT_SYSLOG(LOG_DEBUG, "activity plugin: %s", info->getPluginName().toUtf8().data());
         info->pluginActivate();
     }
 }
@@ -171,15 +169,13 @@ void PluginManager::loadFile(QString &fileName)
     // check plugin's schema
     schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
     if (is_schema (schema)) {
-//       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
-//       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
+       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
+       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
        info->setPluginSchema(schema);
        mPlugin->insert(0, info);
     } else {
         CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema.toLatin1().data());
     }
-
-    CT_SYSLOG(LOG_ERR, "PLUGIN NUMBER:%d", mPlugin->size());
 
     return;
 

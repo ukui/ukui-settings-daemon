@@ -30,12 +30,11 @@ LIBS += \
 
 SOURCES += \
         $$PWD/main.cpp\
-#        $$PWD/module.cpp\
         $$PWD/plugin-info.cpp\
         $$PWD/plugin-manager.cpp
 
 HEADERS += \
-#        $$PWD/module.h\
+        $$PWD/global.h\
         $$PWD/plugin-info.h\
         $$PWD/plugin-manager.h
 
