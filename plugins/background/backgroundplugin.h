@@ -9,12 +9,12 @@ public:
     ~BackgroundPlugin();
     static PluginInterface* getInstance();
 
+    virtual void activate ();
+    virtual void deactivate ();
+
 private:
     BackgroundPlugin();
     BackgroundPlugin(BackgroundPlugin&)=delete;
-
-    virtual void activate ();
-    virtual void deactivate ();
 
 private:
     static PluginInterface* mInstance;

@@ -1,20 +1,26 @@
 #ifndef A11YSETTINGSPLUGIN_H
 #define A11YSETTINGSPLUGIN_H
-
 #include "plugin-interface.h"
-#include "a11y-settings_global.h"
 #include "a11ysettingsmanager.h"
+#include <QtCore/QtGlobal>
 
-class A11YSETTINGS_EXPORT A11ySettingsPlugin : public PluginInterface
+class A11ySettingsPlugin : public PluginInterface
 {
 public:
-    A11ySettingsPlugin();
     ~A11ySettingsPlugin();
+    static PluginInterface* getInstance();
 
     void activate();
     void deactivate();
+
 private:
-    A11ySettingsManager* settingsManager;
+    A11ySettingsPlugin();
+    A11ySettingsPlugin(A11ySettingsPlugin&) = delete;
+
+    A11ySettingsManager*        settingsManager;
+    static PluginInterface*     mInstance;
 };
+
+extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();
 
 #endif // A11YSETTINGSPLUGIN_H

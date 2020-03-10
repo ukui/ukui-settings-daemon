@@ -2,6 +2,8 @@
 #include "global.h"
 #include "clib-syslog.h"
 
+#include <QDebug>
+
 PluginInfo::PluginInfo(QString& fileName)
 {
     GKeyFile*   pluginFile = NULL;
@@ -40,7 +42,9 @@ PluginInfo::PluginInfo(QString& fileName)
 
     /* Get Location */
     str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Module", &error);
+    qDebug () << str;
     if ((str != NULL) && (*str != '\0')) {
+
         mLocation = str;
     } else {
         g_free (str);
@@ -204,7 +208,6 @@ bool PluginInfo::activatePlugin()
 
     // load module
     if (nullptr == mPlugin) {
-        CT_SYSLOG(LOG_ERR, "start load module: '%s'", getPluginName().toUtf8().data());
         res = loadPluginModule();
     }
 
@@ -235,12 +238,14 @@ bool PluginInfo::loadPluginModule()
 
     QStringList l = mFile.split("/");
     l.pop_back();
-    path = l.join("/") + "/lib" + mLocation;
+    path = l.join("/") + "/lib" + mLocation + ".so";
+    qDebug() << path;
     g_free(dirname);
 
     if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
     // 新建模块
+    qDebug() << "path:" << path;
     mModule = new QLibrary(path);
     if (!(mModule->load())) {
         CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), mModule->errorString().toUtf8().data());
@@ -250,7 +255,7 @@ bool PluginInfo::loadPluginModule()
     typedef PluginInterface* (*createPlugin) ();
     createPlugin p = (createPlugin)mModule->resolve("createSettingsPlugin");
     if (!p) {
-        CT_SYSLOG(LOG_ERR, "create module class failed");
+        CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", mModule->errorString().toUtf8().data());
         return false;
     }
     mPlugin = (PluginInterface*)p();

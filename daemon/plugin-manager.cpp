@@ -169,12 +169,13 @@ void PluginManager::loadFile(QString &fileName)
     // check plugin's schema
     schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
     if (is_schema (schema)) {
+        CT_SYSLOG(LOG_DEBUG, "right schema '%s'", schema.toUtf8().data());
        QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
        QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
        info->setPluginSchema(schema);
        mPlugin->insert(0, info);
     } else {
-        CT_SYSLOG(LOG_ERR, "Ignoring unknown module '%s'", schema.toLatin1().data());
+        CT_SYSLOG(LOG_ERR, "Ignoring unknown schema '%s'", schema.toUtf8().data());
     }
 
     return;
@@ -200,6 +201,5 @@ static bool is_item_in_schema (const char* const* items, QString& item)
 
 bool is_schema (QString& schema)
 {
-    CT_SYSLOG(LOG_DEBUG, "schema: '%s'", schema.toLatin1().data());
     return is_item_in_schema (g_settings_list_schemas(), schema);
 }

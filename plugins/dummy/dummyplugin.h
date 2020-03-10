@@ -6,7 +6,7 @@
 #include "dummymanager.h"
 #include "clib-syslog.h"
 
-class DUMMY_EXPORT DummyPlugin : public PluginInterface
+class DummyPlugin : public PluginInterface
 {
 public:
     DummyPlugin();
