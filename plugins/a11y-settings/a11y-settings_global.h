@@ -1,0 +1,12 @@
+#ifndef A11YSETTINGS_GLOBAL_H
+#define A11YSETTINGS_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(A11YSETTINGS_LIBRARY)
+#  define A11YSETTINGS_EXPORT Q_DECL_EXPORT
+#else
+#  define A11YSETTINGS_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // A11YSETTINGS_GLOBAL_H
