@@ -25,9 +25,4 @@ HEADERS += \
     $$PWD/a11ysettingsmanager.h \
     $$PWD/a11ysettingsplugin.h
 
-## Default rules for deployment.
-#unix {
-#    target.path = /usr/lib
-#}
-#!isEmpty(target.path): INSTALLS += target
-DESTDIR = /home/dingjing/q
+DESTDIR = $$PWD/../../library/

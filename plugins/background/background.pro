@@ -18,8 +18,4 @@ SOURCES += \
 HEADERS += \
         $$PWD/backgroundplugin.h
 
-#target.path = /usr/lib/ukui-settings-daemon/
-
-#INSTALLS += target
-#DESTDIR = $$OUT_PWD/../../library/
-DESTDIR = /home/dingjing/q
+DESTDIR = $$PWD/../../library/

@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<schemalist gettext-domain="@GETTEXT_PACKAGE@">
-  <schema id="org.ukui.peripherals-touchscreen" path="/org/ukui/desktop/peripherals/touchscreen/">
-    <key name="orientation-lock" type="b">
-      <default>false</default>
-      <_summary>Whether the tablet’s orientation is locked, or rotated automatically.</_summary>
-    </key> 
-  </schema>
-</schemalist>
