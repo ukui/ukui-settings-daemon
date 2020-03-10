@@ -7,14 +7,14 @@
 
 #include <QApplication>
 
-#define USD_DBUS_NAME         "org.ukui.SettingsDaemon"
-#define DEBUG_KEY             "mate-settings-daemon"
-#define DEBUG_SCHEMA          "org.mate.debug"
+#define USD_DBUS_NAME                           "org.ukui.SettingsDaemon"
+#define DEBUG_KEY                               "mate-settings-daemon"
+#define DEBUG_SCHEMA                            "org.mate.debug"
 
-#define UKUI_SESSION_DBUS_NAME      "org.gnome.SessionManager"
-#define UKUI_SESSION_DBUS_OBJECT    "/org/gnome/SessionManager"
-#define UKUI_SESSION_DBUS_INTERFACE "org.gnome.SessionManager"
-#define UKUI_SESSION_PRIVATE_DBUS_INTERFACE "org.gnome.SessionManager.ClientPrivate"
+#define UKUI_SESSION_DBUS_NAME                  "org.gnome.SessionManager"
+#define UKUI_SESSION_DBUS_OBJECT                "/org/gnome/SessionManager"
+#define UKUI_SESSION_DBUS_INTERFACE             "org.gnome.SessionManager"
+#define UKUI_SESSION_PRIVATE_DBUS_INTERFACE     "org.gnome.SessionManager.ClientPrivate"
 
 static DBusGConnection* get_session_bus (void);
 static gboolean bus_register (DBusGConnection *bus);
@@ -34,7 +34,6 @@ static gboolean   no_daemon    = TRUE;
 static gboolean   replace      = FALSE;
 static gboolean   debug        = FALSE;
 static gboolean   do_timed_exit = FALSE;
-static int        term_signal_pipe_fds[2]; // pipe line for ....
 
 static GOptionEntry entries[] = {
         { "debug", 0, 0, G_OPTION_ARG_NONE, &debug, ("Enable debugging code"), NULL },
@@ -56,15 +55,12 @@ int main (int argc, char* argv[])
 
     CT_SYSLOG(LOG_DEBUG, "starting...");
 
-
-    CT_SYSLOG(LOG_DEBUG, "本地化...");
     // bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
     // bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     // textdomain (GETTEXT_PACKAGE);
     // setlocale (LC_ALL, "");
 
     // FIXME:// QT parse command line
-    CT_SYSLOG(LOG_DEBUG, "解析命令行参数...");
     parse_args (&argc, &argv);
 
     QApplication app(argc, argv);

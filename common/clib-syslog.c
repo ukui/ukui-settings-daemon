@@ -16,6 +16,8 @@ void syslog_init(const char *category, int facility)
 
 void syslog_info(int logLevel, const char *fileName, const char *functionName, int line, const char* fmt, ...)
 {
+    if (logLevel > LOG_LEVEL) return;
+
     char buf[2048] = {0};
     char *logLevelstr = NULL;
     unsigned long tagLen = 0;

@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = ukui-settings-daemon
 
 QT += core gui
 CONFIG += c++11

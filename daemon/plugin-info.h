@@ -40,6 +40,8 @@ public:
     void setPluginPriority (int priority);
     void setPluginSchema (QString& schema);
 
+    bool operator== (PluginInfo&);
+
 signals:
     void activated(QString&);
     void deactivated(QString&);
@@ -48,7 +50,7 @@ private:
     bool activatePlugin();
     bool loadPluginModule();
     void deactivatePlugin();
-    bool pluginEnabledCB(GSettings* settings, gchar* key, PluginInfo*);
+//    void pluginEnabledCB(GSettings* settings, gchar* key, PluginInfo*);
 
 private:
     /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
