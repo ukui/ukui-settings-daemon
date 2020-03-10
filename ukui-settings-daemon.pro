@@ -8,3 +8,5 @@ SUBDIRS +=\
         $$PWD/plugins/dummy/dummy.pro\
         $$PWD/daemon/daemon.pro
 
+include($$PWD/data/data.pri)
+

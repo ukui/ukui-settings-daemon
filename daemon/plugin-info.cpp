@@ -42,9 +42,7 @@ PluginInfo::PluginInfo(QString& fileName)
 
     /* Get Location */
     str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Module", &error);
-    qDebug () << str;
     if ((str != NULL) && (*str != '\0')) {
-
         mLocation = str;
     } else {
         g_free (str);
@@ -55,7 +53,7 @@ PluginInfo::PluginInfo(QString& fileName)
     /* Get Name */
     str = g_key_file_get_locale_string (pluginFile, PLUGIN_GROUP, "Name", NULL, NULL);
     if (str != NULL) {
-        mName = QString(str);
+        mName = str;
     } else {
         CT_SYSLOG(LOG_ERR, "Could not find 'Name' in %s", fileName.toUtf8().data());
         g_object_unref(error);
@@ -107,10 +105,6 @@ out:
 
 bool PluginInfo::pluginActivate()
 {
-    // FIXME:// debug
-//    mAvailable = true;
-//    mActive = false;
-
     if (!mAvailable) {CT_SYSLOG(LOG_DEBUG, "plugin is not available!") return false;}
     if (mActive) {CT_SYSLOG(LOG_DEBUG, "plugin has activity!") return true;}
 
@@ -124,9 +118,9 @@ bool PluginInfo::pluginActivate()
 
 bool PluginInfo::pluginDeactivate()
 {
-//    if (!this->active || !this->available) {
-//        return TRUE;
-//    }
+    if (!mActive || !mAvailable) {
+        return TRUE;
+    }
     deactivatePlugin();
     this->mActive = FALSE;
 
@@ -135,7 +129,7 @@ bool PluginInfo::pluginDeactivate()
 
 bool PluginInfo::pluginIsactivate()
 {
-    return (/*this->available &&*/ this->mActive);
+    return (mAvailable && mActive);
 }
 
 bool PluginInfo::pluginEnabled()
@@ -160,7 +154,7 @@ QString& PluginInfo::getPluginDescription()
 
 const char **PluginInfo::getPluginAuthors()
 {
-    return (const char**)this->mAuthors;
+    return (const char**)mAuthors;
 }
 
 QString& PluginInfo::getPluginWebsite()
@@ -188,6 +182,7 @@ void PluginInfo::setPluginPriority(int priority)
     this->mPriority = priority;
 }
 
+// FIXME://
 void PluginInfo::setPluginSchema(QString& schema)
 {
     int priority;
@@ -200,11 +195,19 @@ void PluginInfo::setPluginSchema(QString& schema)
     // G_CALLBACK (plugin_enabled_cb), info);
 }
 
+bool PluginInfo::operator==(PluginInfo& oth)
+{
+    return (0 == QString::compare(mName, oth.getPluginName(), Qt::CaseInsensitive));
+}
+
 bool PluginInfo::activatePlugin()
 {
     bool res = true;
 
-    if (!mAvailable) {CT_SYSLOG(LOG_ERR, "plugin is not available"); return false;}
+    if (!mAvailable) {
+        CT_SYSLOG(LOG_ERR, "plugin is not available");
+        return false;
+    }
 
     // load module
     if (nullptr == mPlugin) {
@@ -212,8 +215,8 @@ bool PluginInfo::activatePlugin()
     }
 
     if (res) {
-//        ukuiSettingsPluginActivate();
-        // g_signal_emit (info, signals [ACTIVATED], 0);
+        mPlugin->activate();
+        emit activated(mName);
     } else {
         CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
     }
@@ -239,13 +242,10 @@ bool PluginInfo::loadPluginModule()
     QStringList l = mFile.split("/");
     l.pop_back();
     path = l.join("/") + "/lib" + mLocation + ".so";
-    qDebug() << path;
     g_free(dirname);
 
     if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
-    // 新建模块
-    qDebug() << "path:" << path;
     mModule = new QLibrary(path);
     if (!(mModule->load())) {
         CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), mModule->errorString().toUtf8().data());
@@ -263,18 +263,17 @@ bool PluginInfo::loadPluginModule()
     return true;
 }
 
-// FIXME://
 void PluginInfo::deactivatePlugin()
 {
-    pluginDeactivate();
-    // 发送信号 deactivate;
+    mPlugin->deactivate();
+    emit deactivated(mName);
 }
 
-bool PluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, PluginInfo*)
-{
-    if (g_settings_get_boolean(mSettings, key)) {
-//        PluginInfoActivite();
-    } else {
-//        ukui_settings_plugin_info_deactivate (info);
-    }
-}
+//void PluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, PluginInfo*)
+//{
+//    if (g_settings_get_boolean(mSettings, key)) {
+//        pluginActivate();
+//    } else {
+//        pluginDeactivate();
+//    }
+//}

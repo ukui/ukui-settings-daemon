@@ -26,12 +26,12 @@ bool is_schema (QString& schema);
 
 PluginManager::PluginManager()
 {
-
+    mPlugin = new QList<PluginInfo*>();
 }
 
 PluginManager::~PluginManager()
 {
-
+    delete[] mPlugin;
 }
 
 PluginManager* PluginManager::getInstance()
@@ -39,7 +39,6 @@ PluginManager* PluginManager::getInstance()
     if (nullptr == mPluginManager) {
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
-        mPlugin = new QList<PluginInfo*>();
     }
 
     registerManager();
@@ -50,8 +49,6 @@ PluginManager* PluginManager::getInstance()
 bool PluginManager::managerStart()
 {
     CT_SYSLOG(LOG_DEBUG, "Starting settings manager");
-
-    // FIXME:// maybe check system if support for plugin functionality
 
     loadAll();
 
@@ -67,7 +64,7 @@ void PluginManager::managerStop()
 bool PluginManager::managerAwake()
 {
     CT_SYSLOG(LOG_DEBUG, "Awake called")
-    return this->managerStart();
+    return managerStart();
 }
 
 void PluginManager::onPluginActivated(QString &name)
@@ -159,8 +156,6 @@ void PluginManager::loadFile(QString &fileName)
         goto out;
     }
 
-    // can find ?
-    // FIXME:// operator== in UkuiSettingsPluginInfo
     if (mPlugin->contains(info)) {
         CT_SYSLOG(LOG_DEBUG, "The list has contain this plugin, '%s'", fileName.toLatin1().data());
         goto out;

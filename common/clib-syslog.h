@@ -9,6 +9,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+#define LOG_LEVEL LOG_DEBUG
+
 //__FILE__
 #define CT_SYSLOG(logLevel,...) {\
     syslog_info(logLevel, "", __func__, __LINE__, ##__VA_ARGS__);\
