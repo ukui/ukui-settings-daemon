@@ -1,5 +1,5 @@
 QT -= gui
-
+TARGET = dummy
 TEMPLATE = lib
 DEFINES += DUMMY_LIBRARY
 
@@ -35,3 +35,4 @@ unix {
     target.path = /usr/lib
 }
 !isEmpty(target.path): INSTALLS += target
+DESTDIR = /home/dingjing/q

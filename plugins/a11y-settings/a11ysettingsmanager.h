@@ -3,7 +3,7 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gio/gsettings.h>
+#include <gio/gio.h>
 
 class  A11ySettingsManager
 {

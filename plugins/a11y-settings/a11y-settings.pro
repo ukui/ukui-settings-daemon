@@ -1,3 +1,4 @@
+TARGET = a11-settings
 QT -= gui
 
 TEMPLATE = lib
@@ -37,3 +38,4 @@ unix {
     target.path = /usr/lib
 }
 !isEmpty(target.path): INSTALLS += target
+DESTDIR = /home/dingjing/q
