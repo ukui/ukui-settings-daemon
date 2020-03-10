@@ -1,4 +1,4 @@
-#include "clib_syslog.h"
+#include "clib-syslog.h"
 
 static char sysCategory[128] = {0};
 static int sysFacility = 0;

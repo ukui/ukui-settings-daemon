@@ -1,14 +1,8 @@
-#include "ukuisettingsplugininfo.h"
+#include "plugin-info.h"
 #include "global.h"
-#include "clib_syslog.h"
+#include "clib-syslog.h"
 
-
-//UkuiSettingsPluginInfo::UkuiSettingsPluginInfo()
-//{
-
-//}
-
-UkuiSettingsPluginInfo::UkuiSettingsPluginInfo(QString& fileName)
+PluginInfo::PluginInfo(QString& fileName)
 {
     GKeyFile*   pluginFile = NULL;
     char*       str = NULL;
@@ -107,7 +101,7 @@ out:
     ;
 }
 
-bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoActivate()
+bool PluginInfo::pluginActivate()
 {
     // FIXME:// debug
 //    mAvailable = true;
@@ -124,7 +118,7 @@ bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoActivate()
     return false;
 }
 
-bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoDeactivate()
+bool PluginInfo::pluginDeactivate()
 {
 //    if (!this->active || !this->available) {
 //        return TRUE;
@@ -135,62 +129,62 @@ bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoDeactivate()
     return TRUE;
 }
 
-bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoIsactivate()
+bool PluginInfo::pluginIsactivate()
 {
     return (/*this->available &&*/ this->mActive);
 }
 
-bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetEnabled()
+bool PluginInfo::pluginEnabled()
 {
     return (this->mEnabled);
 }
 
-bool UkuiSettingsPluginInfo::ukuiSettingsPluginInfoIsAvailable()
+bool PluginInfo::pluginIsAvailable()
 {
     return this->mEnabled;
 }
 
-QString& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetName()
+QString& PluginInfo::getPluginName()
 {
     return this->mName;
 }
 
-QString& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetDescription()
+QString& PluginInfo::getPluginDescription()
 {
     return this->mDesc;
 }
 
-const char **UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetAuthors()
+const char **PluginInfo::getPluginAuthors()
 {
     return (const char**)this->mAuthors;
 }
 
-QString& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetWebsite()
+QString& PluginInfo::getPluginWebsite()
 {
     return this->mWebsite;
 }
 
-QString& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetCopyright()
+QString& PluginInfo::getPluginCopyright()
 {
     return this->mCopyright;
 }
 
-QString& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetLocation()
+QString& PluginInfo::getPluginLocation()
 {
     return this->mLocation;
 }
 
-int& UkuiSettingsPluginInfo::ukuiSettingsPluginInfoGetPriority()
+int& PluginInfo::getPluginPriority()
 {
     return this->mPriority;
 }
 
-void UkuiSettingsPluginInfo::ukuiSettingsPluginInfoSetPriority(int priority)
+void PluginInfo::setPluginPriority(int priority)
 {
     this->mPriority = priority;
 }
 
-void UkuiSettingsPluginInfo::ukuiSettingsPluginInfoSetSchema(QString& schema)
+void PluginInfo::setPluginSchema(QString& schema)
 {
     int priority;
 
@@ -202,7 +196,7 @@ void UkuiSettingsPluginInfo::ukuiSettingsPluginInfoSetSchema(QString& schema)
     // G_CALLBACK (plugin_enabled_cb), info);
 }
 
-bool UkuiSettingsPluginInfo::activatePlugin()
+bool PluginInfo::activatePlugin()
 {
     bool res = true;
 
@@ -210,7 +204,7 @@ bool UkuiSettingsPluginInfo::activatePlugin()
 
     // load module
     if (nullptr == mPlugin) {
-        CT_SYSLOG(LOG_ERR, "start load module: '%s'", ukuiSettingsPluginInfoGetName().toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "start load module: '%s'", getPluginName().toUtf8().data());
         res = loadPluginModule();
     }
 
@@ -224,7 +218,7 @@ bool UkuiSettingsPluginInfo::activatePlugin()
     return res;
 }
 
-bool UkuiSettingsPluginInfo::loadPluginModule()
+bool PluginInfo::loadPluginModule()
 {
     QString     path;
     char*       dirname = NULL;
@@ -249,32 +243,32 @@ bool UkuiSettingsPluginInfo::loadPluginModule()
     // 新建模块
     mModule = new QLibrary(path);
     if (!(mModule->load())) {
-        CT_SYSLOG(LOG_ERR, "create module '%s' error!", path.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), mModule->errorString().toUtf8().data());
         mAvailable = false;
         return false;
     }
-    typedef UkuiSettingsPlugin* (*createPlugin) ();
+    typedef PluginInterface* (*createPlugin) ();
     createPlugin p = (createPlugin)mModule->resolve("createSettingsPlugin");
     if (!p) {
         CT_SYSLOG(LOG_ERR, "create module class failed");
         return false;
     }
-    mPlugin = (UkuiSettingsPlugin*)p();
+    mPlugin = (PluginInterface*)p();
 
     return true;
 }
 
 // FIXME://
-void UkuiSettingsPluginInfo::deactivatePlugin()
+void PluginInfo::deactivatePlugin()
 {
-    ukuiSettingsPluginInfoDeactivate();
+    pluginDeactivate();
     // 发送信号 deactivate;
 }
 
-bool UkuiSettingsPluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, UkuiSettingsPluginInfo*)
+bool PluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, PluginInfo*)
 {
     if (g_settings_get_boolean(mSettings, key)) {
-//        UkuiSettingsPluginInfoActivite();
+//        PluginInfoActivite();
     } else {
 //        ukui_settings_plugin_info_deactivate (info);
     }

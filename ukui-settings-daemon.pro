@@ -2,9 +2,7 @@ TEMPLATE = subdirs
 
 CONFIG += ordered
 
-SUBDIRS += \
-        plugins/background \
-        daemon
-
-
+SUBDIRS +=\
+        $$PWD/plugins/background/background.pro\
+        $$PWD/daemon/daemon.pro
 

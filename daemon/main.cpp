@@ -2,8 +2,8 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <libmate-desktop/mate-gsettings.h>
 
-#include "ukuisettingsmanager.h"
-#include "clib_syslog.h"
+#include "plugin-manager.h"
+#include "clib-syslog.h"
 
 #include <QApplication>
 
@@ -19,11 +19,11 @@
 static DBusGConnection* get_session_bus (void);
 static gboolean bus_register (DBusGConnection *bus);
 
-static void on_session_query_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager);
-static void on_session_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager);
+static void on_session_query_end (DBusGProxy *proxy, guint flags, PluginManager *manager);
+static void on_session_end (DBusGProxy *proxy, guint flags, PluginManager *manager);
 static DBusGProxy* get_bus_proxy (DBusGConnection *connection);
 static gboolean acquire_name_on_proxy (DBusGProxy *bus_proxy);
-static void set_session_over_handler (DBusGConnection *bus, UkuiSettingsManager *manager);
+static void set_session_over_handler (DBusGConnection *bus, PluginManager *manager);
 static DBusHandlerResult bus_message_handler (DBusConnection *connection, DBusMessage* message, void* user_data);
 static gboolean timed_exit_cb (void);
 
@@ -46,7 +46,7 @@ static GOptionEntry entries[] = {
 
 int main (int argc, char* argv[])
 {
-    UkuiSettingsManager*    manager = NULL;
+    PluginManager*          manager = NULL;
     DBusGConnection*        bus = NULL;
     gboolean                res;
     GError*                 error = NULL;
@@ -92,7 +92,7 @@ int main (int argc, char* argv[])
         goto out;
     }
 
-    manager = UkuiSettingsManager::ukuiSettingsManagerNew();
+    manager = PluginManager::getInstance();
     if (manager == NULL) {
         CT_SYSLOG(LOG_ERR, "Unable to register object");
         goto out;
@@ -104,7 +104,7 @@ int main (int argc, char* argv[])
     /* If we aren't started by dbus then load the plugins automatically.  Otherwise, wait for an Awake etc. */
     if (g_getenv ("DBUS_STARTER_BUS_TYPE") == NULL) {
         error = NULL;
-        res = manager->ukuiSettingsManagerStart(&error);
+        res = manager->managerStart();
         if (! res) {
             CT_SYSLOG(LOG_ERR, "Unable to start: %s", error->message);
             g_error_free (error);
@@ -189,12 +189,12 @@ out:
     return bus;
 }
 
-static void on_session_over (DBusGProxy *proxy, UkuiSettingsManager *manager)
+static void on_session_over (DBusGProxy *proxy, PluginManager *manager)
 {
     /* not used, see on_session_end instead */
 }
 
-static void set_session_over_handler (DBusGConnection* bus, UkuiSettingsManager* manager)
+static void set_session_over_handler (DBusGConnection* bus, PluginManager* manager)
 {
     DBusGProxy *session_proxy;
     DBusGProxy *private_proxy;
@@ -241,7 +241,7 @@ static void set_session_over_handler (DBusGConnection* bus, UkuiSettingsManager*
     // watch_for_term_signal (manager);
 }
 
-static void on_session_query_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager)
+static void on_session_query_end (DBusGProxy *proxy, guint flags, PluginManager *manager)
 {
     GError *error = NULL;
     gboolean ret = FALSE;
@@ -254,7 +254,7 @@ static void on_session_query_end (DBusGProxy *proxy, guint flags, UkuiSettingsMa
     }
 }
 
-static void on_session_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager *manager)
+static void on_session_end (DBusGProxy *proxy, guint flags, PluginManager *manager)
 {
     GError *error = NULL;
     gboolean ret = FALSE;
@@ -267,7 +267,7 @@ static void on_session_end (DBusGProxy *proxy, guint flags, UkuiSettingsManager 
     }
 
     // FIXME://
-    manager->ukuiSettingsManagerStop();
+    manager->managerStop();
     QApplication::exit();
 }
 
