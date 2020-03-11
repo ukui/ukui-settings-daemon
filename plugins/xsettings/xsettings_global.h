@@ -1,0 +1,12 @@
+#ifndef XSETTINGS_GLOBAL_H
+#define XSETTINGS_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(XSETTINGS_LIBRARY)
+#  define XSETTINGSSHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define XSETTINGSSHARED_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // XSETTINGS_GLOBAL_H
