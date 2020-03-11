@@ -17,6 +17,6 @@ plugin_info.path = /usr/local/lib/ukui-settings-daemon
 plugin_info.files = $$PWD/*.ukui-settings-plugin
 
 plugin_schema.path = /usr/share/glib-2.0/schemas/
-plugin_schema.files = $$PWD/org.ukui.SettingsDaemon.plugins.*.gschema.xml.in
+plugin_schema.files = $$PWD/org.ukui.SettingsDaemon.plugins.*.gschema.xml
 
 INSTALLS += desktop ukui_daemon plugin_lib plugin_info plugin_schema

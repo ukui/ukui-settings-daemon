@@ -1,30 +1,40 @@
 #include "xsettings.h"
 #include "xsettings-manager.h"
 
+PluginInterface* Xsettings::mXsettings = nullptr;
+
 PluginInterface* Xsettings::getInstance()
 {
-    return nullptr;
+    if (nullptr == mXsettings) {
+        mXsettings = new Xsettings();
+    }
+    return mXsettings;
 }
 
 Xsettings::Xsettings()
 {
-        pXsettingManager = new XsettingsManager();
+//        mXsettingManager = new XsettingsManager();
 }
 
 Xsettings::~Xsettings()
 {
-    if(pXsettingManager != nullptr)
-        delete pXsettingManager;
-    pXsettingManager = nullptr;
+//    if(mXsettingManager != nullptr)
+//        delete mXsettingManager;
+//    mXsettingManager = nullptr;
 }
 
 
 void Xsettings::activate()
 {
-    pXsettingManager->start();
+//    mXsettingManager->start();
 }
 
 void Xsettings::deactivate()
 {
-    pXsettingManager->stop();
+//    mXsettingManager->stop();
+}
+
+PluginInterface* createSettingsPlugin()
+{
+    return Xsettings::getInstance();
 }
