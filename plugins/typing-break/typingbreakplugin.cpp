@@ -38,11 +38,11 @@ void TypingBreakPlugin::deactivate()
 PluginInterface* TypingBreakPlugin::getInstance()
 {
     if (nullptr == mInstance)
-    mInstance = new TypingBreakPlugin();
+        mInstance = new TypingBreakPlugin();
     return mInstance;
 }
 
-PluginInterface* CreateSettingsPlugin(){
+PluginInterface* createSettingsPlugin(){
     return TypingBreakPlugin::getInstance();
 }
 
