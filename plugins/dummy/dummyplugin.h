@@ -1,7 +1,7 @@
 #ifndef DUMMY_H
 #define DUMMY_H
 
-#include "dummy_global.h"
+//#include "dummy_global.h"
 #include "plugin-interface.h"
 #include "dummymanager.h"
 #include "clib-syslog.h"
