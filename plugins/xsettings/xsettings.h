@@ -1,7 +1,7 @@
 #ifndef XSETTINGS_H
 #define XSETTINGS_H
 #include "plugin-interface.h"
-//#include "ixsettings-manager.h"
+#include "ixsettings-manager.h"
 #include <QtCore/qglobal.h>
 
 class Xsettings: public PluginInterface
@@ -16,7 +16,7 @@ public:
 private:
     Xsettings();
     Xsettings(Xsettings&) = delete;
-//    IXsettingsManager* mXsettingManager;
+    IXsettingsManager* mXsettingManager;
 
     static PluginInterface* mXsettings;
 };

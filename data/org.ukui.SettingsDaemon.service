@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.ukui.SettingsDaemon
+Exec=/usr/bin/ukui-settings-daemon

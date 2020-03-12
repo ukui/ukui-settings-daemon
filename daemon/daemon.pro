@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET = ukui-settings-daemon
 
-QT += core gui
+QT += core gui dbus
 CONFIG += c++11 link_pkgconfig
 CONFIG -= app_bundle
 
@@ -20,17 +20,18 @@ PKGCONFIG += \
         dbus-glib-1\
         gmodule-2.0
 
-
 LIBS += \
-        -lmate-desktop-2\
+        -lmate-desktop-2
 
 SOURCES += \
         $$PWD/main.cpp\
         $$PWD/plugin-info.cpp\
-        $$PWD/plugin-manager.cpp
+        $$PWD/plugin-manager.cpp\
+#        $$PWD/plugin-manager-adaptor.cpp
 
 HEADERS += \
         $$PWD/global.h\
         $$PWD/plugin-info.h\
-        $$PWD/plugin-manager.h
+        $$PWD/plugin-manager.h\
+#        $$PWD/plugin-manager-adaptor.h
 

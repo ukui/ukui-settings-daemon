@@ -1,5 +1,6 @@
 #include "plugin-manager.h"
 #include "plugin-info.h"
+//#include "plugin-manager-adaptor.h"
 
 #include "global.h"
 #include "clib-syslog.h"
@@ -17,12 +18,13 @@
 #include <dbus/dbus-glib.h>
 
 #include <QDebug>
+#include <QDBusError>
 
-DBusGConnection* PluginManager::mConnection = NULL;
 QList<PluginInfo*>* PluginManager::mPlugin = NULL;
 PluginManager* PluginManager::mPluginManager = NULL;
 
-bool is_schema (QString& schema);
+static bool is_schema (QString& schema);
+static bool register_manager(PluginManager& pm);
 
 PluginManager::PluginManager()
 {
@@ -32,16 +34,20 @@ PluginManager::PluginManager()
 PluginManager::~PluginManager()
 {
     delete[] mPlugin;
+
 }
 
+// DD-OK!
 PluginManager* PluginManager::getInstance()
 {
     if (nullptr == mPluginManager) {
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
+        if (!register_manager(*mPluginManager)) {
+            delete mPluginManager;
+            return nullptr;
+        }
     }
-
-    registerManager();
 
     return mPluginManager;
 }
@@ -77,23 +83,6 @@ void PluginManager::onPluginDeactivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());
     emit pluginDeactivated(name);
-}
-
-gboolean PluginManager::registerManager()
-{
-    GError* error = NULL;
-    mConnection = dbus_g_bus_get(DBUS_BUS_SESSION, &error);
-    if (NULL == mConnection) {
-        if (NULL == error) {
-            CT_SYSLOG(LOG_ERR, "error getting system bus: %s", error->message);
-            g_error_free(error);
-        }
-        return FALSE;
-    }
-    dbus_g_connection_register_g_object(mConnection, USD_MANAGER_DBUS_PATH, NULL);
-
-    CT_SYSLOG(LOG_DEBUG, "regist settings manager successful!")
-    return TRUE;
 }
 
 void PluginManager::loadAll()
@@ -197,4 +186,22 @@ static bool is_item_in_schema (const char* const* items, QString& item)
 bool is_schema (QString& schema)
 {
     return is_item_in_schema (g_settings_list_schemas(), schema);
+}
+
+static bool register_manager(PluginManager& pm)
+{
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    if (!bus.registerService(UKUI_SETTINGS_DAEMON_DBUS_NAME)) {
+        CT_SYSLOG(LOG_ERR, "error getting system bus: '%s'", bus.lastError().message().toUtf8().data());
+        return false;
+    }
+
+    if (!bus.registerObject(UKUI_SETTINGS_DAEMON_DBUS_PATH, (QObject*)&pm, QDBusConnection::ExportAllContents)) {
+        CT_SYSLOG(LOG_ERR, "regist settings manager error: '%s'", bus.lastError().message().toUtf8().data());
+        return false;
+    }
+
+    CT_SYSLOG(LOG_DEBUG, "regist settings manager successful!");
+
+    return true;
 }
