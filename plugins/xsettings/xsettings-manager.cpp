@@ -1,11 +1,14 @@
 #include "xsettings-manager.h"
-#include "xsettings-common.h"
+#include "xsettings-const.h"
 #include <X11/Xmd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-XsettingsManager::XsettingsManager()
+XsettingsManager::XsettingsManager(Display                *display,
+                                   int                     screen,
+                                   XSettingsTerminateFunc  terminate,
+                                   void                   *cb_data)
 {
 
 }
@@ -16,15 +19,7 @@ XsettingsManager::~XsettingsManager()
     xsettings_list_free (settings);
 }
 
-int XsettingsManager::start()
-{
-
-}
-
-int XsettingsManager::stop()
-{
-
-}/**
+/**
  * get_server_time:
  * @display: display from which to get the time
  * @window: a #Window, used for communication with the server.
@@ -35,7 +30,6 @@ int XsettingsManager::stop()
  *
  * Return value: the time stamp.
  **/
-
 typedef struct
 {
   Window window;
@@ -186,6 +180,21 @@ setting_length (XSettingsSetting *setting)
   return length;
 }
 
+Bool
+xsettings_manager_check_running (Display *display,
+                                 int      screen)
+{
+  char buffer[256];
+  Atom selection_atom;
+
+  sprintf(buffer, "_XSETTINGS_S%d", screen);
+  selection_atom = XInternAtom (display, buffer, False);
+
+  if (XGetSelectionOwner (display, selection_atom))
+    return True;
+  else
+    return False;
+}
 
 void
 XsettingsManager::setting_store (XSettingsSetting *setting,

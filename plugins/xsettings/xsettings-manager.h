@@ -1,18 +1,19 @@
 #ifndef XSETTINGSMANAGER_H
 #define XSETTINGSMANAGER_H
-#include "ixsettings-manager.h"
+
 #include <X11/Xlib.h>
 #include "xsettings-common.h"
 
 typedef void (*XSettingsTerminateFunc)  (void *cb_data);
 
-class XsettingsManager : public IXsettingsManager
+class XsettingsManager
 {
 public:
-    XsettingsManager();
+    XsettingsManager(Display                *display,
+                     int                     screen,
+                     XSettingsTerminateFunc  terminate,
+                     void                   *cb_data);
     ~XsettingsManager();
-    int start();
-    int stop();
 
     Window get_window    ();
     Bool   process_event (XEvent           *xev);
@@ -44,4 +45,8 @@ private:
     unsigned long serial;
 };
 
+
+Bool
+xsettings_manager_check_running (Display *display,
+                                 int      screen);
 #endif // XSETTINGSMANAGER_H
