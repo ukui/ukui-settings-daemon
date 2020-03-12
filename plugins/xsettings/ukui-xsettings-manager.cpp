@@ -487,5 +487,24 @@ fontconfig_callback (fontconfig_monitor_handle_t *handle,
 
 int ukuiXSettingsManager::stop()
 {
+    int i;
+    if (pManagers != NULL) {
+        for (i = 0; pManagers [i]; ++i) {
+            delete (pManagers[i]);
+            pManagers[i] = NULL;
+        }
+    }
+
+    if (gsettings != NULL) {
+        g_hash_table_destroy (gsettings);
+        gsettings = NULL;
+    }
+
+    if (gsettings_font != NULL) {
+        g_object_unref (gsettings_font);
+        gsettings_font = NULL;
+    }
+
+    stop_fontconfig_monitor (this);
 
 }
