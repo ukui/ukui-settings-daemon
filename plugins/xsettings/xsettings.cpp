@@ -1,37 +1,46 @@
 #include "xsettings.h"
-#include "xsettings-manager.h"
+#include "ukui-xsettings-manager.h"
 
-PluginInterface* Xsettings::mXsettings = nullptr;
+PluginInterface* Xsettings::m_pXsettings = nullptr;
 
 PluginInterface* Xsettings::getInstance()
 {
-    if (nullptr == mXsettings) {
-        mXsettings = new Xsettings();
+    if (nullptr == Xsettings::m_pXsettings) {
+        Xsettings::m_pXsettings = new Xsettings();
     }
-    return mXsettings;
+    return Xsettings::m_pXsettings;
 }
 
 Xsettings::Xsettings()
 {
-//        mXsettingManager = new XsettingsManager();
+    m_pXsettingManager = new ukuiXSettingsManager();
 }
 
 Xsettings::~Xsettings()
 {
-//    if(mXsettingManager != nullptr)
-//        delete mXsettingManager;
-//    mXsettingManager = nullptr;
+    if (m_pXsettingManager)
+        delete m_pXsettingManager;
 }
 
 
 void Xsettings::activate()
 {
-//    mXsettingManager->start();
+    gboolean res;
+    GError  *error;
+
+    g_debug ("Activating xsettings plugin");
+
+    error = NULL;
+    m_pXsettingManager->start(&error);
+    if (! res) {
+            g_warning ("Unable to start xsettings manager: %s", error->message);
+            g_error_free (error);
+    }
 }
 
 void Xsettings::deactivate()
 {
-//    mXsettingManager->stop();
+    m_pXsettingManager->stop();
 }
 
 PluginInterface* createSettingsPlugin()

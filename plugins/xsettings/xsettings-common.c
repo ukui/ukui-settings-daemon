@@ -28,8 +28,7 @@
 
 #include "xsettings-common.h"
 
-XSettingsSetting *
-xsettings_setting_copy (XSettingsSetting *setting)
+XSettingsSetting * xsettings_setting_copy (XSettingsSetting *setting)
 {
   XSettingsSetting *result;
   size_t str_len;
@@ -77,8 +76,7 @@ xsettings_setting_copy (XSettingsSetting *setting)
   return NULL;
 }
 
-XSettingsList *
-xsettings_list_copy (XSettingsList *list)
+XSettingsList * xsettings_list_copy (XSettingsList *list)
 {
   XSettingsList *new = NULL;
   XSettingsList *old_iter = list;
