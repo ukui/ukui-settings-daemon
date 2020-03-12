@@ -4,14 +4,10 @@
 #include "global.h"
 #include "plugin-info.h"
 
-#include <glib.h>
-#define DBUS_API_SUBJECT_TO_CHANGE
-#include <dbus/dbus-glib.h>
-#include <dbus/dbus-glib-lowlevel.h>
-
 #include <QList>
 #include <QString>
 #include <QObject>
+#include <QDBusConnection>
 
 namespace UkuiSettingsDaemon {
 class PluginManager;
@@ -20,41 +16,37 @@ class PluginManager;
 class PluginManager : QObject
 {
     Q_OBJECT
+    Q_CLASSINFO ("D-Bus Interface", UKUI_SETTINGS_DAEMON_DBUS_NAME)
+
+public:
+    ~PluginManager();
+    static PluginManager* getInstance();
+
 private:
     PluginManager();
     PluginManager(PluginManager&)=delete;
     PluginManager& operator= (const PluginManager&)=delete;
-    static gboolean registerManager();
+
     void loadAll ();
     void loadDir (QString& path);
     void loadFile (QString& fileName);
     void unloadAll ();
-
-public:
-    ~PluginManager();
-    static PluginManager* getInstance();    // DD-OK!
-
-    // ukui_settings_manager_start
-    bool managerStart ();                   // DD-OK!
-
-    // ukui_settings_manager_stop
-    void managerStop ();                    // DD-OK!
-
-    // ukui_settings_manager_awake
-    bool managerAwake ();                   // DO-OK!
 
 signals:
     void pluginActivated (QString& name);
     void pluginDeactivated (QString& name);
 
 public slots:
+    bool managerStart ();
+    void managerStop ();
+    bool managerAwake ();
+
     void onPluginActivated (QString& name);
     void onPluginDeactivated (QString& name);
 
 private:
     static QList<PluginInfo*>*  mPlugin;
     static PluginManager*       mPluginManager;
-    static DBusGConnection*     mConnection;
 };
 
 #endif // PLUGIN_MANAGER_H

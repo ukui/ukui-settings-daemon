@@ -19,4 +19,8 @@ plugin_info.files = $$PWD/*.ukui-settings-plugin
 plugin_schema.path = /usr/share/glib-2.0/schemas/
 plugin_schema.files = $$PWD/org.ukui.SettingsDaemon.plugins.*.gschema.xml
 
-INSTALLS += desktop ukui_daemon plugin_lib plugin_info plugin_schema
+# dbus
+ukui_daemon_dbus.path = /usr/share/dbus-1/services/
+ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
+
+INSTALLS += desktop ukui_daemon plugin_lib plugin_info plugin_schema ukui_daemon_dbus

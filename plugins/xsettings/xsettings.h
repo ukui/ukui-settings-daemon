@@ -16,8 +16,10 @@ public:
 private:
     Xsettings();
     Xsettings(Xsettings&) = delete;
+
     IXsettingsManager* m_pXsettingManager;
     static PluginInterface* m_pXsettings;
+
 };
 
 extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();
