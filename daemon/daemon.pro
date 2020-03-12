@@ -27,11 +27,11 @@ SOURCES += \
         $$PWD/main.cpp\
         $$PWD/plugin-info.cpp\
         $$PWD/plugin-manager.cpp\
-#        $$PWD/plugin-manager-adaptor.cpp
+        $$PWD/manager-interface.cpp
 
 HEADERS += \
         $$PWD/global.h\
         $$PWD/plugin-info.h\
         $$PWD/plugin-manager.h\
-#        $$PWD/plugin-manager-adaptor.h
+        $$PWD/manager-interface.h
 

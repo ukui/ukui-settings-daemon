@@ -19,7 +19,7 @@ class PluginInfo : public QObject
 {
     Q_OBJECT
 public:
-    PluginInfo()=delete;
+    explicit PluginInfo()=delete;
     PluginInfo(QString& fileName); // DD-OKK // ukui_settings_plugin_info_new_from_file (const char *filename);
 
     bool pluginActivate ();

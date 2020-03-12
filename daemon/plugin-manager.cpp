@@ -1,9 +1,8 @@
 #include "plugin-manager.h"
-#include "plugin-info.h"
-//#include "plugin-manager-adaptor.h"
 
 #include "global.h"
 #include "clib-syslog.h"
+#include "plugin-info.h"
 
 #include <glib.h>
 #include <stdio.h>
@@ -14,11 +13,11 @@
 #include <gio/gio.h>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include <glib/gstdio.h>
-#include <dbus/dbus-glib.h>
 
 #include <QDebug>
 #include <QDBusError>
+#include <QDBusConnectionInterface>
+#include <QApplication>
 
 QList<PluginInfo*>* PluginManager::mPlugin = NULL;
 PluginManager* PluginManager::mPluginManager = NULL;
@@ -34,7 +33,8 @@ PluginManager::PluginManager()
 PluginManager::~PluginManager()
 {
     delete[] mPlugin;
-
+    delete mPluginManager;
+    mPluginManager = nullptr;
 }
 
 // DD-OK!
@@ -44,7 +44,6 @@ PluginManager* PluginManager::getInstance()
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
         if (!register_manager(*mPluginManager)) {
-            delete mPluginManager;
             return nullptr;
         }
     }
@@ -61,10 +60,13 @@ bool PluginManager::managerStart()
     return true;
 }
 
+// FIXME://
 void PluginManager::managerStop()
 {
     CT_SYSLOG(LOG_DEBUG, "Stopping settings manager");
      unloadAll();
+
+     QApplication::exit(0);
 }
 
 bool PluginManager::managerAwake()
@@ -190,13 +192,19 @@ bool is_schema (QString& schema)
 
 static bool register_manager(PluginManager& pm)
 {
+    QString ukuiDaemonBusName = UKUI_SETTINGS_DAEMON_DBUS_NAME;
+
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(ukuiDaemonBusName)) {
+        return false;
+    }
+
     QDBusConnection bus = QDBusConnection::sessionBus();
     if (!bus.registerService(UKUI_SETTINGS_DAEMON_DBUS_NAME)) {
         CT_SYSLOG(LOG_ERR, "error getting system bus: '%s'", bus.lastError().message().toUtf8().data());
         return false;
     }
 
-    if (!bus.registerObject(UKUI_SETTINGS_DAEMON_DBUS_PATH, (QObject*)&pm, QDBusConnection::ExportAllContents)) {
+    if (!bus.registerObject(UKUI_SETTINGS_DAEMON_DBUS_PATH, (QObject*)&pm, QDBusConnection::ExportAllSlots)) {
         CT_SYSLOG(LOG_ERR, "regist settings manager error: '%s'", bus.lastError().message().toUtf8().data());
         return false;
     }

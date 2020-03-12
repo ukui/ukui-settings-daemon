@@ -4,6 +4,7 @@
 
 #define PLUGIN_PRIORITY_MAX             1
 #define PLUGIN_PRIORITY_DEFAULT         100
+
 #define PLUGIN_GROUP                    "UKUI Settings Plugin"
 
 #define UKUI_SETTINGS_DAEMON_DBUS_NAME              "org.ukui.SettingsDaemon"
