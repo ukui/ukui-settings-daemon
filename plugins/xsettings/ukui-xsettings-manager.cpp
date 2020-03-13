@@ -4,7 +4,8 @@
 #include "ukui-xft-settings.h"
 #include "xsettings-const.h"
 
-
+#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 
 //#define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, ukuiXSettingsManagerPrivate))
 

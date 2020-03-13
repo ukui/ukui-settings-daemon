@@ -8,6 +8,7 @@ SUBDIRS +=\
         $$PWD/plugins/dummy/dummy.pro\
         $$PWD/plugins/xsettings/xsettings.pro \
         $$PWD/plugins/typing-break/typing-break.pro \
+        $$PWD/plugins/mpris/mpris.pro \
         $$PWD/daemon/daemon.pro
 
 include($$PWD/data/data.pri)

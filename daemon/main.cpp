@@ -24,12 +24,11 @@ int main (int argc, char* argv[])
 
     syslog_init("ukui-settings-daemon", LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG, "starting...");
+
     QApplication app(argc, argv);
     parse_args (argc, argv);
+
     if (replace) stop_daemon ();
-
-    // if stop 'ukui-settings-daemon'
-
 
     manager = PluginManager::getInstance();
     if (nullptr == manager) {
