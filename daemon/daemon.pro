@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = ukui-settings-daemon
 
 QT += core gui dbus
-CONFIG += c++11 link_pkgconfig
+CONFIG += no_keywords link_pkgconfig c++11
 CONFIG -= app_bundle
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
@@ -33,5 +33,5 @@ HEADERS += \
         $$PWD/plugin-info.h\
         $$PWD/plugin-manager.h\
         $$PWD/manager-interface.h \
-        global.h
+        $$PWD/global.h
 

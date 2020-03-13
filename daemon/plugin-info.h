@@ -42,7 +42,7 @@ public:
 
     bool operator== (PluginInfo&);
 
-signals:
+Q_SIGNALS:
     void activated(QString&);
     void deactivated(QString&);
 

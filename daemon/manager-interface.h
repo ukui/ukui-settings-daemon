@@ -31,7 +31,7 @@ public:
 
     ~PluginManagerDBus();
 
-public slots:
+public Q_SLOTS:
     inline QDBusPendingReply<bool> managerAwake()
     {
         QList<QVariant> argumentList;
@@ -61,8 +61,6 @@ public slots:
         QList<QVariant> argumentList;
         return asyncCallWithArgumentList(QStringLiteral("onPluginDeactivated"), argumentList);
     }
-
-signals: // SIGNALS
 };
 
 #endif

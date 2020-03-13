@@ -32,11 +32,11 @@ private:
     void loadFile (QString& fileName);
     void unloadAll ();
 
-signals:
+Q_SIGNALS:
     void pluginActivated (QString& name);
     void pluginDeactivated (QString& name);
 
-public slots:
+public Q_SLOTS:
     bool managerStart ();
     void managerStop ();
     bool managerAwake ();
@@ -45,7 +45,7 @@ public slots:
     void onPluginDeactivated (QString& name);
 
 private:
-    static QList<PluginInfo*>*  mPlugin;
+    QList<PluginInfo*>*  mPlugin;
     static PluginManager*       mPluginManager;
 };
 

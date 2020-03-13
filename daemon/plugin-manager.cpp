@@ -19,7 +19,6 @@
 #include <QDBusConnectionInterface>
 #include <QApplication>
 
-QList<PluginInfo*>* PluginManager::mPlugin = NULL;
 PluginManager* PluginManager::mPluginManager = NULL;
 
 static bool is_schema (QString& schema);
@@ -79,14 +78,14 @@ bool PluginManager::managerAwake()
 void PluginManager::onPluginActivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toUtf8().data());
-    emit pluginActivated(name);
+    Q_EMIT pluginActivated(name);
 }
 
 // FIXME://
 void PluginManager::onPluginDeactivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());
-    emit pluginDeactivated(name);
+    Q_EMIT pluginDeactivated(name);
 }
 
 void PluginManager::loadAll()
