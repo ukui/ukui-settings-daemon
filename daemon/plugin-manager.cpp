@@ -32,12 +32,12 @@ PluginManager::PluginManager()
 
 PluginManager::~PluginManager()
 {
-    delete[] mPlugin;
-    delete mPluginManager;
+    delete[] mPlugin;           // delete plugin not exit this process
+
+    delete mPluginManager;      // delete manager
     mPluginManager = nullptr;
 }
 
-// DD-OK!
 PluginManager* PluginManager::getInstance()
 {
     if (nullptr == mPluginManager) {
@@ -75,12 +75,14 @@ bool PluginManager::managerAwake()
     return managerStart();
 }
 
+// FIXME://
 void PluginManager::onPluginActivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toUtf8().data());
     emit pluginActivated(name);
 }
 
+// FIXME://
 void PluginManager::onPluginDeactivated(QString &name)
 {
     CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());

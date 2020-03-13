@@ -1,5 +1,6 @@
 #ifndef CLIB_SYSLOG_H
 #define CLIB_SYSLOG_H
+#include "global.h"
 #include <stdio.h>
 #include <stdarg.h>
 #include <syslog.h>
