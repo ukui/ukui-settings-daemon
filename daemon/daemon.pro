@@ -30,8 +30,8 @@ SOURCES += \
         $$PWD/manager-interface.cpp
 
 HEADERS += \
-        $$PWD/global.h\
         $$PWD/plugin-info.h\
         $$PWD/plugin-manager.h\
-        $$PWD/manager-interface.h
+        $$PWD/manager-interface.h \
+        global.h
 

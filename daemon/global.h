@@ -1,5 +1,6 @@
 #ifndef GLOBAL_H
 #define GLOBAL_H
+#include "clib-syslog.h"
 
 
 #define PLUGIN_PRIORITY_MAX             1
@@ -11,7 +12,6 @@
 #define UKUI_SETTINGS_DAEMON_DBUS_PATH              "/daemon/registry"
 
 #define UKUI_SETTINGS_DAEMON_MANAGER_DBUS_PATH      "/org/ukui/SettingsDaemon"
-
 
 #define USD_MANAGER_DBUS_PATH           "/org/ukui/SettingsDaemon"
 #define DEFAULT_SETTINGS_PREFIX         "org.ukui.SettingsDaemon"
