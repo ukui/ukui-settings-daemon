@@ -31,7 +31,7 @@ void QGSettingsPrivate::settingChanged(GSettings *, const gchar *key, gpointer u
      * Qt::AutoConnection           则如果obj与调用者位于同一个线程中，则会同步调用该成员; 否则它将异步调用该成员
      *
      */
-    QMetaObject::invokeMethod(self, "changed", Qt::DirectConnection, Q_ARG(QString, key));
+    QMetaObject::invokeMethod(self, "changed", Qt::AutoConnection, Q_ARG(QString, key));
 }
 
 
