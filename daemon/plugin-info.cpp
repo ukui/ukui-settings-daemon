@@ -216,7 +216,7 @@ bool PluginInfo::activatePlugin()
 
     if (res) {
         mPlugin->activate();
-        emit activated(mName);
+        Q_EMIT activated(mName);
     } else {
         CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
     }
@@ -266,7 +266,7 @@ bool PluginInfo::loadPluginModule()
 void PluginInfo::deactivatePlugin()
 {
     mPlugin->deactivate();
-    emit deactivated(mName);
+    Q_EMIT deactivated(mName);
 }
 
 //void PluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, PluginInfo*)
