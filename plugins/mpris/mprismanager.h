@@ -4,10 +4,10 @@
 #ifndef MPRISMANAGER_H
 #define MPRISMANAGER_H
 
-#include <QQueue>
 #include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>        //for GDBusProxy
+#include <QQueue>
 
 class MprisManager{
 public:

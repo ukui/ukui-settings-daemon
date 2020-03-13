@@ -2,6 +2,7 @@
 #define IXSETTINGSMANAGER_H
 
 #include <glib.h>
+
 class IXsettingsManager
 {
 public:

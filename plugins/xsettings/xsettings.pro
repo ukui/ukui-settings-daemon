@@ -11,17 +11,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
-PKGCONFIG += glib-2.0
-             gio-2.0
+PKGCONFIG +=\
+    glib-2.0 \
+    gio-2.0 \
+    gdk-3.0 \
+    atk
 
 INCLUDEPATH += \
-        -I /usr/include/gtk-3.0/gdk \
-        -I /usr/include/gtk-3.0     \
-        -I /usr/include/pango-1.0   \
-        -I /usr/include/cairo       \
-        -I /usr/include/gdk-pixbuf-2.0  \
-        -I /usr/include/atk-1.0     \
-        -I $$PWD/../../common
+    -I $$PWD/../../common
 
 SOURCES += \
     xsettings.cpp \

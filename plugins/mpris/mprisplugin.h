@@ -7,11 +7,12 @@
 
 class MprisPlugin : public PluginInterface{
 public:
-    MprisPlugin();
     static PluginInterface* getInstance();
     virtual void activate();
     virtual void deactivate();
 private:
+    MprisPlugin();
+    MprisPlugin(MprisPlugin&)=delete;
     ~MprisPlugin();
 
     MprisManager* mprisManager;

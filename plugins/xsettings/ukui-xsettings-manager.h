@@ -1,14 +1,11 @@
 #ifndef UKUIXSETTINGSMANAGER_H
 #define UKUIXSETTINGSMANAGER_H
 
-//#include <QObject>
 #include <glib.h>
 #include <X11/Xatom.h>
 
 #include <glib/gi18n.h>
-#include </usr/include/gtk-3.0/gdk/gdk.h>
-#include </usr/include/gtk-3.0/gdk/gdkx.h>
-#include </usr/include/gtk-3.0/gtk/gtk.h>
+#include <gdk/gdk.h>
 #include <gio/gio.h>
 #include "ixsettings-manager.h"
 #include "xsettings-manager.h"
