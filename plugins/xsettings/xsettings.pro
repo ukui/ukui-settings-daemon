@@ -30,9 +30,7 @@ SOURCES += \
 
 HEADERS += \
     xsettings.h \
-    ixsettings-manager.h \
     xsettings-manager.h \
-    ixsettings-manager.h \
     ukui-xsettings-manager.h \
     fontconfig-monitor.h \
     ukui-xft-settings.h \

@@ -1,10 +1,8 @@
-
 #include "xsettings-const.h"
 #include "ukui-xft-settings.h"
 #include "ukui-xsettings-manager.h"
 #include <gio/gio.h>
 #include <glib.h>
-
 
 static const char *rgba_types[] = { "rgb", "bgr", "vbgr", "vrgb" };
 
@@ -34,10 +32,8 @@ static void update_property (GString *props, const gchar* key, const gchar* valu
     } else {
         g_string_append_printf (props, "%s:\t%s\n", key, value);
     }
-
     g_free (needle);
 }
-
 
 static double dpi_from_pixels_and_mm (int pixels, int mm)
 {
@@ -49,74 +45,69 @@ static double dpi_from_pixels_and_mm (int pixels, int mm)
     return dpi;
 }
 
-
-static double
-get_dpi_from_x_server (void)
+static double get_dpi_from_x_server (void)
 {
-        GdkScreen *screen;
-        double     dpi;
+    GdkScreen *screen;
+    double     dpi;
 
-        screen = gdk_screen_get_default ();
-        if (screen != NULL) {
-                double width_dpi, height_dpi;
+    screen = gdk_screen_get_default ();
+    if (screen != NULL) {
+        double width_dpi, height_dpi;
 
-                width_dpi = dpi_from_pixels_and_mm (gdk_screen_get_width (screen), gdk_screen_get_width_mm (screen));
-                height_dpi = dpi_from_pixels_and_mm (gdk_screen_get_height (screen), gdk_screen_get_height_mm (screen));
+        width_dpi = dpi_from_pixels_and_mm (gdk_screen_get_width (screen), gdk_screen_get_width_mm (screen));
+        height_dpi = dpi_from_pixels_and_mm (gdk_screen_get_height (screen), gdk_screen_get_height_mm (screen));
 
-                if (width_dpi < DPI_LOW_REASONABLE_VALUE || width_dpi > DPI_HIGH_REASONABLE_VALUE
-                    || height_dpi < DPI_LOW_REASONABLE_VALUE || height_dpi > DPI_HIGH_REASONABLE_VALUE) {
-                        dpi = DPI_FALLBACK;
-                } else {
-                        dpi = (width_dpi + height_dpi) / 2.0;
-                }
+        if (width_dpi < DPI_LOW_REASONABLE_VALUE || width_dpi > DPI_HIGH_REASONABLE_VALUE
+                || height_dpi < DPI_LOW_REASONABLE_VALUE || height_dpi > DPI_HIGH_REASONABLE_VALUE) {
+            dpi = DPI_FALLBACK;
         } else {
-                /* Huh!?  No screen? */
-
-                dpi = DPI_FALLBACK;
+            dpi = (width_dpi + height_dpi) / 2.0;
         }
+    } else {
+        /* Huh!?  No screen? */
 
-        return dpi;
+        dpi = DPI_FALLBACK;
+    }
+
+    return dpi;
 }
 
-static double
-get_dpi_from_gsettings_or_x_server (GSettings *gsettings)
+static double get_dpi_from_gsettings_or_x_server (GSettings *gsettings)
 {
-        double value;
-        double dpi;
+    double value;
+    double dpi;
 
-        value = g_settings_get_double (gsettings, FONT_DPI_KEY);
+    value = g_settings_get_double (gsettings, FONT_DPI_KEY);
 
-        /* If the user has ever set the DPI preference in GSettings, we use that.
+    /* If the user has ever set the DPI preference in GSettings, we use that.
          * Otherwise, we see if the X server reports a reasonable DPI value:  some X
          * servers report completely bogus values, and the user gets huge or tiny
          * fonts which are unusable.
          */
 
-        if (value != 0) {
-                dpi = value;
-        } else {
-                dpi = get_dpi_from_x_server ();
-        }
+    if (value != 0) {
+        dpi = value;
+    } else {
+        dpi = get_dpi_from_x_server ();
+    }
 
-        return dpi;
+    return dpi;
 }
-
-
 
 void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
 {
     int i;
     //ukui_settings_profile_start (NULL);
     for (i = 0; manager->pManagers [i]; i++) {
-       manager->pManagers [i]->set_int ("Xft/Antialias", antialias);
-       manager->pManagers [i]->set_int ("Xft/Hinting", hinting);
-       manager->pManagers [i]->set_string ("Xft/HintStyle", hintstyle);
-       manager->pManagers [i]->set_int ("Xft/DPI", dpi);
-       manager->pManagers [i]->set_string ("Xft/RGBA", rgba);
-       manager->pManagers [i]->set_string ("Xft/lcdfilter",
-                                     g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
-       manager->pManagers [i]->set_int ("Gtk/CursorThemeSize", cursor_size);
-       manager->pManagers [i]->set_string ("Gtk/CursorThemeName", cursor_theme);
+        manager->pManagers [i]->set_int ("Xft/Antialias", antialias);
+        manager->pManagers [i]->set_int ("Xft/Hinting", hinting);
+        manager->pManagers [i]->set_string ("Xft/HintStyle", hintstyle);
+        manager->pManagers [i]->set_int ("Xft/DPI", dpi);
+        manager->pManagers [i]->set_string ("Xft/RGBA", rgba);
+        manager->pManagers [i]->set_string ("Xft/lcdfilter",
+                                            g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
+        manager->pManagers [i]->set_int ("Gtk/CursorThemeSize", cursor_size);
+        manager->pManagers [i]->set_string ("Gtk/CursorThemeName", cursor_theme);
     }
     //ukui_settings_profile_end (NULL);
 }
@@ -194,7 +185,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
                        antialiasing);
         }
         if (!use_rgba) {
-                rgba = "none";
+            rgba = "none";
         }
     }
 
@@ -204,7 +195,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
 }
 
 void UkuiXftSettings::xft_settings_set_xresources ()
-    {
+{
     GString    *add_string;
     char        dpibuf[G_ASCII_DTOSTR_BUF_SIZE];
     Display    *dpy;
@@ -217,26 +208,26 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     add_string = g_string_new (XResourceManagerString (dpy));
     g_debug("xft_settings_set_xresources: orig res '%s'", add_string->str);
     update_property (add_string, "Xft.dpi",
-                            g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->dpi / 1024.0));
+                     g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->dpi / 1024.0));
     update_property (add_string, "Xft.antialias",
-                            this->antialias ? "1" : "0");
+                     this->antialias ? "1" : "0");
     update_property (add_string, "Xft.hinting",
-                            this->hinting ? "1" : "0");
+                     this->hinting ? "1" : "0");
     update_property (add_string, "Xft.hintstyle",
-                            this->hintstyle);
+                     this->hintstyle);
     update_property (add_string, "Xft.rgba",
-                            this->rgba);
+                     this->rgba);
     update_property (add_string, "Xft.lcdfilter",
                      g_str_equal (this->rgba, "rgb") ? "lcddefault" : "none");
     update_property (add_string, "Xcursor.theme",
-                            this->cursor_theme);
+                     this->cursor_theme);
     update_property (add_string, "Xcursor.size",
-                            g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->cursor_size));
+                     g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->cursor_size));
     g_debug("xft_settings_set_xresources: new res '%s'", add_string->str);
     /* Set the new X property */
     XChangeProperty(dpy, RootWindow (dpy, 0),
-            XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
+                    XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
     // ukui_settings_profile_end (NULL);
-    }
+}
