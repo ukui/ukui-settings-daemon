@@ -74,20 +74,6 @@ bool PluginManager::managerAwake()
     return managerStart();
 }
 
-// FIXME://
-void PluginManager::onPluginActivated(QString &name)
-{
-    CT_SYSLOG(LOG_DEBUG, "emitting plugin-activated '%s'", name.toUtf8().data());
-    Q_EMIT pluginActivated(name);
-}
-
-// FIXME://
-void PluginManager::onPluginDeactivated(QString &name)
-{
-    CT_SYSLOG(LOG_DEBUG, "emitting plugin-deactivated '%s'", name.toUtf8().data());
-    Q_EMIT pluginDeactivated(name);
-}
-
 void PluginManager::loadAll()
 {
     PluginInfo* info = NULL;
@@ -175,7 +161,11 @@ out:
 
 void PluginManager::unloadAll()
 {
-    while (!mPlugin->isEmpty()) delete mPlugin->takeFirst();
+    while (!mPlugin->isEmpty()) {
+        PluginInfo* plugin = mPlugin->takeFirst();
+        plugin->pluginDeactivate();
+        delete plugin;
+    }
 }
 
 static bool is_item_in_schema (const char* const* items, QString& item)
