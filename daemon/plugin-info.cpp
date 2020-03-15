@@ -3,13 +3,14 @@
 #include "clib-syslog.h"
 
 #include <QDebug>
+#include <QFile>
 
 PluginInfo::PluginInfo(QString& fileName)
 {
-    GKeyFile*   pluginFile = NULL;
-    char*       str = NULL;
     int         priority;
+    char*       str = NULL;
     GError*     error = NULL;
+    GKeyFile*   pluginFile = NULL;
 
     mPriority = 0;
     mActive = false;
@@ -24,20 +25,22 @@ PluginInfo::PluginInfo(QString& fileName)
 
     pluginFile = g_key_file_new();
     if (!g_key_file_load_from_file(pluginFile, (char*)fileName.toUtf8().data(), G_KEY_FILE_NONE, &error)) {
-        CT_SYSLOG(LOG_ERR, "Bad plugin file:'%s',error:'%s'", fileName.toUtf8().data(), error->message);
+        CT_SYSLOG(LOG_ERR, "Bad plugin file:'%s', error:'%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
-        goto out;
+        error = nullptr;
+        g_object_unref(pluginFile);
+        return;
     }
     if (!g_key_file_has_key(pluginFile, PLUGIN_GROUP, "IAge", &error)) {
-        CT_SYSLOG(LOG_ERR, "IAge key does not exist in file: %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "IAge key does not exist in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
-        goto out;
+        error = nullptr;
     }
     /* Check IAge=2 */
     if (g_key_file_get_integer (pluginFile, PLUGIN_GROUP, "IAge", &error) != 0) {
-        CT_SYSLOG(LOG_ERR, "Wrong IAge in file: %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Wrong IAge in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
-        goto out;
+        error = nullptr;
     }
 
     /* Get Location */
@@ -46,48 +49,62 @@ PluginInfo::PluginInfo(QString& fileName)
         mLocation = str;
     } else {
         g_free (str);
-        CT_SYSLOG(LOG_ERR, "Could not find 'Module' in %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Module' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
-        goto out;
+        error = nullptr;
     }
     /* Get Name */
-    str = g_key_file_get_locale_string (pluginFile, PLUGIN_GROUP, "Name", NULL, NULL);
+    str = g_key_file_get_locale_string (pluginFile, PLUGIN_GROUP, "Name", NULL, &error);
     if (str != NULL) {
         mName = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Name' in %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Could not find %s, error '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
-        goto out;
+        error = nullptr;
     }
 
     /* Get Description */
-    str = g_key_file_get_locale_string (pluginFile, PLUGIN_GROUP, "Description", NULL, NULL);
+    str = g_key_file_get_locale_string (pluginFile, PLUGIN_GROUP, "Description", NULL, &error);
     if (str != NULL) {
         mDesc = QString(str);
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Description' in %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Description' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        g_object_unref(error);
+        error = nullptr;
     }
 
     /* Get Authors */
-    this->mAuthors = g_key_file_get_string_list (pluginFile, PLUGIN_GROUP, "Authors", NULL, NULL);
-    if (this->mAuthors == NULL) {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Authors' in %s", fileName.toUtf8().data());
+    mAuthors = new QList<QString>();
+    char** author = g_key_file_get_string_list (pluginFile, PLUGIN_GROUP, "Authors", NULL, &error);
+    if (nullptr != author) {
+        for (int i = 0; author[i] != NULL; ++i) mAuthors->append(author[i]);
+    } else {
+        CT_SYSLOG(LOG_ERR, "Could not find 'Authors' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        g_object_unref(error);
+        error = nullptr;
     }
+    g_strfreev (author);
+    author = nullptr;
 
     /* Get Copyright */
-    str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Copyright", NULL);
+    str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Copyright", &error);
     if (str != NULL) {
-        mCopyright = QString(str);
+        mCopyright = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Copyright' in %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Copyright' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        g_object_unref(error);
+        error = nullptr;
     }
 
     /* Get Website */
-    str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Website", NULL);
+    str = g_key_file_get_string (pluginFile, PLUGIN_GROUP, "Website", &error);
     if (str != NULL) {
-         mWebsite = QString(str);
+         mWebsite = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Website' in %s", fileName.toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "Could not find 'Website' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+
+        g_object_unref(error);
+        error = nullptr;
     }
 
     /* Get Priority */
@@ -98,9 +115,16 @@ PluginInfo::PluginInfo(QString& fileName)
          this->mPriority = PLUGIN_PRIORITY_DEFAULT;
     }
 
-    g_key_file_free (pluginFile);
-out:
-    ;
+    if (nullptr != error) g_object_unref(error);
+    if (nullptr != pluginFile) g_key_file_free (pluginFile);
+}
+
+PluginInfo::~PluginInfo()
+{
+    if (nullptr != mModule)   {delete mModule; mModule = nullptr;}
+    if (nullptr != mPlugin)   {delete mPlugin; mPlugin = nullptr;}
+    if (nullptr != mAuthors)  {delete mAuthors; mAuthors = nullptr;}
+    if (nullptr != mSettings) {delete mSettings; mSettings = nullptr;}
 }
 
 bool PluginInfo::pluginActivate()
@@ -139,7 +163,7 @@ bool PluginInfo::pluginEnabled()
 
 bool PluginInfo::pluginIsAvailable()
 {
-    return this->mEnabled;
+    return this->mAvailable;
 }
 
 QString& PluginInfo::getPluginName()
@@ -152,9 +176,9 @@ QString& PluginInfo::getPluginDescription()
     return this->mDesc;
 }
 
-const char **PluginInfo::getPluginAuthors()
+QList<QString>& PluginInfo::getPluginAuthors()
 {
-    return (const char**)mAuthors;
+    return *mAuthors;
 }
 
 QString& PluginInfo::getPluginWebsite()
@@ -182,22 +206,30 @@ void PluginInfo::setPluginPriority(int priority)
     this->mPriority = priority;
 }
 
-// FIXME://
+// FIXME:// ?????
 void PluginInfo::setPluginSchema(QString& schema)
 {
     int priority;
 
-    mSettings = g_settings_new(schema.toLatin1().data());
-    this->mEnabled = g_settings_get_boolean(mSettings, "active");
-    priority = g_settings_get_int(mSettings, "priority");
+    mSettings = new QGSettings(schema.toUtf8());
+
+    this->mEnabled = mSettings->get("active").toBool();
+    priority = mSettings->get("priority").toInt();
     if (priority > 0) this->mPriority = priority;
-    // g_signal_connect (G_OBJECT (info->priv->settings), "changed::active",
-    // G_CALLBACK (plugin_enabled_cb), info);
+    if (!connect(mSettings, SIGNAL(changed(QString)), this, SLOT(pluginSchemaSlot(QString)))){
+        CT_SYSLOG(LOG_ERR, "plugin setting '%s', connect error!", schema.toUtf8().data());
+    }
 }
 
 bool PluginInfo::operator==(PluginInfo& oth)
 {
     return (0 == QString::compare(mName, oth.getPluginName(), Qt::CaseInsensitive));
+}
+
+void PluginInfo::pluginSchemaSlot(QString key)
+{
+    // if configure has changed, modify PluginInfo
+    // if configure deactivity plugin, activate() else deactivate()
 }
 
 bool PluginInfo::activatePlugin()
@@ -214,9 +246,8 @@ bool PluginInfo::activatePlugin()
         res = loadPluginModule();
     }
 
-    if (res) {
+    if (res && (nullptr != mPlugin)) {
         mPlugin->activate();
-        Q_EMIT activated(mName);
     } else {
         CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
     }
@@ -227,22 +258,17 @@ bool PluginInfo::activatePlugin()
 bool PluginInfo::loadPluginModule()
 {
     QString     path;
-    char*       dirname = NULL;
-    bool        ret;
-
-    ret = false;
 
     if (mFile.isNull() || mFile.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin file is error"); return false;}
     if (mLocation.isNull() || mLocation.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin location is error"); return false;}
     if (!mAvailable) {CT_SYSLOG(LOG_ERR, "Plugin is not available"); return false;}
 
-    dirname = g_path_get_dirname((const char*)this->mFile.toUtf8().data());
-    if (NULL == dirname) return FALSE;
+    QFile file(mFile);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
 
     QStringList l = mFile.split("/");
     l.pop_back();
     path = l.join("/") + "/lib" + mLocation + ".so";
-    g_free(dirname);
 
     if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
@@ -258,22 +284,19 @@ bool PluginInfo::loadPluginModule()
         CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", mModule->errorString().toUtf8().data());
         return false;
     }
-    mPlugin = (PluginInterface*)p();
+    try {
+        // INFO: create plugin maybe error, plugin must check it and throw error;
+        mPlugin = (PluginInterface*)p();
+    } catch (std::exception ex) {
+        CT_SYSLOG(LOG_ERR, "error: %s", ex.what());
+    }
 
     return true;
 }
 
 void PluginInfo::deactivatePlugin()
 {
-    mPlugin->deactivate();
-    Q_EMIT deactivated(mName);
+    if (nullptr != mPlugin) {
+        mPlugin->deactivate();
+    }
 }
-
-//void PluginInfo::pluginEnabledCB(GSettings *settings, gchar *key, PluginInfo*)
-//{
-//    if (g_settings_get_boolean(mSettings, key)) {
-//        pluginActivate();
-//    } else {
-//        pluginDeactivate();
-//    }
-//}

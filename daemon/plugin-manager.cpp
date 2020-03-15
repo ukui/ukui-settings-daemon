@@ -86,7 +86,7 @@ void PluginManager::loadAll()
     CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
     for (int i = 0; i < mPlugin->size(); ++i) {
         info = mPlugin->at(i);
-        CT_SYSLOG(LOG_DEBUG, "activity plugin: %s", info->getPluginName().toUtf8().data());
+        CT_SYSLOG(LOG_DEBUG, "start activity plugin: %s ...", info->getPluginName().toUtf8().data());
         info->pluginActivate();
     }
 }
@@ -123,8 +123,8 @@ void PluginManager::loadDir(QString &path)
 
 void PluginManager::loadFile(QString &fileName)
 {
-    PluginInfo* info = NULL;
     QString                 schema;
+    PluginInfo*             info = NULL;
 
     CT_SYSLOG(LOG_DEBUG, "Loading plugin: %s", fileName.toLatin1().data());
 
@@ -143,27 +143,33 @@ void PluginManager::loadFile(QString &fileName)
     schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
     if (is_schema (schema)) {
         CT_SYSLOG(LOG_DEBUG, "right schema '%s'", schema.toUtf8().data());
-       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
-       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
+
+//       QObject::connect(info, SIGNAL(activated), this, SLOT(onPluginActivated));
+//       QObject::connect(info, SIGNAL(deactivated), this, SLOT(onPluginDeactivated));
+
+
        info->setPluginSchema(schema);
        mPlugin->insert(0, info);
     } else {
         CT_SYSLOG(LOG_ERR, "Ignoring unknown schema '%s'", schema.toUtf8().data());
+        goto out;
     }
 
     return;
 
 out:
-    if (info != NULL) {
-        delete info;
-    }
+    if (info != NULL) delete info;
 }
 
 void PluginManager::unloadAll()
 {
     while (!mPlugin->isEmpty()) {
         PluginInfo* plugin = mPlugin->takeFirst();
-        plugin->pluginDeactivate();
+        try {
+            plugin->pluginDeactivate();
+        } catch (std::exception ex) {
+            CT_SYSLOG(LOG_ERR, "deactivity plugin '%s' error: '%s'", plugin->getPluginName().toUtf8().data(), ex.what());
+        }
         delete plugin;
     }
 }

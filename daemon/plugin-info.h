@@ -3,13 +3,11 @@
 #include "plugin-interface.h"
 
 #include <glib-object.h>
-#include <gmodule.h>
-
-#include <gio/gio.h>
-
 #include <QLibrary>
 #include <QObject>
 #include <string>
+
+#include <QGSettings/qgsettings.h>
 
 namespace UkuiSettingsDaemon {
 class PluginInfo;
@@ -20,7 +18,8 @@ class PluginInfo : public QObject
     Q_OBJECT
 public:
     explicit PluginInfo()=delete;
-    PluginInfo(QString& fileName); // DD-OKK // ukui_settings_plugin_info_new_from_file (const char *filename);
+    PluginInfo(QString& fileName);
+    ~PluginInfo();
 
     bool pluginActivate ();
     bool pluginDeactivate ();
@@ -30,7 +29,7 @@ public:
 
     QString& getPluginName ();
     QString& getPluginDescription ();
-    const char** getPluginAuthors ();
+    QList<QString>& getPluginAuthors ();
     QString& getPluginWebsite ();
     QString& getPluginCopyright ();
     QString& getPluginLocation ();
@@ -42,15 +41,13 @@ public:
 
     bool operator== (PluginInfo&);
 
-Q_SIGNALS:
-    void activated(QString&);
-    void deactivated(QString&);
+public Q_SLOTS:
+    void pluginSchemaSlot (QString key);
 
 private:
     bool activatePlugin();
     bool loadPluginModule();
     void deactivatePlugin();
-//    void pluginEnabledCB(GSettings* settings, gchar* key, PluginInfo*);
 
 private:
     /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
@@ -66,12 +63,14 @@ private:
     QString                 mWebsite;
     QString                 mLocation;
     QString                 mCopyright;
-    GSettings*              mSettings;
+    QGSettings*             mSettings;
+
     PluginInterface*        mPlugin;
     QLibrary*               mModule;
 
-    char**                  mAuthors;             // FIXME://
-    guint                   mEnabledNotificationId;
+    QList<QString>*         mAuthors;
+//    char**                  mAuthors;                   // FIXME://
+//    guint                   mEnabledNotificationId;
 };
 
 #endif // PluginInfo_H

@@ -38,7 +38,7 @@ public Q_SLOTS:
     bool managerAwake ();
 
 private:
-    QList<PluginInfo*>*  mPlugin;
+    QList<PluginInfo*>*         mPlugin;
     static PluginManager*       mPluginManager;
 };
 
