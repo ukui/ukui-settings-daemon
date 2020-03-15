@@ -247,7 +247,13 @@ bool PluginInfo::activatePlugin()
     }
 
     if (res && (nullptr != mPlugin)) {
-        mPlugin->activate();
+        try {
+            mPlugin->activate();
+        } catch (std::exception ex) {
+            res = false;
+            CT_SYSLOG(LOG_ERR, "plugin '%s' running error: '%s'", mName.toUtf8().data(), ex.what());
+        }
+
     } else {
         CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
     }
