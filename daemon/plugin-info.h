@@ -3,13 +3,11 @@
 #include "plugin-interface.h"
 
 #include <glib-object.h>
-#include <gmodule.h>
-
-#include <gio/gio.h>
-
 #include <QLibrary>
 #include <QObject>
 #include <string>
+
+#include <QGSettings/qgsettings.h>
 
 namespace UkuiSettingsDaemon {
 class PluginInfo;
@@ -20,40 +18,35 @@ class PluginInfo : public QObject
     Q_OBJECT
 public:
     explicit PluginInfo()=delete;
-    PluginInfo(QString& fileName); // DD-OKK // ukui_settings_plugin_info_new_from_file (const char *filename);
+    PluginInfo(QString& fileName);
+    ~PluginInfo();
 
+    bool pluginEnabled ();
     bool pluginActivate ();
     bool pluginDeactivate ();
     bool pluginIsactivate ();
-    bool pluginEnabled ();
     bool pluginIsAvailable ();
 
+    int getPluginPriority ();
     QString& getPluginName ();
-    QString& getPluginDescription ();
-    const char** getPluginAuthors ();
     QString& getPluginWebsite ();
-    QString& getPluginCopyright ();
     QString& getPluginLocation ();
-
-    int& getPluginPriority ();
+    QString& getPluginCopyright ();
+    QString& getPluginDescription ();
+    QList<QString>& getPluginAuthors ();
 
     void setPluginPriority (int priority);
     void setPluginSchema (QString& schema);
 
     bool operator== (PluginInfo&);
 
-Q_SIGNALS:
-    void activated(QString&);
-    void deactivated(QString&);
+public Q_SLOTS:
+    void pluginSchemaSlot (QString key);
 
 private:
-    bool activatePlugin();
-    bool loadPluginModule();
-    void deactivatePlugin();
-//    void pluginEnabledCB(GSettings* settings, gchar* key, PluginInfo*);
+    friend bool loadPluginModule(PluginInfo&);
 
 private:
-    /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
     int                     mPriority;
 
     bool                    mActive;
@@ -66,12 +59,12 @@ private:
     QString                 mWebsite;
     QString                 mLocation;
     QString                 mCopyright;
-    GSettings*              mSettings;
-    PluginInterface*        mPlugin;
-    QLibrary*               mModule;
+    QGSettings*             mSettings;
 
-    char**                  mAuthors;             // FIXME://
-    guint                   mEnabledNotificationId;
+    QLibrary*               mModule;
+    PluginInterface*        mPlugin;
+
+    QList<QString>*         mAuthors;
 };
 
 #endif // PluginInfo_H
