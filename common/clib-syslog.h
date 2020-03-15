@@ -10,8 +10,11 @@
 extern "C" {
 #endif
 
+#ifdef QT_NO_DEBUG
+#define LOG_LEVEL LOG_INFO
+#else
 #define LOG_LEVEL LOG_DEBUG
-
+#endif
 //__FILE__
 #define CT_SYSLOG(logLevel,...) {\
     syslog_info(logLevel, "", __func__, __LINE__, ##__VA_ARGS__);\
