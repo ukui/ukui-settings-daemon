@@ -14,9 +14,6 @@ public:
 
     virtual void activate () = 0;
     virtual void deactivate () = 0;
-
-protected:
-    QString pluginName;
 };
 
 #endif // PLUGIN_INTERFACE_H
