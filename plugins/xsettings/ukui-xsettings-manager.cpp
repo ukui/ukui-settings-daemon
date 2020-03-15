@@ -69,15 +69,6 @@ xft_callback (GSettings            *gsettings,
 
 static gpointer manager_object = NULL;
 
-
-
-
-
-
-
-
-
-
 static GQuark
 usd_xsettings_error_quark (void)
 {

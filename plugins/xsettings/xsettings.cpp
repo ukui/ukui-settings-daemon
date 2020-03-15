@@ -1,5 +1,4 @@
 #include "xsettings.h"
-//b#include "ukui-xsettings-manager.h"
 
 PluginInterface* Xsettings::m_pXsettings = nullptr;
 
@@ -10,19 +9,24 @@ PluginInterface* Xsettings::getInstance()
     }
     return Xsettings::m_pXsettings;
 }
+
+
 PluginInterface* createSettingsPlugin() {
     return Xsettings::getInstance();
 }
+
 
 Xsettings::Xsettings()
 {
     m_pXsettingManager = new ukuiXSettingsManager();
 }
 
+
 Xsettings::~Xsettings()
 {
     if (m_pXsettingManager)
         delete m_pXsettingManager;
+    m_pXsettingManager = nullptr;
 }
 
 
