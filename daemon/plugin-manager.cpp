@@ -165,11 +165,7 @@ void PluginManager::unloadAll()
 {
     while (!mPlugin->isEmpty()) {
         PluginInfo* plugin = mPlugin->takeFirst();
-        try {
-            plugin->pluginDeactivate();
-        } catch (std::exception ex) {
-            CT_SYSLOG(LOG_ERR, "deactivity plugin '%s' error: '%s'", plugin->getPluginName().toUtf8().data(), ex.what());
-        }
+        plugin->pluginDeactivate();
         delete plugin;
     }
 }

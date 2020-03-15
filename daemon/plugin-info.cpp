@@ -247,12 +247,7 @@ bool PluginInfo::activatePlugin()
     }
 
     if (res && (nullptr != mPlugin)) {
-        try {
-            mPlugin->activate();
-        } catch (std::exception ex) {
-            res = false;
-            CT_SYSLOG(LOG_ERR, "plugin '%s' running error: '%s'", mName.toUtf8().data(), ex.what());
-        }
+        mPlugin->activate();
 
     } else {
         CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
@@ -290,12 +285,7 @@ bool PluginInfo::loadPluginModule()
         CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", mModule->errorString().toUtf8().data());
         return false;
     }
-    try {
-        // INFO: create plugin maybe error, plugin must check it and throw error;
-        mPlugin = (PluginInterface*)p();
-    } catch (std::exception ex) {
-        CT_SYSLOG(LOG_ERR, "error: %s", ex.what());
-    }
+    mPlugin = (PluginInterface*)p();
 
     return true;
 }
