@@ -129,26 +129,42 @@ PluginInfo::~PluginInfo()
 
 bool PluginInfo::pluginActivate()
 {
+    bool res = false;
+
     if (!mAvailable) {CT_SYSLOG(LOG_DEBUG, "plugin is not available!") return false;}
     if (mActive) {CT_SYSLOG(LOG_DEBUG, "plugin has activity!") return true;}
 
-    if (activatePlugin ()) {
-        mActive = true;
-        return true;
+    // load module
+    if (nullptr == mPlugin) {
+        res = loadPluginModule(*this);
     }
 
-    return false;
+    if (res && (nullptr != mPlugin)) {
+        mPlugin->activate();
+        mActive = true;
+        res = true;
+    } else {
+        res = false;
+        CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
+    }
+
+    return res;
 }
 
 bool PluginInfo::pluginDeactivate()
 {
     if (!mActive || !mAvailable) {
-        return TRUE;
+        return true;
     }
-    deactivatePlugin();
-    this->mActive = FALSE;
 
-    return TRUE;
+    if (nullptr != mPlugin) {
+        mPlugin->deactivate();
+    } else {
+        return false;
+    }
+
+    mActive = false;
+    return true;
 }
 
 bool PluginInfo::pluginIsactivate()
@@ -196,7 +212,7 @@ QString& PluginInfo::getPluginLocation()
     return this->mLocation;
 }
 
-int& PluginInfo::getPluginPriority()
+int PluginInfo::getPluginPriority()
 {
     return this->mPriority;
 }
@@ -232,67 +248,36 @@ void PluginInfo::pluginSchemaSlot(QString key)
     // if configure deactivity plugin, activate() else deactivate()
 }
 
-bool PluginInfo::activatePlugin()
-{
-    bool res = true;
-
-    if (!mAvailable) {
-        CT_SYSLOG(LOG_ERR, "plugin is not available");
-        return false;
-    }
-
-    // load module
-    if (nullptr == mPlugin) {
-        res = loadPluginModule();
-    }
-
-    if (res && (nullptr != mPlugin)) {
-        mPlugin->activate();
-
-    } else {
-        CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
-    }
-
-    return res;
-}
-
-bool PluginInfo::loadPluginModule()
+bool loadPluginModule(PluginInfo& pinfo)
 {
     QString     path;
 
-    if (mFile.isNull() || mFile.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin file is error"); return false;}
-    if (mLocation.isNull() || mLocation.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin location is error"); return false;}
-    if (!mAvailable) {CT_SYSLOG(LOG_ERR, "Plugin is not available"); return false;}
+    if (pinfo.mFile.isNull() || pinfo.mFile.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin file is error"); return false;}
+    if (pinfo.mLocation.isNull() || pinfo.mLocation.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin location is error"); return false;}
+    if (!pinfo.mAvailable) {CT_SYSLOG(LOG_ERR, "Plugin is not available"); return false;}
 
-    QFile file(mFile);
+    QFile file(pinfo.mFile);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
 
-    QStringList l = mFile.split("/");
+    QStringList l = pinfo.mFile.split("/");
     l.pop_back();
-    path = l.join("/") + "/lib" + mLocation + ".so";
+    path = l.join("/") + "/lib" + pinfo.mLocation + ".so";
 
     if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
-    mModule = new QLibrary(path);
-    if (!(mModule->load())) {
-        CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), mModule->errorString().toUtf8().data());
-        mAvailable = false;
+    pinfo.mModule = new QLibrary(path);
+    if (!(pinfo.mModule->load())) {
+        CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
+        pinfo.mAvailable = false;
         return false;
     }
     typedef PluginInterface* (*createPlugin) ();
-    createPlugin p = (createPlugin)mModule->resolve("createSettingsPlugin");
+    createPlugin p = (createPlugin)pinfo.mModule->resolve("createSettingsPlugin");
     if (!p) {
-        CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", mModule->errorString().toUtf8().data());
+        CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", pinfo.mModule->errorString().toUtf8().data());
         return false;
     }
-    mPlugin = (PluginInterface*)p();
+    pinfo.mPlugin = (PluginInterface*)p();
 
     return true;
-}
-
-void PluginInfo::deactivatePlugin()
-{
-    if (nullptr != mPlugin) {
-        mPlugin->deactivate();
-    }
 }

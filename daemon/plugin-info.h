@@ -21,20 +21,19 @@ public:
     PluginInfo(QString& fileName);
     ~PluginInfo();
 
+    bool pluginEnabled ();
     bool pluginActivate ();
     bool pluginDeactivate ();
     bool pluginIsactivate ();
-    bool pluginEnabled ();
     bool pluginIsAvailable ();
 
+    int getPluginPriority ();
     QString& getPluginName ();
+    QString& getPluginWebsite ();
+    QString& getPluginLocation ();
+    QString& getPluginCopyright ();
     QString& getPluginDescription ();
     QList<QString>& getPluginAuthors ();
-    QString& getPluginWebsite ();
-    QString& getPluginCopyright ();
-    QString& getPluginLocation ();
-
-    int& getPluginPriority ();
 
     void setPluginPriority (int priority);
     void setPluginSchema (QString& schema);
@@ -45,12 +44,9 @@ public Q_SLOTS:
     void pluginSchemaSlot (QString key);
 
 private:
-    bool activatePlugin();
-    bool loadPluginModule();
-    void deactivatePlugin();
+    friend bool loadPluginModule(PluginInfo&);
 
 private:
-    /* Priority determines the order in which plugins are started and stopped. A lower number means higher priority. */
     int                     mPriority;
 
     bool                    mActive;
@@ -65,12 +61,10 @@ private:
     QString                 mCopyright;
     QGSettings*             mSettings;
 
-    PluginInterface*        mPlugin;
     QLibrary*               mModule;
+    PluginInterface*        mPlugin;
 
     QList<QString>*         mAuthors;
-//    char**                  mAuthors;                   // FIXME://
-//    guint                   mEnabledNotificationId;
 };
 
 #endif // PluginInfo_H

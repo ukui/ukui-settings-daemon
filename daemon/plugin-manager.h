@@ -27,14 +27,12 @@ private:
     PluginManager(PluginManager&)=delete;
     PluginManager& operator= (const PluginManager&)=delete;
 
-    void loadAll ();
-    void loadDir (QString& path);
-    void loadFile (QString& fileName);
-    void unloadAll ();
+Q_SIGNALS:
+
 
 public Q_SLOTS:
-    bool managerStart ();
     void managerStop ();
+    bool managerStart ();
     bool managerAwake ();
 
 private:
