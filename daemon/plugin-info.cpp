@@ -242,7 +242,7 @@ bool PluginInfo::operator==(PluginInfo& oth)
     return (0 == QString::compare(mName, oth.getPluginName(), Qt::CaseInsensitive));
 }
 
-void PluginInfo::pluginSchemaSlot(QString key)
+void PluginInfo::pluginSchemaSlot(QString)
 {
     // if configure has changed, modify PluginInfo
     // if configure deactivity plugin, activate() else deactivate()
