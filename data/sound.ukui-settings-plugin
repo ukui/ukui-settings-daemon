@@ -1,0 +1,8 @@
+[UKUI Settings Plugin]
+Module=sound
+IAge=0
+Name=Sound
+Description=Sound Sample Cache plugin
+Authors=Lennart Poettering
+Copyright=Copyright © 2008
+Website=
