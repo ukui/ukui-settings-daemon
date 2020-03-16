@@ -33,7 +33,8 @@ DEFINES += "$(sysconfdir)"
 
 PKGCONFIG +=\
     gdk-3.0 \
-    atk
+    atk    \
+    mate-desktop-2.0
 
 INCLUDEPATH += \
     -I $$PWD/../../common
