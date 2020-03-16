@@ -11,7 +11,6 @@ SUBDIRS +=\
         $$PWD/plugins/background/background.pro\
         $$PWD/plugins/typing-break/typing-break.pro \
         $$PWD/plugins/a11y-settings/a11y-settings.pro\
-        $$PWD/plugins/xrdb/xrdb.pro\
         $$PWD/daemon/daemon.pro
 
 include($$PWD/data/data.pri)
