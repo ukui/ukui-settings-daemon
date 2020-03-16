@@ -3,7 +3,7 @@
 #include "plugin-interface.h"
 #include <QtCore/QtGlobal>
 
-class BackgroundPlugin : public PluginInterface
+class Q_DECL_EXPORT BackgroundPlugin : public PluginInterface
 {
 public:
     ~BackgroundPlugin();
