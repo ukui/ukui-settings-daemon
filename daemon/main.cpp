@@ -65,7 +65,7 @@ static void parse_args (int argc, char *argv[])
             if (argc > 1) {
                 print_help();
                 CT_SYSLOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
-                QCoreApplication::exit();
+                exit(0);
             }
         }
     }
