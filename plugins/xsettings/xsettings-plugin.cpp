@@ -1,4 +1,4 @@
-#include "xsettings.h"
+#include "xsettings-plugin.h"
 
 PluginInterface* Xsettings::m_pXsettings = nullptr;
 

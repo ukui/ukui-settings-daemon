@@ -21,21 +21,21 @@ INCLUDEPATH += \
     -I $$PWD/../../common
 
 SOURCES += \
-    xsettings.cpp \
     xsettings-manager.cpp \
     xsettings-common.c \
     ukui-xsettings-manager.cpp \
     fontconfig-monitor.c \
-    ukui-xft-settings.cpp
+    ukui-xft-settings.cpp \
+    xsettings-plugin.cpp
 
 HEADERS += \
-    xsettings.h \
     xsettings-manager.h \
     ukui-xsettings-manager.h \
     fontconfig-monitor.h \
     ukui-xft-settings.h \
     xsettings-const.h \
-    xsettings-common.h
+    xsettings-common.h \
+    xsettings-plugin.h
 
 
 DESTDIR = $$PWD/../../library/

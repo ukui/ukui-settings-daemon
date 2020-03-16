@@ -28,8 +28,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
-DEFINES += "$(sysconfdir)"
-
 
 PKGCONFIG +=\
     gdk-3.0 \

@@ -51,8 +51,7 @@ timestamp_predicate (Display *display,
   return False;
 }
 
-static Time
-get_server_time (Display *display,
+static Time get_server_time (Display *display,
                  Window   window)
 {
   unsigned char c = 'a';
@@ -71,7 +70,8 @@ get_server_time (Display *display,
 
   return xevent.xproperty.time;
 }
-Window XsettingsManager::get_window    ()
+
+Window XsettingsManager::get_window()
 {
     return window;
 }
