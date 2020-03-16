@@ -42,6 +42,7 @@ PluginManager* PluginManager::getInstance()
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
         if (!register_manager(*mPluginManager)) {
+            CT_SYSLOG(LOG_ERR, "register manager failed!");
             return nullptr;
         }
     }
