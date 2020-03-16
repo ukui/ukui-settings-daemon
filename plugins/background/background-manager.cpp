@@ -406,3 +406,12 @@ void disconnect_screen_signals (BackgroundManager* manager)
         g_signal_handlers_disconnect_by_func (gdk_display_get_screen (display, i), (gpointer)G_CALLBACK (on_screen_size_changed), manager);
     }
 }
+
+void on_bg_handling_changed (GSettings* settings, const char* key, BackgroundManager* manager)
+{
+    if (peony_is_drawing_bg (manager)) {
+        if (nullptr != manager->mMateBG) remove_background (manager);
+    } else if (manager->mUsdCanDraw && nullptr == manager->mMateBG) {
+        setup_background (manager);
+    }
+}

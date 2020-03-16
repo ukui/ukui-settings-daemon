@@ -23,6 +23,7 @@ private:
 
     BackgroundManager(QObject *parent = nullptr);
 
+    friend void on_bg_handling_changed (GSettings* settings, const char* key, BackgroundManager* manager);
     friend void remove_background (BackgroundManager* manager);
     friend void free_fade (BackgroundManager* manager);
     friend void free_bg_surface (BackgroundManager* manager);
