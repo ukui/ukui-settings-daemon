@@ -3,7 +3,6 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS +=\
-        $$PWD/plugins/dummy/dummy.pro\
         $$PWD/plugins/mpris/mpris.pro \
         $$PWD/plugins/background/background.pro\
         $$PWD/plugins/typing-break/typing-break.pro \

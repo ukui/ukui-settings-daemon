@@ -7,6 +7,7 @@
 #include <QList>
 #include <QString>
 #include <QObject>
+#include <QApplication>
 #include <QDBusConnection>
 
 namespace UkuiSettingsDaemon {
@@ -28,7 +29,7 @@ private:
     PluginManager& operator= (const PluginManager&)=delete;
 
 Q_SIGNALS:
-
+    void exit ();
 
 public Q_SLOTS:
     void managerStop ();
@@ -36,8 +37,8 @@ public Q_SLOTS:
     bool managerAwake ();
 
 private:
-    QList<PluginInfo*>*         mPlugin;
-    static PluginManager*       mPluginManager;
+    static QList<PluginInfo*>*      mPlugin;
+    static PluginManager*           mPluginManager;
 };
 
 #endif // PLUGIN_MANAGER_H
