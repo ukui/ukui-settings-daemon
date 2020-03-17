@@ -25,4 +25,4 @@ HEADERS += \
         $$PWD/backgroundplugin.h \
         background-manager.h
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = $$OUT_PWD/../../library/

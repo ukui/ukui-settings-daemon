@@ -23,4 +23,5 @@ HEADERS += \
     typingbreakmanager.h \
     typingbreakplugin.h
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = \
+    $$OUT_PWD/../../library/
