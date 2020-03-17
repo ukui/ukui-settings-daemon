@@ -1,5 +1,10 @@
-#documentation.path = /usr/local/program/doc
-#  documentation.files = docs/*
+OTHER_FILES += \
+    $$PWD/ukui-settings-daemon.desktop\
+    $$PWD/org.ukui.SettingsDaemon.service\
+    \
+    \
+    $$PWD/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml\
+    $$PWD/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml
 
 # desktop ok
 desktop.path = /usr/share/gnome/autostart/
@@ -24,3 +29,13 @@ ukui_daemon_dbus.path = /usr/share/dbus-1/services/
 ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
 
 INSTALLS += desktop ukui_daemon plugin_lib plugin_info plugin_schema ukui_daemon_dbus
+
+DISTFILES += \
+    $$PWD/a11y-settings.ukui-settings-plugin \
+    $$PWD/background.ukui-settings-plugin \
+    $$PWD/mpris.ukui-settings-plugin_bak \
+    $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.background.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml \
+    $$PWD/sound.ukui-settings-plugin \
+    $$PWD/typing-break.ukui-settings-plugin
