@@ -2,6 +2,7 @@
 #define XRANDRMANAGER_H
 
 #include <QObject>
+#include <QDBusConnectionInterface>
 #include <glib.h>
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -23,15 +24,25 @@
 #include <libmate-desktop/mate-rr-labeler.h>
 #include <libmate-desktop/mate-desktop-utils.h>
 
+#define USD_DBUS_PATH "/org/ukui/SettingsDaemon"
+#define USD_DBUS_NAME "org.ukui.SettingsDaemon"
+#define USD_XRANDR_DBUS_PATH USD_DBUS_PATH "/XRANDR"
+#define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
+
+namespace UsdXrandr{
+class XrandrManager;
+}
+
 typedef  struct  _TimeoutDialog TimeoutDialog;
 
-class XrandrManager
+class XrandrManager : QObject
 {
+    Q_OBJECT
+    Q_CLASSINFO ("D-Bus Interface", USD_XRANDR_DBUS_NAME)
 private:
     XrandrManager();
     XrandrManager(XrandrManager&)=delete;
     XrandrManager&operator=(const XrandrManager&)=delete;
-    static bool RegisterManagerDbus();
 
 public:
     ~XrandrManager();
@@ -168,7 +179,6 @@ public:
 
 private:
     static XrandrManager* mXrandrManager;
-    static DBusGConnection *dbus_connection;
 
     /* Key code of the XF86Display key (Fn-F7 on Thinkpads, Fn-F4 on HP machines, etc.) */
     guint switch_video_mode_keycode;
