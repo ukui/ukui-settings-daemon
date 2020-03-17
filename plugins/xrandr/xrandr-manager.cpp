@@ -1,5 +1,10 @@
 #include "xrandr-manager.h"
 #include "clib-syslog.h"
+#include <QDBusError>
+#include <QDBusConnectionInterface>
+#include <QString>
+#include <QDBusConnection>
+
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <assert.h>
@@ -17,13 +22,6 @@
 #define CONF_KEY_TURN_ON_EXTERNAL_MONITORS_AT_STARTUP  "turn-on-external-monitors-at-startup"
 #define CONF_KEY_TURN_ON_LAPTOP_MONITOR_AT_STARTUP     "turn-on-laptop-monitor-at-startup"
 #define CONF_KEY_DEFAULT_CONFIGURATION_FILE            "default-configuration-file"
-
-
-#define USD_DBUS_PATH "/org/ukui/SettingsDaemon"
-#define USD_DBUS_NAME "org.ukui.SettingsDaemon"
-#define USD_XRANDR_DBUS_PATH USD_DBUS_PATH "/XRANDR"
-#define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
-
 
 static const MateRRRotation possible_rotations[] = { 
         MATE_RR_ROTATION_0,
@@ -47,10 +45,10 @@ struct _TimeoutDialog{
         int response_id;
 };
 
-DBusGConnection * XrandrManager::dbus_connection = NULL;
 XrandrManager * XrandrManager::mXrandrManager = nullptr;
 
 static XrandrManager * manager = XrandrManager::XrandrManagerNew();
+static bool RegisterManagerDbus(XrandrManager& m);
 
 static FILE *log_file;
 
@@ -59,27 +57,40 @@ XrandrManager::XrandrManager()
 
 }
 
+XrandrManager::~XrandrManager()
+{
+    if(mXrandrManager)
+        delete mXrandrManager;
+}
+
 XrandrManager * XrandrManager::XrandrManagerNew()
 {
     if (nullptr == mXrandrManager)
         mXrandrManager = new XrandrManager();
 
-    RegisterManagerDbus();
+    if (RegisterManagerDbus(*mXrandrManager))
+       return nullptr;
 
     return mXrandrManager;
 }
 bool XrandrManager::RegisterManagerDbus()
 {
-    GError * error = NULL;
-    dbus_connection = dbus_g_bus_get(DBUS_BUS_SESSION,&error);
-    if (NULL == dbus_connection){
-        if(NULL == error){
-            CT_SYSLOG(LOG_ERR, "Error getting session bus: %s", error->message);
-            g_error_free (error);
-        }
+    QString XrandrDbusName = USD_XRANDR_DBUS_NAME;
+    if (QDBusConnection::sessionBus().interface()->isServiceRegistered(XrandrDbusName)){
         return false;
     }
-    dbus_g_connection_register_g_object(dbus_connection,USD_XRANDR_DBUS_PATH,NULL);
+    QDBusConnection bus = QDBusConnection::sessionBus();
+
+    if (!bus.registerService(USD_XRANDR_DBUS_NAME)) {
+        CT_SYSLOG(LOG_ERR, "error Xrandr Name bus: '%s'", bus.lastError().message().toUtf8().data());
+        return false;
+    }
+    if (!bus.registerObject(USD_XRANDR_DBUS_PATH, (QObject*)&m, QDBusConnection::ExportAllSlots)) {
+        CT_SYSLOG(LOG_ERR, "path xrandr error: '%s'", bus.lastError().message().toUtf8().data());
+        return false;
+    }
+    CT_SYSLOG(LOG_DEBUG, "Xrandr RegisterManagerDbus successful!");
+
     return true;
 }
 
@@ -187,11 +198,6 @@ void XrandrManager::XrandrManagerStop()
     if (manager->rw_screen != NULL) {
             g_object_unref (manager->rw_screen);
             manager->rw_screen = NULL;
-    }
-
-    if (manager->dbus_connection != NULL) {
-            dbus_g_connection_unref (manager->dbus_connection);
-            manager->dbus_connection = NULL;
     }
 
     status_icon_stop (manager);
