@@ -11,7 +11,8 @@ SUBDIRS +=\
         $$PWD/plugins/background/background.pro\
         $$PWD/plugins/a11y-settings/a11y-settings.pro\
         $$PWD/plugins/xrdb/xrdb.pro\
-        $$PWD/daemon/daemon.pro
+        $$PWD/daemon/daemon.pro \
+    plugins/common
 
 include($$PWD/data/data.pri)
 
