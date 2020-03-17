@@ -121,8 +121,7 @@ PluginInfo::PluginInfo(QString& fileName)
 
 PluginInfo::~PluginInfo()
 {
-    if (nullptr != mModule)   {delete mModule; mModule = nullptr;}
-    if (nullptr != mPlugin)   {delete mPlugin; mPlugin = nullptr;}
+    if (nullptr != mModule)   {mModule->unload(); delete mModule; mModule = nullptr;}
     if (nullptr != mAuthors)  {delete mAuthors; mAuthors = nullptr;}
     if (nullptr != mSettings) {delete mSettings; mSettings = nullptr;}
 }

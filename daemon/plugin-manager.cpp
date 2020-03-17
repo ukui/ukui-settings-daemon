@@ -17,25 +17,23 @@
 #include <QDebug>
 #include <QDBusError>
 #include <QDBusConnectionInterface>
-#include <QApplication>
 
-PluginManager* PluginManager::mPluginManager = NULL;
+QList<PluginInfo*>* PluginManager::mPlugin = nullptr;
+PluginManager* PluginManager::mPluginManager = nullptr;
 
 static bool is_schema (QString& schema);
 static bool register_manager(PluginManager& pm);
 
 PluginManager::PluginManager()
 {
-    mPlugin = new QList<PluginInfo*>();
+    if (nullptr == mPlugin) mPlugin = new QList<PluginInfo*>();
 }
 
 PluginManager::~PluginManager()
 {
     managerStop();
-    delete[] mPlugin;
-
-    delete mPluginManager;
-    mPluginManager = nullptr;
+    delete mPlugin;
+    mPlugin = nullptr;
 }
 
 PluginManager* PluginManager::getInstance()
@@ -44,6 +42,7 @@ PluginManager* PluginManager::getInstance()
         CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
         if (!register_manager(*mPluginManager)) {
+            CT_SYSLOG(LOG_ERR, "register manager failed!");
             return nullptr;
         }
     }
@@ -123,7 +122,8 @@ void PluginManager::managerStop()
         delete plugin;
     }
 
-    QApplication::exit(0);
+    // exit main event loop
+    QCoreApplication::exit();
 }
 
 bool PluginManager::managerAwake()

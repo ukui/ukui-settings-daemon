@@ -10,6 +10,13 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
+
+#define SYSTEM_AD_DIR    SYSCONFDIR "/xrdb"
+#define GENERAL_AD       SYSTEM_AD_DIR "/General.ad"
+#define USER_AD_DIR      ".config/ukui/xrdb"
+#define USER_X_RESOURCES ".Xresources"
+#define USER_X_DEFAULTS  ".Xdefaults"
+
 class ukuiXrdbManager:public IXrdbManager
 {
 public:
@@ -21,9 +28,10 @@ public:
 
     void append_theme_colors (GtkStyle *style, GString  *string);
     void apply_settings (GtkStyle       *style);
+
     friend void theme_changed (GtkSettings    *settings, GParamSpec     *pspec);
 
-private:
+//private:
     GtkWidget* widget;
 
 };

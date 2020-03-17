@@ -240,10 +240,6 @@ scan_for_files (GError        **error)
 }
 
 /**
- * Append an X resources file, such as .Xresources, or .Xdefaults
- */
-
-/**
  * Append the contents of a file onto the end of a GString
  */
 static void
@@ -319,11 +315,11 @@ child_watch_cb (GPid     pid,
                 int      status,
                 gpointer user_data)
 {
-        char *command = (char*)user_data;
+    char *command = (char*)user_data;
 
-        if (!WIFEXITED (status) || WEXITSTATUS (status)) {
-                g_warning ("Command %s failed", command);
-        }
+    if (!WIFEXITED (status) || WEXITSTATUS (status)) {
+        g_warning ("Command %s failed", command);
+    }
 }
 
 
@@ -348,7 +344,7 @@ spawn_with_input (const char *command,
     res = g_spawn_async_with_pipes (NULL,
                                     argv,
                                     NULL,
-                                    (int)(G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD),
+                                    (GSpawnFlags)(G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD),
                                     NULL,
                                     NULL,
                                     &child_pid,
@@ -434,8 +430,8 @@ void ukuiXrdbManager::apply_settings (GtkStyle       *style)
 }
 
 void theme_changed (GtkSettings    *settings,
-               GParamSpec     *pspec,
-               ukuiXrdbManager *manager)
+                    GParamSpec     *pspec,
+                    ukuiXrdbManager *manager)
 {
     manager->apply_settings (gtk_widget_get_style (manager->widget));
 }
@@ -468,7 +464,7 @@ int ukuiXrdbManager::stop()
     g_debug ("Stopping xrdb manager");
 
     g_signal_handlers_disconnect_by_func (gtk_settings_get_default (),
-                                          theme_changed,
+                                          (void*)G_CALLBACK (theme_changed),
                                           this);
 
     if (widget != NULL) {

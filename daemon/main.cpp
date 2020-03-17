@@ -6,6 +6,7 @@
 #include "manager-interface.h"
 
 #include <QDebug>
+#include <QObject>
 #include <QDBusReply>
 #include <QApplication>
 #include <QDBusConnectionInterface>
@@ -41,14 +42,14 @@ int main (int argc, char* argv[])
         goto out;
     }
 
-    return app.exec();
+    app.exec();
 out:
 
     if (manager != NULL) delete manager;
 
     CT_SYSLOG(LOG_DEBUG, "SettingsDaemon finished");
 
-    return -1;
+    return 0;
 }
 
 static void parse_args (int argc, char *argv[])
@@ -64,7 +65,7 @@ static void parse_args (int argc, char *argv[])
             if (argc > 1) {
                 print_help();
                 CT_SYSLOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
-                QApplication::exit(0);
+                exit(0);
             }
         }
     }
