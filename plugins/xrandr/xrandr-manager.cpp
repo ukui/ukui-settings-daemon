@@ -73,7 +73,8 @@ XrandrManager * XrandrManager::XrandrManagerNew()
 
     return mXrandrManager;
 }
-bool XrandrManager::RegisterManagerDbus()
+
+bool RegisterManagerDbus(XrandrManager& m)
 {
     QString XrandrDbusName = USD_XRANDR_DBUS_NAME;
     if (QDBusConnection::sessionBus().interface()->isServiceRegistered(XrandrDbusName)){
