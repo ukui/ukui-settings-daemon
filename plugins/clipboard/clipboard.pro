@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = background
+TARGET = clipboard
 
 QT -= gui
 CONFIG += no_keywords c++11 plugin link_pkgconfig
@@ -12,16 +12,19 @@ include($$PWD/../../common/common.pri)
 INCLUDEPATH += \
 
 PKGCONFIG += \
-        gio-2.0 \
-        glib-2.0 \
-        mate-desktop-2.0
+        gdk-3.0
 
 SOURCES += \
-        $$PWD/backgroundplugin.cpp \
-        background-manager.cpp
+    $$PWD/list.c \
+    $$PWD/xutils.c \
+    $$PWD/clipboard-plugin.cpp \
+    $$PWD/clipboard-manager.cpp \
 
 HEADERS += \
-        $$PWD/backgroundplugin.h \
-        background-manager.h
+    $$PWD/list.h \
+    $$PWD/xutils.h \
+    $$PWD/clipboard-plugin.h \
+    $$PWD/clipboard-manager.h
+
 
 DESTDIR = $$OUT_PWD/../../library/

@@ -8,7 +8,6 @@ PKGCONFIG += \
         glib-2.0\
         gio-2.0
 
-
 SOURCES += \
     $$PWD/clib-syslog.c\
     $$PWD/QGSettings/qconftype.cpp\
