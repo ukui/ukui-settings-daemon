@@ -23,4 +23,5 @@ HEADERS += \
     mprismanager.h \
     mprisplugin.h
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = \
+    $$OUT_PWD/../../library/

@@ -1,9 +1,9 @@
 QT -= gui
-
 TEMPLATE = lib
 
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
+
 PKGCONFIG += glib-2.0 \
              gio-2.0 \
 
@@ -30,4 +30,5 @@ HEADERS += \
     soundmanager.h \
     soundplugin.h
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = \
+    $$OUT_PWD/../../library/
