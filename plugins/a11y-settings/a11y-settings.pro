@@ -2,6 +2,7 @@ TEMPLATE = lib
 TARGET = a11y-settings
 
 QT -= gui
+QT += core
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 
@@ -13,7 +14,7 @@ PKGCONFIG += glib-2.0 \
              gio-2.0 \
 
 INCLUDEPATH += \
-        -I $$PWD/../../common
+    -I $$PWD/../../common
 
 LIBS +=
 
@@ -25,4 +26,4 @@ HEADERS += \
     $$PWD/a11ysettingsmanager.h \
     $$PWD/a11ysettingsplugin.h
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = $$OUT_PWD/../../library/

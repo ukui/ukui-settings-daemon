@@ -1,11 +1,12 @@
 #include "a11ysettingsmanager.h"
 #include "clib-syslog.h"
 
+bool start_a11y_keyboard_idle(A11ySettingsManager*);
+
 A11ySettingsManager* A11ySettingsManager::mA11ySettingsManager = nullptr;
 
 A11ySettingsManager::A11ySettingsManager()
 {
-    //nothing to do ...
 }
 
 A11ySettingsManager* A11ySettingsManager::A11ySettingsManagerNew()
@@ -15,8 +16,9 @@ A11ySettingsManager* A11ySettingsManager::A11ySettingsManagerNew()
     return mA11ySettingsManager;
 }
 
-bool A11ySettingsManager::A11ySettingsManagerStart(GError **error)
+bool A11ySettingsManager::A11ySettingsManagerStart(GError**)
 {
+    //
     CT_SYSLOG(LOG_DEBUG,"Starting a11y_settings manager!");
     interface_settings=g_settings_new("org.mate.interface");
     a11y_apps_settings=g_settings_new("org.gnome.desktop.a11y.applications");
@@ -71,7 +73,10 @@ void A11ySettingsManager::apps_settings_changed(GSettings *settings,
     }
 }
 
+bool start_a11y_keyboard_idle(A11ySettingsManager*)
+{
 
+}
 
 
 
