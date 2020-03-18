@@ -22,6 +22,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
+PKGCONFIG += glib-2.0
+
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG +=     glib-2.0 \
@@ -31,11 +33,15 @@ PKGCONFIG +=     glib-2.0 \
 
 
 SOURCES += \
-        ukui-osd-window.cpp
+        ukui-osd-window.cpp \
+    ukui-input-helper.c \
+    ukui-keygrab.c
 
 HEADERS += \
         ukui-osd-window.h \
-        common_global.h 
+        common_global.h \ 
+    usd-input-helper.h \
+    eggaccelerators.h
 
 unix {
     target.path = /usr/lib
