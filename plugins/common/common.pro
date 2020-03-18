@@ -24,6 +24,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 PKGCONFIG += glib-2.0
 
+INCLUDEPATH += \
+        -I $$PWD \
+    -I $$PWD/../..
+
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG +=     glib-2.0 \
@@ -41,7 +45,8 @@ HEADERS += \
         ukui-osd-window.h \
         common_global.h \ 
     usd-input-helper.h \
-    eggaccelerators.h
+    eggaccelerators.h \
+    ukui-keygrab.h
 
 unix {
     target.path = /usr/lib

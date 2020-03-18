@@ -356,7 +356,7 @@ UkuiOsdWindow::UkuiOsdWindow():is_composited (1)
 
 }
 
-
+/*
 UkuiOsdWindowClass* UkuiOsdWindowClass::ukui_osd_window_class_init() {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
@@ -386,3 +386,4 @@ UkuiOsdWindowClass* UkuiOsdWindowClass::ukui_osd_window_class_init() {
     g_type_class_add_private (klass, sizeof (UsdOsdWindowPrivate));
 
 }
+*/

@@ -32,7 +32,7 @@
 
 #include "eggaccelerators.h"
 
-#include "usd-keygrab.h"
+#include "ukui-keygrab.h"
 
 /* these are the mods whose combinations are ignored by the keygrabbing code */
 static GdkModifierType usd_ignored_mods = 0;
