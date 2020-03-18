@@ -20,12 +20,12 @@ PluginInterface *ClipboardPlugin::getInstance()
 
 void ClipboardPlugin::activate()
 {
-    mManager->start();
+    if (nullptr != mManager) mManager->managerStart();
 }
 
 void ClipboardPlugin::deactivate()
 {
-    mManager->stop();
+    if (nullptr != mManager) mManager->managerStop();
     if (nullptr != mInstance) {
         delete mInstance;
         mInstance = nullptr;
@@ -35,7 +35,7 @@ void ClipboardPlugin::deactivate()
 ClipboardPlugin::ClipboardPlugin()
 {
     syslog_init("ukui-settings-daemon-clipboard", LOG_LOCAL6);
-    if (nullptr == mManager) {
+    if ((nullptr == mManager)) {
         mManager = new ClipboardManager();
     }
 }

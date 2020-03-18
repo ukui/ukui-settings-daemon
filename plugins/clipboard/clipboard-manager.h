@@ -1,18 +1,14 @@
 #ifndef CLIPBOARDMANAGER_H
 #define CLIPBOARDMANAGER_H
-#include "list.h"
-
-#include <QObject>
 #include <QThread>
+
+#include "list.h"
 
 #include <glib.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
-
-
-class ClipboardThread;
 
 typedef struct
 {
@@ -33,19 +29,20 @@ typedef struct
     TargetData*                 data;
 } IncrConversion;
 
-class ClipboardManager : public QObject
+class ClipboardManager : public QThread
 {
     Q_OBJECT
+
 public:
     explicit ClipboardManager(QObject *parent = nullptr);
     ~ClipboardManager();
 
-    bool start ();
-    bool stop ();
-
-Q_SIGNALS:
+    bool managerStart ();
+    bool managerStop ();
+    void run() override;
 
 private:
+    bool                    mExit;
     Display*                mDisplay;
     Window                  mWindow;
     Time                    mTimestamp;
@@ -57,9 +54,6 @@ private:
     Atom                    mProperty;
     Time                    mTime;
 
-    QThread*                mThread;
-
-    friend ClipboardThread;
     friend void get_property (TargetData* tdata, ClipboardManager* manager);
     friend bool send_incrementally (ClipboardManager* manager, XEvent* xev);
     friend bool receive_incrementally (ClipboardManager* manager, XEvent* xev);

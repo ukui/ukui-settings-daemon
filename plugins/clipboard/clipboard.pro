@@ -1,7 +1,7 @@
 TEMPLATE = lib
 TARGET = clipboard
 
-QT -= gui
+QT += gui
 CONFIG += no_keywords c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 

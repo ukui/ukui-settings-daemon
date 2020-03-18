@@ -1,17 +1,110 @@
 #include "clipboard-manager.h"
-#include "clib-syslog.h"
+
+/* always defined to indicate that i18n is enabled */
+#define ENABLE_NLS 1
+
+/* enable profiling */
+/* #undef ENABLE_PROFILING */
+
+/* Name of default gettext domain */
+#define GETTEXT_PACKAGE "ukui-settings-daemon"
+
+/* Warn on use of APIs added after GLib 2.36 */
+#define GLIB_VERSION_MAX_ALLOWED GLIB_VERSION_2_36
+
+/* Warn on use of APIs deprecated before GLib 2.36 */
+#define GLIB_VERSION_MIN_REQUIRED GLIB_VERSION_2_36
+
+/* Define to 1 if you have the `bind_textdomain_codeset' function. */
+#define HAVE_BIND_TEXTDOMAIN_CODESET 1
+
+/* Define to 1 if you have the Mac OS X function CFLocaleCopyCurrent in the
+   CoreFoundation framework. */
+/* #undef HAVE_CFLOCALECOPYCURRENT */
+
+/* Define to 1 if you have the Mac OS X function CFPreferencesCopyAppValue in
+   the CoreFoundation framework. */
+/* #undef HAVE_CFPREFERENCESCOPYAPPVALUE */
+
+/* Define to 1 if you have the `dcgettext' function. */
+#define HAVE_DCGETTEXT 1
+
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#define HAVE_DLFCN_H 1
+
+/* Define if the GNU gettext() function is already present or preinstalled. */
+#define HAVE_GETTEXT 1
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#define HAVE_INTTYPES_H 1
+
+/* Define if your <locale.h> file defines LC_MESSAGES. */
+#define HAVE_LC_MESSAGES 1
+
+/* Define if libcanberra-gtk3 is available */
+#define HAVE_LIBCANBERRA 1
+
+/* Define if libmatemixer is available */
+#define HAVE_LIBMATEMIXER 1
+
+/* Define if libnotify is available */
+#define HAVE_LIBNOTIFY 1
+
+/* Define to 1 if you have the <locale.h> header file. */
+#define HAVE_LOCALE_H 1
+
+/* Define to 1 if you have the <memory.h> header file. */
+#define HAVE_MEMORY_H 1
+
+/* Defined if PolicyKit support is enabled */
+#define HAVE_POLKIT 1
+
+/* Define if PulseAudio support is available */
+/* #undef HAVE_PULSE */
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#define HAVE_STDINT_H 1
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#define HAVE_STDLIB_H 1
+
+/* Define to 1 if you have the <strings.h> header file. */
+#define HAVE_STRINGS_H 1
+
+/* Define to 1 if you have the <string.h> header file. */
+#define HAVE_STRING_H 1
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#define HAVE_SYS_STAT_H 1
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#define HAVE_SYS_TYPES_H 1
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#define HAVE_UNISTD_H 1
+
+/* Define to 1 if you have the <X11/extensions/xf86misc.h> header file. */
+/* #undef HAVE_X11_EXTENSIONS_XF86MISC_H */
+
+/* Define to 1 if you have the <X11/extensions/XKB.h> header file. */
+#define HAVE_X11_EXTENSIONS_XKB_H 1
 
 #include <glib.h>
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <gdk/gdk.h>
+#include <gdk/gdkx.h>
+#include <X11/Xlib.h>
+#include <sys/wait.h>
+#include <sys/types.h>
+#include <X11/Xatom.h>
 
-#include "xutils.h"
 #include "list.h"
+#include "xutils.h"
+#include "clib-syslog.h"
 
 void target_data_unref (TargetData *data);
 int clipboard_bytes_per_item (int format);
@@ -34,85 +127,37 @@ void finish_selection_request (ClipboardManager* manager, XEvent* xev, bool succ
 GdkFilterReturn clipboard_manager_event_filter (GdkXEvent* xevent, GdkEvent* event, ClipboardManager* manager);
 void clipboard_manager_watch_cb(ClipboardManager* manager, Window window, bool isStart, long mask, void* cbData);
 
-class ClipboardThread : public QThread
+ClipboardManager::ClipboardManager(QObject *parent) : QThread(parent)
 {
-    Q_OBJECT
-public:
-    explicit ClipboardThread(ClipboardManager*m, QObject* partent) : QThread(partent) {
-        mClipboardManager = m;
-    }
-    ~ClipboardThread() {}
-    void run() override {
-        while (mExit) {
-            XClientMessageEvent xev;
-            init_atoms (mClipboardManager->mDisplay);
-            /* check if there is a clipboard manager running */
-            if (XGetSelectionOwner (mClipboardManager->mDisplay, XA_CLIPBOARD_MANAGER)) {
-                CT_SYSLOG(LOG_ERR, "Clipboard manager is already running.");
-                mExit = false;
-                return;
-            }
-
-            mClipboardManager->mContents = nullptr;
-            mClipboardManager->mConversions = nullptr;
-            mClipboardManager->mRequestor = None;
-            mClipboardManager->mWindow = XCreateSimpleWindow (mClipboardManager->mDisplay,
-                      DefaultRootWindow (mClipboardManager->mDisplay), 0, 0, 10, 10, 0,
-                      WhitePixel (mClipboardManager->mDisplay, DefaultScreen (mClipboardManager->mDisplay)),
-                      WhitePixel (mClipboardManager->mDisplay, DefaultScreen (mClipboardManager->mDisplay)));
-
-            clipboard_manager_watch_cb (mClipboardManager, mClipboardManager->mWindow, True, PropertyChangeMask, NULL);
-
-            XSelectInput (mClipboardManager->mDisplay, mClipboardManager->mWindow, PropertyChangeMask);
-            mClipboardManager->mTimestamp = get_server_time (mClipboardManager->mDisplay, mClipboardManager->mWindow);
-
-            XSetSelectionOwner (mClipboardManager->mDisplay, XA_CLIPBOARD_MANAGER, mClipboardManager->mWindow, mClipboardManager->mTimestamp);
-
-            /* Check to see if we managed to claim the selection. If not, we treat it as if we got it then immediately lost it */
-            if (XGetSelectionOwner (mClipboardManager->mDisplay, XA_CLIPBOARD_MANAGER) == mClipboardManager->mWindow) {
-                xev.type = ClientMessage;
-                xev.window = DefaultRootWindow (mClipboardManager->mDisplay);
-                xev.message_type = XA_MANAGER;
-                xev.format = 32;
-                xev.data.l[0] = mClipboardManager->mTimestamp;
-                xev.data.l[1] = XA_CLIPBOARD_MANAGER;
-                xev.data.l[2] = mClipboardManager->mWindow;
-                xev.data.l[3] = 0;      /* manager specific data */
-                xev.data.l[4] = 0;      /* manager specific data */
-
-                XSendEvent (mClipboardManager->mDisplay, DefaultRootWindow (mClipboardManager->mDisplay), False, StructureNotifyMask, (XEvent *)&xev);
-            } else {
-                clipboard_manager_watch_cb (mClipboardManager, mClipboardManager->mWindow, False, 0, NULL);
-                /* FIXME: manager->priv->terminate (manager->priv->cb_data); */
-            }
-        }
+    mExit = false;
+    mDisplay = nullptr;
+    mContents = nullptr;
+    mConversions = nullptr;
+    gdk_init(NULL, NULL);
+    GdkDisplay* display = gdk_display_get_default();
+    if (nullptr == display) {
+        CT_SYSLOG(LOG_ERR, "get GdkDisplay error");
+        return;
     }
 
-private:
-    ClipboardManager*                   mClipboardManager;
-    bool                                mExit;
-
-};
-
-ClipboardManager::ClipboardManager(QObject *parent) : QObject(parent)
-{
-    mDisplay = gdk_x11_display_get_xdisplay(gdk_display_get_default());
-    mThread = new ClipboardThread(this, this);
+    mDisplay = gdk_x11_display_get_xdisplay(display);
 }
 
 ClipboardManager::~ClipboardManager()
 {
-    delete mThread;
 }
 
-bool ClipboardManager::start()
+bool ClipboardManager::managerStart()
 {
-    mThread->start(QThread::LowestPriority);
+    if (nullptr == mDisplay) {
+        return false;
+    }
+    start(QThread::LowestPriority);
+    return true;
 }
 
-bool ClipboardManager::stop()
+bool ClipboardManager::managerStop()
 {
-    mThread->quit();
     clipboard_manager_watch_cb (this, mWindow, FALSE, 0, NULL);
     XDestroyWindow (mDisplay, mWindow);
 
@@ -121,6 +166,60 @@ bool ClipboardManager::stop()
 
     list_foreach (mContents, (Callback) target_data_unref, NULL);
     list_free (mContents);
+
+    mExit = true;
+    QThread::exit(0);
+    return true;
+}
+
+void ClipboardManager::run()
+{
+    while (!mExit) {
+        XClientMessageEvent xev;
+        if (nullptr == mDisplay) {
+            return;
+        }
+        init_atoms (mDisplay);
+        /* check if there is a clipboard manager running */
+        if (XGetSelectionOwner (mDisplay, XA_CLIPBOARD_MANAGER)) {
+            CT_SYSLOG(LOG_ERR, "Clipboard manager is already running.");
+            mExit = false;
+            return;
+        }
+
+        mContents = nullptr;
+        mConversions = nullptr;
+        mRequestor = None;
+        mWindow = XCreateSimpleWindow (mDisplay,
+                  DefaultRootWindow (mDisplay), 0, 0, 10, 10, 0,
+                  WhitePixel (mDisplay, DefaultScreen (mDisplay)),
+                  WhitePixel (mDisplay, DefaultScreen (mDisplay)));
+
+        clipboard_manager_watch_cb (this, mWindow, True, PropertyChangeMask, NULL);
+
+        XSelectInput (mDisplay, mWindow, PropertyChangeMask);
+        mTimestamp = get_server_time (mDisplay, mWindow);
+
+        XSetSelectionOwner (mDisplay, XA_CLIPBOARD_MANAGER, mWindow, mTimestamp);
+
+        /* Check to see if we managed to claim the selection. If not, we treat it as if we got it then immediately lost it */
+        if (XGetSelectionOwner (mDisplay, XA_CLIPBOARD_MANAGER) == mWindow) {
+            xev.type = ClientMessage;
+            xev.window = DefaultRootWindow (mDisplay);
+            xev.message_type = XA_MANAGER;
+            xev.format = 32;
+            xev.data.l[0] = mTimestamp;
+            xev.data.l[1] = XA_CLIPBOARD_MANAGER;
+            xev.data.l[2] = mWindow;
+            xev.data.l[3] = 0;      /* manager specific data */
+            xev.data.l[4] = 0;      /* manager specific data */
+
+            XSendEvent (mDisplay, DefaultRootWindow (mDisplay), False, StructureNotifyMask, (XEvent *)&xev);
+        } else {
+            clipboard_manager_watch_cb (this, mWindow, False, 0, NULL);
+            /* FIXME: manager->priv->terminate (manager->priv->cb_data); */
+        }
+    }
 }
 
 void clipboard_manager_watch_cb(ClipboardManager* manager, Window window, bool isStart, long, void*)
