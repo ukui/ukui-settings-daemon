@@ -4,7 +4,7 @@
 #include <X11/Xlib.h>
 #include "xsettings-common.h"
 
-typedef void (*XSettingsTerminateFunc)  (void *cb_data);
+typedef void (*XSettingsTerminateFunc)  (int *cb_data);
 
 class XsettingsManager
 {
@@ -26,7 +26,7 @@ public:
     XSettingsResult set_color      (const char       *name,
                                     XSettingsColor   *value);
     void setting_store (XSettingsSetting *setting,
-               XSettingsBuffer *buffer);
+                        XSettingsBuffer *buffer);
     XSettingsResult notify         ();
 
 private:
