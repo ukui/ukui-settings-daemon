@@ -158,8 +158,7 @@ XSettingsResult XsettingsManager::set_color      (const char       *name,
     return set_setting (&setting);
 
 }
-static size_t
-setting_length (XSettingsSetting *setting)
+static size_t setting_length (XSettingsSetting *setting)
 {
   size_t length = 8;    /* type + pad + name-len + last-change-serial */
   length += XSETTINGS_PAD (strlen (setting->name), 4);
@@ -180,8 +179,7 @@ setting_length (XSettingsSetting *setting)
   return length;
 }
 
-Bool
-xsettings_manager_check_running (Display *display,
+Bool xsettings_manager_check_running (Display *display,
                                  int      screen)
 {
   char buffer[256];
@@ -196,8 +194,7 @@ xsettings_manager_check_running (Display *display,
     return False;
 }
 
-void
-XsettingsManager::setting_store (XSettingsSetting *setting,
+void XsettingsManager::setting_store (XSettingsSetting *setting,
            XSettingsBuffer *buffer)
 {
   size_t string_len;

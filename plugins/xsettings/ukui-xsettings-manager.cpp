@@ -212,21 +212,15 @@ process_value (ukuiXSettingsManager *manager,
     (* trans->translate) (manager, trans, value);
 }
 
-static void
-terminate_cb (void *data)
+static void terminate_cb (void *data)
 {
     gboolean *terminated = reinterpret_cast<gboolean*>(data);
-
     if (*terminated) {
         return;
     }
-
     *terminated = TRUE;
-
     gtk_main_quit ();
 }
-
-
 
 ukuiXSettingsManager::ukuiXSettingsManager()
 {
@@ -235,6 +229,7 @@ ukuiXSettingsManager::ukuiXSettingsManager()
     int         n_screens;
     gboolean    res;
     gboolean    terminated;
+    xSettingsError = 0;
 
     display = gdk_display_get_default ();
     n_screens = gdk_display_get_n_screens (display);
@@ -244,6 +239,8 @@ ukuiXSettingsManager::ukuiXSettingsManager()
     if (res) {
         g_warning ("You can only run one xsettings manager at a time; exiting");
         // throw error!
+        xSettingsError = 1;
+        return;
     }
 
     pManagers = new XsettingsManager*[n_screens + 1];
@@ -256,10 +253,9 @@ ukuiXSettingsManager::ukuiXSettingsManager()
                                              gdk_screen_get_number (screen),
                                              terminate_cb,
                                              &terminated);
-
     }
-
-
+    xSettingsError = 0;
+    return;
 }
 
 ukuiXSettingsManager::~ukuiXSettingsManager()
@@ -402,10 +398,8 @@ int ukuiXSettingsManager::start(GError               **error)
                      "Could not initialize xsettings manager.");
         return FALSE;
     }
-
     gsettings = g_hash_table_new_full (g_str_hash, g_str_equal,
                                        NULL, (GDestroyNotify) g_object_unref);
-
     g_hash_table_insert ( gsettings,
                           (void*)MOUSE_SCHEMA, g_settings_new (MOUSE_SCHEMA));
     g_hash_table_insert ( gsettings,
@@ -422,37 +416,26 @@ int ukuiXSettingsManager::start(GError               **error)
     for (i = 0; i < G_N_ELEMENTS (translations); i++) {
         GVariant  *val;
         GSettings *gsettings;
-
         gsettings = (GSettings *)g_hash_table_lookup ( this->gsettings,
                                                        translations[i].gsettings_schema);
-
         if (gsettings == NULL) {
             g_warning ("Schemas '%s' has not been setup", translations[i].gsettings_schema);
             continue;
         }
-
         val = g_settings_get_value (gsettings, translations[i].gsettings_key);
-
         process_value (this, &translations[i], val);
         g_variant_unref (val);
     }
-
     gsettings_font = g_settings_new (FONT_RENDER_SCHEMA);
     g_signal_connect ( gsettings_font, "changed", G_CALLBACK (xft_callback), pManagers);
     update_xft_settings (this);
-
     start_fontconfig_monitor (this);
-
     for (i = 0;  pManagers [i]; i++)
-        pManagers [i]->set_string ( "Net/FallbackIconTheme",
-                                    "ukui");
-
+        pManagers [i]->set_string ( "Net/FallbackIconTheme", "ukui");
     for (i = 0;  pManagers [i]; i++) {
         pManagers [i]->notify ( );
     }
-
     //// ukui_settings_profile_end (NULL);
-
     return TRUE;
 }
 
@@ -481,17 +464,13 @@ int ukuiXSettingsManager::stop()
             pManagers[i] = NULL;
         }
     }
-
     if (gsettings != NULL) {
         g_hash_table_destroy (gsettings);
         gsettings = NULL;
     }
-
     if (gsettings_font != NULL) {
         g_object_unref (gsettings_font);
         gsettings_font = NULL;
     }
-
     stop_fontconfig_monitor (this);
-
 }
