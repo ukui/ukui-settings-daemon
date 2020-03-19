@@ -25,6 +25,7 @@ public:
     GHashTable *gsettings;
     GSettings *gsettings_font;
     fontconfig_monitor_handle_t *fontconfig_handle;
+    int xSettingsError;
 };
 
 #endif // UKUIXSETTINGSMANAGER_H

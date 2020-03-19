@@ -32,13 +32,13 @@ Xsettings::~Xsettings()
 
 void Xsettings::activate()
 {
-    gboolean res;
+    int res;
     GError  *error;
 
     g_debug ("Activating xsettings plugin");
 
     error = NULL;
-    m_pXsettingManager->start(&error);
+    res = m_pXsettingManager->start(&error);
     if (! res) {
         g_warning ("Unable to start xsettings manager: %s", error->message);
         g_error_free (error);

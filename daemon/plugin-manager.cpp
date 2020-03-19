@@ -109,6 +109,7 @@ bool PluginManager::managerStart()
         CT_SYSLOG(LOG_DEBUG, "start activity plugin: %s ...", info->getPluginName().toUtf8().data());
         info->pluginActivate();
     }
+    CT_SYSLOG(LOG_DEBUG, "All plugins has been activited!");
 
     return true;
 }
