@@ -3,6 +3,8 @@
 #include "clipboard-manager.h"
 #include "plugin-interface.h"
 
+#include <QtCore/QtGlobal>
+
 class ClipboardPlugin : public PluginInterface
 {
 public:

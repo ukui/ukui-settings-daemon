@@ -23,6 +23,7 @@ int main (int argc, char* argv[])
     PluginManager*          manager = NULL;
 
     syslog_init("ukui-settings-daemon", LOG_LOCAL6);
+    CT_SYSLOG(LOG_INFO, "ukui-settings-daemon starting ...");
 
     CT_SYSLOG(LOG_DEBUG, "starting...");
 
@@ -42,6 +43,7 @@ int main (int argc, char* argv[])
         goto out;
     }
 
+    CT_SYSLOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
 out:
 

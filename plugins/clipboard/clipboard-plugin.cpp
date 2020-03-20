@@ -34,7 +34,6 @@ void ClipboardPlugin::deactivate()
 
 ClipboardPlugin::ClipboardPlugin()
 {
-    syslog_init("ukui-settings-daemon-clipboard", LOG_LOCAL6);
     if ((nullptr == mManager)) {
         mManager = new ClipboardManager();
     }

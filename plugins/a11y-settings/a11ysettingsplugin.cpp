@@ -5,7 +5,6 @@ PluginInterface* A11ySettingsPlugin::mInstance = nullptr;
 
 A11ySettingsPlugin::A11ySettingsPlugin()
 {
-    syslog_init("ukui-settings-daemon-a11y-settings", LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG,"A11SettingsPlugin initializing!");
     settingsManager=A11ySettingsManager::A11ySettingsManagerNew();
 }

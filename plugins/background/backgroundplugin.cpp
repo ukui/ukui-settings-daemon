@@ -6,7 +6,6 @@ PluginInterface* BackgroundPlugin::mInstance = nullptr;
 
 BackgroundPlugin::BackgroundPlugin()
 {
-    syslog_init("ukui-settings-daemon-background", LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG, "background plugin init...");
     if (nullptr == mManager) {
         mManager = BackgroundManager::getInstance();
