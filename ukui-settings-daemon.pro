@@ -5,6 +5,7 @@ CONFIG += ordered
 SUBDIRS += \
     $$PWD/plugins/mpris/mpris.pro \
     $$PWD/plugins/sound/sound.pro \
+    $$PWD/plugins/datetime/datetime.pro \
     $$PWD/plugins/clipboard/clipboard.pro \
     $$PWD/plugins/media-keys/media-keys.pro \
     $$PWD/plugins/background/background.pro \
