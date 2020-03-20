@@ -43,6 +43,7 @@ int main (int argc, char* argv[])
         goto out;
     }
 
+    syslog_init("ukui-settings-daemon", LOG_LOCAL6);
     CT_SYSLOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
 out:
