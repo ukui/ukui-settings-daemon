@@ -474,6 +474,11 @@ usd_keyboard_manager_finalize (GObject *object)
         g_return_if_fail (USD_IS_KEYBOARD_MANAGER (object));
 
         keyboard_manager = USD_KEYBOARD_MANAGER (object);
+	
+	/*修复 注销后，小键盘num灯亮着，输入数字无反应，需要在按一下num才能输入小键盘数字*/
+	keyboard_manager->priv->old_state = 0;
+        numlock_set_xkb_state(keyboard_manager->priv->old_state);
+
 
         g_return_if_fail (keyboard_manager->priv != NULL);
 
