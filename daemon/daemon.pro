@@ -35,3 +35,5 @@ HEADERS += \
         $$PWD/manager-interface.h \
         $$PWD/global.h
 
+OTHER_FILES += \
+        $$pwd/.gitignore
