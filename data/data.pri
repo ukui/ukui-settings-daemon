@@ -22,7 +22,7 @@ desktop.files = $$PWD/ukui-settings-daemon.desktop
 
 # daemon ok
 ukui_daemon.path = /usr/bin/
-ukui_daemon.files = $$OUT_PWD/../daemon/ukui-settings-daemon
+ukui_daemon.files = $$PWD/../daemon/ukui-settings-daemon
 
 # plugins
 plugin_lib.path = /usr/local/lib/ukui-settings-daemon/
