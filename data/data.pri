@@ -5,6 +5,7 @@ OTHER_FILES += \
     $$PWD/sound.ukui-settings-plugin \
     $$PWD/mpris.ukui-settings-plugin_bak \
     $$PWD/background.ukui-settings-plugin \
+    $$PWD/clipboard.ukui-settings-plugin_bak \
     $$PWD/typing-break.ukui-settings-plugin\
     $$PWD/a11y-settings.ukui-settings-plugin \
     \
@@ -39,5 +40,3 @@ ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
 
 INSTALLS += desktop ukui_daemon plugin_lib plugin_info plugin_schema ukui_daemon_dbus
 
-DISTFILES += \
-    $$PWD/clipboard.ukui-settings-plugin_bak
