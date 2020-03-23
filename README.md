@@ -14,3 +14,5 @@
 1. git clone ...
 2. 修改 /etc/apt/sources.list, 把 deb-src 之前的注释去掉，并执行 apt-get update
 2. 执行 apt build-dep ukui-settings-daemon 会安装项目所有依赖
+
+### TODO
