@@ -1,6 +1,9 @@
-ukui-settings-daemon (0.0.1) UNRELEASED; urgency=low
+ukui-settings-daemon (0.0.1) experimental; urgency=low
 
-  * Initial release. Closes: #nnnn
-    <nnnn is the bug number of your ITP>
+  [ Kylin Team ]
+  * Initial release.
 
- -- Kylin Team <team+kylin@tracker.debian.org>  Mon, 23 Mar 2020 19:54:37 +0800
+  [ dingjing ]
+  * 
+
+ -- dingjing <dingjing@dingjing-pc>  Tue, 24 Mar 2020 10:13:31 +0800

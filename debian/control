@@ -16,15 +16,14 @@ Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
          ukui-polkit,
-         ukui-settings-daemon-common (= ${source:Version}),
          x11-xserver-utils,
-	 libqt5gui5,
-	 libqt5dbus5,
-	 libqt5widgets5,
-	 libqt5x11extras5,
-	 libqt5core5a(>=5.0),
-	 ${misc:Depends},
-	 ${shlibs:Depends}
+	 	 libqt5gui5,
+	 	 libqt5dbus5,
+	 	 libqt5widgets5,
+	 	 libqt5x11extras5,
+	 	 libqt5core5a(>=5.0),
+	 	 ${misc:Depends},
+	 	 ${shlibs:Depends}
 Description: daemon handling the UKUI session settings
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run
@@ -40,49 +39,4 @@ Description: daemon handling the UKUI session settings
  .
  It also sets various application settings through X resources and
  freedesktop.org XSETTINGS.
-
-Package: ukui-settings-daemon-common
-Architecture: all
-Depends: ${misc:Depends},
-Description: daemon handling the UKUI session settings (common files)
- This package contains the daemon which is responsible for setting the
- various parameters of a UKUI session and the applications that run
- under it. It handles the following kinds of settings:
- .
-  * Keyboard: layout, accessibility options, shortcuts, media keys
-  * Clipboard management
-  * Theming: background, icons, GTK+ applications
-  * Cleanup of unused files
-  * Mouse: cursors, speed, accessibility options
-  * Startup of other daemons: screensaver, sound daemon
-  * Typing break
- .
- It also sets various application settings through X resources and
- freedesktop.org XSETTINGS.
- .
- This package contains the architecture independent files.
-
-Package: ukui-settings-daemon-dev
-Section: devel
-Architecture: any
-Depends: ukui-settings-daemon (= ${binary:Version}),
-         ${misc:Depends},
-Description: daemon handling the UKUI session settings (development files)
- This package contains the daemon which is responsible for setting the
- various parameters of a UKUI session and the applications that run
- under it. It handles the following kinds of settings:
- .
-  * Keyboard: layout, accessibility options, shortcuts, media keys
-  * Clipboard management
-  * Theming: background, icons, GTK+ applications
-  * Cleanup of unused files
-  * Mouse: cursors, speed, accessibility options
-  * Startup of other daemons: screensaver, sound daemon
-  * Typing break
- .
- It also sets various application settings through X resources and
- freedesktop.org XSETTINGS.
- .
- This package contains the development files for building
- ukui-settings-daemon plugins.
 

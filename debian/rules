@@ -5,13 +5,5 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 %:
 	dh $@
 
-#override_dh_missing:
-#	dh_missing --fail-missing
-
-#override_dh_install:
-#	rm -rf debian/tmp/usr/lib/*/ukui-settings-daemon/*.la
-#	dh_install
-
-#override_dh_auto_configure:
-	#qmake
+override_dh_usrlocal:
 

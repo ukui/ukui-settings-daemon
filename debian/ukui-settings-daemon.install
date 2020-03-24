@@ -1,5 +1,5 @@
-etc/
-usr/bin/
-usr/lib/*/ukui-settings-daemon/
-usr/share/dbus-1/
-usr/share/polkit-1/
+debian/ukui-settings-daemon/usr/bin/
+debian/ukui-settings-daemon/usr/share/gnome/autostart/
+debian/ukui-settings-daemon/usr/share/dbus-1/services/
+debian/ukui-settings-daemon/usr/share/glib-2.0/schemas/
+debian/ukui-settings-daemon/usr/local/lib/ukui-settings-daemon/

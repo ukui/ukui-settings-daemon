@@ -24,4 +24,9 @@ HEADERS += \
         $$PWD/backgroundplugin.h \
         background-manager.h
 
-DESTDIR = $$OUT_PWD/../../library/
+DESTDIR = $$PWD/
+
+background_lib.path = /usr/local/lib/ukui-settings-daemon/
+background_lib.files = $$PWD/libbackground.so
+
+INSTALLS += background_lib

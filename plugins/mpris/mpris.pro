@@ -1,6 +1,6 @@
 QT -= gui
-
 TEMPLATE = lib
+TARGET = mpris
 
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
@@ -23,5 +23,9 @@ HEADERS += \
     mprismanager.h \
     mprisplugin.h
 
-DESTDIR = \
-    $$OUT_PWD/../../library/
+DESTDIR = $$PWD/
+
+mpris_lib.path = /usr/local/lib/ukui-settings-daemon/
+mpris_lib.files = $$PWD/libmpris.so
+
+INSTALLS += mpris_lib

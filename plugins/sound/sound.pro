@@ -1,5 +1,6 @@
 QT -= gui
 TEMPLATE = lib
+TARGET = sound
 
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
@@ -30,5 +31,9 @@ HEADERS += \
     soundmanager.h \
     soundplugin.h
 
-DESTDIR = \
-    $$OUT_PWD/../../library/
+DESTDIR = $$OUT_PWD/
+
+sound_lib.path = /usr/local/lib/ukui-settings-daemon/
+sound_lib.files = $$OUT_PWD/libsound.so
+
+INSTALLS += plugin_lib

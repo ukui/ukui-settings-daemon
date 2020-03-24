@@ -36,4 +36,11 @@ HEADERS += \
         $$PWD/global.h
 
 OTHER_FILES += \
-        $$pwd/.gitignore
+        $$PWD/.gitignore
+
+DESTDIR = $$PWD/
+
+ukui_daemon.path = /usr/bin/
+ukui_daemon.files = $$PWD/ukui-settings-daemon
+
+INSTALLS += ukui_daemon

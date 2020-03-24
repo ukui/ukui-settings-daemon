@@ -1,7 +1,5 @@
 #!/usr/bin/sh
 
-debug=1
-
 if [ $UID -ne 0 ];then
 #    print_warning "非root用户没有权限安装"
     exit 1
@@ -9,13 +7,7 @@ fi
 
 rm -f /usr/bin/ukui-settings-daemon
 rm -fr /usr/local/lib/ukui-settings-daemon/*
-make -i clean
+make clean
 qmake
-if [ $debug -eq 1 ];then
-	echo 'debug!'
-	make debug -j8
-else
-	echo 'release!'
-	make release -j8
-fi
+make -j8
 sudo make install
