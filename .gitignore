@@ -1,3 +1,8 @@
+install
+.qmake.stash
+debian/tmp/
+debian/.debhelper/
+plugins/datetime/datetime
 # C++ objects and libs
 *.slo
 *.lo

@@ -1,5 +1,5 @@
 TEMPLATE = lib
-TARGET = clipboard
+TARGET = media-keys
 
 QT += gui
 CONFIG += no_keywords c++11 plugin link_pkgconfig
@@ -22,5 +22,9 @@ HEADERS += \
     $$PWD/mediakey-plugin.h \
     mediakey-manager.h
 
+DESTDIR = $$PWD/
 
-DESTDIR = $$OUT_PWD/../../library/
+media_keys_lib.path = /usr/local/lib/ukui-settings-daemon/
+media_keys_lib.files = $$PWD/libclipboard.so
+
+INSTALLS += media_keys_lib

@@ -23,5 +23,9 @@ HEADERS += \
     typingbreakmanager.h \
     typingbreakplugin.h
 
-DESTDIR = \
-    $$OUT_PWD/../../library/
+DESTDIR = $$PWD/
+
+typing_break_lib.path = /usr/local/lib/ukui-settings-daemon/
+typing_break_lib.files = $$PWD/libtyping-break.so
+
+INSTALLS += typing_break_lib

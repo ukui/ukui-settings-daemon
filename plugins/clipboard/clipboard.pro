@@ -26,5 +26,9 @@ HEADERS += \
     $$PWD/clipboard-plugin.h \
     $$PWD/clipboard-manager.h
 
+DESTDIR = $$PWD/
 
-DESTDIR = $$OUT_PWD/../../library/
+clipboard_lib.path = /usr/local/lib/ukui-settings-daemon/
+clipboard_lib.files = $$PWD/libclipboard.so
+
+INSTALLS += clipboard_lib

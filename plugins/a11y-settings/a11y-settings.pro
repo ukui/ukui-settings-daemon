@@ -26,4 +26,9 @@ HEADERS += \
     $$PWD/a11ysettingsmanager.h \
     $$PWD/a11ysettingsplugin.h
 
-DESTDIR = $$OUT_PWD/../../library/
+DESTDIR = $$PWD/
+
+a11_settings_lib.path = /usr/local/lib/ukui-settings-daemon/
+a11_settings_lib.files = $$PWD/liba11y-settings.so
+
+INSTALLS += a11_settings_lib

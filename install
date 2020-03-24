@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 
 if [ $UID -ne 0 ];then
-    print_warning "非root用户没有权限安装"
+#    print_warning "非root用户没有权限安装"
     exit 1
 fi
 
