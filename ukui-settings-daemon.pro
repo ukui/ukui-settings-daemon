@@ -9,7 +9,7 @@ SUBDIRS += \
     $$PWD/plugins/background/background.pro \
     $$PWD/plugins/typing-break/typing-break.pro \
     $$PWD/plugins/a11y-settings/a11y-settings.pro \
-    $$PWD/plugins/mouse/mouse.pro	\
+    $$PWD/plugins/mouse/mouse.pro \
     $$PWD/daemon/daemon.pro \
 
 include($$PWD/data/data.pri)
@@ -18,3 +18,4 @@ OTHER_FILES += \
     $$PWD/LICENSE \
     $$PWD/README.md \
     $$PWD/install.sh
+
