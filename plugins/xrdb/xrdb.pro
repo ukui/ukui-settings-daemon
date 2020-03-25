@@ -48,8 +48,10 @@ HEADERS += \
     ukui-xrdb-manager.h \
     ixrdb-manager.h
 
+DESTDIR = $$PWD
 
-unix {
-    target.path = /usr/lib
-    INSTALLS += target
-}
+xrdb_lib.path = /usr/local/lib/ukui-settings-daemon/
+xrdb_lib.files += $$PWD/libxrdb.so \
+
+INSTALLS += xrdb_lib
+

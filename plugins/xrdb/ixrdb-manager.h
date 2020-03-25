@@ -3,7 +3,7 @@
 
 class IXrdbManager {
 public:
-    IXrdbManager();
+    IXrdbManager(){};
     virtual ~IXrdbManager() = 0;
     virtual int start() = 0;
     virtual int stop() = 0;

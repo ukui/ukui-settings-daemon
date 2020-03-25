@@ -265,6 +265,7 @@ bool loadPluginModule(PluginInfo& pinfo)
     if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
     pinfo.mModule = new QLibrary(path);
+    pinfo.mModule->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
     if (!(pinfo.mModule->load())) {
         CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
         pinfo.mAvailable = false;

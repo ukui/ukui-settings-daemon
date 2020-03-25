@@ -31,9 +31,9 @@ HEADERS += \
     soundmanager.h \
     soundplugin.h
 
-DESTDIR = $$OUT_PWD/
+DESTDIR = $$PWD/
 
 sound_lib.path = /usr/local/lib/ukui-settings-daemon/
-sound_lib.files = $$OUT_PWD/libsound.so
+sound_lib.files = $$PWD/libsound.so
 
 INSTALLS += plugin_lib

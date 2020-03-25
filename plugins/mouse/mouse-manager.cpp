@@ -20,6 +20,11 @@ MouseManager::MouseManager(QObject *parent) : QObject (parent)
 {
 }
 
+MouseManager::~MouseManager()
+{
+
+}
+
 MouseManager * MouseManager::MouseManagerNew()
 {
     if(nullptr == mMouseManager)

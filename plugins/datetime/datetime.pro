@@ -24,4 +24,3 @@ HEADERS += \
     datetime-mechanism.h \
     system-timezone.h
 
-DESTDIR =

@@ -7,7 +7,8 @@ fi
 
 rm -f /usr/bin/ukui-settings-daemon
 rm -fr /usr/local/lib/ukui-settings-daemon/*
-make clean
-qmake
-make -j8
-sudo make install
+/opt/Qt5.14.0/5.14.0/gcc_64/bin/qmake \
+       /home/dingjing/code/ukui-settings-daemon/ukui-settings-daemon.pro \
+       -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
+
+sudo /usr/bin/make qmake_all

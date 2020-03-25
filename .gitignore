@@ -1,7 +1,10 @@
 install
 .qmake.stash
+*.log
+nohup.out
 debian/tmp/
 debian/.debhelper/
+debian/ukui-settings-daemon/
 plugins/datetime/datetime
 # C++ objects and libs
 *.slo
