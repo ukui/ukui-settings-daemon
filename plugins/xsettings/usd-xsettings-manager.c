@@ -31,7 +31,7 @@
 #include <time.h>
 
 #include <X11/Xatom.h>
-
+#include <X11/Xcursor/Xcursor.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
@@ -43,6 +43,8 @@
 #include "usd-xsettings-manager.h"
 #include "xsettings-manager.h"
 #include "fontconfig-monitor.h"
+
+#include "syslog.h"
 
 #define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, UkuiXSettingsManagerPrivate))
 
@@ -385,7 +387,6 @@ xft_settings_set_xsettings (UkuiXSettingsManager *manager,
                             UkuiXftSettings      *settings)
 {
         int i;
-
         ukui_settings_profile_start (NULL);
 
         for (i = 0; manager->priv->managers [i]; i++) {
@@ -446,8 +447,24 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
         dpy = XOpenDisplay (NULL);
         g_return_if_fail (dpy != NULL);
         add_string = g_string_new (XResourceManagerString (dpy));
-
         g_debug("xft_settings_set_xresources: orig res '%s'", add_string->str);
+
+        // add for apply Qt APP when control-center set cursor
+	char tmpCursorTheme[255] = {'\0'};
+	int tmpCursorSize = 0;
+	if (strlen (settings->cursor_theme) > 0) {
+		strncpy(tmpCursorTheme, settings->cursor_theme, 255);
+	} else {
+		// unset, use default
+		strncpy(tmpCursorTheme, "Breeze_Snow", 255);
+	        syslog(LOG_ERR, "use default theme name=%s=", tmpCursorTheme);
+	}
+	if (settings->cursor_size > 0) {
+		tmpCursorSize = settings->cursor_size;
+	} else {
+		tmpCursorSize = XcursorGetDefaultSize(dpy);
+	}
+	// end add by liutong 
 
         update_property (add_string, "Xft.dpi",
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->dpi / 1024.0));
@@ -467,10 +484,47 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->cursor_size));
 
         g_debug("xft_settings_set_xresources: new res '%s'", add_string->str);
-
         /* Set the new X property */
         XChangeProperty(dpy, RootWindow (dpy, 0),
                 XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
+
+	// begin add:for qt adjust cursor size&theme. add by liutong
+	const char *qtCursorsNames[] = {
+              "left_ptr"       , "up_arrow"      , "cross"      , "wait"
+            , "left_ptr_watch" , "ibeam"         , "size_ver"   , "size_hor"
+            , "size_bdiag"     , "size_fdiag"    , "size_all"   , "split_v"
+            , "split_h"        , "pointing_hand" , "openhand"
+            , "closedhand"     , "forbidden"     , "whats_this" , "copy"
+	    , "move" , "link"
+	    , NULL};
+
+
+	if (strlen (tmpCursorTheme) > 0 ) {
+	    int len = sizeof(qtCursorsNames)/sizeof(*qtCursorsNames);
+	    for (int i = 0; i < len-1; i++) {
+                XcursorImages *images = XcursorLibraryLoadImages(qtCursorsNames[i], tmpCursorTheme, tmpCursorSize);
+	        if (!images) {
+	             syslog(LOG_ERR, "null images, theme name=%s, imageName=%s=", tmpCursorTheme, qtCursorsNames[i]);
+                     g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
+		     continue;
+	        }
+	        Cursor handle = XcursorImagesLoadCursor(dpy, images);
+		int event_base, error_base;
+		if (XFixesQueryExtension(dpy, &event_base, &error_base))
+		{
+			int major, minor;
+			XFixesQueryVersion(dpy, &major, &minor);
+			if (major >= 2) {
+                            g_debug("set CursorNmae=%s", qtCursorsNames[i]);
+			    XFixesSetCursorName(dpy, handle, qtCursorsNames[i]);
+			}
+		}
+		XFixesChangeCursorByName(dpy, handle, qtCursorsNames[i]);
+                XcursorImagesDestroy(images);
+            }
+	}
+	// end add
+
         XCloseDisplay (dpy);
 
         g_string_free (add_string, TRUE);
