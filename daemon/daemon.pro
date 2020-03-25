@@ -2,7 +2,7 @@ TEMPLATE = app
 TARGET = ukui-settings-daemon
 
 QT += core gui dbus
-CONFIG += no_keywords link_pkgconfig c++11
+CONFIG += no_keywords link_prl link_pkgconfig c++11 debug
 CONFIG -= app_bundle
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets

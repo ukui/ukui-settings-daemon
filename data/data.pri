@@ -2,12 +2,9 @@ OTHER_FILES += \
     $$PWD/ukui-settings-daemon.desktop\
     $$PWD/org.ukui.SettingsDaemon.service\
     \
-    $$PWD/sound.ukui-settings-plugin \
     $$PWD/mpris.ukui-settings-plugin_bak \
     $$PWD/background.ukui-settings-plugin \
     $$PWD/clipboard.ukui-settings-plugin_bak \
-    $$PWD/typing-break.ukui-settings-plugin\
-    $$PWD/a11y-settings.ukui-settings-plugin \
     \
     $$PWD/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml \
@@ -31,4 +28,9 @@ ukui_daemon_dbus.path = /usr/share/dbus-1/services/
 ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
 
 INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus
+
+DISTFILES += \
+    $$PWD/a11y-settings.ukui-settings-plugin_bak \
+    $$PWD/sound.ukui-settings-plugin_bak \
+    $$PWD/typing-break.ukui-settings-plugin_bak
 

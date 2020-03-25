@@ -21,7 +21,6 @@ Depends: mate-desktop-common (>= 1.18),
 	 	 libqt5dbus5,
 	 	 libqt5widgets5,
 	 	 libqt5x11extras5,
-	 	 libqt5core5a(>=5.0),
 	 	 ${misc:Depends},
 	 	 ${shlibs:Depends}
 Description: daemon handling the UKUI session settings

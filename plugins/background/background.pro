@@ -2,10 +2,7 @@ TEMPLATE = lib
 TARGET = background
 
 QT -= gui
-CONFIG += no_keywords c++11 plugin link_pkgconfig
-CONFIG -= app_bundle
-
-DEFINES += QT_DEPRECATED_WARNINGS
+CONFIG += no_keywords c++11 create_prl plugin link_pkgconfig debug
 
 include($$PWD/../../common/common.pri)
 
@@ -24,9 +21,11 @@ HEADERS += \
         $$PWD/backgroundplugin.h \
         background-manager.h
 
-DESTDIR = $$PWD/
+DESTDIR = $$PWD
 
 background_lib.path = /usr/local/lib/ukui-settings-daemon/
-background_lib.files = $$PWD/libbackground.so
+background_lib.files += \
+    $$PWD/libbackground.prl \
+    $$PWD/libbackground.so \
 
 INSTALLS += background_lib
