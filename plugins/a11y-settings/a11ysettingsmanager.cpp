@@ -9,6 +9,11 @@ A11ySettingsManager::A11ySettingsManager()
 {
 }
 
+A11ySettingsManager::~A11ySettingsManager()
+{
+
+}
+
 A11ySettingsManager* A11ySettingsManager::A11ySettingsManagerNew()
 {
     if(nullptr == mA11ySettingsManager)

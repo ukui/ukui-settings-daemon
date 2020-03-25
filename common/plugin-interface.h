@@ -10,7 +10,7 @@ class PluginInterface;
 class PluginInterface
 {
 public:
-    virtual ~PluginInterface() = 0;
+    virtual ~PluginInterface() {};
 
     virtual void activate () = 0;
     virtual void deactivate () = 0;

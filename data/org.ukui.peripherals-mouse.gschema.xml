@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="@GETTEXT_PACKAGE@">
+  <enum id="org.ukui.peripherals-mouse.AccelProfile">
+    <value value="0" nick="default"/>
+    <value value="1" nick="adaptive"/>
+    <value value="2" nick="flat"/>
+  </enum>
+  <schema path="/org/ukui/desktop/peripherals/mouse/" id="org.ukui.peripherals-mouse">
+    <key type="b" name="left-handed">
+      <default>false</default>
+      <summary>Mouse button orientation</summary>
+      <description>Swap left and right mouse buttons for left-handed mice.</description>
+    </key>
+    <key type="d" name="motion-acceleration">
+      <default>-1</default>
+      <summary>Motion Acceleration</summary>
+      <description>Acceleration multiplier for mouse motion.  A value of -1 is the system default.</description>
+    </key>
+    <key type="i" name="motion-threshold">
+      <default>-1</default>
+      <summary>Motion Threshold</summary>
+      <description>Distance in pixels the pointer must move before accelerated mouse motion is activated.  A value of -1 is the system default.</description>
+    </key>
+    <key name="accel-profile" enum="org.ukui.peripherals-mouse.AccelProfile">
+      <default>'default'</default>
+      <summary>Acceleration profile</summary>
+      <description>Acceleration profile used for connected mice. The acceleration profile can be set to either default ('default') which uses the default acceleration profile for each device, flat ('flat'), which accelerates by a device specific constant factor derived from the configured pointer speed, or adaptive ('adaptive') which adapts the acceleration depending on the mouse movement. If a mouse doesn't support the configured profile, 'default' will be used.</description>
+    </key>
+    <key type="i" name="drag-threshold">
+      <default>8</default>
+      <summary>Drag Threshold</summary>
+      <description>Distance before a drag is started.</description>
+    </key>
+    <key type="i" name="double-click">
+      <default>400</default>
+      <summary>Double Click Time</summary>
+      <description>Length of a double click.</description>
+    </key>
+    <key type="b" name="middle-button-enabled">
+      <default>true</default>
+      <summary>Middle button emulation</summary>
+      <description>Enables middle mouse button emulation through simultaneous left and right button click.</description>
+    </key>
+    <key type="b" name="locate-pointer">
+      <default>false</default>
+      <summary>Locate Pointer</summary>
+      <description>Highlights the current location of the pointer when the Control key is pressed and released.</description>
+    </key>
+    <key type="s" name="cursor-theme">
+      <default>''</default>
+      <summary>Cursor theme</summary>
+      <description>Cursor theme name.</description>
+    </key>
+    <key type="i" name="cursor-size">
+      <default>24</default>
+      <summary>Cursor size</summary>
+      <description>Size of the cursor referenced by cursor_theme.</description>
+    </key>
+  </schema>
+</schemalist>

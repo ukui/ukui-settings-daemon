@@ -95,6 +95,16 @@ BackgroundManager::BackgroundManager(QObject *parent) : QObject(parent)
 {
 }
 
+void BackgroundManager::onBgHandingChangedSlot(const QString &)
+{
+
+}
+
+void BackgroundManager::onSessionManagerSignal(GDBusProxy *, const gchar *, const gchar *, GVariant *, gpointer)
+{
+
+}
+
 void draw_bg_after_session_loads (BackgroundManager* manager)
 {
     GError *error = NULL;

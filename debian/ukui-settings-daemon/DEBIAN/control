@@ -1,0 +1,24 @@
+Package: ukui-settings-daemon
+Version: 0.0.1
+Architecture: amd64
+Maintainer: Kylin Team <team+kylin@tracker.debian.org>
+Installed-Size: 631
+Depends: mate-desktop-common (>= 1.18), ukui-polkit, x11-xserver-utils, libqt5gui5, libqt5dbus5 (>= 5.0.2), libqt5widgets5 (>= 5.0.2), libqt5x11extras5, dconf-gsettings-backend | gsettings-backend, libc6 (>= 2.14), libcairo2 (>= 1.2.4), libgcc1 (>= 1:3.0), libglib2.0-0 (>= 2.39.4), libgtk-3-0 (>= 3.0.0), libmate-desktop-2-17 (>= 1.14.0), libpulse0 (>= 0.99.1), libqt5core5a (>= 5.12.2), libstdc++6 (>= 4.1.1)
+Section: x11
+Priority: optional
+Homepage: http://www.ukui.org/
+Description: daemon handling the UKUI session settings
+ This package contains the daemon which is responsible for setting the
+ various parameters of a UKUI session and the applications that run
+ under it. It handles the following kinds of settings:
+ .
+  * Keyboard: layout, accessibility options, shortcuts, media keys
+  * Clipboard management
+  * Theming: background, icons, GTK+ applications
+  * Cleanup of unused files
+  * Mouse: cursors, speed, accessibility options
+  * Startup of other daemons: screensaver, sound daemon
+  * Typing break
+ .
+ It also sets various application settings through X resources and
+ freedesktop.org XSETTINGS.

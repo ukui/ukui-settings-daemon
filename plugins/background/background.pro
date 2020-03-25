@@ -3,6 +3,7 @@ TARGET = background
 
 QT -= gui
 CONFIG += no_keywords c++11 create_prl plugin link_pkgconfig debug
+CONFIG -= app_bundle
 
 include($$PWD/../../common/common.pri)
 

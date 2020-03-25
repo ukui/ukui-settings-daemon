@@ -8,4 +8,15 @@
 
 ### 插件进度
 
+- [ ] a11y-settings
 - [ ] background
+- [ ] clipboard
+- [ ] datetime
+- [ ] media-keys
+- [ ] mouse
+- [ ] mpris
+- [ ] sound
+- [ ] typing-break
+- [ ] xrandr
+- [ ] xrdb
+- [ ] xsettings

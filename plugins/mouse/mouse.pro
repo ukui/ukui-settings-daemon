@@ -1,6 +1,7 @@
 QT -= gui
 
 TEMPLATE = lib
+TARGET = mouse
 DEFINES += MOUSE_LIBRARY
 
 CONFIG += c++11 no_keywords link_pkgconfig plugin
@@ -39,8 +40,9 @@ HEADERS += \
     mouse-manager.h \
     mouse-plugin.h \
 
-# Default rules for deployment.
-unix {
-    target.path = /usr/lib
-}
-!isEmpty(target.path): INSTALLS += target
+DESTDIR = $$PWD/
+
+mouse_lib.path = /usr/local/lib/ukui-settings-daemon/
+mouse_lib.files = $$PWD/libmouse.so
+
+INSTALLS += mouse_lib

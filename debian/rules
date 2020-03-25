@@ -1,16 +1,11 @@
 #!/usr/bin/make -f
 export QT_SELECT=5
-export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+export DEB_BUILD_MAINT_OPTIONS = hardening=-all
 
 %:
 	dh $@
 
 override_dh_usrlocal:
 
-override_dh_makeshlibs:
-
-override_dh_gensymbols:
-
-override_dh_shlibdeps:
-
-override_dh_symbols:
+override_dh_auto_install:
+	dh_auto_install --destdir=$(CURDIR)/debian/ukui-settings-daemon
