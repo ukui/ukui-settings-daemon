@@ -7,7 +7,9 @@ SUBDIRS += \
     $$PWD/plugins/mpris/mpris.pro \
 #    $$PWD/plugins/sound/sound.pro \
 #    $$PWD/plugins/mouse/mouse.pro \
+#    $$PWD/plugins/keyboard/keyboard.pro \
     $$PWD/plugins/xrandr/xrandr.pro \
+    $$PWD/plugins/smartcard/smartcard.pro \
     $$PWD/plugins/datetime/datetime.pro \
 #    $$PWD/plugins/xsettings/xsettings.pro \
 #    $$PWD/plugins/clipboard/clipboard.pro \

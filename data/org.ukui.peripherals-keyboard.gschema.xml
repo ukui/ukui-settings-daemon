@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="@GETTEXT_PACKAGE@">
+  <enum id="org.ukui.peripherals-keyboard.NumLockState">
+    <value value="0" nick="off"/>
+    <value value="1" nick="on"/>
+    <value value="2" nick="unknown"/>
+  </enum>
+  <schema path="/org/ukui/desktop/peripherals/keyboard/" id="org.ukui.peripherals-keyboard">
+    <key type="b" name="repeat">
+      <default>true</default>
+    </key>
+    <key type="b" name="click">
+      <default>true</default>
+    </key>
+    <key type="i" name="rate">
+      <default>30</default>
+    </key>
+    <key type="i" name="delay">
+      <default>500</default>
+    </key>
+    <key type="i" name="click-volume">
+      <default>0</default>
+    </key>
+    <key type="s" name="bell-mode">
+      <default>'on'</default>
+      <description>possible values are "on", "off", and "custom".</description>
+    </key>
+    <key type="i" name="bell-pitch">
+      <default>400</default>
+    </key>
+    <key type="i" name="bell-duration">
+      <default>100</default>
+    </key>
+    <key type="s" name="bell-custom-file">
+      <default>''</default>
+      <summary>Keyboard Bell Custom Filename</summary>
+      <description>File name of the bell sound to be played.</description>
+    </key>
+    <key type="b" name="remember-numlock-state">
+      <default>true</default>
+      <summary>Remember NumLock state</summary>
+      <description>When set to true, UKUI will remember the state of the NumLock LED between sessions.</description>
+    </key>
+    <key name="numlock-state" enum="org.ukui.peripherals-keyboard.NumLockState">
+      <default>'unknown'</default>
+      <summary>NumLock state</summary>
+      <description>The remembered state of the NumLock LED.</description>
+    </key>
+  </schema>
+</schemalist>

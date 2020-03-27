@@ -1,8 +1,9 @@
-TEMPLATE = lib
-TARGET = xrandr
-
 QT += dbus
 QT -= gui
+
+TEMPLATE = lib
+
+TARGET = xrandr
 
 DEFINES += XRANDR_LIBRARY
 
@@ -60,9 +61,9 @@ HEADERS += \
     xrandr_global.h \
     xrandr-plugin.h
 
-DESTDIR = $$PWD
-
+DESTDIR = $$PWD/
 xrandr_lib.path = /usr/local/lib/ukui-settings-daemon/
-xrandr_lib.files += $$PWD/libxrandr.so
+xrandr_lib.files = $$PWD/libxrandr.so 
 
 INSTALLS += xrandr_lib
+
