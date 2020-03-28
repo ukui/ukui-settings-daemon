@@ -18,6 +18,7 @@
  *
  */
 
+#include "syslog.h"
 #include "config.h"
 
 #include <gdk/gdk.h>
@@ -71,13 +72,25 @@ device_is_touchpad (XDeviceInfo *deviceinfo)
 {
         XDevice *device;
 
-        if (deviceinfo->type != XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XI_TOUCHPAD, True))
-                return NULL;
+        if (deviceinfo->type != XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XI_TOUCHPAD, True)) {
+		if (deviceinfo->type == 0) {
+			syslog(LOG_ERR, "deviceinfo type is NULL");
+		} else {
+			syslog(LOG_ERR,
+                               "deviceinfo type : %s vs %s device_is_touchpad failed",
+                               XGetAtomName(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), deviceinfo->type),
+                               XGetAtomName(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+                                            XInternAtom (GDK_DISPLAY_XDISPLAY(gdk_display_get_default ()), XI_TOUCHPAD, True))
+                              );
+                // return NULL;
+		}
+	}
 
         gdk_error_trap_push ();
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), deviceinfo->id);
-        if (gdk_error_trap_pop () || (device == NULL))
+        if (gdk_error_trap_pop () || (device == NULL)) {
                 return NULL;
+	}
 
         if (device_has_property (device, "libinput Tapping Enabled") ||
             device_has_property (device, "Synaptics Off")) {

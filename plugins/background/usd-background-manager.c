@@ -21,6 +21,7 @@
  *
  */
 
+#include "syslog.h"
 #include "config.h"
 
 #include <sys/types.h>
@@ -494,7 +495,7 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 {
 	UsdBackgroundManagerPrivate *p = manager->priv;
 
-	g_debug ("Starting background manager");
+	g_debug ("Starting background manager: MATE_BG_SCHEMA=%s", MATE_BG_SCHEMA);
 	ukui_settings_profile_start (NULL);
 
 	p->settings = g_settings_new (MATE_BG_SCHEMA);
