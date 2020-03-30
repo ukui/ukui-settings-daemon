@@ -11,12 +11,14 @@ class KeyboardPlugin : public PluginInterface
 public:
     ~KeyboardPlugin();
     static PluginInterface * getInstance();
-    void activate();
-    void deactivate();
+    virtual void activate();
+    virtual void deactivate();
 
 private:
     KeyboardPlugin();
     KeyboardPlugin(KeyboardPlugin&)=delete;
+
+private:
     static KeyboardManager *UsdKeyboardManager;
     static PluginInterface * mInstance;
 

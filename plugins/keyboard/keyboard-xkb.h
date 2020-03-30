@@ -2,7 +2,7 @@
 #define KEYBOARDXKB_H
 
 #include "keyboard-manager.h"
-#include "../../config.h"
+#include "config.h"
 
 #include <string.h>
 #include <time.h>
@@ -13,11 +13,13 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <gio/gappinfo.h>
+extern "C"{
 #include <libmatekbd/matekbd-status.h>
 #include <libmatekbd/matekbd-keyboard-drawing.h>
 #include <libmatekbd/matekbd-desktop-config.h>
 #include <libmatekbd/matekbd-keyboard-config.h>
 #include <libmatekbd/matekbd-util.h>
+}
 
 #define GTK_RESPONSE_PRINT 2
 
@@ -39,8 +41,9 @@ public:
     void usd_keyboard_xkb_init(KeyboardManager* kbd_manager);
 
     void usd_keyboard_xkb_shutdown(void);
-    void apply_desktop_settings (void);
-
+    static void apply_desktop_settings (void);
+    static void apply_desktop_settings_cb (GSettings *settings, gchar *key, gpointer   user_data);
+    static void usd_keyboard_new_device (XklEngine * engine);
     static KeyboardManager * manager;
 
 };

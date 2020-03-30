@@ -2,6 +2,9 @@
 #define KEYBOARDMANAGER_H
 
 #include <QObject>
+#include <QTimer>
+#include <QtX11Extras/QX11Info>
+
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <stdlib.h>
@@ -48,7 +51,7 @@ typedef enum {
         NUMLOCK_STATE_UNKNOWN = 2
 } NumLockState;
 
-
+class KeyboardXkb;
 class KeyboardManager : public QObject
 {
     Q_OBJECT
@@ -65,9 +68,13 @@ public:
     void KeyboardManagerStop();
     static void usd_keyboard_manager_apply_settings (KeyboardManager *manager);
 
-private:
-    friend gboolean start_keyboard_idle_cb (KeyboardManager *manager);
+Q_SIGNALS:
+    void timeout();
 
+public Q_SLOTS:
+    void start_keyboard_idle_cb ();
+
+private:
     friend void numlock_xkb_init (KeyboardManager *manager);
 
 
@@ -88,6 +95,7 @@ private:
                                    gpointer   user_data);
 
 private:
+    QTimer * time ;
     static KeyboardManager* mKeyboardManager;
     static KeyboardXkb * mKeyXkb;
     gboolean    have_xkb;

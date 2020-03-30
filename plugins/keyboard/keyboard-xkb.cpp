@@ -1,7 +1,7 @@
 #include "keyboard-xkb.h"
 #include "clib-syslog.h"
 
-KeyboardManager * KeyboardXkb::manager =nullptr;
+KeyboardManager * KeyboardXkb::manager = KeyboardManager::KeyboardManagerNew();
 
 
 /*Migrate source files "delayed-dialog.c"*/
@@ -56,8 +56,9 @@ KeyboardXkb::KeyboardXkb()
 {
     CT_SYSLOG(LOG_DEBUG,"Keyboard Xkb initializing!");
 
-    if(nullptr == manager)
-        manager = KeyboardManager::KeyboardManagerNew();
+    /*if(nullptr == manager)
+        manager = KeyboardManager::KeyboardManagerNew();*/
+
 }
 KeyboardXkb::~KeyboardXkb()
 {
@@ -163,7 +164,7 @@ static void usd_keyboard_update_indicator_icons ()
 {
     Bool state;
     int new_state, i;
-    Display *display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+    Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
     XkbGetNamedIndicator (display, caps_lock, NULL, &state,
                   NULL, NULL);
     new_state = state ? 1 : 0;
@@ -199,7 +200,7 @@ static void usd_keyboard_xkb_analyze_sysconfig (void)
                           NULL);
 }
 
-static void apply_desktop_settings (void)
+void KeyboardXkb::apply_desktop_settings (void)
 {
     gboolean show_leds;
     int i;
@@ -207,7 +208,7 @@ static void apply_desktop_settings (void)
         return;
 
 
-    KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardXkb::manager);
+    manager->usd_keyboard_manager_apply_settings (manager);
     matekbd_desktop_config_load_from_gsettings (&current_desktop_config);
     /* again, probably it would be nice to compare things
        before activating them */
@@ -341,7 +342,7 @@ static void show_layout_destroy (GtkWidget * dialog, gint group)
 static void popup_menu_show_layout ()
 {
     GtkWidget *dialog;
-    XklEngine *engine = xkl_engine_get_instance (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()));
+    XklEngine *engine = xkl_engine_get_instance (QX11Info::display());//GDK_DISPLAY_XDISPLAY(gdk_display_get_default()));
     XklState *xkl_state = xkl_engine_get_current_state (engine);
     gpointer p = g_hash_table_lookup (preview_dialogs,
                       GINT_TO_POINTER
@@ -458,8 +459,9 @@ static void status_icon_popup_menu_cb (GtkStatusIcon * icon, guint button, guint
 
 static void activation_error (void)
 {
-    char const *vendor = ServerVendor (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
-    int release = VendorRelease (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+    Display * dpy = QX11Info::display();
+    char const *vendor = ServerVendor (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+    int release = VendorRelease (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
     GtkWidget *dialog;
 
     /* VNC viewers will not work, do not barrage them with warnings */
@@ -551,7 +553,7 @@ static void apply_xkb_settings (void)
     show_hide_icon ();
 }
 
-static void apply_desktop_settings_cb (GSettings *settings, gchar *key, gpointer   user_data)
+void KeyboardXkb::apply_desktop_settings_cb (GSettings *settings, gchar *key, gpointer   user_data)
 {
     apply_desktop_settings ();
 }
@@ -570,7 +572,7 @@ GdkFilterReturn usd_keyboard_xkb_evt_filter (GdkXEvent * xev, GdkEvent * event)
 }
 
 /* When new Keyboard is plugged in - reload the settings */
-static void usd_keyboard_new_device (XklEngine * engine)
+void KeyboardXkb::usd_keyboard_new_device (XklEngine * engine)
 {
     apply_desktop_settings ();
     apply_xkb_settings ();
@@ -589,9 +591,10 @@ static void usd_keyboard_state_changed (XklEngine * engine, XklEngineStateChange
 
 void KeyboardXkb::usd_keyboard_xkb_init(KeyboardManager* kbd_manager)
 {
-    CT_SYSLOG(LOG_DEBUG,"init --- XKB");
-    int i;
-        Display *display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+    	CT_SYSLOG(LOG_DEBUG,"init --- XKB");
+    	int i;
+	gdk_init(NULL,NULL);
+        Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
 
         gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
                            "/usr/local/share/ukui-settings-daemon/" G_DIR_SEPARATOR_S

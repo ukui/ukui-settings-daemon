@@ -1,23 +1,29 @@
 #include "keyboard-manager.h"
 #include "clib-syslog.h"
-#include "../../config.h"
+#include "config.h"
+#include <QTimer>
 
-gboolean start_keyboard_idle_cb (KeyboardManager *manager);
+//gboolean start_keyboard_idle_cb (KeyboardManager *manager);
 GdkFilterReturn xkb_events_filter (GdkXEvent *xev_,
                                    GdkEvent  *gdkev_,
                                    gpointer   user_data);
 static void numlock_set_xkb_state (NumLockState new_state);
 
 KeyboardManager * KeyboardManager::mKeyboardManager = nullptr;
+KeyboardXkb * KeyboardManager::mKeyXkb = nullptr;
 
 KeyboardManager::KeyboardManager(QObject * parent)
 {
-    mKeyXkb = new KeyboardXkb;
+    if(nullptr == mKeyXkb)
+        mKeyXkb = new KeyboardXkb;
 }
 
 KeyboardManager::~KeyboardManager()
 {
-    delete mKeyXkb;
+    if(mKeyXkb){
+        delete mKeyXkb;
+        mKeyXkb = nullptr;
+    }
 }
 
 KeyboardManager *KeyboardManager::KeyboardManagerNew()
@@ -31,8 +37,10 @@ KeyboardManager *KeyboardManager::KeyboardManagerNew()
 bool KeyboardManager::KeyboardManagerStart()
 {
     CT_SYSLOG(LOG_DEBUG,"-- Keyboard Start Manager --");
-
-    g_idle_add ((GSourceFunc) start_keyboard_idle_cb, this);
+    time = new QTimer(this);
+    connect(time,SIGNAL(timeout()),this,SLOT(start_keyboard_idle_cb()));
+    time->start();
+    //g_idle_add ((GSourceFunc) start_keyboard_idle_cb,this);
 
     return true;
 }
@@ -88,7 +96,7 @@ static gboolean xfree86_set_keyboard_autorepeat_rate(int delay, int rate)
 
 void numlock_xkb_init (KeyboardManager *manager)
 {
-        Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+        Display *dpy = QX11Info::display();//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         gboolean have_xkb;
         int opcode, error_base, major, minor;
 
@@ -122,14 +130,14 @@ static NumLockState numlock_get_settings_state (GSettings *settings)
 
 static unsigned numlock_NumLock_modifier_mask (void)
 {
-        Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+        Display *dpy = QX11Info::display();//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         return XkbKeysymToModifiers (dpy, XK_Num_Lock);
 }
 
 static void numlock_set_xkb_state (NumLockState new_state)
 {
         unsigned int num_mask;
-        Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+        Display *dpy = QX11Info::display();//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         if (new_state != NUMLOCK_STATE_ON && new_state != NUMLOCK_STATE_OFF)
                 return;
         num_mask = numlock_NumLock_modifier_mask ();
@@ -170,11 +178,11 @@ void apply_bell (KeyboardManager *manager)
         kbdcontrol.bell_pitch = bell_pitch;
         kbdcontrol.bell_duration = bell_duration;
         gdk_error_trap_push ();
-        XChangeKeyboardControl (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
+        XChangeKeyboardControl (QX11Info::display(),//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                 KBKeyClickPercent | KBBellPercent | KBBellPitch | KBBellDuration,
                                 &kbdcontrol);
 
-        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        XSync (QX11Info::display(),FALSE);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
         //gdk_error_trap_pop_ignored ();
 }
 
@@ -187,13 +195,12 @@ void apply_numlock (KeyboardManager *manager)
         settings = manager->settings;
         rnumlock = g_settings_get_boolean  (settings, KEY_NUMLOCK_REMEMBER);
         manager->old_state = g_settings_get_enum (manager->settings, KEY_NUMLOCK_STATE);
-
         gdk_error_trap_push ();
         if (rnumlock) {
                 numlock_set_xkb_state ((NumLockState)manager->old_state);
         }
 
-        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        XSync (QX11Info::display(), FALSE);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
         //gdk_error_trap_pop_ignored ();
 }
 
@@ -205,8 +212,8 @@ static gboolean xkb_set_keyboard_autorepeat_rate(int delay, int rate)
     {
         delay = 1;
     }
-
-    return XkbSetAutoRepeatRate(GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), XkbUseCoreKbd, delay, interval);
+    Display *dpy= QX11Info::display();
+    return XkbSetAutoRepeatRate(dpy, XkbUseCoreKbd, delay, interval);
 }
 
 void apply_repeat (KeyboardManager *manager)
@@ -217,6 +224,7 @@ void apply_repeat (KeyboardManager *manager)
         guint            delay;
 
         g_debug ("Applying the repeat settings");
+        Display *dpy= QX11Info::display();
         settings      = manager->settings;
         repeat        = g_settings_get_boolean  (settings, KEY_REPEAT);
         rate	      = g_settings_get_int  (settings, KEY_RATE);
@@ -226,7 +234,7 @@ void apply_repeat (KeyboardManager *manager)
         if (repeat) {
                 gboolean rate_set = FALSE;
 
-                XAutoRepeatOn (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+                XAutoRepeatOn (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
                 /* Use XKB in preference */
                 rate_set = xkb_set_keyboard_autorepeat_rate (delay, rate);
 
@@ -234,10 +242,10 @@ void apply_repeat (KeyboardManager *manager)
                         g_warning ("Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
                                    "no way to support keyboard autorepeat rate settings");
         } else {
-                XAutoRepeatOff (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
+                XAutoRepeatOff (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
         }
 
-        XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+        XSync (dpy,FALSE);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
         //gdk_error_trap_pop_ignored ();
 }
 
@@ -303,7 +311,6 @@ GdkFilterReturn xkb_events_filter (GdkXEvent *xev_,
                 int numlock_state;
 
                 numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
-
                 if (numlock_state != manager->old_state) {
                         g_settings_set_enum (manager->settings,
                                              KEY_NUMLOCK_STATE,
@@ -325,29 +332,28 @@ void numlock_install_xkb_callback (KeyboardManager *manager)
                                GINT_TO_POINTER (manager));
 }
 
-
-gboolean start_keyboard_idle_cb (KeyboardManager *manager)
+void KeyboardManager::start_keyboard_idle_cb ()
 {
         g_debug ("Starting keyboard manager");
-
-        manager->have_xkb = 0;
-        manager->settings = g_settings_new (USD_KEYBOARD_SCHEMA);
+        time->stop();
+        have_xkb = 0;
+        settings = g_settings_new (USD_KEYBOARD_SCHEMA);
 
         /* Essential - xkb initialization should happen before */
-        manager->mKeyXkb->usd_keyboard_xkb_init (manager);
+        mKeyXkb->usd_keyboard_xkb_init (this);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
-        numlock_xkb_init (manager);
+        numlock_xkb_init (this);
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
         /* apply current settings before we install the callback */
-        manager->usd_keyboard_manager_apply_settings (manager);
+        usd_keyboard_manager_apply_settings (this);
 
-        g_signal_connect (manager->settings, "changed", G_CALLBACK (apply_settings), manager);
+        g_signal_connect (settings, "changed", G_CALLBACK (apply_settings),this);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
-        numlock_install_xkb_callback (manager);
+        numlock_install_xkb_callback (this);
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
-        return FALSE;
+        return ;
 }
