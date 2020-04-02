@@ -74,9 +74,9 @@ device_is_touchpad (XDeviceInfo *deviceinfo)
 
         if (deviceinfo->type != XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XI_TOUCHPAD, True)) {
 		if (deviceinfo->type == 0) {
-			syslog(LOG_ERR, "deviceinfo type is NULL");
+			syslog(LOG_INFO, "deviceinfo type is NULL");
 		} else {
-			syslog(LOG_ERR,
+			syslog(LOG_INFO,
                                "deviceinfo type : %s vs %s device_is_touchpad failed",
                                XGetAtomName(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), deviceinfo->type),
                                XGetAtomName(GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),

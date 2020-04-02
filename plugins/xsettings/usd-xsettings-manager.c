@@ -457,7 +457,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 	} else {
 		// unset, use default
 		strncpy(tmpCursorTheme, "Breeze_Snow", 255);
-	        syslog(LOG_ERR, "use default theme name=%s=", tmpCursorTheme);
+	        syslog(LOG_INFO, "use default theme name=%s=", tmpCursorTheme);
 	}
 	if (settings->cursor_size > 0) {
 		tmpCursorSize = settings->cursor_size;
@@ -504,7 +504,6 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 	    for (int i = 0; i < len-1; i++) {
                 XcursorImages *images = XcursorLibraryLoadImages(qtCursorsNames[i], tmpCursorTheme, tmpCursorSize);
 	        if (!images) {
-	             syslog(LOG_ERR, "null images, theme name=%s, imageName=%s=", tmpCursorTheme, qtCursorsNames[i]);
                      g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
 		     continue;
 	        }

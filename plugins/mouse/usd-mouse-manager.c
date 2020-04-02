@@ -328,7 +328,6 @@ touchpad_set_bool (XDeviceInfo *device_info,
         if (device == NULL) {
                 return;
         }
-        syslog(LOG_ERR, "=====SET touchpad value: %s:%d====", property_name, enabled);
         property_set_bool (device_info, device, property_name, property_index, enabled);
 
         gdk_error_trap_push ();
@@ -1239,7 +1238,6 @@ set_scrolling_libinput (XDeviceInfo *device_info,
 
         prop = property_from_name ("libinput Scroll Method Enabled");
         if (!prop) {
-		syslog(LOG_ERR, "libinput Scroll Method Enabled failed");
                 return;
 	}
 
