@@ -9,9 +9,6 @@ DEFINES += XRANDR_LIBRARY
 
 CONFIG += c++11 no_keywords plugin link_pkgconfig
 
-PKGCONFIG += \
-        gtk+-3.0
-
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -20,32 +17,29 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
+PKGCONFIG += \
+        gtk+-3.0    \
+        glib-2.0    \
+        gobject-2.0 mate-desktop-2.0
+
 INCLUDEPATH += \
         -I $$PWD/../../common                           \
         -I ukui-settings-daemon/                        \
-        -I /usr/include/glib-2.0/                       \
-        -I /usr/lib/glib-2.0/include                    \
-        -I /usr/lib/x86_64-linux-gnu/glib-2.0/include/  \
         -I /usr/include/dbus-1.0                        \
         -I /usr/lib/dbus-1.0/include/                   \
         -I /usr/lib/x86_64-linux-gnu/dbus-1.0/include/  \
         -I /usr/include/mate-desktop-2.0/               \
-        -I /usr/include/gtk-3.0/                        \
         -I /usr/include/cairo/                          \
-        -I /usr/include/pango-1.0/                      \
-        -I /usr/include/gtk-3.0/gdk/                    \
+        -I /usr/include/pango-1.0/                      \               
         -I /usr/include/gdk-pixbuf-2.0/                 \
         -I /usr/include/atk-1.0/                        \
         -I /usr/include/libnotify/
 
 LIBS += \
-        -lglib-2.0          \
-        -ldbus-1            \
-        -lgobject-2.0       \
-        -lgio-2.0           \
-        -L /lib64           \
-        -ldbus-glib-1       \
-        -lmate-desktop-2
+        -L/usr/lib/x86_64-linux-gnu -lmate-desktop-2 \
+        -lgtk-3 -lgdk-3 -lpangocairo-1.0 -lpango-1.0 \
+        -lharfbuzz -latk-1.0 -lcairo-gobject -lcairo \
+        -lgdk_pixbuf-2.0 -lgio-2.0 -lstartup-notification-1
 
 # You can also make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.

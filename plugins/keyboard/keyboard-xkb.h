@@ -3,7 +3,6 @@
 
 #include "keyboard-manager.h"
 #include "config.h"
-
 #include <string.h>
 #include <time.h>
 
@@ -14,12 +13,13 @@
 #include <gio/gio.h>
 #include <gio/gappinfo.h>
 extern "C"{
-#include <libmatekbd/matekbd-status.h>
-#include <libmatekbd/matekbd-keyboard-drawing.h>
-#include <libmatekbd/matekbd-desktop-config.h>
-#include <libmatekbd/matekbd-keyboard-config.h>
-#include <libmatekbd/matekbd-util.h>
+#include <matekbd-status.h>
+#include <matekbd-keyboard-drawing.h>
+#include <matekbd-desktop-config.h>
+#include <matekbd-keyboard-config.h>
+#include <matekbd-util.h>
 }
+
 
 #define GTK_RESPONSE_PRINT 2
 
@@ -32,19 +32,26 @@ extern "C"{
 
 typedef void (*PostActivationCallback) (void* userData);
 class KeyboardManager;
-class KeyboardXkb
+class KeyboardXkb : public QObject
 {
+    Q_OBJECT
+public Q_SLOTS:
+    static void apply_desktop_settings_cb (QString);
+    static void apply_xkb_settings_cb(QString);
+
 public:
     KeyboardXkb();
     KeyboardXkb(KeyboardXkb&)=delete;
     ~KeyboardXkb();
-    void usd_keyboard_xkb_init(KeyboardManager* kbd_manager);
+    static KeyboardManager * manager;
 
+public:
+    void usd_keyboard_xkb_init(KeyboardManager* kbd_manager);
     void usd_keyboard_xkb_shutdown(void);
     static void apply_desktop_settings (void);
-    static void apply_desktop_settings_cb (GSettings *settings, gchar *key, gpointer   user_data);
     static void usd_keyboard_new_device (XklEngine * engine);
-    static KeyboardManager * manager;
+    friend void apply_desktop_settings_mate_cb(GSettings *settings, gchar *key, gpointer   user_data);
+
 
 };
 

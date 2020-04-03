@@ -2,8 +2,12 @@
 #define MOUSEMANAGER_H
 
 #include <QObject>
+#include <QTimer>
+#include <QtX11Extras/QX11Info>
+#include <QGSettings>
+#include <QApplication>
+
 #include <glib.h>
-#include <glib-object.h>
 #include <errno.h>
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -14,18 +18,14 @@
 #include <errno.h>
 #include <math.h>
 #include <locale.h>
-#include <glib.h>
-#include <glib/gi18n.h>
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
 #include <X11/keysym.h>
 #include <X11/Xatom.h>
 #include <X11/extensions/XInput.h>
 #include <X11/extensions/XIproto.h>
-#include <gio/gio.h>
-#include <glib/gspawn.h>
 
 /* Keys with same names for both touchpad and mouse */
 #define KEY_LEFT_HANDED                  "left-handed"          /*  a boolean for mouse, an enum for touchpad */
@@ -53,9 +53,9 @@
 #define KEY_HORIZ_TWO_FINGER_SCROLL      "horizontal-two-finger-scrolling"
 #define KEY_TOUCHPAD_ENABLED             "touchpad-enabled"
 
-namespace spawn {
+/*namespace spawn {
 #include <glib/gspawn.h>
-}
+}*/
 
 class MouseManager : public QObject
 {
@@ -69,49 +69,29 @@ private:
 public:
     ~MouseManager();
     static MouseManager * MouseManagerNew();
-    bool MouseManagerStart(GError** error);
+    bool MouseManagerStart();
     void MouseManagerStop();
 
-private:
-    /* is include " common/usd-input-helper.c "*/
-    //friend XDevice*  device_is_touchpad (XDeviceInfo *deviceinfo);
-    /*----------------------------------------------------------*/
+public Q_SLOTS:
+    void usd_mouse_manager_idle_cb();
+    void mouse_callback(QString);
+    void touchpad_callback(QString);
 
-    friend gboolean usd_mouse_manager_idle_cb(MouseManager *manager);
-    friend void mouse_callback (GSettings          *settings,
-                                const gchar        *key,
-                                MouseManager    *manager);
-    friend gboolean get_touchpad_handedness (MouseManager *manager,
-                                             gboolean         mouse_left_handed);
+private:
+    friend bool get_touchpad_handedness (MouseManager *manager,bool mouse_left_handed);
     friend void set_left_handed_all (MouseManager *manager,
-                                     gboolean         mouse_left_handed,
-                                     gboolean         touchpad_left_handed);
+                                     bool         mouse_left_handed,
+                                     bool         touchpad_left_handed);
     friend void set_left_handed (MouseManager *manager,
                                  XDeviceInfo     *device_info,
-                                 gboolean         mouse_left_handed,
-                                 gboolean         touchpad_left_handed);
-    /*friend gboolean property_exists_on_device (XDeviceInfo *device_info,
-                                                  const char  *property_name);
-    friend void property_set_bool (XDeviceInfo *device_info,
-                                    XDevice     *device,
-                                    const char  *property_name,
-                                    int          property_index,
-                                    gboolean     enabled);*/
+                                 bool         mouse_left_handed,
+                                 bool         touchpad_left_handed);
 
     friend void set_left_handed_legacy_driver (MouseManager *manager,
                                                XDeviceInfo     *device_info,
-                                               gboolean         mouse_left_handed,
-                                               gboolean         touchpad_left_handed);
-    /*friend gboolean touchpad_has_single_button (XDevice *device) ;
-    friend void set_tap_to_click_synaptics (XDeviceInfo *device_info,
-                                             gboolean     state,
-                                             gboolean     left_handed,
-                                             gint         one_finger_tap,
-                                             gint         two_finger_tap,
-                                             gint         three_finger_tap);
-    friend void configure_button_layout (guchar   *buttons,
-                                         gint      n_buttons,
-                                         gboolean  left_handed);*/
+                                               bool         mouse_left_handed,
+                                               bool         touchpad_left_handed);
+
     friend void set_motion_all (MouseManager *manager);
 
     friend void set_motion (MouseManager *manager, XDeviceInfo     *device_info);
@@ -120,25 +100,21 @@ private:
 
     friend void set_motion_legacy_driver (MouseManager *manager,XDeviceInfo     *device_info);
 
-    friend void set_middle_button_all (gboolean middle_button);
+    friend void set_middle_button_all (bool middle_button);
 
     friend void set_middle_button (XDeviceInfo *device_info,
-                                   gboolean     middle_button);
+                                   bool     middle_button);
 
-    friend void set_locate_pointer (MouseManager *manager, gboolean     state);
-
-    friend void touchpad_callback (GSettings          *settings,
-                                   const gchar        *key,
-                                   MouseManager    *manager);
+    friend void set_locate_pointer (MouseManager *manager, bool     state);
 
     friend void set_disable_w_typing (MouseManager *manager,
-                                    gboolean         state);
+                                    bool         state);
 
     friend void set_disable_w_typing_synaptics (MouseManager *manager,
-                                                gboolean         state);
+                                                bool         state);
 
     friend void set_disable_w_typing_libinput (MouseManager *manager,
-                                               gboolean         state);
+                                               bool         state);
 
     friend void set_tap_to_click_all (MouseManager *manager);
 
@@ -154,9 +130,10 @@ private:
 
 
 private:
-    static MouseManager * mMouseManager;
-    GSettings *settings_mouse;
-    GSettings *settings_touchpad;
+    QTimer * time;
+    QGSettings *settings_mouse;
+    QGSettings *settings_touchpad;
+    static MouseManager *mMouseManager;
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
     gboolean mousetweaks_daemon_running;

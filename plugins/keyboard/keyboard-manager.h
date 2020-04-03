@@ -4,6 +4,8 @@
 #include <QObject>
 #include <QTimer>
 #include <QtX11Extras/QX11Info>
+#include <QGSettings>
+#include <QApplication>
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -15,7 +17,6 @@
 #include <locale.h>
 
 #include <glib.h>
-#include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
@@ -60,27 +61,19 @@ private:
     KeyboardManager(KeyboardManager&)=delete;
     KeyboardManager&operator=(const KeyboardManager&)=delete;
     KeyboardManager(QObject *parent = nullptr);
-
 public:
     ~KeyboardManager();
     static KeyboardManager * KeyboardManagerNew();
     bool KeyboardManagerStart();
     void KeyboardManagerStop();
-    static void usd_keyboard_manager_apply_settings (KeyboardManager *manager);
-
-Q_SIGNALS:
-    void timeout();
+    void usd_keyboard_manager_apply_settings (KeyboardManager *manager);
 
 public Q_SLOTS:
-    void start_keyboard_idle_cb ();
+    gboolean start_keyboard_idle_cb ();
+    void apply_settings(QString);
 
 private:
     friend void numlock_xkb_init (KeyboardManager *manager);
-
-
-    friend void apply_settings (GSettings          *settings,
-                                gchar              *key,
-                                KeyboardManager *manager);
 
     friend void apply_bell (KeyboardManager *manager);
 
@@ -95,12 +88,12 @@ private:
                                    gpointer   user_data);
 
 private:
-    QTimer * time ;
+    QTimer * time;
     static KeyboardManager* mKeyboardManager;
     static KeyboardXkb * mKeyXkb;
     gboolean    have_xkb;
     gint        xkb_event_base;
-    GSettings  *settings;
+    QGSettings  *settings;
     int 	    old_state;
 
 };

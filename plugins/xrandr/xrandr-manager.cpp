@@ -493,10 +493,9 @@ void XrandrManager::handle_fn_f7(XrandrManager *mgr, guint32 timestamp)
     }
 
     current = mate_rr_config_new_current (screen, NULL);
-
-    if (mgr->fn_f7_configs &&
-        (!mate_rr_config_match (current, mgr->fn_f7_configs[0]) ||
-         !mate_rr_config_equal (current, mgr->fn_f7_configs[mgr->current_fn_f7_config]))) {
+    gboolean equal = mate_rr_config_equal (current, mgr->fn_f7_configs[mgr->current_fn_f7_config]);
+    gboolean match = mate_rr_config_match (current, mgr->fn_f7_configs[0]);
+    if (mgr->fn_f7_configs && (!match || ! equal)) {
                 /* Our view of the world is incorrect, so regenerate the
                  * configurations
                  */

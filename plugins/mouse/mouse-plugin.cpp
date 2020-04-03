@@ -6,7 +6,7 @@ MouseManager * MousePlugin::UsdMouseManager = nullptr;
 
 MousePlugin::MousePlugin()
 {
-    syslog_init("ukui-setting-daemon-mouse",LOG_LOCAL6);
+    //syslog_init("ukui-setting-daemon-mouse",LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG,"MousePlugin initializing!");
     if (nullptr == UsdMouseManager)
         UsdMouseManager = MouseManager::MouseManagerNew();
@@ -14,7 +14,6 @@ MousePlugin::MousePlugin()
 
 MousePlugin::~MousePlugin()
 {
-     CT_SYSLOG(LOG_DEBUG, "mouse plugin free...");
     if (UsdMouseManager){
         delete UsdMouseManager;
         UsdMouseManager = nullptr;
@@ -24,14 +23,12 @@ MousePlugin::~MousePlugin()
 void MousePlugin::activate()
 {
     bool res;
-    GError *error;
     CT_SYSLOG(LOG_DEBUG,"Activating Mouse plugin");
-    error=NULL;
-    res = UsdMouseManager->MouseManagerStart(&error);
+    res = UsdMouseManager->MouseManagerStart();
     if(!res){
         CT_SYSLOG(LOG_ERR,"Unable to start Mouse manager!");
-        g_error_free(error);
     }
+
 }
 
 PluginInterface * MousePlugin::getInstance()
@@ -48,7 +45,7 @@ void MousePlugin::deactivate()
     UsdMouseManager->MouseManagerStop();
 }
 
-PluginInterface *createSettingPluign()
+PluginInterface *createSettingsPlugin()
 {
     return MousePlugin::getInstance();
 }

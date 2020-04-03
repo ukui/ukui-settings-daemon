@@ -1,8 +1,8 @@
+#include <QIcon>
 #include "keyboard-xkb.h"
 #include "clib-syslog.h"
 
 KeyboardManager * KeyboardXkb::manager = KeyboardManager::KeyboardManagerNew();
-
 
 /*Migrate source files "delayed-dialog.c"*/
 static gboolean        delayed_show_timeout (gpointer   data);
@@ -11,10 +11,8 @@ static GdkFilterReturn message_filter       (GdkXEvent *xevent,
                                              gpointer   data);
 static GSList *dialogs = NULL;
 
-
-
-static GSettings* settings_desktop;
-static GSettings* settings_kbd;
+QGSettings* settings_desktop;
+QGSettings* settings_kbd;
 
 static XklEngine* xkl_engine;
 static XklConfigRegistry* xkl_registry = NULL;
@@ -38,7 +36,7 @@ static Atom caps_lock;
 static Atom num_lock;
 static Atom scroll_lock;
 
-static GtkStatusIcon* indicator_icons[3];
+static QIcon indicator_icons[3];
 static const gchar* indicator_on_icon_names[] = {
     "kbd-scrolllock-on",
     "kbd-numlock-on",
@@ -55,20 +53,15 @@ static const gchar* indicator_off_icon_names[] = {
 KeyboardXkb::KeyboardXkb()
 {
     CT_SYSLOG(LOG_DEBUG,"Keyboard Xkb initializing!");
-
-    /*if(nullptr == manager)
-        manager = KeyboardManager::KeyboardManagerNew();*/
-
 }
 KeyboardXkb::~KeyboardXkb()
 {
     CT_SYSLOG(LOG_DEBUG,"Keyboard Xkb free");
-    if (manager){
-        delete manager;
-        manager = nullptr;
-    }
+    if(settings_desktop)
+        delete settings_desktop;
+    if(settings_kbd)
+        delete settings_kbd;
 }
-
 
 
 /*Migrate source files "delayed-dialog.c"*/
@@ -164,7 +157,7 @@ static void usd_keyboard_update_indicator_icons ()
 {
     Bool state;
     int new_state, i;
-    Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+    Display *display = QX11Info::display();
     XkbGetNamedIndicator (display, caps_lock, NULL, &state,
                   NULL, NULL);
     new_state = state ? 1 : 0;
@@ -180,13 +173,16 @@ static void usd_keyboard_update_indicator_icons ()
 
     for (i = sizeof (indicator_icons) / sizeof (indicator_icons[0]);
          --i >= 0;) {
-        gtk_status_icon_set_from_icon_name (indicator_icons[i],
+        /*gtk_status_icon_set_from_icon_name (indicator_icons[i],
                             (new_state & (1 << i))
                             ?
                             indicator_on_icon_names
                             [i] :
                             indicator_off_icon_names
-                            [i]);
+                            [i]);*/
+        QIcon::setThemeName((new_state & (1 << i))
+                            ? indicator_on_icon_names[i]
+                            : indicator_off_icon_names[i]);
     }
 }
 
@@ -202,23 +198,23 @@ static void usd_keyboard_xkb_analyze_sysconfig (void)
 
 void KeyboardXkb::apply_desktop_settings (void)
 {
-    gboolean show_leds;
+    bool show_leds;
     int i;
     if (!inited_ok)
         return;
-
-
     manager->usd_keyboard_manager_apply_settings (manager);
     matekbd_desktop_config_load_from_gsettings (&current_desktop_config);
     /* again, probably it would be nice to compare things
        before activating them */
     matekbd_desktop_config_activate (&current_desktop_config);
 
-    show_leds = g_settings_get_boolean (settings_desktop, DUPLICATE_LEDS_KEY);
+    show_leds = settings_desktop->get(DUPLICATE_LEDS_KEY).toBool();// g_settings_get_boolean (settings_desktop, DUPLICATE_LEDS_KEY);
     for (i = sizeof (indicator_icons) / sizeof (indicator_icons[0]);
          --i >= 0;) {
-        gtk_status_icon_set_visible (indicator_icons[i],
-                         show_leds);
+        if(show_leds)
+            indicator_icons[i].On;
+        else
+            indicator_icons[i].Off;
     }
 }
 
@@ -342,7 +338,8 @@ static void show_layout_destroy (GtkWidget * dialog, gint group)
 static void popup_menu_show_layout ()
 {
     GtkWidget *dialog;
-    XklEngine *engine = xkl_engine_get_instance (QX11Info::display());//GDK_DISPLAY_XDISPLAY(gdk_display_get_default()));
+    Display *dpy = QX11Info::display();
+    XklEngine *engine = xkl_engine_get_instance (dpy);
     XklState *xkl_state = xkl_engine_get_current_state (engine);
     gpointer p = g_hash_table_lookup (preview_dialogs,
                       GINT_TO_POINTER
@@ -360,10 +357,8 @@ static void popup_menu_show_layout ()
         return;
     }
 
-    dialog =
-        matekbd_keyboard_drawing_new_dialog (xkl_state->group,
-                          group_names
-                          [xkl_state->group]);
+    dialog = matekbd_keyboard_drawing_new_dialog (xkl_state->group,
+                          group_names[xkl_state->group]);
     g_signal_connect (dialog, "destroy",
               G_CALLBACK (show_layout_destroy),
               GINT_TO_POINTER (xkl_state->group));
@@ -410,8 +405,7 @@ static void status_icon_popup_menu_cb (GtkStatusIcon * icon, guint button, guint
     gtk_menu_item_set_submenu (GTK_MENU_ITEM (item),
                    GTK_WIDGET (groups_menu));
 
-    item =
-        gtk_menu_item_new_with_mnemonic (_("Keyboard _Preferences"));
+    item = gtk_menu_item_new_with_mnemonic (_("Keyboard _Preferences"));
     gtk_widget_show (item);
     g_signal_connect (item, "activate", popup_menu_launch_capplet,
               NULL);
@@ -459,7 +453,7 @@ static void status_icon_popup_menu_cb (GtkStatusIcon * icon, guint button, guint
 
 static void activation_error (void)
 {
-    Display * dpy = QX11Info::display();
+    Display *dpy = QX11Info::display();
     char const *vendor = ServerVendor (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
     int release = VendorRelease (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
     GtkWidget *dialog;
@@ -495,7 +489,7 @@ static void show_hide_icon ()
 {
     if (g_strv_length (current_kbd_config.layouts_variants) > 1) {
         if (icon == NULL) {
-            gboolean disable = g_settings_get_boolean (settings_desktop, DISABLE_INDICATOR_KEY);
+            bool disable = settings_desktop->get(DISABLE_INDICATOR_KEY).toBool();//g_settings_get_boolean (settings_desktop, DISABLE_INDICATOR_KEY);
             if (disable)
                 return;
 
@@ -553,13 +547,20 @@ static void apply_xkb_settings (void)
     show_hide_icon ();
 }
 
-void KeyboardXkb::apply_desktop_settings_cb (GSettings *settings, gchar *key, gpointer   user_data)
+void KeyboardXkb::apply_desktop_settings_cb (QString key)
 {
     apply_desktop_settings ();
 }
+void apply_desktop_settings_mate_cb(GSettings *settings, gchar *key, gpointer   user_data)
+{
+   KeyboardXkb::apply_desktop_settings ();
+}
 
-
-static void apply_xkb_settings_cb (GSettings *settings, gchar *key, gpointer   user_data)
+void KeyboardXkb::apply_xkb_settings_cb (QString key)
+{
+    apply_xkb_settings ();
+}
+static void apply_xkb_settings_mate_cb (GSettings *settings, gchar *key, gpointer   user_data)
 {
     apply_xkb_settings ();
 }
@@ -581,9 +582,8 @@ void KeyboardXkb::usd_keyboard_new_device (XklEngine * engine)
 static void usd_keyboard_state_changed (XklEngine * engine, XklEngineStateChange type,
                 gint new_group, gboolean restore)
 {
-    xkl_debug (160,
-           "State changed: type %d, new group: %d, restore: %d.\n",
-           type, new_group, restore);
+    xkl_debug (160,"State changed: type %d, new group: %d, restore: %d.\n",
+                type, new_group, restore);
     if (type == INDICATORS_CHANGED) {
         usd_keyboard_update_indicator_icons ();
     }
@@ -591,14 +591,16 @@ static void usd_keyboard_state_changed (XklEngine * engine, XklEngineStateChange
 
 void KeyboardXkb::usd_keyboard_xkb_init(KeyboardManager* kbd_manager)
 {
-    	CT_SYSLOG(LOG_DEBUG,"init --- XKB");
-    	int i;
-	gdk_init(NULL,NULL);
-        Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+        CT_SYSLOG(LOG_DEBUG,"init --- XKB");
+        int i;
+        Display *display = QX11Info::display();
+        QString icon_path = "/usr/share/ukui-settings-daemon/icons,";
+        QStringList list1 = icon_path.split(",");
+        QIcon::setThemeSearchPaths(list1);
 
-        gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
+        /*gtk_icon_theme_append_search_path (gtk_icon_theme_get_default (),
                            "/usr/local/share/ukui-settings-daemon/" G_DIR_SEPARATOR_S
-                           "icons");
+                           "icons");*/
 
         caps_lock = XInternAtom (display, "Caps Lock", False);
         num_lock = XInternAtom (display, "Num Lock", False);
@@ -606,9 +608,8 @@ void KeyboardXkb::usd_keyboard_xkb_init(KeyboardManager* kbd_manager)
 
         for (i = sizeof (indicator_icons) / sizeof (indicator_icons[0]);
              --i >= 0;) {
-            indicator_icons[i] =
-                gtk_status_icon_new_from_icon_name
-                (indicator_off_icon_names[i]);
+               indicator_icons[i]=QIcon::fromTheme(indicator_off_icon_names[i]);
+               //gtk_status_icon_new_from_icon_name(indicator_off_icon_names[i]);
         }
 
         usd_keyboard_update_indicator_icons ();
@@ -620,57 +621,40 @@ void KeyboardXkb::usd_keyboard_xkb_init(KeyboardManager* kbd_manager)
         if (xkl_engine) {
             inited_ok = TRUE;
 
-            settings_desktop = g_settings_new (MATEKBD_DESKTOP_SCHEMA);
-            settings_kbd = g_settings_new (MATEKBD_KBD_SCHEMA);
+            settings_desktop = new QGSettings(MATEKBD_DESKTOP_SCHEMA);
+            settings_kbd = new QGSettings(MATEKBD_KBD_SCHEMA);
 
-            matekbd_desktop_config_init (&current_desktop_config,
-                                         xkl_engine);
-            matekbd_keyboard_config_init (&current_kbd_config,
-                                          xkl_engine);
+            matekbd_desktop_config_init (&current_desktop_config,xkl_engine);
+
+            matekbd_keyboard_config_init (&current_kbd_config,xkl_engine);
 
             xkl_engine_backup_names_prop (xkl_engine);
             usd_keyboard_xkb_analyze_sysconfig ();
 
-            matekbd_desktop_config_start_listen (&current_desktop_config,
-                                                 G_CALLBACK (apply_desktop_settings_cb),
-                                                 NULL);
+            matekbd_desktop_config_start_listen (&current_desktop_config, G_CALLBACK (apply_desktop_settings_mate_cb),NULL);
 
-            matekbd_keyboard_config_start_listen (&current_kbd_config,
-                                                  G_CALLBACK (apply_xkb_settings_cb),
-                                                  NULL);
+            matekbd_keyboard_config_start_listen (&current_kbd_config,G_CALLBACK (apply_xkb_settings_mate_cb),NULL);
 
-            g_signal_connect (settings_desktop, "changed",
-                              G_CALLBACK (apply_desktop_settings_cb), NULL);
-            g_signal_connect (settings_kbd, "changed",
-                              G_CALLBACK (apply_xkb_settings_cb), NULL);
+            QObject::connect(settings_desktop,SIGNAL(changed(QString)),this,SLOT(apply_desktop_settings_cb(QString)));
 
-            gdk_window_add_filter (NULL, (GdkFilterFunc)
-                           usd_keyboard_xkb_evt_filter, NULL);
+            QObject::connect(settings_kbd,SIGNAL(changed(QString)),this,SLOT(apply_xkb_settings_cb(QString)));
 
-            if (xkl_engine_get_features (xkl_engine) &
-                XKLF_DEVICE_DISCOVERY)
+            gdk_window_add_filter (NULL, (GdkFilterFunc)usd_keyboard_xkb_evt_filter, NULL);
+
+            if (xkl_engine_get_features (xkl_engine) &XKLF_DEVICE_DISCOVERY)
                 g_signal_connect (xkl_engine, "X-new-device",
-                          G_CALLBACK
-                          (usd_keyboard_new_device), NULL);
+                                  G_CALLBACK(usd_keyboard_new_device), NULL);
+
             g_signal_connect (xkl_engine, "X-state-changed",
-                      G_CALLBACK
-                      (usd_keyboard_state_changed), NULL);
+                              G_CALLBACK(usd_keyboard_state_changed), NULL);
 
-
-            xkl_engine_start_listen (xkl_engine,
-                         XKLL_MANAGE_LAYOUTS |
-                         XKLL_MANAGE_WINDOW_STATES);
-
-
+            xkl_engine_start_listen (xkl_engine, XKLL_MANAGE_LAYOUTS |XKLL_MANAGE_WINDOW_STATES);
 
             apply_desktop_settings ();
-
             apply_xkb_settings ();
-
         }
         preview_dialogs = g_hash_table_new (g_direct_hash, g_direct_equal);
 }
-
 
 void KeyboardXkb::usd_keyboard_xkb_shutdown (void)
 {
@@ -682,8 +666,8 @@ void KeyboardXkb::usd_keyboard_xkb_shutdown (void)
 
     for (i = sizeof (indicator_icons) / sizeof (indicator_icons[0]);
          --i >= 0;) {
-        g_object_unref (G_OBJECT (indicator_icons[i]));
-        indicator_icons[i] = NULL;
+       /* g_object_unref (G_OBJECT (indicator_icons[i]));
+        indicator_icons[i] = NULL;*/
     }
 
     g_hash_table_destroy (preview_dialogs);

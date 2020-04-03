@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="@GETTEXT_PACKAGE@">
+  <enum id="org.ukui.peripherals-touchpad.Handedness">
+    <value value="0" nick="right"/>
+    <value value="1" nick="left"/>
+    <value value="2" nick="mouse"/>
+  </enum>
+  <schema path="/org/ukui/desktop/peripherals/touchpad/" id="org.ukui.peripherals-touchpad">
+    <key type="b" name="disable-while-typing">
+      <default>false</default>
+      <summary>Disable touchpad while typing</summary>
+      <description>Set this to TRUE if you have problems with accidentally hitting the touchpad while typing.</description>
+    </key>
+    <key type="b" name="tap-to-click">
+      <default>false</default>
+      <summary>Enable mouse clicks with touchpad</summary>
+      <description>Set this to TRUE to be able to send mouse clicks by tapping on the touchpad.</description>
+    </key>
+    <key type="b" name="vertical-edge-scrolling">
+      <default>true</default>
+      <summary>Enable vertical edge scrolling</summary>
+      <description>Set this to TRUE to allow vertical edge scrolling</description>
+    </key>
+    <key type="b" name="horizontal-edge-scrolling">
+      <default>false</default>
+      <summary>Enable horizontal edge scrolling</summary>
+      <description>Set this to TRUE to allow horizontal edge scrolling</description>
+    </key>
+    <key type="b" name="vertical-two-finger-scrolling">
+      <default>true</default>
+      <summary>Enable vertical two-finger scrolling</summary>
+      <description>Set this to TRUE to allow vertical two-finger scrolling</description>
+    </key>
+    <key type="b" name="horizontal-two-finger-scrolling">
+      <default>false</default>
+      <summary>Enable horizontal two-finger scrolling</summary>
+      <description>Set this to TRUE to allow horizontal two-finger scrolling</description>
+    </key>
+    <key type="b" name="natural-scroll">
+      <default>false</default>
+      <summary>Natural scrolling</summary>
+      <description>Set this to true to enable natural (reverse) scrolling for touchpads</description>
+    </key>
+    <key type="b" name="touchpad-enabled">
+      <default>true</default>
+      <summary>Enable touchpad</summary>
+      <description>Set this to TRUE to enable all touchpads.</description>
+    </key>
+    <key type="i" name="two-finger-click">
+      <default>3</default>
+      <summary>Enabled two-finger button-click emulation</summary>
+      <description>0 thru 3, 0 is inactive, 1-3 is button to emulate</description>
+    </key>
+    <key type="i" name="three-finger-click">
+      <default>2</default>
+      <summary>Enable three-finger button-click emulation</summary>
+      <description>0 thru 3, 0 is inactive, 1-3 is button to emulate</description>
+    </key>
+    <key type="i" name="tap-button-one-finger">
+      <default>1</default>
+      <summary>One finger tap button</summary>
+      <description>Select the button mapping for one-finger tap. Supported values are: 1: left mouse button 2: middle mouse button 3: right mouse button</description>
+    </key>
+    <key type="i" name="tap-button-two-finger">
+      <default>3</default>
+      <summary>Two finger tap button</summary>
+      <description>Select the button mapping for two-finger tap. Supported values are: 1: left mouse button 2: middle mouse button 3: right mouse button</description>
+    </key>
+    <key type="i" name="tap-button-three-finger">
+      <default>2</default>
+      <summary>Three finger tap button</summary>
+      <description>Select the button mapping for three-finger tap. Supported values are: 1: left mouse button 2: middle mouse button 3: right mouse button</description>
+    </key>
+    <key name="left-handed" enum="org.ukui.peripherals-touchpad.Handedness">
+      <default>'mouse'</default>
+      <summary>Touchpad button orientation</summary>
+      <description>Swap left and right buttons for left-handed touchpads with 'left', 'right' for right-handed, 'mouse' to follow the mouse setting.</description>
+    </key>
+    <key type="d" name="motion-acceleration">
+      <default>-1</default>
+      <summary>Motion Acceleration</summary>
+      <description>Acceleration multiplier for touchpad motion.  A value of -1 is the system default.</description>
+    </key>
+    <key type="i" name="motion-threshold">
+      <default>-1</default>
+      <summary>Motion Threshold</summary>
+      <description>Distance in pixels the pointer must move before accelerated touchpad motion is activated.  A value of -1 is the system default.</description>
+    </key>
+  </schema>
+</schemalist>

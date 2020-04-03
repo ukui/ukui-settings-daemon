@@ -24,7 +24,7 @@ KeyboardPlugin::~KeyboardPlugin()
 void KeyboardPlugin::activate()
 {
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"Activating Keyboard Plugin");
+    CT_SYSLOG(LOG_ERR,"Activating Keyboard Plugin");
     res = UsdKeyboardManager->KeyboardManagerStart();
     if(!res){
         CT_SYSLOG(LOG_ERR,"Unable to start Keyboard Manager!")

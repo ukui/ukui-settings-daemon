@@ -10,9 +10,8 @@ class MousePlugin : public PluginInterface
 public:
     ~MousePlugin();
     static PluginInterface * getInstance();
-    
-    void activate();
-    void deactivate();
+    virtual void activate();
+    virtual void deactivate();
 
 private:
     MousePlugin();

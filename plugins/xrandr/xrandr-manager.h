@@ -19,8 +19,8 @@
 #include <locale.h>
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-rr-config.h>
 #include <libmate-desktop/mate-rr.h>
+#include <libmate-desktop/mate-rr-config.h>
 #include <libmate-desktop/mate-rr-labeler.h>
 #include <libmate-desktop/mate-desktop-utils.h>
 
