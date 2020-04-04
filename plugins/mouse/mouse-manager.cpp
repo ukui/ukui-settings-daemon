@@ -1,6 +1,5 @@
 #include "mouse-manager.h"
 #include "clib-syslog.h"
-#include "usd-input-helper.h"
 
 typedef enum {
         TOUCHPAD_HANDEDNESS_RIGHT,
@@ -12,6 +11,9 @@ typedef enum {
 GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
                                        GdkEvent  *event,
                                        gpointer   data);
+
+gboolean supports_xinput_devices (void);
+gboolean  touchpad_is_present     (void);
 
 MouseManager * MouseManager::mMouseManager =nullptr;
 
@@ -34,7 +36,6 @@ MouseManager * MouseManager::MouseManagerNew()
 
     return mMouseManager;
 }
-gboolean supports_xinput_devices (void);
 
 bool MouseManager::MouseManagerStart()
 {
@@ -62,6 +63,104 @@ void MouseManager::MouseManagerStop()
 
     gdk_window_remove_filter (NULL, devicepresence_filter, this);
 }
+
+/*  transplant usd-input-helper.h  */
+gboolean
+supports_xinput_devices (void)
+{
+        gint op_code, event, error;
+
+        return XQueryExtension (QX11Info::display(),
+                                "XInputExtension",
+                                &op_code,
+                                &event,
+                                &error);
+}
+
+static gboolean
+device_has_property (XDevice    *device,
+                     const char *property_name)
+{
+        Atom realtype, prop;
+        int realformat;
+        unsigned long nitems, bytes_after;
+        unsigned char *data;
+
+        prop = XInternAtom (QX11Info::display(), property_name, True);
+        if (!prop)
+                return FALSE;
+
+        try {
+            if ((XGetDeviceProperty (QX11Info::display(), device, prop, 0, 1, False,
+                                    XA_INTEGER, &realtype, &realformat, &nitems,
+                                    &bytes_after, &data) == Success) && (realtype != None)) {
+                    XFree (data);
+                    return TRUE;
+            }
+
+        } catch (int x) {
+
+        }
+        return FALSE;
+}
+
+XDevice* device_is_touchpad (XDeviceInfo *deviceinfo)
+{
+        XDevice *device;
+
+        if (deviceinfo->type != XInternAtom (QX11Info::display(), XI_TOUCHPAD, True))
+                return NULL;
+
+        try {
+            device = XOpenDevice (QX11Info::display(), deviceinfo->id);
+            if ((device == NULL))
+                throw 1;
+
+            if (device_has_property (device, "libinput Tapping Enabled") ||
+                device_has_property (device, "Synaptics Off")) {
+                    return device;
+            }
+
+            XCloseDevice (QX11Info::display(), device);
+
+        } catch (int x) {
+            return NULL;
+        }
+        return NULL;
+}
+
+gboolean touchpad_is_present (void)
+{
+        XDeviceInfo *device_info;
+        gint n_devices;
+        guint i;
+        gboolean retval;
+
+        if (supports_xinput_devices () == FALSE)
+                return TRUE;
+
+        retval = FALSE;
+
+        device_info = XListInputDevices (QX11Info::display(), &n_devices);
+        if (device_info == NULL)
+                return FALSE;
+
+        for (i = 0; i < n_devices; i++) {
+                XDevice *device;
+
+                device = device_is_touchpad (&device_info[i]);
+                if (device != NULL) {
+                        retval = TRUE;
+                        break;
+                }
+        }
+        if (device_info != NULL)
+                XFreeDeviceList (device_info);
+
+        return retval;
+}
+
+
 
 bool get_touchpad_handedness (MouseManager *manager,
                               bool  mouse_left_handed)
@@ -96,7 +195,6 @@ gboolean property_exists_on_device (XDeviceInfo *device_info, const char  *prope
         prop = property_from_name (property_name);
         if (!prop)
                 return FALSE;
-
         try {
             device = XOpenDevice (display, device_info->id);
             if (device == NULL)

@@ -120,7 +120,6 @@ static NumLockState numlock_get_settings_state (QGSettings *settings)
 {
         int          curr_state;
         curr_state = settings->get(KEY_NUMLOCK_STATE).Int;
-        syslog(LOG_ERR,"curr_state = %d",curr_state);
         return (NumLockState)curr_state;
 }
 

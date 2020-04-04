@@ -23,8 +23,6 @@ INCLUDEPATH += \
         -I $$PWD/../../common       \
         -I $$PWD/../common          \
         -I ukui-settings-daemon/
-LIBS += \
-        -L/usr/local/lib/ukui-settings-daemon/ -lcommon
 
 SOURCES += \
     mouse-manager.cpp \
