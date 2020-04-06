@@ -119,7 +119,6 @@ parse_binding (Binding *binding)
             g_strcmp0 (binding->binding_str, "disabled") == 0 ) {
                 return FALSE;
         }
-
         success = egg_accelerator_parse_virtual (binding->binding_str,
                                                  &binding->key.keysym,
                                                  &binding->key.keycodes,
@@ -360,9 +359,9 @@ binding_register_keys (UsdKeybindingsManager *manager)
                                 binding->previous_key.keysym = binding->key.keysym;
                                 binding->previous_key.state = binding->key.state;
                                 g_free (binding->previous_key.keycodes);
-                                for (i = 0; binding->key.keycodes[i]; ++i);
+                                for (i = 0; binding->key.keycodes&&binding->key.keycodes[i]; ++i);
                                 binding->previous_key.keycodes = g_new0 (guint, i);
-                                for (i = 0; binding->key.keycodes[i]; ++i)
+                                for (i = 0; binding->key.keycodes&&binding->key.keycodes[i]; ++i)
                                         binding->previous_key.keycodes[i] = binding->key.keycodes[i];
                         } else
                                 g_warning ("Key binding (%s) is already in use", binding->binding_str);

@@ -153,8 +153,7 @@ grab_key_unsafe (Key                 *key,
                 for (l = screens; l; l = l->next) {
                         GdkScreen *screen = l->data;
                         guint *code;
-
-                        for (code = key->keycodes; *code; ++code) {
+                        for (code = key->keycodes; code&&(*code); ++code) {
                                 grab_key_real (*code,
                                                gdk_screen_get_root_window (screen),
                                                grab,
