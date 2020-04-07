@@ -161,6 +161,17 @@ numlock_xkb_init (UsdKeyboardManager *manager)
         manager->priv->have_xkb = have_xkb;
 }
 
+/*Add set CapsLock func*/
+static void
+capslock_set_xkb_state(gboolean lock_state)
+{
+        unsigned int caps_mask;
+        Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+        caps_mask = XkbKeysymToModifiers (dpy, XK_Caps_Lock);
+        XkbLockModifiers (dpy, XkbUseCoreKbd, caps_mask, lock_state ? caps_mask : 0);
+        XSync (dpy, FALSE);
+}
+
 static unsigned
 numlock_NumLock_modifier_mask (void)
 {
@@ -212,6 +223,14 @@ xkb_events_filter (GdkXEvent *xev_,
                 unsigned num_mask = numlock_NumLock_modifier_mask ();
                 unsigned locked_mods = xkbev->state.locked_mods;
                 int numlock_state;
+
+		/* Determine if the capslock indicator is on and write Settings */
+                gboolean caps;
+                if(locked_mods == 2 || locked_mods == 18)
+                    caps = g_settings_set_boolean (manager->priv->settings,"capslock-state",TRUE);
+                else
+                    caps = g_settings_set_boolean (manager->priv->settings,"capslock-state",FALSE);
+
 
                 numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
 
@@ -347,10 +366,18 @@ apply_settings (GSettings          *settings,
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     gboolean rnumlock;
     rnumlock = g_settings_get_boolean (settings, KEY_NUMLOCK_REMEMBER);
-
+    
     if (rnumlock == 0 || key == NULL) {
         if (manager->priv->have_xkb && rnumlock) {
+
+            
+            /* Fix numlock and capslock indicator problem,
+             * Negate is reset the status of the lamp.
+             */
+            numlock_set_xkb_state (!numlock_get_settings_state (settings));
             numlock_set_xkb_state (numlock_get_settings_state (settings));
+            capslock_set_xkb_state(!g_settings_get_boolean(settings,"capslock-state"));
+            capslock_set_xkb_state(g_settings_get_boolean(settings,"capslock-state"));
         }
     }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -388,13 +415,15 @@ start_keyboard_idle_cb (UsdKeyboardManager *manager)
         ukui_settings_profile_start (NULL);
 
         g_debug ("Starting keyboard manager");
-
         manager->priv->have_xkb = 0;
         manager->priv->settings = g_settings_new (USD_KEYBOARD_SCHEMA);
 
+        /* Open the remember-numlock-state key value */
+        g_settings_set_boolean (manager->priv->settings,KEY_NUMLOCK_REMEMBER,TRUE);
+
         /* Essential - xkb initialization should happen before */
         usd_keyboard_xkb_init (manager);
-
+	
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
         numlock_xkb_init (manager);
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -418,9 +447,8 @@ usd_keyboard_manager_start (UsdKeyboardManager *manager,
                             GError            **error)
 {
         ukui_settings_profile_start (NULL);
-
         g_idle_add ((GSourceFunc) start_keyboard_idle_cb, manager);
-
+	
         ukui_settings_profile_end (NULL);
 
         return TRUE;
@@ -437,7 +465,6 @@ usd_keyboard_manager_stop (UsdKeyboardManager *manager)
                 g_object_unref (p->settings);
                 p->settings = NULL;
         }
-
 #if HAVE_X11_EXTENSIONS_XKB_H
         if (p->have_xkb) {
                 gdk_window_remove_filter (NULL,
@@ -478,7 +505,9 @@ usd_keyboard_manager_finalize (GObject *object)
 	/*修复 注销后，小键盘num灯亮着，输入数字无反应，需要在按一下num才能输入小键盘数字*/
 	keyboard_manager->priv->old_state = 0;
         numlock_set_xkb_state(keyboard_manager->priv->old_state);
-
+        
+        /* Fix after logout the problem of CapsLock light */
+        capslock_set_xkb_state(FALSE);
 
         g_return_if_fail (keyboard_manager->priv != NULL);
 
