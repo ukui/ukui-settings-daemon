@@ -18,6 +18,7 @@
  *
  */
 
+#include "syslog.h"
 #include "config.h"
 
 #include <sys/types.h>
@@ -327,7 +328,6 @@ touchpad_set_bool (XDeviceInfo *device_info,
         if (device == NULL) {
                 return;
         }
-
         property_set_bool (device_info, device, property_name, property_index, enabled);
 
         gdk_error_trap_push ();
@@ -1237,8 +1237,9 @@ set_scrolling_libinput (XDeviceInfo *device_info,
         gboolean want_horiz;
 
         prop = property_from_name ("libinput Scroll Method Enabled");
-        if (!prop)
+        if (!prop) {
                 return;
+	}
 
         device = device_is_touchpad (device_info);
         if (device == NULL) {
@@ -1280,10 +1281,12 @@ set_scrolling_libinput (XDeviceInfo *device_info,
          * there's only one bool. Pick the one matching the scroll method
          * we picked above.
          */
-        if (want_2fg)
+        if (want_2fg) {
                 want_horiz = g_settings_get_boolean (settings, KEY_HORIZ_TWO_FINGER_SCROLL);
-        else if (want_edge)
+	}
+        else if (want_edge) {
                 want_horiz = g_settings_get_boolean (settings, KEY_HORIZ_EDGE_SCROLL);
+	}
         else
                 return;
 

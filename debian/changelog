@@ -1,3 +1,12 @@
+ukui-settings-daemon (1.2.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the wrong command when do action of shutdown and logout.
+    - Fix the numlock issue.
+    - Fix that the settings of cursor theme didn't work.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 26 Mar 2020 12:00:00 +0800
+
 ukui-settings-daemon (1.2.0-1) unstable; urgency=medium
 
   * New upstream release.
