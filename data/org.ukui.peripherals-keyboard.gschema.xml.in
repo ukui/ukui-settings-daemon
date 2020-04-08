@@ -40,6 +40,10 @@
       <summary>Remember NumLock state</summary>
       <description>When set to true, UKUI will remember the state of the NumLock LED between sessions.</description>
     </key>
+    <key type="b" name="capslock-state">
+      <default>false</default>
+      <summary>CapsLock state</summary>
+    </key>
     <key name="numlock-state" enum="org.ukui.peripherals-keyboard.NumLockState">
       <default>'unknown'</default>
       <summary>NumLock state</summary>
