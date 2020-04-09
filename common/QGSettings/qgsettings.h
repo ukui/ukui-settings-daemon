@@ -29,6 +29,20 @@ public:
     void set (const QString& key, const QVariant& value);
 
     /**
+     * 将QGSettings对象更改为'delay-apply'模式。
+     * 在此模式下，对设置的更改不会立即传播到后端，
+     * 而是在本地保存，直到调用apply()。
+     */
+    void delay();
+
+    /**
+     * 应用对设置所做的任何更改。
+     * 这个函数什么都不做，除非设置是在“延迟-应用”模式;
+     * 看到delay ()。在正常情况下，总是立即应用设置。
+     */
+    void apply();
+
+    /**
      *
      */
     bool trySet (const QString& key, const QVariant& value);

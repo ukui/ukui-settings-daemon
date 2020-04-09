@@ -12,13 +12,14 @@ SUBDIRS += \
 #    $$PWD/plugins/clipboard/clipboard.pro \
     $$PWD/plugins/background/background.pro \
     $$PWD/plugins/common/common.pro	\
+    $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro \
     $$PWD/plugins/keyboard/keyboard.pro \
     $$PWD/plugins/mouse/mouse.pro \
     $$PWD/plugins/smartcard/smartcard.pro \
     $$PWD/plugins/media-keys/media-keys.pro \
     $$PWD/plugins/typing-break/typing-break.pro \
-    $$PWD/plugins/a11y-settings/a11y-settings.pro \
-    $$PWD/daemon/daemon.pro \
+#    $$PWD/plugins/a11y-settings/a11y-settings.pro \
+    $$PWD/daemon/daemon.pro  \
 
 include($$PWD/data/data.pri)
 

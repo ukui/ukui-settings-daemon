@@ -1,18 +1,40 @@
 #include "keyboard-manager.h"
 #include "clib-syslog.h"
 #include "config.h"
-#include <QTimer>
+#include <QWidget>
 
+#define USD_KEYBOARD_SCHEMA  "org.ukui.peripherals-keyboard"
+#define KEY_REPEAT           "repeat"
+#define KEY_CLICK            "click"
+#define KEY_RATE             "rate"
+#define KEY_DELAY            "delay"
+#define KEY_CLICK_VOLUME     "click-volume"
+#define KEY_BELL_PITCH       "bell-pitch"
+#define KEY_BELL_DURATION    "bell-duration"
+#define KEY_BELL_MODE        "bell-mode"
+#define KEY_NUMLOCK_STATE    "numlock-state"
+#define KEY_NUMLOCK_REMEMBER "remember-numlock-state"
+
+typedef enum {
+        NUMLOCK_STATE_OFF = 0,
+        NUMLOCK_STATE_ON  = 1,
+        NUMLOCK_STATE_UNKNOWN = 2
+} NumLockState;
 GdkFilterReturn xkb_events_filter (GdkXEvent *xev_,
                                    GdkEvent  *gdkev_,
                                    gpointer   user_data);
+
 static void numlock_set_xkb_state (NumLockState new_state);
+static void capslock_set_xkb_state(gboolean lock_state);
 
-KeyboardManager * KeyboardManager::mKeyboardManager = nullptr;
-KeyboardXkb * KeyboardManager::mKeyXkb = nullptr;
+KeyboardManager *KeyboardManager::mKeyboardManager = nullptr;
+KeyboardXkb     *KeyboardManager::mKeyXkb = nullptr;
 
-KeyboardManager::KeyboardManager(QObject * parent)
+KeyboardManager::KeyboardManager(QObject * parent)//:QObject(parent)
 {
+
+    //QApplication::instance()->installEventFilter(this);
+
     if(mKeyXkb == nullptr)
         mKeyXkb = new KeyboardXkb;
     settings = new QGSettings(USD_KEYBOARD_SCHEMA);
@@ -20,8 +42,11 @@ KeyboardManager::KeyboardManager(QObject * parent)
 
 KeyboardManager::~KeyboardManager()
 {
+    //QApplication::instance()->removeEventFilter(this);
     delete mKeyXkb;
     delete settings;
+    if(time)
+        delete time;
 }
 
 KeyboardManager *KeyboardManager::KeyboardManagerNew()
@@ -40,7 +65,6 @@ bool KeyboardManager::KeyboardManagerStart()
 
     connect(time,SIGNAL(timeout()),this,SLOT(start_keyboard_idle_cb()));
     time->start();
-
     return true;
 }
 
@@ -48,16 +72,17 @@ void KeyboardManager::KeyboardManagerStop()
 {
     CT_SYSLOG(LOG_DEBUG,"-- Keyboard Stop Manager --");
 
-    this->old_state = 0;
-    numlock_set_xkb_state((NumLockState)this->old_state);
+    old_state = 0;
+    numlock_set_xkb_state((NumLockState)old_state);
+    capslock_set_xkb_state(FALSE);
 
 #if HAVE_X11_EXTENSIONS_XKB_H
-    if (this->have_xkb) {
+    if (have_xkb) {
         gdk_window_remove_filter (NULL,
                                   xkb_events_filter,
                                   GINT_TO_POINTER (this));
+        //removeEventFilter(this);
     }
-
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
     mKeyXkb->usd_keyboard_xkb_shutdown ();
@@ -123,18 +148,30 @@ static NumLockState numlock_get_settings_state (QGSettings *settings)
         return (NumLockState)curr_state;
 }
 
+static void capslock_set_xkb_state(gboolean lock_state)
+{
+
+    unsigned int caps_mask;
+    Display *dpy = QX11Info::display();
+    caps_mask = XkbKeysymToModifiers (dpy, XK_Caps_Lock);
+    XkbLockModifiers (dpy, XkbUseCoreKbd, caps_mask, lock_state ? caps_mask : 0);
+    XSync (dpy, FALSE);
+
+}
 static unsigned numlock_NumLock_modifier_mask (void)
 {
         Display *dpy = QX11Info::display();
+        
         return XkbKeysymToModifiers (dpy, XK_Num_Lock);
 }
 
 static void numlock_set_xkb_state (NumLockState new_state)
 {
-        unsigned int num_mask;
+        unsigned int num_mask,caps_mask;
         Display *dpy = QX11Info::display();
         if (new_state != NUMLOCK_STATE_ON && new_state != NUMLOCK_STATE_OFF)
                 return;
+        caps_mask = XkbKeysymToModifiers (dpy, XK_Caps_Lock);
         num_mask = numlock_NumLock_modifier_mask ();
         XkbLockModifiers (dpy, XkbUseCoreKbd, num_mask, new_state ? num_mask : 0);
 }
@@ -151,7 +188,7 @@ void apply_bell (KeyboardManager *manager)
         QString         volume_strings;
         int              click_volume;
         Display *dpy = QX11Info::display();
-        g_debug ("Applying the bell settings");
+
         settings      = manager->settings;
         click         = settings->get(KEY_CLICK).toBool();
         click_volume  = settings->get(KEY_CLICK_VOLUME).toInt();
@@ -192,7 +229,7 @@ void apply_numlock (KeyboardManager *manager)
         bool rnumlock;
         Display *dpy = QX11Info::display();
 
-        g_debug ("Applying the num-lock settings");
+        //g_debug ("Applying the num-lock settings");
         settings = manager->settings;
         rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
         manager->old_state = settings->get(KEY_NUMLOCK_STATE).Int;
@@ -227,7 +264,7 @@ void apply_repeat (KeyboardManager *manager)
         int            rate;
         int            delay;
         Display *dpy = QX11Info::display();
-        g_debug ("Applying the repeat settings");
+        //g_debug ("Applying the repeat settings");
         repeat        = manager->settings->get(KEY_REPEAT).toBool();    
         rate	      = manager->settings->get(KEY_RATE).toInt();
         delay         = manager->settings->get(KEY_DELAY).toInt();
@@ -262,18 +299,20 @@ void KeyboardManager::apply_settings (QString keys)
     **/
 
     char *key;
-
-    if(keys != NULL){
+    if(keys != NULL)
         key = keys.toLatin1().data();
-    }else
-	key=NULL;
-#ifdef HAVE_X11_EXTENSIONS_XKB_H
+    else
+        key=NULL;
 
+#ifdef HAVE_X11_EXTENSIONS_XKB_H
     bool rnumlock;
     rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
     if (rnumlock == 0 || key == NULL) {
         if (have_xkb && rnumlock) {
+            numlock_set_xkb_state ((NumLockState)!numlock_get_settings_state (settings));
             numlock_set_xkb_state (numlock_get_settings_state (settings));
+            capslock_set_xkb_state(!settings->get("capslock-state").toBool());
+            capslock_set_xkb_state(settings->get("capslock-state").toBool());
         }
     }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -309,6 +348,48 @@ void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *mana
         apply_settings(NULL);
 }
 
+/*
+bool KeyboardManager::eventFilter(QObject *watched, QEvent *EventType)
+{
+
+
+    if(EventType->type() == 6)
+    {
+        CT_SYSLOG(LOG_ERR,"keyRelease");
+    }
+    CT_SYSLOG(LOG_ERR,"EventType->type() = %d",EventType->type());
+    QKeyEvent* qkey = static_cast<QKeyEvent*>(EventType);
+    CT_SYSLOG(LOG_ERR,"qkey->type() = %d",qkey->type());
+
+    XEvent *xev = (XEvent *) EventType;
+    XkbEvent *xkbev = (XkbEvent *) xev;
+
+
+    if (xev->type != xkb_event_base ||
+    xkbev->any.xkb_type != XkbStateNotify)
+            return true;//GDK_FILTER_CONTINUE;
+    CT_SYSLOG(LOG_ERR,"if-> %d, %d",xkbev->state.changed, XkbModifierLockMask);
+    if (xkbev->state.changed & XkbModifierLockMask) {
+        unsigned num_mask = numlock_NumLock_modifier_mask ();
+        unsigned locked_mods = xkbev->state.locked_mods;
+        int numlock_state;
+        CT_SYSLOG(LOG_ERR,"num_mask=%d locked_mods=%d",num_mask,locked_mods);
+        if(locked_mods == 2 || locked_mods == 18)
+            settings->set("capslock-state",TRUE);
+        else
+            settings->set("capslock-state",FALSE);
+
+        numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
+
+        if (numlock_state != old_state) {
+                settings->set(KEY_NUMLOCK_REMEMBER,numlock_state);
+                old_state = numlock_state;
+        }
+        }
+
+        return true;
+}*/
+
 GdkFilterReturn xkb_events_filter (GdkXEvent *xev_,
                                    GdkEvent  *gdkev_,
                                    gpointer   user_data)
@@ -328,9 +409,9 @@ GdkFilterReturn xkb_events_filter (GdkXEvent *xev_,
 
                 numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
 
-                if (numlock_state != manager->old_state) { 
+                if (numlock_state != manager->old_state) {
                         manager->settings->set(KEY_NUMLOCK_REMEMBER,numlock_state);
-			manager->old_state = numlock_state;
+                        manager->old_state = numlock_state;
                 }
         }
 
@@ -341,18 +422,19 @@ void numlock_install_xkb_callback (KeyboardManager *manager)
 {
         if (!manager->have_xkb)
                 return;
-
         gdk_window_add_filter (NULL,
                                xkb_events_filter,
                                GINT_TO_POINTER (manager));
+        //QApplication::instance()->installEventFilter(manager);
 }
 
 
-gboolean KeyboardManager::start_keyboard_idle_cb ()
+void KeyboardManager::start_keyboard_idle_cb ()
 {
         time->stop();
 
         have_xkb = 0;
+        settings->set(KEY_NUMLOCK_REMEMBER,TRUE);
 
         /* Essential - xkb initialization should happen before */
         mKeyXkb->usd_keyboard_xkb_init (this);
@@ -371,5 +453,4 @@ gboolean KeyboardManager::start_keyboard_idle_cb ()
 
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
-        return FALSE;
 }

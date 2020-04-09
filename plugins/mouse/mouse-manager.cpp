@@ -1,6 +1,32 @@
 #include "mouse-manager.h"
 #include "clib-syslog.h"
 
+/* Keys with same names for both touchpad and mouse */
+#define KEY_LEFT_HANDED                  "left-handed"          /*  a boolean for mouse, an enum for touchpad */
+#define KEY_MOTION_ACCELERATION          "motion-acceleration"
+#define KEY_MOTION_THRESHOLD             "motion-threshold"
+
+/* Mouse settings */
+#define UKUI_MOUSE_SCHEMA                "org.ukui.peripherals-mouse"
+#define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
+#define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
+
+/* Touchpad settings */
+#define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
+#define KEY_TOUCHPAD_DISABLE_W_TYPING    "disable-while-typing"
+#define KEY_TOUCHPAD_TWO_FINGER_CLICK    "two-finger-click"
+#define KEY_TOUCHPAD_THREE_FINGER_CLICK  "three-finger-click"
+#define KEY_TOUCHPAD_NATURAL_SCROLL      "natural-scroll"
+#define KEY_TOUCHPAD_TAP_TO_CLICK        "tap-to-click"
+#define KEY_TOUCHPAD_ONE_FINGER_TAP      "tap-button-one-finger"
+#define KEY_TOUCHPAD_TWO_FINGER_TAP      "tap-button-two-finger"
+#define KEY_TOUCHPAD_THREE_FINGER_TAP    "tap-button-three-finger"
+#define KEY_VERT_EDGE_SCROLL             "vertical-edge-scrolling"
+#define KEY_HORIZ_EDGE_SCROLL            "horizontal-edge-scrolling"
+#define KEY_VERT_TWO_FINGER_SCROLL       "vertical-two-finger-scrolling"
+#define KEY_HORIZ_TWO_FINGER_SCROLL      "horizontal-two-finger-scrolling"
+#define KEY_TOUCHPAD_ENABLED             "touchpad-enabled"
+
 typedef enum {
         TOUCHPAD_HANDEDNESS_RIGHT,
         TOUCHPAD_HANDEDNESS_LEFT,
@@ -20,13 +46,15 @@ MouseManager * MouseManager::mMouseManager =nullptr;
 MouseManager::MouseManager(QObject *parent) : QObject (parent)
 {
     gdk_init(NULL,NULL);
-    settings_mouse = new QGSettings(UKUI_MOUSE_SCHEMA);
+    settings_mouse =    new QGSettings(UKUI_MOUSE_SCHEMA);
     settings_touchpad = new QGSettings(UKUI_TOUCHPAD_SCHEMA);
 }
 MouseManager::~MouseManager()
 {
     delete settings_mouse;
     delete settings_touchpad;
+    if(time)
+        delete time;
 }
 
 MouseManager * MouseManager::MouseManagerNew()

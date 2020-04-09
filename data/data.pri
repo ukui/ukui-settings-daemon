@@ -41,7 +41,6 @@ DISTFILES += \
     $$PWD/mpris.ukui-settings-plugin \
     $$PWD/sound.ukui-settings-plugin_bak \
     $$PWD/typing-break.ukui-settings-plugin \
-    $$PWD/xrandr.ukui-settings-plugin_bak \
     $$PWD/xrdb.ukui-settings-plugin_bak \
     $$PWD/keyboard.ukui-settings-plugin \
     $$PWD/smartcard.ukui-settings-plugin

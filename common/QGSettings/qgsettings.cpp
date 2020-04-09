@@ -96,6 +96,15 @@ bool QGSettings::trySet(const QString &key, const QVariant &value)
     return success;
 }
 
+void QGSettings::delay()
+{
+    g_settings_delay(mPriv->settings);
+}
+void QGSettings::apply()
+{
+    g_settings_apply(mPriv->settings);
+}
+
 QStringList QGSettings::keys() const
 {
     QStringList list;
