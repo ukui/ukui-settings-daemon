@@ -1542,16 +1542,96 @@ apply_color_profiles (void)
         }
 }
 
+
+/* 
+ * Function: show_question()
+ * urpose :  When the system detects the high clear screen, the pops up change scale window 
+ */
+void show_question(GSettings *session,int gdk_scala, int qt_scale)
+{
+    GtkWidget *dialog;
+    GtkResponseType result;
+    dialog = gtk_message_dialog_new(NULL,
+                GTK_DIALOG_MODAL,
+                GTK_MESSAGE_QUESTION,
+                GTK_BUTTONS_NONE,
+                _("Does the system detect high clear equipment"
+                " and whether to switch to recommended scaling (200%%)?"
+                " Click on the confirmation logout."));
+    gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+
+    result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    if (result){
+        system("ukui-session-tools --logout");
+    }
+    else{
+        g_settings_set_int (session,"qt-scale-factor",gdk_scala);
+        g_settings_set_int (session,"gdk-scale",qt_scale);
+    }
+}
+
+/* 
+ * Function: scale_logout_dialog()
+ * urpose :  When the system detects the high clear screen, the pops up change scale window.
+ * To determine whether or not to log out and scate take effect
+ */
+static void
+scale_logout_dialog()
+{
+	GdkScreen   *screen;
+    GSettings   *session;
+    int width, height, screen_num;
+    int gdk_scala,qt_scale;
+
+    screen     = gdk_screen_get_default();
+    screen_num = gdk_screen_get_n_monitors(screen);
+
+    if(screen_num == 1){
+        
+        width  = gdk_screen_get_width(screen);
+        height = gdk_screen_get_height(screen);
+        
+        if((width == 4096 && height == 3112) || 
+           (width == 3656 && height == 2664) || 
+           (width == 3840 && height == 2160) ){
+            
+            session = g_settings_new("org.ukui.session");
+            
+            gdk_scala = g_settings_get_int (session,"gdk-scale");
+            qt_scale  = g_settings_get_int (session,"qt-scale-factor");
+            
+            if(gdk_scala == 1 || qt_scale == 1)
+            {
+                g_settings_set_int (session,"qt-scale-factor",2);
+                g_settings_set_int (session,"gdk-scale",2);
+                show_question(session,gdk_scala,qt_scale);
+            }
+            g_object_unref (session);
+        } 
+    }
+}
+
+
+static gboolean flag = FALSE;
 static void
 on_randr_event (MateRRScreen *screen, gpointer data)
 {
         UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
-
+	
         if (!priv->running)
                 return;
-
+	    /* Flag bit  avoid twice pop-up windows */
+        if(flag){
+            flag = !flag;
+            scale_logout_dialog();
+        }else
+            flag = !flag;
+        
         mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
 
         log_open ();
@@ -1622,8 +1702,9 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         apply_color_profiles ();
 
         refresh_tray_icon_menu_if_active (manager, MAX (change_timestamp, config_timestamp));
-
+        
         log_close ();
+
 }
 
 static void
@@ -1631,7 +1712,6 @@ run_display_capplet (GtkWidget *widget)
 {
         GdkScreen *screen;
         GError *error;
-
         if (widget)
                 screen = gtk_widget_get_screen (widget);
         else
