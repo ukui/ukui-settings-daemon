@@ -402,11 +402,13 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
                    double              height)
 {
         gdouble   x1;
+        gdouble   y1;
         GtkStyleContext *context;
 
         height = round (height) - 1;
         width = round (width) - 1;
         x1 = round ((width - 1) * percentage);
+        y1 = round (_y0 + height -(height - 1) * percentage);
         context = gtk_widget_get_style_context (GTK_WIDGET (window));
 
         /* bar background */
@@ -425,8 +427,8 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
         gtk_style_context_save (context);
         gtk_style_context_add_class (context, GTK_STYLE_CLASS_PROGRESSBAR);
 
-        gtk_render_background (context, cr, _x0 + 0.5, _y0 + 0.5, x1, height -1 );
-        gtk_render_frame (context, cr, _x0 + 0.5, _y0 + 0.5, x1, height -1 );
+        gtk_render_background (context, cr, _x0 + 0.5, y1+ 0.5, width - 1, _y0+height - y1 - 1);
+        gtk_render_frame (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height -y1 - 1);
 
         gtk_style_context_restore (context);
 }
@@ -449,15 +451,15 @@ draw_action_volume (UsdMediaKeysWindow *window,
 
         gtk_window_get_size (GTK_WINDOW (window), &window_width, &window_height);
 
-        icon_box_width = round (window_width * 0.65);
-        icon_box_height = round (window_height * 0.65);
-        volume_box_width = icon_box_width;
-        volume_box_height = round (window_height * 0.05);
+        icon_box_width = 32; // round (window_width * 0.65);
+        icon_box_height = 32; // round (window_height * 0.65);
+        volume_box_width = 6; //icon_box_width;
+        volume_box_height = 200; //round (window_height * 0.05);
 
-        icon_box_x0 = (window_width - icon_box_width) / 2;
-        icon_box_y0 = (window_height - icon_box_height - volume_box_height) / 2;
-        volume_box_x0 = round (icon_box_x0);
-        volume_box_y0 = round (icon_box_height + icon_box_y0);
+        icon_box_x0 = 16; // (window_width - icon_box_width) / 2;
+        icon_box_y0 = 251; // (window_height - icon_box_height - volume_box_height) / 2;
+        volume_box_x0 = 29;//round (icon_box_x0);
+        volume_box_y0 = 32;//round (icon_box_height + icon_box_y0);
 
 #if 0
         g_message ("icon box: w=%f h=%f _x0=%f _y0=%f",

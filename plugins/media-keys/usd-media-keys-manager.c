@@ -22,6 +22,7 @@
  */
 
 #include "config.h"
+#include "syslog.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -427,7 +428,9 @@ dialog_show (UsdMediaKeysManager *manager)
         if (win_req.height > orig_h) {
                 orig_h = win_req.height;
         }
-
+		orig_w = 64;
+		orig_h = 300;
+        gtk_window_set_default_size(GTK_WINDOW (manager->priv->dialog), orig_w ,orig_h);
         pointer_screen = NULL;
         display = gdk_screen_get_display (manager->priv->current_screen);
         device_manager = gdk_display_get_device_manager (display);
@@ -455,9 +458,11 @@ dialog_show (UsdMediaKeysManager *manager)
 
         screen_w = geometry.width;
         screen_h = geometry.height;
+		// get task the panel position
 
-        x = ((screen_w - orig_w) / 2) + geometry.x;
-        y = geometry.y + (screen_h / 2) + (screen_h / 2 - orig_h) / 2;
+		// end get
+		x = (screen_w * 0.01);
+		y = (screen_h * 0.04);
 
         gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
 
