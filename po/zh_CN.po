@@ -1342,6 +1342,22 @@ msgstr "配置硬件时钟"
 msgid "Privileges are required to configure the hardware clock."
 msgstr "配置硬件时钟需要权限"
 
+#: ../plugin/xrandr/usd-xrandr-manager.c:1553
+msgid "Does the system detect high clear equipment and whether to switch to recommended scaling (200%%)? Click on the confirmation logout."
+msgstr "系统检测到高清设备，是否需要切换至推荐缩放(200%)？点击确认后注销生效。"
+
+#: ../plugin/xrandr/usd-xrandr-manager.c:1554
+msgid "Prompt"
+msgstr "提示框"
+
+#: ../plugin/xrandr/usd-xrandr-manager.c:1555
+msgid "Confirmation"
+msgstr "确认"
+
+#: ../plugin/xrandr/usd-xrandr-manager.c:1556
+msgid "Cancel"
+msgstr "取消"
+
 #~ msgid "Desktop"
 #~ msgstr "桌面"
 

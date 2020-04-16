@@ -161,7 +161,10 @@ numlock_xkb_init (UsdKeyboardManager *manager)
         manager->priv->have_xkb = have_xkb;
 }
 
-/*Add set CapsLock func*/
+/*
+ * Function: capslock_set_xkb_state
+ * urpose: Control capslock light
+ */
 static void
 capslock_set_xkb_state(gboolean lock_state)
 {
@@ -224,7 +227,7 @@ xkb_events_filter (GdkXEvent *xev_,
                 unsigned locked_mods = xkbev->state.locked_mods;
                 int numlock_state;
 
-		/* Determine if the capslock indicator is on and write Settings */
+		        /* Determine if the capslock indicator is on and write Settings */
                 gboolean caps;
                 if(locked_mods == 2 || locked_mods == 18)
                     caps = g_settings_set_boolean (manager->priv->settings,"capslock-state",TRUE);
@@ -502,8 +505,11 @@ usd_keyboard_manager_finalize (GObject *object)
 
         keyboard_manager = USD_KEYBOARD_MANAGER (object);
 	
-	/*修复 注销后，小键盘num灯亮着，输入数字无反应，需要在按一下num才能输入小键盘数字*/
-	keyboard_manager->priv->old_state = 0;
+        /*
+         * Fix after the logout, the small keyboard num light is on, and the input number is not reactive, 
+         * and it needs to be pressed to enter the small keyboard number
+        */
+	    keyboard_manager->priv->old_state = 0;
         numlock_set_xkb_state(keyboard_manager->priv->old_state);
         
         /* Fix after logout the problem of CapsLock light */
