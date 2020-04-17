@@ -6,7 +6,6 @@ KeyboardManager * KeyboardPlugin::UsdKeyboardManager=nullptr;
 
 KeyboardPlugin::KeyboardPlugin()
 {
-    //syslog_init("ukui-setting-daemon-keyboard",LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG,"KeyboardPlugin initializing!");
     if(nullptr == UsdKeyboardManager)
         UsdKeyboardManager = KeyboardManager::KeyboardManagerNew();

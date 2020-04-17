@@ -32,10 +32,12 @@ debuild -D
 - [ ] background
 - [ ] clipboard
 - [ ] datetime
+- [ ] keyboard
 - [ ] media-keys
 - [ ] mouse
 - [ ] mpris
 - [ ] sound
+- [ ] smartcard
 - [ ] typing-break
 - [ ] xrandr
 - [ ] xrdb
@@ -47,9 +49,9 @@ debuild -D
 | --- | --- | --- |
 | xsettings | 编译报错| |
 | sound | 运行报错:空链表... | |
-| mouse | 运行报错:有个接口未实现 | |
 | datetime | 应该是个服务，目前请看不确定是否可用，未报错，这个可能需要特殊处理 | |
 | xrdb | 运行报错:未定义的接口，且那里边的父类看起来没用啊 ...| |
 | clipboard | 运行报错:此插件已运行...| 丁敬 |
 | media-key | 未完成...| 丁敬 |
-| xrandr | 运行报错:未定义的 `mate_rr_config_equal` | |
+| xrandr | 运行报错:未定义的 `mate_rr_config_equal` | 商晓阳 |
+| smartcard | 如果检测到硬件，内部段错误 | 商晓阳 |

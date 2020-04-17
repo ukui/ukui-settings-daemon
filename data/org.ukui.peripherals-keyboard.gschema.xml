@@ -46,7 +46,7 @@
       <summary>CapsLock state</summary>
     </key>
     <key name="numlock-state" enum="org.ukui.peripherals-keyboard.NumLockState">
-      <default>'unknown'</default>
+      <default>'on'</default>
       <summary>NumLock state</summary>
       <description>The remembered state of the NumLock LED.</description>
     </key>

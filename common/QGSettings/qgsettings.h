@@ -43,6 +43,26 @@ public:
     void apply();
 
     /**
+     * @brief setEnum
+     * @param key
+     * @param value
+     * 在设置中查找枚举类型的nick以获取值并将其写入键。
+     * 给出一个不包含在架构中的键来进行设置或未将其标记为枚举类型，
+     * 或者将值设为不是该命名类型的有效值是程序员的错误。
+     * 执行写操作后，直接使用g_settings_get_string（）
+     * 访问密钥将返回与值关联的'nick'。
+     */
+    void setEnum(char *key,int value);
+
+    /**
+      * 获取存储在key设置中的值，并将其转换为它表示的枚举值。
+      * 为了使用此函数，值的类型必须为字符串，并且必须在模式文件中将其标记为枚举类型。
+      * 给出不包含在设置模式中或未标记为枚举类型的密钥是程序员的错误。
+      * 如果配置数据库中存储的值不是该枚举类型的有效值，则此函数将返回默认值。
+      */
+    int getEnum(const char *key);
+
+    /**
      *
      */
     bool trySet (const QString& key, const QVariant& value);

@@ -96,6 +96,17 @@ bool QGSettings::trySet(const QString &key, const QVariant &value)
     return success;
 }
 
+void QGSettings::setEnum(char *key,int value)
+{
+    g_settings_set_enum (mPriv->settings,key,value);
+}
+int QGSettings::getEnum(const char *key)
+{
+    int enumNum;
+    enumNum = g_settings_get_enum (mPriv->settings,key);
+    return enumNum;
+}
+
 void QGSettings::delay()
 {
     g_settings_delay(mPriv->settings);

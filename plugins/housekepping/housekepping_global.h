@@ -1,0 +1,12 @@
+#ifndef HOUSEKEPPING_GLOBAL_H
+#define HOUSEKEPPING_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(HOUSEKEPPING_LIBRARY)
+#  define HOUSEKEPPING_EXPORT Q_DECL_EXPORT
+#else
+#  define HOUSEKEPPING_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // HOUSEKEPPING_GLOBAL_H
