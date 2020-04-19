@@ -27,31 +27,36 @@ debuild -D
 ### 插件进度
 
 > 选中表示确定可正常运行
-
-- [ ] a11y-settings
-- [ ] background
-- [ ] clipboard
-- [ ] datetime
-- [ ] keyboard
+- [ ] a11y-keyboard
+- [x] a11y-settings
+- [x] background
+- [x] clipboard
+- [x] common
+- [x] datetime
+- [ ] dummy
+- [ ] housekepping
+- [x] keybindings
+- [x] keyboard
 - [ ] media-keys
-- [ ] mouse
-- [ ] mpris
+- [x] mouse
+- [x] mpris
 - [ ] sound
 - [ ] smartcard
-- [ ] typing-break
+- [x] typing-break
 - [ ] xrandr
-- [ ] xrdb
-- [ ] xsettings
+- [x] xrdb
+- [x] xsettings
 
 ### 有问题的插件
 
 | 插件 | 问题 | 负责人 |
 | --- | --- | --- |
-| xsettings | 编译报错| |
-| sound | 运行报错:空链表... | |
-| datetime | 应该是个服务，目前请看不确定是否可用，未报错，这个可能需要特殊处理 | |
-| xrdb | 运行报错:未定义的接口，且那里边的父类看起来没用啊 ...| |
-| clipboard | 运行报错:此插件已运行...| 丁敬 |
+| a11y-keyboard | 未完成 | 商晓阳 |
+| dummy | 未完成 | 闫焕章 |
+| housekeeping | 未完成 | 丁敬 |
+| datetime | 应该是个服务，目前请看不确定是否可用，未报错，这个可能需要特殊处理 | 闫焕章 |
 | media-key | 未完成...| 丁敬 |
-| xrandr | 运行报错:未定义的 `mate_rr_config_equal` | 商晓阳 |
 | smartcard | 如果检测到硬件，内部段错误 | 商晓阳 |
+| sound | 运行报错:空链表... | 闫焕章 |
+| xrandr | 运行报错:未定义的 `mate_rr_config_equal` | 商晓阳 |
+| xrdb | 运行报错:未定义的接口，且那里边的父类看起来没用啊 ...| 刘彤 |
