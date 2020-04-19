@@ -227,7 +227,7 @@ is_keycode (const gchar *string)
 gboolean
 egg_accelerator_parse_virtual (const gchar            *accelerator,
                                guint                  *accelerator_key,
-			       guint                 **accelerator_codes,
+                               guint                 **accelerator_codes,
                                EggVirtualModifierType *accelerator_mods)
 {
   guint keyval;

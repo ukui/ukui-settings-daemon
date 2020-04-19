@@ -222,6 +222,7 @@ GdkFilterReturn usd_keyboard_xkb_evt_filter (GdkXEvent * xev, GdkEvent * event,g
 {
     KeyboardXkb *xkb = (KeyboardXkb *)data;
     XEvent *xevent = (XEvent *) xev;
+
     xkl_engine_filter_events (xkl_engine, xevent);
     return GDK_FILTER_CONTINUE;
 }

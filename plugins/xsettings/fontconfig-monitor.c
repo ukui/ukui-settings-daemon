@@ -28,163 +28,163 @@
 
 static void
 stuff_changed (GFileMonitor *monitor,
-               GFile *file,
-               GFile *other_file,
-               GFileMonitorEvent event_type,
-               gpointer handle);
+        GFile *file,
+        GFile *other_file,
+        GFileMonitorEvent event_type,
+        gpointer handle);
 
-void
+    void
 fontconfig_cache_init (void)
 {
-        FcInit ();
+    FcInit ();
 }
 
-gboolean
+    gboolean
 fontconfig_cache_update (void)
 {
-        return !FcConfigUptoDate (NULL) && FcInitReinitialize ();
+    return !FcConfigUptoDate (NULL) && FcInitReinitialize ();
 }
 
-static void
+    static void
 monitor_files (GPtrArray *monitors,
-               FcStrList *list,
-               gpointer   data)
+        FcStrList *list,
+        gpointer   data)
 {
-        const char *str;
+    const char *str;
 
-        while ((str = (const char *) FcStrListNext (list))) {
-                GFile *file;
-                GFileMonitor *monitor;
+    while ((str = (const char *) FcStrListNext (list))) {
+        GFile *file;
+        GFileMonitor *monitor;
 
-                file = g_file_new_for_path (str);
+        file = g_file_new_for_path (str);
 
-                monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL);
+        monitor = g_file_monitor (file, G_FILE_MONITOR_NONE, NULL, NULL);
 
-                g_object_unref (file);
+        g_object_unref (file);
 
-                if (!monitor)
-                        continue;
+        if (!monitor)
+            continue;
 
-                g_signal_connect (monitor, "changed", G_CALLBACK (stuff_changed), data);
+        g_signal_connect (monitor, "changed", G_CALLBACK (stuff_changed), data);
 
-                g_ptr_array_add (monitors, monitor);
-        }
+        g_ptr_array_add (monitors, monitor);
+    }
 
-        FcStrListDone (list);
+    FcStrListDone (list);
 }
 
 
 struct _fontconfig_monitor_handle {
-        GPtrArray *monitors;
+    GPtrArray *monitors;
 
-        guint timeout;
+    guint timeout;
 
-        GFunc    notify_callback;
-        gpointer notify_data;
+    GFunc    notify_callback;
+    gpointer notify_data;
 };
 
-static GPtrArray *
+    static GPtrArray *
 monitors_create (gpointer data)
 {
-        GPtrArray *monitors = g_ptr_array_new ();
+    GPtrArray *monitors = g_ptr_array_new ();
 
-        monitor_files (monitors, FcConfigGetConfigFiles (NULL), data);
-        monitor_files (monitors, FcConfigGetFontDirs (NULL)   , data);
+    monitor_files (monitors, FcConfigGetConfigFiles (NULL), data);
+    monitor_files (monitors, FcConfigGetFontDirs (NULL)   , data);
 
-        return monitors;
+    return monitors;
 }
 
-static void
+    static void
 monitors_free (GPtrArray *monitors)
 {
-        if (!monitors)
-                return;
+    if (!monitors)
+        return;
 
-        g_ptr_array_foreach (monitors, (GFunc) g_object_unref, NULL);
-        g_ptr_array_free (monitors, TRUE);
+    g_ptr_array_foreach (monitors, (GFunc) g_object_unref, NULL);
+    g_ptr_array_free (monitors, TRUE);
 }
 
-static gboolean
+    static gboolean
 update (gpointer data)
 {
-        fontconfig_monitor_handle_t *handle = data;
-        gboolean notify = FALSE;
+    fontconfig_monitor_handle_t *handle = data;
+    gboolean notify = FALSE;
 
-        handle->timeout = 0;
+    handle->timeout = 0;
 
-        if (fontconfig_cache_update ()) {
-                notify = TRUE;
-                monitors_free (handle->monitors);
-                handle->monitors = monitors_create (data);
-        }
+    if (fontconfig_cache_update ()) {
+        notify = TRUE;
+        monitors_free (handle->monitors);
+        handle->monitors = monitors_create (data);
+    }
 
-        /* we finish modifying handle before calling the notify callback,
-         * allowing the callback to free the monitor if it decides to. */
+    /* we finish modifying handle before calling the notify callback,
+     * allowing the callback to free the monitor if it decides to. */
 
-        if (notify && handle->notify_callback)
-                handle->notify_callback (data, handle->notify_data);
+    if (notify && handle->notify_callback)
+        handle->notify_callback (data, handle->notify_data);
 
-        return FALSE;
+    return FALSE;
 }
 
-static void
+    static void
 stuff_changed (GFileMonitor *monitor G_GNUC_UNUSED,
-               GFile *file G_GNUC_UNUSED,
-               GFile *other_file G_GNUC_UNUSED,
-               GFileMonitorEvent event_type G_GNUC_UNUSED,
-               gpointer data)
+        GFile *file G_GNUC_UNUSED,
+        GFile *other_file G_GNUC_UNUSED,
+        GFileMonitorEvent event_type G_GNUC_UNUSED,
+        gpointer data)
 {
-        fontconfig_monitor_handle_t *handle = data;
+    fontconfig_monitor_handle_t *handle = data;
 
-        /* wait for quiescence */
-        if (handle->timeout)
-                g_source_remove (handle->timeout);
+    /* wait for quiescence */
+    if (handle->timeout)
+        g_source_remove (handle->timeout);
 
-        handle->timeout = g_timeout_add_seconds (TIMEOUT_SECONDS, update, data);
+    handle->timeout = g_timeout_add_seconds (TIMEOUT_SECONDS, update, data);
 }
 
 
-fontconfig_monitor_handle_t *
+    fontconfig_monitor_handle_t *
 fontconfig_monitor_start (GFunc    notify_callback,
-                          gpointer notify_data)
+        gpointer notify_data)
 {
-        fontconfig_monitor_handle_t *handle = g_slice_new0 (fontconfig_monitor_handle_t);
+    fontconfig_monitor_handle_t *handle = g_slice_new0 (fontconfig_monitor_handle_t);
 
-        handle->notify_callback = notify_callback;
-        handle->notify_data = notify_data;
-        handle->monitors = monitors_create (handle);
+    handle->notify_callback = notify_callback;
+    handle->notify_data = notify_data;
+    handle->monitors = monitors_create (handle);
 
-        return handle;
+    return handle;
 }
 
-void
+    void
 fontconfig_monitor_stop  (fontconfig_monitor_handle_t *handle)
 {
-        if (handle->timeout)
-          g_source_remove (handle->timeout);
-        handle->timeout = 0;
+    if (handle->timeout)
+        g_source_remove (handle->timeout);
+    handle->timeout = 0;
 
-        monitors_free (handle->monitors);
-        handle->monitors = NULL;
+    monitors_free (handle->monitors);
+    handle->monitors = NULL;
 }
 
 #ifdef FONTCONFIG_MONITOR_TEST
-static void
+    static void
 yay (void)
 {
-        g_message ("yay");
+    g_message ("yay");
 }
 
-int
+    int
 main (void)
 {
-        GMainLoop *loop;
+    GMainLoop *loop;
 
-        fontconfig_monitor_start ((GFunc) yay, NULL);
+    fontconfig_monitor_start ((GFunc) yay, NULL);
 
-        loop = g_main_loop_new (NULL, TRUE);
-        g_main_loop_run (loop);
+    loop = g_main_loop_new (NULL, TRUE);
+    g_main_loop_run (loop);
 
-        return 0;
+    return 0;
 }
 #endif

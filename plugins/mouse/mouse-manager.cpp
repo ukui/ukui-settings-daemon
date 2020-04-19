@@ -252,7 +252,6 @@ void property_set_bool (XDeviceInfo *device_info,
     int act_format;
     Atom act_type, property;
     Display *display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
-    
     property = property_from_name (property_name);
     if (!property)
             return;
@@ -1214,11 +1213,13 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
                                PropModeReplace, &data, 1);
 
         XCloseDevice (display, device);
+        gdk_flush ();
     } catch (int x) {
         CT_SYSLOG(LOG_ERR,"Error %s device \"%s\"",
                   (state) ? "enabling" : "disabling",
                    device_info->name);
     }
+
 }
 
 void set_touchpad_enabled_all (bool state)
@@ -1313,17 +1314,17 @@ void set_devicepresence_handler (MouseManager *manager)
     Display *display;
     XEventClass class_presence;
     int xi_presence;
-    display = gdk_x11_get_default_xdisplay ();
+    display = QX11Info::display();//gdk_x11_get_default_xdisplay ();
 
-    gdk_error_trap_push ();
+    //gdk_error_trap_push ();
     DevicePresence (display, xi_presence, class_presence);
     XSelectExtensionEvent (display,
                            RootWindow (display, DefaultScreen (display)),
                            &class_presence, 1);
 
     gdk_flush ();
-    if (!gdk_error_trap_pop ())
-            gdk_window_add_filter (NULL, devicepresence_filter, manager);
+    //if (!gdk_error_trap_pop ())
+    gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }
 
 void MouseManager::usd_mouse_manager_idle_cb()

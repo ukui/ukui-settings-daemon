@@ -11,6 +11,8 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml  \
     $$PWD/org.ukui.peripherals-keyboard.gschema.xml	\
     $$PWD/org.ukui.peripherals-mouse.gschema.xml    \
     $$PWD/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml \
@@ -43,5 +45,6 @@ DISTFILES += \
     $$PWD/typing-break.ukui-settings-plugin \
     $$PWD/xrdb.ukui-settings-plugin_bak \
     $$PWD/keyboard.ukui-settings-plugin \
-    $$PWD/smartcard.ukui-settings-plugin
-
+    $$PWD/keybindings.ukui-settings-plugin \
+    $$PWD/smartcard.ukui-settings-plugin  \
+    $$PWD/xsettings.ukui-settings-plugin 

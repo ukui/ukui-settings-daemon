@@ -48,20 +48,20 @@ XSettingsSetting * xsettings_setting_copy (XSettingsSetting *setting)
 
     switch (setting->type)
     {
-    case XSETTINGS_TYPE_INT:
-        result->data.v_int = setting->data.v_int;
-        break;
-    case XSETTINGS_TYPE_COLOR:
-        result->data.v_color = setting->data.v_color;
-        break;
-    case XSETTINGS_TYPE_STRING:
-        str_len = strlen (setting->data.v_string);
-        result->data.v_string = malloc (str_len + 1);
-        if (!result->data.v_string)
-            goto err;
+        case XSETTINGS_TYPE_INT:
+            result->data.v_int = setting->data.v_int;
+            break;
+        case XSETTINGS_TYPE_COLOR:
+            result->data.v_color = setting->data.v_color;
+            break;
+        case XSETTINGS_TYPE_STRING:
+            str_len = strlen (setting->data.v_string);
+            result->data.v_string = malloc (str_len + 1);
+            if (!result->data.v_string)
+                goto err;
 
-        memcpy (result->data.v_string, setting->data.v_string, str_len + 1);
-        break;
+            memcpy (result->data.v_string, setting->data.v_string, str_len + 1);
+            break;
     }
 
     result->last_change_serial = setting->last_change_serial;
@@ -114,9 +114,9 @@ error:
     return NULL;
 }
 
-int
+    int
 xsettings_setting_equal (XSettingsSetting *setting_a,
-                         XSettingsSetting *setting_b)
+        XSettingsSetting *setting_b)
 {
     if (setting_a->type != setting_b->type)
         return 0;
@@ -126,21 +126,21 @@ xsettings_setting_equal (XSettingsSetting *setting_a,
 
     switch (setting_a->type)
     {
-    case XSETTINGS_TYPE_INT:
-        return setting_a->data.v_int == setting_b->data.v_int;
-    case XSETTINGS_TYPE_COLOR:
-        return (setting_a->data.v_color.red == setting_b->data.v_color.red &&
-                setting_a->data.v_color.green == setting_b->data.v_color.green &&
-                setting_a->data.v_color.blue == setting_b->data.v_color.blue &&
-                setting_a->data.v_color.alpha == setting_b->data.v_color.alpha);
-    case XSETTINGS_TYPE_STRING:
-        return strcmp (setting_a->data.v_string, setting_b->data.v_string) == 0;
+        case XSETTINGS_TYPE_INT:
+            return setting_a->data.v_int == setting_b->data.v_int;
+        case XSETTINGS_TYPE_COLOR:
+            return (setting_a->data.v_color.red == setting_b->data.v_color.red &&
+                    setting_a->data.v_color.green == setting_b->data.v_color.green &&
+                    setting_a->data.v_color.blue == setting_b->data.v_color.blue &&
+                    setting_a->data.v_color.alpha == setting_b->data.v_color.alpha);
+        case XSETTINGS_TYPE_STRING:
+            return strcmp (setting_a->data.v_string, setting_b->data.v_string) == 0;
     }
 
     return 0;
 }
 
-void
+    void
 xsettings_setting_free (XSettingsSetting *setting)
 {
     if (setting->type == XSETTINGS_TYPE_STRING)
@@ -152,7 +152,7 @@ xsettings_setting_free (XSettingsSetting *setting)
     free (setting);
 }
 
-void
+    void
 xsettings_list_free (XSettingsList *list)
 {
     while (list)
@@ -166,9 +166,9 @@ xsettings_list_free (XSettingsList *list)
     }
 }
 
-XSettingsResult
+    XSettingsResult
 xsettings_list_insert (XSettingsList    **list,
-                       XSettingsSetting  *setting)
+        XSettingsSetting  *setting)
 {
     XSettingsList *node;
     XSettingsList *iter;
@@ -208,7 +208,7 @@ xsettings_list_insert (XSettingsList    **list,
 
 XSettingsResult
 xsettings_list_delete (XSettingsList **list,
-                       const char     *name)
+        const char     *name)
 {
     XSettingsList *iter;
     XSettingsList *last = NULL;
@@ -238,23 +238,21 @@ xsettings_list_delete (XSettingsList **list,
 
 XSettingsSetting *
 xsettings_list_lookup (XSettingsList *list,
-                       const char    *name)
+        const char    *name)
 {
     XSettingsList *iter;
-
     iter = list;
     while (iter)
     {
-        if (strcmp (name, iter->setting->name) == 0)
+        if (strcmp (name, iter->setting->name) == 0) {
             return iter->setting;
-
+        }
         iter = iter->next;
     }
-
     return NULL;
 }
 
-char
+    char
 xsettings_byte_order (void)
 {
     CARD32 myint = 0x01020304;

@@ -1,0 +1,12 @@
+#ifndef KEYBINDINGS_GLOBAL_H
+#define KEYBINDINGS_GLOBAL_H
+
+#include <QtCore/qglobal.h>
+
+#if defined(KEYBINDINGS_LIBRARY)
+#  define KEYBINDINGS_EXPORT Q_DECL_EXPORT
+#else
+#  define KEYBINDINGS_EXPORT Q_DECL_IMPORT
+#endif
+
+#endif // KEYBINDINGS_GLOBAL_H

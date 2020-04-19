@@ -152,7 +152,6 @@ static void numlock_set_xkb_state (NumLockState new_state)
     if (new_state != NUMLOCK_STATE_ON && new_state != NUMLOCK_STATE_OFF)
             return;
     num_mask = numlock_NumLock_modifier_mask ();
-    syslog(LOG_ERR,"new_state  = %d",new_state ? num_mask : 0);
     XkbLockModifiers (dpy, XkbUseCoreKbd, num_mask, new_state ? num_mask : 0);
 }
 
@@ -279,7 +278,6 @@ void KeyboardManager::apply_settings (QString keys)
     bool rnumlock;
     rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
     if (rnumlock == 0 || key == NULL) {
-        //syslog(LOG_ERR,"%s :rnumlock = %d,  have_xkb =%d",__func__,rnumlock,have_xkb);
         if (have_xkb && rnumlock) {
             numlock_set_xkb_state ((NumLockState)!numlock_get_settings_state (settings));
             numlock_set_xkb_state (numlock_get_settings_state (settings));
@@ -323,6 +321,7 @@ void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *mana
 void KeyboardManager::XkbEventsFilter(int keyCode)
 {
     NumLockState numlockState;
+
     if(keyCode == 66 || keyCode == 77)
     {
         unsigned int lockedMods;

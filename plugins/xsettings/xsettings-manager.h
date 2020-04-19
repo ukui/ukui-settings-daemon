@@ -6,13 +6,15 @@
 
 typedef void (*XSettingsTerminateFunc)  (int *cb_data);
 
+#if defined __cplusplus
 class XsettingsManager
 {
+
 public:
     XsettingsManager(Display                *display,
                      int                     screen,
                      XSettingsTerminateFunc  terminate,
-                     void                   *cb_data);
+                     int                   *cb_data);
     ~XsettingsManager();
 
     Window get_window    ();
@@ -45,7 +47,7 @@ private:
     unsigned long serial;
 };
 
-
+#endif
 Bool
 xsettings_manager_check_running (Display *display,
                                  int      screen);

@@ -1,5 +1,4 @@
 QT       += dbus
-
 QT       -= gui
 TEMPLATE = lib
 TARGET = xsettings
@@ -22,23 +21,25 @@ INCLUDEPATH += \
 
 SOURCES += \
     xsettings-manager.cpp \
-    xsettings-common.c \
     ukui-xsettings-manager.cpp \
-    fontconfig-monitor.c \
     ukui-xft-settings.cpp \
-    xsettings-plugin.cpp
+    xsettings-plugin.cpp \
+    xsettings-common.c \
+    fontconfig-monitor.c
 
 HEADERS += \
     xsettings-manager.h \
     ukui-xsettings-manager.h \
-    fontconfig-monitor.h \
     ukui-xft-settings.h \
     xsettings-const.h \
-    xsettings-common.h \
-    xsettings-plugin.h
+    xsettings-plugin.h  \
+    xsettings-common.h  \
+    fontconfig-monitor.h
 
 
-DESTDIR = $$PWD/../../library/
+DESTDIR = $$PWD
+xsettings_ib.path = /usr/local/lib/ukui-settings-daemon/
+xsettings_lib.files += $$PWD/xsettings.so \
 
-DISTFILES += \
-    Makefile
+INSTALLS += xsettings_lib
+

@@ -80,10 +80,10 @@ static double get_dpi_from_gsettings_or_x_server (GSettings *gsettings)
     value = g_settings_get_double (gsettings, FONT_DPI_KEY);
 
     /* If the user has ever set the DPI preference in GSettings, we use that.
-         * Otherwise, we see if the X server reports a reasonable DPI value:  some X
-         * servers report completely bogus values, and the user gets huge or tiny
-         * fonts which are unusable.
-         */
+     * Otherwise, we see if the X server reports a reasonable DPI value:  some X
+     * servers report completely bogus values, and the user gets huge or tiny
+     * fonts which are unusable.
+     */
 
     if (value != 0) {
         dpi = value;
@@ -105,7 +105,7 @@ void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
         manager->pManagers [i]->set_int ("Xft/DPI", dpi);
         manager->pManagers [i]->set_string ("Xft/RGBA", rgba);
         manager->pManagers [i]->set_string ("Xft/lcdfilter",
-                                            g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
+                g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
         manager->pManagers [i]->set_int ("Gtk/CursorThemeSize", cursor_size);
         manager->pManagers [i]->set_string ("Gtk/CursorThemeName", cursor_theme);
     }
@@ -148,7 +148,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
 
         if (!found) {
             g_warning ("Invalid value for " FONT_RGBA_ORDER_KEY ": '%s'",
-                       rgba_order);
+                    rgba_order);
         }
     }
 
@@ -167,7 +167,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
             hintstyle = "hintfull";
         } else {
             g_warning ("Invalid value for " FONT_HINTING_KEY ": '%s'",
-                       hinting);
+                    hinting);
         }
     }
 
@@ -182,7 +182,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
             use_rgba = TRUE;
         } else {
             g_warning ("Invalid value for " FONT_ANTIALIASING_KEY " : '%s'",
-                       antialiasing);
+                    antialiasing);
         }
         if (!use_rgba) {
             rgba = "none";
@@ -208,25 +208,25 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     add_string = g_string_new (XResourceManagerString (dpy));
     g_debug("xft_settings_set_xresources: orig res '%s'", add_string->str);
     update_property (add_string, "Xft.dpi",
-                     g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->dpi / 1024.0));
+            g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->dpi / 1024.0));
     update_property (add_string, "Xft.antialias",
-                     this->antialias ? "1" : "0");
+            this->antialias ? "1" : "0");
     update_property (add_string, "Xft.hinting",
-                     this->hinting ? "1" : "0");
+            this->hinting ? "1" : "0");
     update_property (add_string, "Xft.hintstyle",
-                     this->hintstyle);
+            this->hintstyle);
     update_property (add_string, "Xft.rgba",
-                     this->rgba);
+            this->rgba);
     update_property (add_string, "Xft.lcdfilter",
-                     g_str_equal (this->rgba, "rgb") ? "lcddefault" : "none");
+            g_str_equal (this->rgba, "rgb") ? "lcddefault" : "none");
     update_property (add_string, "Xcursor.theme",
-                     this->cursor_theme);
+            this->cursor_theme);
     update_property (add_string, "Xcursor.size",
-                     g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->cursor_size));
+            g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->cursor_size));
     g_debug("xft_settings_set_xresources: new res '%s'", add_string->str);
     /* Set the new X property */
     XChangeProperty(dpy, RootWindow (dpy, 0),
-                    XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
+            XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
     // ukui_settings_profile_end (NULL);
