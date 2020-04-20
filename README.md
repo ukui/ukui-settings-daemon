@@ -33,7 +33,7 @@ debuild -D
 - [x] clipboard
 - [x] common
 - [x] datetime
-- [ ] dummy
+- [x] dummy
 - [ ] housekepping
 - [x] keybindings
 - [x] keyboard
@@ -52,7 +52,6 @@ debuild -D
 | 插件 | 问题 | 负责人 |
 | --- | --- | --- |
 | a11y-keyboard | 未完成 | 商晓阳 |
-| dummy | 未完成 | 闫焕章 |
 | housekeeping | 未完成 | 丁敬 |
 | datetime | 需要测试是否可用，运行未报错 | 闫焕章 |
 | media-key | 未完成| 丁敬 |
