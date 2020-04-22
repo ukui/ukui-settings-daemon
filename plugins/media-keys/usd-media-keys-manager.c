@@ -274,7 +274,7 @@ update_kbd_cb (GSettings           *settings,
 
         gdk_error_trap_push ();
 		Display *dpy= GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
-		int win = XKeysymToKeycode(dpy, XStringToKeysym("Super_L"));
+		//int win = XKeysymToKeycode(dpy, XStringToKeysym("Super_L"));
 		// syslog(LOG_ERR, "=====UPDATE====WINkey=%d", win);
         /*GSList *l;
         for (l = manager->priv->screens; l; l = l->next) {
@@ -343,6 +343,7 @@ static void init_kbd(UsdMediaKeysManager* manager)
 	ukui_settings_profile_start(NULL);
 
 	gdk_error_trap_push();
+	/*
 		Display *dpy= GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
 		int win = XKeysymToKeycode(dpy, XStringToKeysym("Super_L"));
         GSList *l;
@@ -355,7 +356,7 @@ static void init_kbd(UsdMediaKeysManager* manager)
                           GrabModeAsync,
                           GrabModeAsync);
         };
-
+    */
 	for (i = 0; i < HANDLED_KEYS; i++)
 	{
 		char* tmp;
