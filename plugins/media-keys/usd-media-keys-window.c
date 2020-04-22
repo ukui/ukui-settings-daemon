@@ -416,7 +416,7 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
         gtk_style_context_add_class (context, GTK_STYLE_CLASS_TROUGH);
         {
             GtkCssProvider *provider = gtk_css_provider_new ();
-            gtk_css_provider_load_from_data(provider, ".progressbar-background {background-color:rgba(0,0,0,0.2);}", -1, NULL);
+            gtk_css_provider_load_from_data(provider, ".progressbar-background {background-color:rgba(0,0,0,0.5);}", -1, NULL);
             gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
             g_object_unref (provider);
             gtk_style_context_add_class (context, "progressbar-background");

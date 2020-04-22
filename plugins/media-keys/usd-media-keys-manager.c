@@ -274,19 +274,6 @@ update_kbd_cb (GSettings           *settings,
 
         gdk_error_trap_push ();
 		Display *dpy= GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
-		//int win = XKeysymToKeycode(dpy, XStringToKeysym("Super_L"));
-		// syslog(LOG_ERR, "=====UPDATE====WINkey=%d", win);
-        /*GSList *l;
-        for (l = manager->priv->screens; l; l = l->next) {
-		    XGrabKey (dpy,
-                          win,
-                          0,
-                          GDK_WINDOW_XID (gdk_screen_get_root_window(l->data)),
-                          True,
-                          GrabModeAsync,
-                          GrabModeAsync);
-        };
-        */
         /* Find the key that was modified */
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (g_strcmp0 (settings_key, keys[i].settings_key) == 0) {
@@ -343,20 +330,6 @@ static void init_kbd(UsdMediaKeysManager* manager)
 	ukui_settings_profile_start(NULL);
 
 	gdk_error_trap_push();
-	/*
-		Display *dpy= GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
-		int win = XKeysymToKeycode(dpy, XStringToKeysym("Super_L"));
-        GSList *l;
-        for (l = manager->priv->screens; l; l = l->next) {
-		    XGrabKey (dpy,
-                          win,
-                          0,
-                          GDK_WINDOW_XID (gdk_screen_get_root_window(l->data)),
-                          True,
-                          GrabModeAsync,
-                          GrabModeAsync);
-        };
-    */
 	for (i = 0; i < HANDLED_KEYS; i++)
 	{
 		char* tmp;
@@ -495,7 +468,7 @@ dialog_show (UsdMediaKeysManager *manager)
         GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->dialog);
 		gtk_style_context_save (context);
         GtkCssProvider *provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; }", -1, NULL);
+        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.9);}", -1, NULL);
         gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
         gtk_style_context_add_class (context, "volume-box");
         g_object_unref (provider);
