@@ -124,7 +124,8 @@ grab_key_unsafe (Key                 *key,
 
         setup_modifiers ();
 
-        mask = usd_ignored_mods & ~key->state & GDK_MODIFIER_MASK;
+        //mask = usd_ignored_mods & ~key->state & GDK_MODIFIER_MASK;
+        mask = GDK_MODIFIER_MASK;
 
         bit = 0;
         /* store the indexes of all set bits in mask in the array */

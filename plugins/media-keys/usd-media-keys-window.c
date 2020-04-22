@@ -420,10 +420,11 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
             gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
             g_object_unref (provider);
             gtk_style_context_add_class (context, "progressbar-background");
-            gtk_render_background (context, cr, _x0 + 0.5, y1+ 0.5, width - 1, _y0+height - y1 - 1);
+            //gtk_render_background (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height - y1 - 1);
+            gtk_render_background (context, cr, _x0, y1, width - 1, _y0 + height - y1 - 1);
         }
         gtk_render_background (context, cr, _x0, _y0, width, height);
-        gtk_render_frame (context, cr, _x0, _y0, width, height);
+        //gtk_render_frame (context, cr, _x0, _y0, width, height);
 
         gtk_style_context_restore (context);
 
@@ -435,16 +436,17 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
         gtk_style_context_add_class (context, GTK_STYLE_CLASS_PROGRESSBAR);
         {
             GtkCssProvider *provider = gtk_css_provider_new ();
-            gtk_css_provider_load_from_data(provider, ".progressbar-through{background-color:rgba(0,0,0,1);}", -1, NULL);
+            gtk_css_provider_load_from_data(provider, ".progressbar-through{background-color:rgba(255,255,255,0.8);}", -1, NULL);
             gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
             g_object_unref (provider);
             gtk_style_context_add_class (context, "progressbar-through");
-            gtk_render_background (context, cr, _x0 + 0.5, y1+ 0.5, width - 1, _y0+height - y1 - 1);
+            //gtk_render_background (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0+height - y1 - 1);
+            gtk_render_background (context, cr, _x0 , y1 , width - 1, _y0 + height - y1 - 1);
 		}
         gtk_style_context_restore (context);
         gtk_style_context_save (context);
         {
-            gtk_render_frame (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height -y1 - 1);
+           // gtk_render_frame (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height -y1 - 1);
 		}
         gtk_style_context_restore (context);
 }
