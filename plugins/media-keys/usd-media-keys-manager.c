@@ -30,6 +30,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <stdlib.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -64,6 +65,7 @@
 
 #define USD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_MANAGER, UsdMediaKeysManagerPrivate))
 
+
 typedef struct {
         char   *application;
         guint32 time;
@@ -89,6 +91,8 @@ struct _UsdMediaKeysManagerPrivate
 
         DBusGConnection  *connection;
         guint             notify[HANDLED_KEYS];
+        GDBusProxy *bproxy;
+        GDBusConnection *bcon;
 };
 
 enum {
@@ -386,6 +390,20 @@ static void init_kbd(UsdMediaKeysManager* manager)
 	ukui_settings_profile_end(NULL);
 }
 
+int gDbus_proxy_call_for_panel_posotion(UsdMediaKeysManager *manager)
+{
+        GVariant *result;
+        int ukui_panel_position;
+
+        GError *error = NULL;
+        result =  g_dbus_proxy_call_sync (manager->priv->bproxy, "GetPanelPosition", g_variant_new ("(s)", ""), G_DBUS_CALL_FLAGS_NONE, -1, NULL,  &error);
+        g_variant_get (result, "(i)", &ukui_panel_position);
+
+        g_print ("ukui_panel_position = : %d \n", ukui_panel_position);
+
+        return ukui_panel_position;
+}
+
 static void
 dialog_show (UsdMediaKeysManager *manager)
 {
@@ -404,6 +422,10 @@ dialog_show (UsdMediaKeysManager *manager)
         GdkScreen     *pointer_screen;
         GdkRectangle   geometry;
         int            monitor;
+        int ukui_panel_position;
+
+        /*get ukui_panel position*/
+        ukui_panel_position = gDbus_proxy_call_for_panel_posotion(manager);
 
         gtk_window_set_screen (GTK_WINDOW (manager->priv->dialog),
                                manager->priv->current_screen);
@@ -456,11 +478,17 @@ dialog_show (UsdMediaKeysManager *manager)
 
         screen_w = geometry.width;
         screen_h = geometry.height;
-        // get task the panel position
 
-        // end get
-        x = (screen_w * 0.01);
-        y = (screen_h * 0.04);
+	if(ukui_panel_position == 1){
+                x = (screen_w * 0.01);
+                y = ((screen_h - 300) - screen_h * 0.04);
+        }else if(ukui_panel_position == 2){
+                x = ((screen_w - 64) - screen_w * 0.01);
+                y = (screen_h * 0.04);
+        }else {
+                x = (screen_w * 0.01);
+                y = (screen_h * 0.04);
+        }
 
         gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
 
@@ -1325,6 +1353,8 @@ static void
 usd_media_keys_manager_init (UsdMediaKeysManager *manager)
 {
         manager->priv = USD_MEDIA_KEYS_MANAGER_GET_PRIVATE (manager);
+        manager->priv->bcon = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+        manager->priv->bproxy = g_dbus_proxy_new_sync (manager->priv->bcon, G_DBUS_PROXY_FLAGS_NONE, NULL, "com.ukui.panel.desktop", "/", "com.ukui.panel.desktop", NULL, NULL);
 }
 
 static gboolean
