@@ -30,6 +30,7 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <stdlib.h>
 
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
@@ -63,6 +64,10 @@
 #define VOLUME_STEP 6
 
 #define USD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_MANAGER, UsdMediaKeysManagerPrivate))
+
+GDBusProxy *bproxy;
+GMainLoop * g_main_loop;
+int ukui_panel_position = 0;
 
 typedef struct {
         char   *application;
@@ -386,6 +391,33 @@ static void init_kbd(UsdMediaKeysManager* manager)
 	ukui_settings_profile_end(NULL);
 }
 
+void panel_posotion_callback (GObject * gobj, GAsyncResult * res, gpointer user_data)
+{
+
+        GError *error;
+        GVariant *result;
+
+        error = NULL;
+        result = g_dbus_proxy_call_finish (bproxy, res, &error);
+        g_variant_get (result, "(i)", &ukui_panel_position);
+
+        g_main_loop_quit(g_main_loop);
+}
+
+
+void gDbus_proxy_call_for_panel_posotion()
+{
+        GDBusConnection *bcon;
+
+        bcon = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+
+        bproxy = g_dbus_proxy_new_sync (bcon, G_DBUS_PROXY_FLAGS_NONE, NULL, "com.ukui.panel.desktop", "/", "com.ukui.panel.desktop", NULL, NULL);
+        g_dbus_proxy_call (bproxy, "GetPanelPosition", g_variant_new ("(s)", "com.ukui.panel.desktop"), G_DBUS_CALL_FLAGS_NONE, -1, NULL, (GAsyncReadyCallback) panel_posotion_callback, NULL);
+        g_main_loop = g_main_loop_new(NULL, FALSE);
+        g_main_loop_run(g_main_loop);
+        return ;
+}
+
 static void
 dialog_show (UsdMediaKeysManager *manager)
 {
@@ -404,6 +436,9 @@ dialog_show (UsdMediaKeysManager *manager)
         GdkScreen     *pointer_screen;
         GdkRectangle   geometry;
         int            monitor;
+
+        /*get ukui_panel position*/
+        gDbus_proxy_call_for_panel_posotion();
 
         gtk_window_set_screen (GTK_WINDOW (manager->priv->dialog),
                                manager->priv->current_screen);
@@ -459,8 +494,16 @@ dialog_show (UsdMediaKeysManager *manager)
         // get task the panel position
 
         // end get
-        x = (screen_w * 0.01);
-        y = (screen_h * 0.04);
+        if(ukui_panel_position == 1){
+                x = (screen_w * 0.01);
+                y = ((screen_h - 300) - screen_h * 0.04);
+        }else if(ukui_panel_position == 2){
+                x = ((screen_w - 64) - screen_w * 0.01);
+                y = (screen_h * 0.04);
+        }else {
+                x = (screen_w * 0.01);
+                y = (screen_h * 0.04);
+        }
 
         gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
 
