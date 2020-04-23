@@ -273,7 +273,6 @@ update_kbd_cb (GSettings           *settings,
         g_return_if_fail (settings_key != NULL);
 
         gdk_error_trap_push ();
-		Display *dpy= GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
         /* Find the key that was modified */
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (g_strcmp0 (settings_key, keys[i].settings_key) == 0) {
@@ -307,7 +306,7 @@ update_kbd_cb (GSettings           *settings,
                         }
 
                         need_flush = TRUE;
-                        grab_key_unsafe (key, TRUE, (manager->priv->screens));
+                        grab_key_unsafe (key, TRUE, manager->priv->screens);
                         keys[i].key = key;
 
                         g_free (tmp);
@@ -427,8 +426,8 @@ dialog_show (UsdMediaKeysManager *manager)
         if (win_req.height > orig_h) {
                 orig_h = win_req.height;
         }
-		orig_w = 64;
-		orig_h = 300;
+        orig_w = 64;
+        orig_h = 300;
         gtk_window_set_default_size(GTK_WINDOW (manager->priv->dialog), orig_w ,orig_h);
         pointer_screen = NULL;
         display = gdk_screen_get_display (manager->priv->current_screen);
@@ -457,24 +456,24 @@ dialog_show (UsdMediaKeysManager *manager)
 
         screen_w = geometry.width;
         screen_h = geometry.height;
-		// get task the panel position
+        // get task the panel position
 
-		// end get
-		x = (screen_w * 0.01);
-		y = (screen_h * 0.04);
+        // end get
+        x = (screen_w * 0.01);
+        y = (screen_h * 0.04);
 
         gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
 
         GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->dialog);
-		gtk_style_context_save (context);
+        gtk_style_context_save (context);
         GtkCssProvider *provider = gtk_css_provider_new ();
         gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.9);}", -1, NULL);
         gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
         gtk_style_context_add_class (context, "volume-box");
         g_object_unref (provider);
-            //gtk_render_background (context, cr, 20, 40, orig_w, _orig_h);
+        //gtk_render_background (context, cr, 20, 40, orig_w, _orig_h);
         //gtk_style_context_restore (context);
- 
+
         gtk_widget_show (manager->priv->dialog);
 
         gdk_display_sync (gdk_screen_get_display (manager->priv->current_screen));
@@ -1118,19 +1117,19 @@ acme_filter_events (GdkXEvent           *xevent,
                     GdkEvent            *event,
                     UsdMediaKeysManager *manager)
 {
-        XEvent          *xev    = (XEvent *) xevent;
-        XAnyEvent      *xany   = (XAnyEvent *) xevent;
+        XEvent     *xev    = (XEvent *) xevent;
+        XAnyEvent  *xany   = (XAnyEvent *) xevent;
         int        i;
 
         /* verify we have a key event */
         if (xev->type != KeyPress && xev->type != KeyRelease) {
                 return GDK_FILTER_CONTINUE;
         }
-        if (xev->type == KeyRelease &&xev->xkey.keycode == 133) {
+        /*if (xev->type == KeyRelease &&xev->xkey.keycode == 133) {
 		    system("ukui-menu");
 		    syslog(LOG_ERR,"ukui-menu");
 		}
-
+        */
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (match_key (keys[i].key, xev)) {
                         switch (keys[i].key_type) {

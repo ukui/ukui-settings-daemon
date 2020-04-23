@@ -445,9 +445,7 @@ draw_volume_boxes (UsdMediaKeysWindow *window,
 		}
         gtk_style_context_restore (context);
         gtk_style_context_save (context);
-        {
-           // gtk_render_frame (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height -y1 - 1);
-		}
+        // gtk_render_frame (context, cr, _x0 + 0.5, y1 + 0.5, width - 1, _y0 + height -y1 - 1);
         gtk_style_context_restore (context);
 }
 
