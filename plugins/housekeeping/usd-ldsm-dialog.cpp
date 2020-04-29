@@ -1,0 +1,237 @@
+#include "usd-ldsm-dialog.h"
+#include "ui_usd-ldsm-dialog.h"
+
+#include <QDesktopWidget>
+#include <QImage>
+#include <QPixmap>
+#include <QString>
+#include <QStringList>
+#include <QFont>
+#include <QList>
+#include <QDebug>
+
+#include <QGSettings/qgsettings.h>
+#include <syslog.h>
+#include <glib.h>
+
+
+LdsmDialog::LdsmDialog(QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::LdsmDialog)
+{
+    ui->setupUi(this);
+}
+LdsmDialog::LdsmDialog(bool other_usable_partitions,bool other_partitions,bool display_baobab,bool has_trash,
+                       long space_remaining,QString partition_name,QString mount_path,
+                       QWidget *parent)
+    : QDialog(parent)
+    , ui(new Ui::LdsmDialog)
+{
+    ui->setupUi(this);
+    this->other_usable_partitions=other_usable_partitions;
+    this->other_partitions=other_partitions;
+    this->has_trash=has_trash;
+    this->space_remaining=space_remaining;
+    this->partition_name=partition_name;
+    this->mount_path=mount_path;
+    this->analyze_button=nullptr;
+    windowLayoutInit(display_baobab);
+    allConnectEvent(display_baobab);
+}
+
+LdsmDialog::~LdsmDialog()
+{
+    delete ui;
+    delete picture_label;
+    delete primary_label;
+    delete second_label;
+    delete ignore_check_button;
+    delete ignore_button;
+
+    if(this->has_trash)
+        delete trash_empty;
+    if(analyze_button)
+        delete analyze_button;
+}
+
+void LdsmDialog::windowLayoutInit(bool display_baobab)
+{
+    QFont font;
+    QDesktopWidget* desktop=QApplication::desktop();
+    setFixedSize(620,210);
+    int dialog_width=width();
+    int dialog_height=height();
+
+    setWindowTitle("Low Disk Space");
+    this->move((desktop->width()-dialog_width)/2,(desktop->height()-dialog_height)/2);
+
+    picture_label=new QLabel(this);
+    primary_label=new QLabel(this);
+    second_label=new QLabel(this);
+    ignore_check_button=new QCheckBox(this);
+
+    ignore_button=new QPushButton(this);
+    //warning picture
+    picture_label->setGeometry(20,40,32,32);
+    picture_label->setAlignment(Qt::AlignCenter);
+    picture_label->setStyleSheet(QString("border-image:url(../ldsm_dialog/warning.png);"));
+    //warning information text
+    primary_label->setGeometry(66,20,300,20);
+    second_label->setGeometry(66,50,530,20*2);
+    second_label->setWordWrap(true);
+    second_label->setAlignment(Qt::AlignLeft);
+
+    font.setBold(true);
+    font.setPointSize(12);
+    primary_label->setFont(font);
+    primary_label->setText(getPrimaryText());
+    second_label->setText(getSecondText());
+    //gsettings set box
+    ignore_check_button->setGeometry(66,100,300,20);
+    ignore_check_button->setText(getCheckButtonText());
+
+    ignore_button->setGeometry(dialog_width-110,dialog_height-35,100,25);
+    ignore_button->setText(tr("Ignore"));
+
+    if(this->has_trash){
+        trash_empty=new QPushButton(this);
+        trash_empty->setGeometry(dialog_width-215,dialog_height-35,100,25);
+        trash_empty->setText(tr("Empty Trash"));
+    }
+    if(display_baobab){
+        analyze_button=new QPushButton(this);
+        analyze_button->setText(tr("Examine"));
+        if(this->has_trash)
+            analyze_button->setGeometry(dialog_width-320,dialog_height-35,100,25);
+        else
+            analyze_button->setGeometry(dialog_width-215,dialog_height-35,100,25);
+    }
+}
+
+QString LdsmDialog::getPrimaryText()
+{
+    QString primary_text;
+    char* free_space=g_format_size(space_remaining);
+    if(other_partitions)
+        primary_text=QString().sprintf("The volume \"%1\" has only %s disk space remaining.",
+                                       free_space).arg(partition_name);
+    else
+        primary_text=QString().sprintf("The computer has only %s disk space remaining.",
+                                       free_space);
+    return primary_text;
+}
+
+QString LdsmDialog::getSecondText()
+{
+    if(other_usable_partitions){
+        if(has_trash)
+            return QString(tr("You can free up disk space by emptying the Trash, removing " \
+                           "unused programs or files, or moving files to another disk or partition."));
+        else
+            return QString(tr("You can free up disk space by removing unused programs or files, " \
+                           "or by moving files to another disk or partition."));
+    }else{
+        if(has_trash)
+            return QString(tr("You can free up disk space by emptying the Trash, removing unused " \
+                           "programs or files, or moving files to an external disk."));
+        else
+            return QString(tr("You can free up disk space by removing unused programs or files, " \
+                           "or by moving files to an external disk."));
+    }
+}
+
+QString LdsmDialog::getCheckButtonText()
+{
+    if(other_partitions)
+        return QString(tr("Don't show any warnings again for this file system"));
+    else
+        return QString(tr("Don't show any warnings again"));
+}
+
+void LdsmDialog::allConnectEvent(bool display_baobab)
+{
+    connect(ignore_check_button,SIGNAL(stateChanged(int)),
+            this,SLOT(checkButtonClicked(int)));
+    connect(ignore_button,SIGNAL(clicked()),
+            this,SLOT(checkButtonIgnore()));
+    if(has_trash)
+        connect(trash_empty,SIGNAL(clicked()),
+                this,SLOT(checkButtonTrashEmpty()));
+    if(display_baobab)
+        connect(analyze_button,SIGNAL(clicked()),
+                this,SLOT(checkButtonAnalyze()));
+
+    if(this->sender() == this->ignore_button)
+        qDebug()<<"Ignore button pressed!"<<endl;
+    else
+        qDebug()<<"Other button pressed!"<<endl;
+}
+
+//update gsettings "ignore-paths" key contents
+bool update_ignore_paths(QList<QString>** ignore_paths,QString mount_path,bool ignore)
+{
+    bool found=(*ignore_paths)->contains(mount_path.toLatin1().data());
+    if(ignore && found==false){
+        (*ignore_paths)->push_front(mount_path.toLatin1().data());
+        return true;
+    }
+    if(!ignore && found==true){
+        (*ignore_paths)->removeOne(mount_path.toLatin1().data());
+        return true;
+    }
+    return false;
+}
+
+/****************slots*********************/
+void LdsmDialog::checkButtonIgnore()
+{
+    printf("-------clicked- ignore\n");
+    done(LDSM_DIALOG_IGNORE);
+}
+
+void LdsmDialog::checkButtonTrashEmpty()
+{
+    printf("--clicked trash\n");
+    done(LDSM_DIALOG_RESPONSE_EMPTY_TRASH);
+}
+
+void LdsmDialog::checkButtonAnalyze()
+{
+    printf("--clicked ANalyze");
+    done(LDSM_DIALOG_RESPONSE_ANALYZE);
+}
+
+void LdsmDialog::checkButtonClicked(int state)
+{
+    QGSettings* settings;
+    QStringList ignore_list;
+    QList<QString>* ignore_paths;
+    bool ignore,updated;
+    int i;
+    QList<QString>::iterator l;
+    QString paths_data;
+    ignore_paths=new QList<QString>();
+    settings=new QGSettings(SETTINGS_SCHEMA);
+    //get contents from "ignore-paths" key
+    ignore_list.append( settings->get(SETTINGS_IGNORE_PATHS).toString() );
+
+    for(i=0;i<ignore_list.length();++i)
+        if(! ignore_list.at(i).isEmpty())
+            ignore_paths->push_back(ignore_list.at(i));
+
+    ignore=state;
+    updated=update_ignore_paths(&ignore_paths,mount_path,ignore);
+
+    if(updated){
+        for(l=ignore_paths->begin();l!=ignore_paths->end();++l)
+            paths_data.append(*l);
+        //set latest contents to gsettings "ignore-paths" key
+        settings->set(SETTINGS_IGNORE_PATHS,QVariant::fromValue(paths_data));
+    }
+    //free QList Memory
+    if(ignore_paths){
+        //qDeleteAll(*ignore_paths);
+        ignore_paths->clear();
+    }
+    delete settings;
+}

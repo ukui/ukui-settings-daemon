@@ -13,6 +13,7 @@
 #define THUMB_CACHE_KEY_SIZE	"maximum-size"
 
 HousekeepingManager  *HousekeepingManager::mHouseManager = nullptr;
+DIskSpace   *HousekeepingManager::mDisk = nullptr;
 
 typedef struct {
         long now;
@@ -30,10 +31,14 @@ typedef struct {
 
 HousekeepingManager::HousekeepingManager()
 {
+    if(nullptr == mDisk)
+        mDisk = DIskSpace::DiskSpaceNew();
     settings = new QGSettings(THUMB_CACHE_SCHEMA);
 }
 HousekeepingManager::~HousekeepingManager()
 {
+    if(mDisk)
+        delete mDisk;
     delete settings;
 }
 
@@ -214,7 +219,7 @@ bool HousekeepingManager::HousekeepingManagerStart()
 {
     CT_SYSLOG(LOG_DEBUG,"Housekeeping Manager Start ");
 
-    //usd_ldsm_setup (FALSE);
+    mDisk->UsdLdsmSetup(false);
 
     connect (settings, SIGNAL(changed(QString)),this, SLOT(settings_changed_callback(QString)));
 
@@ -232,4 +237,22 @@ bool HousekeepingManager::HousekeepingManagerStart()
 void HousekeepingManager::HousekeepingManagerStop()
 {
     CT_SYSLOG(LOG_DEBUG, "Housekeeping Manager Stop");
+    if (short_term_cb) {
+        g_source_remove (short_term_cb);
+        short_term_cb = 0;
+    }
+
+    if (long_term_cb) {
+        g_source_remove (long_term_cb);
+        long_term_cb = 0;
+
+        /* Do a clean-up on shutdown if and only if the size or age
+         * limits have been set to a paranoid level of cleaning (zero)
+         */
+        if ((settings->get(THUMB_CACHE_KEY_AGE).toInt() == 0)  ||
+            (settings->get(THUMB_CACHE_KEY_SIZE).toInt() == 0)) {
+                do_cleanup ();
+        }
+    }
+    mDisk->UsdLdsmClean();
 }

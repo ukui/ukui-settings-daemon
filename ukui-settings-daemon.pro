@@ -10,7 +10,7 @@ SUBDIRS += \
     $$PWD/plugins/common/common.pro             \
     $$PWD/plugins/datetime/datetime.pro         \
 \ #    $$PWD/plugins/dummy/dummy.pro              \
-\ #    $$PWD/plugins/housekepping                  \
+    $$PWD/plugins/housekeeping                  \
     $$PWD/plugins/keyboard/keyboard.pro         \
     $$PWD/plugins/keybindings/keybindings.pro   \
     $$PWD/plugins/media-keys/media-keys.pro     \

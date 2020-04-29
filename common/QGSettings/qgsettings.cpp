@@ -100,6 +100,7 @@ void QGSettings::setEnum(char *key,int value)
 {
     g_settings_set_enum (mPriv->settings,key,value);
 }
+
 int QGSettings::getEnum(const char *key)
 {
     int enumNum;
@@ -107,10 +108,16 @@ int QGSettings::getEnum(const char *key)
     return enumNum;
 }
 
+char **QGSettings::getStrv(const char *key)
+{
+    return g_settings_get_strv(mPriv->settings,key);
+}
+
 void QGSettings::delay()
 {
     g_settings_delay(mPriv->settings);
 }
+
 void QGSettings::apply()
 {
     g_settings_apply(mPriv->settings);

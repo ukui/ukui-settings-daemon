@@ -59,7 +59,6 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
     snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d ", logLevelstr, sysCategory, fileName, functionName, line);
     tagLen = strlen(buf);
     vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
-    syslog(logLevel, "%s", buf);
     closelog();
     va_end(para);
 }

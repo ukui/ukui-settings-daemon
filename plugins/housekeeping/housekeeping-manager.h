@@ -2,13 +2,14 @@
 #define HOUSEKEEPINGMANAGER_H
 
 #include <QObject>
-#include <QGSettings>
+#include <QGSettings/qgsettings.h>
 #include <QApplication>
 
 
 #include <gio/gio.h>
 #include <glib/gstdio.h>
 #include <string.h>
+#include "usd-disk-space.h"
 
 class HousekeepingManager : public QObject
 {
@@ -33,6 +34,7 @@ public:
 
 private:
     static HousekeepingManager *mHouseManager;
+    static DIskSpace *mDisk;
     unsigned int long_term_cb;
     unsigned int short_term_cb;
     QGSettings   *settings;

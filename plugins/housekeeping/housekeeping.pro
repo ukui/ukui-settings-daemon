@@ -27,12 +27,18 @@ LIBS +=
 
 SOURCES += \
     housekeeping-manager.cpp \
-    housekeeping-plugin.cpp
+    housekeeping-plugin.cpp \
+    ldsm-trash-empty.cpp \
+    usd-disk-space.cpp \
+    usd-ldsm-dialog.cpp
 
 HEADERS += \
     housekeeping-manager.h \
     housekeeping-plugin.h \
-    housekepping_global.h
+    housekeeping_global.h \
+    ldsm-trash-empty.h \
+    usd-disk-space.h \
+    usd-ldsm-dialog.h
 
 DESTDIR = $$PWD/
 
@@ -40,3 +46,10 @@ housekeeping_lib.path = /usr/local/lib/ukui-settings-daemon/
 housekeeping_lib.files = $$PWD/housekeeping.so
 
 INSTALLS += housekeeping_lib
+
+FORMS += \
+    ldsm-trash-empty.ui \
+    usd-ldsm-dialog.ui
+
+RESOURCES += \
+    trash_empty.qrc
