@@ -8,7 +8,7 @@ SUBDIRS += \
     $$PWD/plugins/background/background.pro     \
     $$PWD/plugins/clipboard/clipboard.pro      \
     $$PWD/plugins/common/common.pro             \
-    $$PWD/plugins/datetime/datetime.pro         \
+\ #    $$PWD/plugins/datetime/datetime.pro         \
 \ #    $$PWD/plugins/dummy/dummy.pro              \
     $$PWD/plugins/housekeeping                  \
     $$PWD/plugins/keyboard/keyboard.pro         \

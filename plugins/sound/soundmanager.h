@@ -1,16 +1,27 @@
 #ifndef SOUNDMANAGER_H
 #define SOUNDMANAGER_H
 
+#include <QObject>
 #include <QList>
-#include <glib.h>
-#include <glib-object.h>
+#include <QTimer>
+#include <QFileSystemWatcher>
+#include "QGSettings/qgsettings.h"
+//#include <QGSettings>
+
+#ifdef signals
+#undef signals
+#endif
+
+extern "C"{
 #include <gio/gio.h>
+}
 
 #define UKUI_SOUND_SCHEMA "org.mate.sound"
 #define PACKAGE_NAME "ukui-settings-daemon"
 #define PACKAGE_VERSION "1.1.1"
 
-class SoundManager{
+class SoundManager : public QObject{
+    Q_OBJECT
 public:
     ~SoundManager();
     static SoundManager* SoundManagerNew();
@@ -19,21 +30,20 @@ public:
 private:
     SoundManager();
 
-    static bool flush_cb();
     void trigger_flush();
-    static void gsettings_notify_cb (GSettings *client,char *key);
-    static void file_monitor_changed_cb(GFileMonitor *monitor,
-                                 GFile *file,
-                                 GFile *other_file,
-                                 GFileMonitorEvent event);
-    bool register_directory_callback(const char *path,
+    bool register_directory_callback(const QString path,
                                          GError **error);
 
-    static SoundManager* mSoundManager;
-    GSettings *settings;
-    QList<GFileMonitor*>* monitors2;//GFileMonitor-->QFileSystemWatcher ?
-    unsigned int timeout;
+private Q_SLOTS:
+    bool flush_cb();
+    void gsettings_notify_cb (const QString& key);
+    void file_monitor_changed_cb(const QString& path);
 
+private:
+    static SoundManager* mSoundManager;
+    QGSettings* settings;
+    QList<QFileSystemWatcher*>* monitors;
+    QTimer* timer;
 };
 
 #endif /* SOUNDMANAGER_H */
