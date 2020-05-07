@@ -65,7 +65,6 @@ debuild -D
 | media-key | 未完成| 丁敬 |
 | smartcard | 如果检测到硬件，内部段错误 | 商晓阳 |
 | sound | 运行有报错:空链表 | 闫焕章 |
-| xrandr | 运行有报错:未定义的 `mate_rr_config_equal` | 商晓阳 |
 | xrdb | 运行报错:有未定义的接口，父类代码需要调整| 刘彤 |
 
 

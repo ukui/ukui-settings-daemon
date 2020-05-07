@@ -22,6 +22,7 @@
 #define CONF_KEY_TURN_ON_EXTERNAL_MONITORS_AT_STARTUP  "turn-on-external-monitors-at-startup"
 #define CONF_KEY_TURN_ON_LAPTOP_MONITOR_AT_STARTUP     "turn-on-laptop-monitor-at-startup"
 #define CONF_KEY_DEFAULT_CONFIGURATION_FILE            "default-configuration-file"
+#define USD_XRANDR_DISPLAY_CAPPLET "mate-display-properties"
 
 static const MateRRRotation possible_rotations[] = { 
         MATE_RR_ROTATION_0,
@@ -95,35 +96,33 @@ bool RegisterManagerDbus(XrandrManager& m)
     return true;
 }
 
-bool XrandrManager::XrandrManagerStart(GError** error)
+bool XrandrManager::XrandrManagerStart()
 {
     CT_SYSLOG(LOG_DEBUG,"Start Xrandr Manager");
+    gdk_init(NULL,NULL);
     log_open();
     log_msg ("------------------------------------\nSTARTING XRANDR PLUGIN\n");
-    manager->rw_screen = mate_rr_screen_new (gdk_screen_get_default (), error);
-    if (manager->rw_screen == NULL ){
-        log_msg("Could not initialize the RANDR plugin%s%s\n",
-                (error && *error) ? ": " : "",
-                (error && *error) ? (*error)->message : "");
+
+    rw_screen = mate_rr_screen_new (gdk_screen_get_default(), NULL);
+    if (rw_screen == NULL ){
+        CT_SYSLOG(LOG_ERR," screen == NULL");
         log_close();
         return FALSE;
     }
-
-    g_signal_connect (manager->rw_screen, "changed", G_CALLBACK (on_randr_event), manager);
+    g_signal_connect (rw_screen, "changed", G_CALLBACK (on_randr_event), manager);
 
     log_msg("State of screen at startup:\n");
-    log_screen(manager->rw_screen);
+    log_screen(rw_screen);
 
-    manager->running = TRUE;
-    manager->settings = g_settings_new(CONF_SCHEMA);
+    running = TRUE;
+    settings = g_settings_new(CONF_SCHEMA);
 
-    g_signal_connect (manager->settings,
+    g_signal_connect (settings,
                       "changed::" CONF_KEY_SHOW_NOTIFICATION_ICON,
                       G_CALLBACK (on_config_changed),
-                      manager);
-
+                      this);
     if (switch_video_mode_keycode) {
-            gdk_error_trap_push ();
+            //gdk_error_trap_push ();
 
             XGrabKey (gdk_x11_get_default_xdisplay(),
                       switch_video_mode_keycode, AnyModifier,
@@ -131,10 +130,10 @@ bool XrandrManager::XrandrManagerStart(GError** error)
                       True, GrabModeAsync, GrabModeAsync);
 
             gdk_flush ();
-            gdk_error_trap_pop_ignored ();
+            //gdk_error_trap_pop_ignored ();
     }
     if (rotate_windows_keycode) {
-        gdk_error_trap_push ();
+        //gdk_error_trap_push ();
 
         XGrabKey (gdk_x11_get_default_xdisplay(),
                   rotate_windows_keycode, AnyModifier,
@@ -142,27 +141,28 @@ bool XrandrManager::XrandrManagerStart(GError** error)
                   True, GrabModeAsync, GrabModeAsync);
 
         gdk_flush ();
-        gdk_error_trap_pop_ignored ();
+        //gdk_error_trap_pop_ignored ();
     }
+
     show_timestamps_dialog ("Startup");
 
-    if (!apply_stored_configuration_at_startup (manager,GDK_CURRENT_TIME)) // we don't have a real timestamp at startup anyway
-            if (!apply_default_configuration_from_file (manager,GDK_CURRENT_TIME))
-                    if (!g_settings_get_boolean (manager->settings, CONF_KEY_USE_XORG_MONITOR_SETTINGS))
-                            apply_default_boot_configuration (manager,GDK_CURRENT_TIME);
+    if (!apply_stored_configuration_at_startup (this,GDK_CURRENT_TIME)) // we don't have a real timestamp at startup anyway
+            if (!apply_default_configuration_from_file (this,GDK_CURRENT_TIME))
+                    if (!g_settings_get_boolean (settings, CONF_KEY_USE_XORG_MONITOR_SETTINGS))
+                            apply_default_boot_configuration (this,GDK_CURRENT_TIME);
 
     log_msg ("State of screen after initial configuration:\n");
-    log_screen (manager->rw_screen);
+    log_screen (rw_screen);
 
     gdk_window_add_filter (gdk_get_default_root_window(),
                            (GdkFilterFunc)event_filter,
-                           manager);
+                           this);
 
-    start_or_stop_icon (manager);
+    start_or_stop_icon (this);
 
     log_close ();
 
-    return TRUE;
+    return true;
 }
 
 void XrandrManager::XrandrManagerStop()
@@ -170,22 +170,22 @@ void XrandrManager::XrandrManagerStop()
     CT_SYSLOG(LOG_DEBUG,"Stoping Xrandr manager");
     manager->running=FALSE;
     if (manager->switch_video_mode_keycode) {
-        gdk_error_trap_push ();
+        //gdk_error_trap_push ();
 
         XUngrabKey (gdk_x11_get_default_xdisplay(),
                     manager->switch_video_mode_keycode, AnyModifier,
                     gdk_x11_get_default_root_xwindow());
 
-        gdk_error_trap_pop_ignored ();
+        //gdk_error_trap_pop_ignored ();
     }
     if (manager->rotate_windows_keycode) {
-        gdk_error_trap_push ();
+        //gdk_error_trap_push ();
 
         XUngrabKey (gdk_x11_get_default_xdisplay(),
                 manager->rotate_windows_keycode, AnyModifier,
                 gdk_x11_get_default_root_xwindow());
 
-        gdk_error_trap_pop_ignored ();
+        //gdk_error_trap_pop_ignored ();
     }
 
     gdk_window_remove_filter (gdk_get_default_root_window (),
@@ -1520,6 +1520,31 @@ void XrandrManager::refresh_tray_icon_menu_if_active( unsigned int timestamp)
     }
 }
 
+void XrandrManager::run_display_capplet (GtkWidget *widget)
+{
+        GdkScreen *screen;
+        GError *error;
+
+        if (widget)
+                screen = gtk_widget_get_screen (widget);
+        else
+                screen = gdk_screen_get_default ();
+
+        error = NULL;
+        if (!mate_gdk_spawn_command_line_on_screen (screen, USD_XRANDR_DISPLAY_CAPPLET, &error)) {
+                GtkWidget *dialog;
+
+                dialog = gtk_message_dialog_new_with_markup (NULL, (GtkDialogFlags)0, GTK_MESSAGE_ERROR, GTK_BUTTONS_OK,
+                                                             "<span weight=\"bold\" size=\"larger\">"
+                                                             "Display configuration could not be run"
+                                                             "</span>\n\n"
+                                                             "%s", error->message);
+                gtk_dialog_run (GTK_DIALOG (dialog));
+                gtk_widget_destroy (dialog);
+
+                g_error_free (error);
+        }
+}
 
 void XrandrManager::status_icon_popup_menu(XrandrManager *manager,unsigned int button, unsigned int timestamp)
 {

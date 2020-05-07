@@ -19,13 +19,11 @@ XrandrPlugin::~XrandrPlugin()
 void XrandrPlugin::activate()
 {
     bool res;
-    GError *error;
     CT_SYSLOG(LOG_DEBUG,"activating Xrandr plugins");
-    error = NULL;
-    res=UsdXrandrManager->XrandrManagerStart(&error);  //start function
+
+    res=UsdXrandrManager->XrandrManagerStart();  //start function
     if(!res){
         CT_SYSLOG(LOG_DEBUG,"Unable to start Xrandr manager!");
-        g_error_free(error);
     }
 }
 

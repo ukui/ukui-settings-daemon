@@ -18,11 +18,13 @@
 #include <errno.h>
 #include <locale.h>
 
+extern "C" {
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr.h>
 #include <libmate-desktop/mate-rr-config.h>
 #include <libmate-desktop/mate-rr-labeler.h>
 #include <libmate-desktop/mate-desktop-utils.h>
+}
 
 #define USD_DBUS_PATH "/org/ukui/SettingsDaemon"
 #define USD_DBUS_NAME "org.ukui.SettingsDaemon"
@@ -47,7 +49,7 @@ private:
 public:
     ~XrandrManager();
     static XrandrManager* XrandrManagerNew();
-    bool XrandrManagerStart(GError** error);
+    bool XrandrManagerStart();
     void XrandrManagerStop();
 
     static void log_open();
