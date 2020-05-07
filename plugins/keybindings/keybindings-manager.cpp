@@ -29,7 +29,7 @@ KeybindingsManager *KeybindingsManager::KeybindingsManagerNew()
     return mKeybinding;
 }
 
-static gboolean
+static bool
 parse_binding (Binding *binding)
 {
     gboolean success;
@@ -53,7 +53,7 @@ parse_binding (Binding *binding)
                                              (EggVirtualModifierType *)&binding->key.state);
 
     if (!success)
-        qWarning (_("Key binding (%s) is invalid"), binding->settings_path);
+        qWarning ("Key binding (%s) is invalid", binding->settings_path);
 
     return success;
 }
@@ -86,9 +86,10 @@ bool KeybindingsManager::bindings_get_entry (const char *settings_path)
     action = settings->get("action").toString();
     key = settings->get("binding").toString();
     delete settings;
+    qDebug("action =%s key=%s",action.toLatin1().data(),key.toLatin1().data());
     if (!action.toLatin1().data() || !key.toLatin1().data() )
     {
-            qWarning (_("Key binding (%s) is incomplete"), settings_path);
+            qWarning ("Key binding (%s) is incomplete", settings_path);
             return false;
     }
 
