@@ -62,6 +62,7 @@
 #define CONF_KEY_TURN_ON_EXTERNAL_MONITORS_AT_STARTUP  "turn-on-external-monitors-at-startup"
 #define CONF_KEY_TURN_ON_LAPTOP_MONITOR_AT_STARTUP     "turn-on-laptop-monitor-at-startup"
 #define CONF_KEY_DEFAULT_CONFIGURATION_FILE            "default-configuration-file"
+#define CONF_KEY_XRANDR_WIN_SHOW                       "xrandr-apply"
 
 #define VIDEO_KEYSYM    "XF86Display"
 #define ROTATE_KEYSYM   "XF86RotateWindows"
@@ -69,7 +70,7 @@
 /* Number of seconds that the confirmation dialog will last before it resets the
  * RANDR configuration to its old state.
  */
-#define CONFIRMATION_DIALOG_SECONDS 30
+#define CONFIRMATION_DIALOG_SECONDS 15
 
 /* name of the icon files (usd-xrandr.svg, etc.) */
 #define USD_XRANDR_ICON_NAME "uksd-xrandr"
@@ -81,6 +82,13 @@
 #define USD_DBUS_NAME "org.ukui.SettingsDaemon"
 #define USD_XRANDR_DBUS_PATH USD_DBUS_PATH "/XRANDR"
 #define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
+
+enum{
+    noshow,
+    show,
+    certain,
+    cancel,
+};
 
 struct UsdXrandrManagerPrivate
 {
@@ -481,6 +489,10 @@ timeout_response_cb (GtkDialog *dialog, int response_id, gpointer data)
 static gboolean
 user_says_things_are_ok (UsdXrandrManager *manager, GdkWindow *parent_window)
 {
+    //设置GSettings，表示计时窗口弹出
+    UsdXrandrManagerPrivate *priv = manager->priv;
+    // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, TRUE);
+    g_settings_set_enum(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, show);
         TimeoutDialog timeout;
         guint timeout_id;
 
@@ -520,10 +532,16 @@ user_says_things_are_ok (UsdXrandrManager *manager, GdkWindow *parent_window)
         gtk_widget_destroy (timeout.dialog);
         g_source_remove (timeout_id);
 
-        if (timeout.response_id == GTK_RESPONSE_ACCEPT)
+        if (timeout.response_id == GTK_RESPONSE_ACCEPT) {
+                // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, FALSE);
+                g_settings_set_enum(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, show);
                 return TRUE;
-        else
+		}
+        else {
+		         // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, FALSE);
+                 g_settings_set_enum(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, show);
                 return FALSE;
+		}
 }
 
 struct confirmation {

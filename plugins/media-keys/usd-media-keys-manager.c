@@ -690,7 +690,8 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
         gboolean muted_last;
         gboolean sound_changed = FALSE;
         guint    volume;
-        guint    volume_min, volume_max;
+        // guint    volume_min, volume_max;
+		guint    volume_min, volume_max, maxlessmin;
         guint    volume_step;
         guint    volume_last;
 
@@ -701,7 +702,7 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
          * streams, also the minimum might not always start at 0 */
         volume_min = mate_mixer_stream_control_get_min_volume (manager->priv->control);
         volume_max = mate_mixer_stream_control_get_normal_volume (manager->priv->control);
-
+        maxlessmin = volume_max - volume_min;
         volume_step = g_settings_get_int (manager->priv->settings, "volume-step");
         if (volume_step <= 0 ||
             volume_step > 100)
@@ -714,6 +715,14 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
                 mate_mixer_stream_control_get_volume (manager->priv->control);
         muted = muted_last =
                 mate_mixer_stream_control_get_mute (manager->priv->control);
+
+        //获取底层的声音将其转换为界面的声音，再做递增/减，递增递减之后再将其显示到界面上，最后再转换写入到底层
+        if(volume <= volume_min + maxlessmin / 100 * 60.0)
+            volume = volume_min + (volume - volume_min) / 3.0;
+        else if(volume > volume_min + maxlessmin / 100.0 * 80.0)
+            volume = volume_min + maxlessmin / 100.0 * 40.0 +((volume - volume_min) - maxlessmin / 100.0 * 80.0) * 3.0;
+        else
+            volume = volume - maxlessmin / 100.0 * 40.0;
 
         switch (type) {
         case MUTE_KEY:
@@ -746,17 +755,31 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
                 else
                         muted = muted_last;
         }
+
+        update_dialog (manager,
+                       CLAMP (100 * volume / (volume_max - volume_min), 0, 100),
+                       muted,
+                       sound_changed);
+
+        if(volume <= volume_min + maxlessmin / 100 * 20.0)
+            volume = volume_min + (volume - volume_min) * 3.0;
+        else if(volume > volume_min + maxlessmin / 100.0 * 40.0)
+            volume = volume_min + maxlessmin / 100.0 * 80.0 + ((volume - volume_min) - maxlessmin / 100.0 * 40.0) / 3.0;
+        else
+            volume = volume + maxlessmin / 100.0 * 40.0;
+
         if (volume != mate_mixer_stream_control_get_volume (manager->priv->control)) {
                 if (mate_mixer_stream_control_set_volume (manager->priv->control, volume))
                         sound_changed = TRUE;
                 else
                         volume = volume_last;
         }
-
+        /*
         update_dialog (manager,
                        CLAMP (100 * volume / (volume_max - volume_min), 0, 100),
                        muted,
                        sound_changed);
+        */
 }
 
 static void
@@ -1011,6 +1034,8 @@ do_action (UsdMediaKeysManager *manager,
                 do_shutdown_action (manager);
                 break;
 	case LOGOUT_KEY:
+	case LOGOUT1_KEY:
+	case LOGOUT2_KEY:
 		do_logout_action (manager);
 		break;
         case EJECT_KEY:
@@ -1040,6 +1065,8 @@ do_action (UsdMediaKeysManager *manager,
         case SCREENSAVER_KEY:
                 if ((cmd = g_find_program_in_path ("ukui-screensaver-command"))) {
                         execute (manager, "ukui-screensaver-command --lock", FALSE, FALSE);
+                } else if ((cmd = g_find_program_in_path ("ukui-screensaver-command"))) {
+                        execute (manager, "ukui-screensaver-command -l" ,FALSE, FALSE);
                 } else {
                         execute (manager, "xscreensaver-command -lock", FALSE, FALSE);
                 }
