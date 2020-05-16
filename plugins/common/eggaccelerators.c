@@ -415,6 +415,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
     *accelerator_key = gdk_keyval_to_lower (keyval);
   if (accelerator_mods)
     *accelerator_mods = mods;
+
   return !bad_keyval;
 }
 

@@ -1720,9 +1720,8 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         apply_color_profiles ();
 
         refresh_tray_icon_menu_if_active (manager, MAX (change_timestamp, config_timestamp));
-        
-        log_close ();
 
+        log_close ();
 }
 
 static void
@@ -1730,6 +1729,7 @@ run_display_capplet (GtkWidget *widget)
 {
         GdkScreen *screen;
         GError *error;
+
         if (widget)
                 screen = gtk_widget_get_screen (widget);
         else

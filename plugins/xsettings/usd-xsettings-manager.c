@@ -447,6 +447,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
         dpy = XOpenDisplay (NULL);
         g_return_if_fail (dpy != NULL);
         add_string = g_string_new (XResourceManagerString (dpy));
+
         g_debug("xft_settings_set_xresources: orig res '%s'", add_string->str);
 
         // add for apply Qt APP when control-center set cursor
@@ -484,6 +485,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->cursor_size));
 
         g_debug("xft_settings_set_xresources: new res '%s'", add_string->str);
+
         /* Set the new X property */
         XChangeProperty(dpy, RootWindow (dpy, 0),
                 XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);

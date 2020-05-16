@@ -21,7 +21,6 @@
  *
  */
 
-#include "syslog.h"
 #include "config.h"
 
 #include <sys/types.h>
@@ -46,6 +45,15 @@
 
 #include "ukui-settings-profile.h"
 #include "usd-background-manager.h"
+
+//#if !GTK_CHECK_VERSION(3, 0, 0)
+#if !GTK_CHECK_VERSION(3, 0, 1)
+#define cairo_surface_t		GdkPixmap
+#define cairo_surface_destroy	g_object_unref
+#define mate_bg_create_surface				mate_bg_create_pixmap
+#define mate_bg_set_surface_as_root			mate_bg_set_pixmap_as_root
+#define mate_bg_set_surface_as_root_with_crossfade	mate_bg_set_pixmap_as_root_with_crossfade
+#endif
 
 #define UKUI_SESSION_MANAGER_DBUS_NAME "org.gnome.SessionManager"
 #define UKUI_SESSION_MANAGER_DBUS_PATH "/org/gnome/SessionManager"
@@ -190,8 +198,8 @@ real_draw_bg (UsdBackgroundManager *manager,
 	gint height  = gdk_screen_get_height (screen);
 
 	free_bg_surface (manager);
-	p->surface = mate_bg_create_surface (p->bg, window, width, height, TRUE);
-
+//modify begin by liutong
+/*	p->surface = mate_bg_create_surface (p->bg, window, width, height, TRUE);
 	if (p->do_fade)
 	{
 		free_fade (manager);
@@ -202,6 +210,8 @@ real_draw_bg (UsdBackgroundManager *manager,
 	{
 		mate_bg_set_surface_as_root (screen, p->surface);
 	}
+*/
+//modify end by liutong
 	p->scr_sizes = g_list_prepend (p->scr_sizes, g_strdup_printf ("%dx%d", width, height));
 }
 
