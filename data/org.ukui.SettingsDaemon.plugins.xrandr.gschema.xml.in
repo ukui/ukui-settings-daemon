@@ -1,5 +1,5 @@
 <schemalist>
-  <enum id="org.mate.SettingsDaemon.xrandr-apply-enum">
+  <enum id="org.ukui.SettingsDaemon.xrandr-apply-enum">
     <value nick="noshow" value="0"/>
     <value nick ="show" value="1"/>
     <value nick="certain" value="2"/>
@@ -41,7 +41,7 @@
       <summary>File for default configuration for RandR</summary>
       <description>The XRandR plugin will look for a default configuration in the file specified by this key.  This is similar to the ~/.config/monitors.xml that normally gets stored in users' home directories.  If a user does not have such a file, or has one that does not match the user's setup of monitors, then the file specified by this key will be used instead.</description>
     </key>
-    <key name="xrandr-apply" enum="org.mate.SettingsDaemon.xrandr-apply-enum">
+    <key name="xrandr-apply" enum="org.ukui.SettingsDaemon.xrandr-apply-enum">
       <default>'noshow'</default>
       <summary>The xrandr apply window status</summary>
       <description>the xrandr apply window show/notshow when true/false.</description>
