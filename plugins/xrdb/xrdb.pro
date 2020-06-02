@@ -30,7 +30,8 @@ include($$PWD/../../common/common.pri)
 
 
 PKGCONFIG +=\
-    gdk-3.0 \
+    gtk+-3.0 \
+    gsettings-qt \
     atk    \
     mate-desktop-2.0
 
@@ -44,7 +45,6 @@ SOURCES += \
 
 HEADERS += \
     xrdb.h \
-    xrdb_global.h \
     ukui-xrdb-manager.h \
     ixrdb-manager.h
 
