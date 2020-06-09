@@ -359,11 +359,18 @@ static void
 trash_empty_show_confirmation_dialog ()
 {
         GtkWidget *button;
-
+        
+        /* 修复文件拷贝空间不足时，清空回收站实际未被清空的问题 */
+        /* Fix when the file copy space is insufficient,
+         * prompt to empty the recycle bin, 
+         * but the recycle bin is not actually emptied */
+        
+        /*
         if (!trash_empty_require_confirmation ()) {
                 trash_empty_start ();
                 return;
         }
+        */
 
         trash_empty_confirm_dialog = gtk_message_dialog_new (NULL, 0,
                                                              GTK_MESSAGE_WARNING,
