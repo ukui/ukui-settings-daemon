@@ -996,19 +996,19 @@ do_terminal_action (UsdMediaKeysManager *manager)
 static void
 do_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "gnome-screenshot",FALSE,FALSE);
+        execute (manager, "mate-screenshot",FALSE,FALSE);
 }
 
 static void
 do_area_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "gnome-screenshot -a",FALSE,FALSE);
+        execute (manager, "mate-screenshot -a",FALSE,FALSE);
 }
 
 static void
 do_window_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "gnome-screenshot -w",FALSE,FALSE);
+        execute (manager, "mate-screenshot -w",FALSE,FALSE);
 }
 
 

@@ -40,6 +40,7 @@ Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common,
          ukui-polkit,
+         mate-utils,
          ukui-settings-daemon-common (= ${source:Version}),
          x11-xserver-utils,
          ${misc:Depends},
