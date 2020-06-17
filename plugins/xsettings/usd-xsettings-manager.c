@@ -415,7 +415,7 @@ update_property (GString *props, const gchar* key, const gchar* value)
         needle_len = strlen (needle);
         if (g_str_has_prefix (props->str, needle))
                 found = props->str;
-        else 
+        else
                 found = strstr (props->str, needle);
 
         if (found) {
@@ -465,19 +465,18 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 	} else {
 		tmpCursorSize = XcursorGetDefaultSize(dpy);
 	}
-	// end add by liutong 
-        
+	// end add by liutong
 
-    /* 添加DPI缩放至文件 
+    /* 添加DPI缩放至文件
      * Add DPI zoom to file */
     gchar    *XreFilePath;
-    gchar    *data;
+    gchar    *date;
     gboolean  res;
     XreFilePath = g_build_filename (g_get_home_dir (), ".Xresources", NULL);
     date = g_malloc (40);
     g_sprintf(date,"Xft.dpi:%d\nXcursor.size:%d",
                     settings->dpi/1024, settings->cursor_size);
-    res = g_file_set_contents(XreFile,date,strlen(date),NULL);
+    res = g_file_set_contents(XreFilePath,date,strlen(date),NULL);
     if(!res)
         g_debug("Xresources File write failed ");
     /* end add by Shang Xiaoyang */

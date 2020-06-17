@@ -22,7 +22,6 @@
  */
 
 #include "config.h"
-#include "syslog.h"
 
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -1182,7 +1181,6 @@ acme_filter_events (GdkXEvent           *xevent,
         }
         /*if (xev->type == KeyRelease &&xev->xkey.keycode == 133) {
 		    system("ukui-menu");
-		    syslog(LOG_ERR,"ukui-menu");
 		}
         */
         for (i = 0; i < HANDLED_KEYS; i++) {

@@ -18,7 +18,6 @@
  *
  */
 
-#include "syslog.h"
 #include "config.h"
 
 #include <sys/types.h>
@@ -1525,7 +1524,7 @@ touchpad_callback (GSettings          *settings,
                 || (g_strcmp0 (key, KEY_TOUCHPAD_TWO_FINGER_TAP) == 0)
                 || (g_strcmp0 (key, KEY_TOUCHPAD_THREE_FINGER_TAP) == 0)) {
                 set_tap_to_click_all (manager);
-/* Do not set click actions since ukwm take over this 
+/* Do not set click actions since ukwm take over this
  *        } else if ((g_strcmp0 (key, KEY_TOUCHPAD_TWO_FINGER_CLICK) == 0)
  *               || (g_strcmp0 (key, KEY_TOUCHPAD_THREE_FINGER_CLICK) == 0)) {
  *               set_click_actions_all (manager);
@@ -1573,7 +1572,7 @@ usd_mouse_manager_idle_cb (UsdMouseManager *manager)
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
         set_mousetweaks_daemon (manager,
-                                g_settings_get_boolean (manager->priv->settings_mouse_a11y, 
+                                g_settings_get_boolean (manager->priv->settings_mouse_a11y,
                                                         KEY_MOUSE_A11Y_DWELL_ENABLE),
                                 g_settings_get_boolean (manager->priv->settings_mouse_a11y,
                                                         KEY_MOUSE_A11Y_DELAY_ENABLE));
