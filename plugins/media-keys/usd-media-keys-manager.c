@@ -1130,7 +1130,6 @@ acme_filter_events (GdkXEvent           *xevent,
 =======
         /*if (xev->type == KeyRelease &&xev->xkey.keycode == 133) {
 		    system("ukui-menu");
-		    syslog(LOG_ERR,"ukui-menu");
 		}
         */
 >>>>>>> 534b3f9... clear up code.

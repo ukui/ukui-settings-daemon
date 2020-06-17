@@ -415,7 +415,7 @@ update_property (GString *props, const gchar* key, const gchar* value)
         needle_len = strlen (needle);
         if (g_str_has_prefix (props->str, needle))
                 found = props->str;
-        else 
+        else
                 found = strstr (props->str, needle);
 
         if (found) {

@@ -37,6 +37,7 @@
 #include <gtk/gtk.h>
 #include <X11/keysym.h>
 #include <gio/gio.h>
+#include <gio/gdesktopappinfo.h>
 #include <dconf.h>
 
 #include "ukui-settings-profile.h"
@@ -46,6 +47,7 @@
 #include "usd-keygrab.h"
 #include "eggaccelerators.h"
 
+#define DESKTOP_APP_DIR "/usr/share/applications/"
 #define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
 #define CUSTOM_KEYBINDING_SCHEMA "org.ukui.control-center.keybinding"
 
@@ -484,7 +486,7 @@ keybindings_filter (GdkXEvent             *gdk_xevent,
                         }
 
                         envp = get_exec_environment (xevent);
-
+                        /*
                         retval = g_spawn_async (NULL,
                                                 argv,
                                                 envp,
@@ -493,6 +495,11 @@ keybindings_filter (GdkXEvent             *gdk_xevent,
                                                 NULL,
                                                 NULL,
                                                 &error);
+                        */
+						char execPathName[255];
+						sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
+                        GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(execPathName);
+						retval = g_app_info_launch_uris(info, NULL, NULL, NULL);
                         g_strfreev (argv);
                         g_strfreev (envp);
 
