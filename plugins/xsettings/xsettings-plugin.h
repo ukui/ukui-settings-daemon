@@ -7,19 +7,17 @@
 class Xsettings: public PluginInterface
 {
 public:
+    Xsettings();
     ~Xsettings();
-    static PluginInterface* getInstance();
 
     void activate();
     void deactivate();
 
 private:
-    Xsettings();
+
     Xsettings(Xsettings&) = delete;
 
-    ukuiXSettingsManager* m_pXsettingManager;
-    static PluginInterface* m_pXsettings;
-
+    ukuiXSettingsManager* m_pukuiXsettingManager;
 };
 
 extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();

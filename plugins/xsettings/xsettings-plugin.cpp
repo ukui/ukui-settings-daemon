@@ -1,32 +1,22 @@
 #include "xsettings-plugin.h"
-
-PluginInterface* Xsettings::m_pXsettings = nullptr;
-
-PluginInterface* Xsettings::getInstance()
-{
-    if (nullptr == Xsettings::m_pXsettings) {
-        Xsettings::m_pXsettings = new Xsettings();
-    }
-    return Xsettings::m_pXsettings;
-}
-
+#include <syslog.h>
 
 PluginInterface* createSettingsPlugin() {
-    return Xsettings::getInstance();
+    return new Xsettings();
 }
 
 
 Xsettings::Xsettings()
 {
-    m_pXsettingManager = new ukuiXSettingsManager();
+    m_pukuiXsettingManager = new ukuiXSettingsManager();
 }
 
 
 Xsettings::~Xsettings()
 {
-    if (m_pXsettingManager)
-        delete m_pXsettingManager;
-    m_pXsettingManager = nullptr;
+    if (m_pukuiXsettingManager)
+        delete m_pukuiXsettingManager;
+    m_pukuiXsettingManager = nullptr;
 }
 
 
@@ -38,16 +28,20 @@ void Xsettings::activate()
     g_debug ("Activating xsettings plugin");
 
     error = NULL;
-    res = m_pXsettingManager->start(&error);
-    if (! res) {
+    res = m_pukuiXsettingManager->start(&error);
+    if (!res) {
+        syslog(LOG_ERR, "false m_pukuiXsettingManager start");
         g_warning ("Unable to start xsettings manager: %s", error->message);
         g_error_free (error);
     }
+    syslog(LOG_ERR, "END PLUGIN activate");
 }
 
 void Xsettings::deactivate()
 {
-    m_pXsettingManager->stop();
+    syslog(LOG_ERR, "begin PLUGIN deactivate");
+    m_pukuiXsettingManager->stop();
+    syslog(LOG_ERR, "end PLUGIN deactivate");
 }
 
 
