@@ -992,6 +992,25 @@ void set_disable_w_typing (MouseManager *manager,
         set_disable_w_typing_libinput (manager, state);
 }
 
+static void
+set_tap_to_click_libinput (XDeviceInfo *device_info, bool   state)
+{
+        touchpad_set_bool (device_info, "libinput Tapping Enabled", 0, state);
+}
+
+static void
+set_tap_to_click (XDeviceInfo *device_info,  bool state,  bool left_handed,
+                  int one_finger_tap, int two_finger_tap, int three_finger_tap)
+{
+        if (property_from_name ("Synaptics Tap Action"))
+                set_tap_to_click_synaptics (device_info, state, left_handed,
+                                            one_finger_tap, two_finger_tap, three_finger_tap);
+
+        if (property_from_name ("libinput Tapping Enabled"))
+                set_tap_to_click_libinput (device_info, state);
+}
+
+
 void set_tap_to_click_all (MouseManager *manager)
 {
     int numdevices, i;
@@ -1007,7 +1026,7 @@ void set_tap_to_click_all (MouseManager *manager)
     int three_finger_tap = manager->settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toBool();
 
     for (i = 0; i < numdevices; i++) {
-//                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
     }
 
     XFreeDeviceList (devicelist);
@@ -1199,7 +1218,8 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
     XDevice *device;
     Atom prop_enabled;
     unsigned char data = state;
-    Display *display = QX11Info::display();
+    Display *display =  gdk_x11_get_default_xdisplay ();//QX11Info::display();//
+
     prop_enabled = property_from_name ("Device Enabled");
     if (!prop_enabled)
         return;
@@ -1231,7 +1251,7 @@ void set_touchpad_enabled_all (bool state)
 
     if (devicelist == NULL)
             return;
-    syslog(LOG_ERR,"%s:--------",__func__);
+    
     for (i = 0; i < numdevices; i++) {
             set_touchpad_enabled (&devicelist[i], state);
     }
