@@ -1,52 +1,49 @@
 #include "xrandr-plugin.h"
-#include "clib-syslog.h"
+#include <syslog.h>
 
-PluginInterface * XrandrPlugin::mInstance = nullptr;
+PluginInterface *XrandrPlugin::mInstance      = nullptr;
+XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
 
 XrandrPlugin::XrandrPlugin()
 {
-    syslog_init("ukui-settings-daemon-xrandr", LOG_LOCAL6);
-    CT_SYSLOG(LOG_DEBUG,"A11SettingsPlugin initializing!");
-    UsdXrandrManager=XrandrManager::XrandrManagerNew(); //new function
+    syslog(LOG_ERR,"Xrandr Plugin initializing");
+    if(nullptr == mXrandrManager)
+        mXrandrManager = XrandrManager::XrandrManagerNew();
 }
 
 XrandrPlugin::~XrandrPlugin()
 {
-    if ( UsdXrandrManager )
-        delete UsdXrandrManager ;
+    if(mXrandrManager)
+        delete mXrandrManager;
+    if(mInstance)
+        delete mInstance;
 }
 
 void XrandrPlugin::activate()
 {
+    syslog(LOG_ERR,"activating Xrandr plugins");
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"activating Xrandr plugins");
+    res = mXrandrManager->XrandrManagerStart();
+    if(!res)
+        syslog(LOG_ERR,"Unable to start Xrandr manager!");
 
-    res=UsdXrandrManager->XrandrManagerStart();  //start function
-    if(!res){
-        CT_SYSLOG(LOG_DEBUG,"Unable to start Xrandr manager!");
-    }
 }
 
 PluginInterface *XrandrPlugin::getInstance()
 {
-    if (nullptr == mInstance) {
+    if(nullptr == mInstance)
         mInstance = new XrandrPlugin();
-    }
+
     return mInstance;
 }
 
 void XrandrPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating Xrandr plugin");
-    UsdXrandrManager->XrandrManagerStop();    //stop function
+    syslog(LOG_ERR,"Deactivating Xrandr plugin");
+    mXrandrManager->XrandrManagerStop();
 }
 
 PluginInterface *createSettingsPlugin()
 {
     return XrandrPlugin::getInstance();
 }
-
-
-
-
-
