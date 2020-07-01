@@ -53,19 +53,19 @@ debuild -D
 - [x] typing-break
 - [ ] xrandr
 - [x] xrdb
-- [x] xsettings
+- [o] xsettings
 
 ### 有问题的插件
 
 | 插件 | 问题 | 负责人 |
 | --- | --- | --- |
 | a11y-keyboard | 未完成 | 商晓阳 |
-| housekeeping | 未完成 | 丁敬 |
+| housekeeping | 未完成 | 刘彤 |
 | datetime | 需要测试是否可用，运行未报错 | 闫焕章 |
 | media-key | 未完成| 丁敬 |
 | smartcard | 如果检测到硬件，内部段错误 | 商晓阳 |
 | sound | 运行有报错:空链表 | 闫焕章 |
 | xrdb | 运行报错:有未定义的接口，父类代码需要调整| 刘彤 |
-
+| xsettings | 初步重构完成，测试过字体部分可用| 刘彤 |
 
 
