@@ -53,7 +53,7 @@ debuild -D
 - [x] typing-break
 - [ ] xrandr
 - [x] xrdb
-- [ ] xsettings
+- [x] xsettings
 
 ### 有问题的插件
 
