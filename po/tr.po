@@ -13,6 +13,7 @@
 # mauron, 2012
 # Nilgün Belma Bugüner <nilgun@fide.org>, 2001
 # Rahmi GENÇ <bt06sof@gmail.com>, 2017
+# Cihan Alkan <cihanalk@gmail.com>, 2020
 msgid ""
 msgstr ""
 "Project-Id-Version: UKUI Desktop Environment\n"
@@ -294,6 +295,8 @@ msgid ""
 "Distance in pixels the pointer must move before accelerated touchpad motion "
 "is activated. A value of -1 is the system default."
 msgstr ""
+"Hızlandırılmış dokunmatik yüzey hareketi etkinleştirilmeden önce işaretçinin piksel cinsinden uzaklığı gerekir. "
+"Sistemin varsayılan değeri -1'dir."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
@@ -555,7 +558,7 @@ msgstr "Başlangıç dizinini açmak için kısayol."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
 msgid "Open File Manager"
-msgstr ""
+msgstr "Dosya Yöneticisini Aç"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
 #, fuzzy
@@ -648,15 +651,15 @@ msgstr "Ekran klavyesini göstermek için kısayol."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:59
 msgid "Terminal"
-msgstr ""
+msgstr "Uçbirim"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:60
 msgid "Open mate terminal."
-msgstr ""
+msgstr "Mate uçbirimi açın."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:61
 msgid "Take a screenshot"
-msgstr ""
+msgstr "Ekran görüntüsü al"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:62
 #, fuzzy
@@ -665,7 +668,7 @@ msgstr "Ekran kilidi için kısayol."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:63
 msgid "Take a screenshot of a window"
-msgstr ""
+msgstr "Bir pencerenin ekran görüntüsünü alın"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:64
 #, fuzzy
@@ -674,7 +677,7 @@ msgstr "Ekran okuyucuyu başlatmak için kısayol."
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:65
 msgid "Take a screenshot of an area"
-msgstr ""
+msgstr "Bir alanın ekran görüntüsünü alın"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:66
 #, fuzzy
