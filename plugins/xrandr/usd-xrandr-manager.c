@@ -1394,6 +1394,100 @@ refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
         }
 }
 
+
+
+/* 
+ * Function: show_question()  显示缩放弹窗
+ * urpose :  When the system detects the high clear screen, the pops up change scale window 
+ */
+void show_question(GSettings *scale)
+{
+    GtkWidget *dialog;
+    GtkResponseType result;
+    dialog = gtk_message_dialog_new(NULL,
+                GTK_DIALOG_MODAL,
+                GTK_MESSAGE_QUESTION,
+                GTK_BUTTONS_NONE,
+                _("Does the system detect high clear equipment"
+                " and whether to switch to recommended scaling (200%%)?"
+                " Click on the confirmation logout."));
+    gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+
+    result = gtk_dialog_run(GTK_DIALOG(dialog));
+    gtk_widget_destroy(dialog);
+    if (result){
+        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
+        g_settings_set_int (mouse, "cursor-size", 36);
+        g_settings_set_double (scale,"dpi",192);
+        g_object_unref (mouse);
+        system("ukui-session-tools --logout");
+    }
+}
+
+/* 
+ * Function: show_question_one() 显示缩放弹窗
+ * urpose :  When the system detects the high clear screen, the pops up change scale window 
+ */
+void show_question_one(GSettings *scale)
+{
+    GtkWidget *dialog;
+    GtkResponseType result;
+    GdkWindow   *window;
+    GdkScreen *screen = gdk_screen_get_default();
+    gint screen_w = gdk_screen_get_width(screen);
+    gint screen_h = gdk_screen_get_height(screen);
+    
+    dialog = gtk_message_dialog_new(NULL,
+                        GTK_DIALOG_MODAL,
+                        GTK_MESSAGE_QUESTION,
+                        GTK_BUTTONS_NONE,
+                        _("The system detects that the HD device has been replaced."
+                          "Do you need to switch to the recommended zoom (100%%)? "
+                          "Click on the confirmation logout."));
+                  
+    gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
+    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+    
+    gtk_window_move(GTK_WINDOW(dialog), screen_w/4, screen_h/3);
+    result = gtk_dialog_run(GTK_DIALOG(dialog));
+
+    gtk_widget_destroy(dialog);
+
+    if (result){
+        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
+        g_settings_set_int (mouse, "cursor-size", 24);
+        g_settings_set_double (scale,"dpi",0);
+        g_object_unref (mouse);
+        system("ukui-session-tools --logout");
+    }
+}
+
+/* 
+ * Function: one_scale_logout_dialog(int width, int height)
+ * urpose :  When the system detects the high clear screen, the pops up change scale window.
+ * To determine whether or not to log out and scate take effect
+ */
+static void 
+one_scale_logout_dialog(GSettings *scale)
+{
+    show_question_one(scale);
+}
+
+/* 
+ * Function: two_scale_logout_dialog(int width, int height)
+ * urpose :  When the system detects the high clear screen, the pops up change scale window.
+ * To determine whether or not to log out and scate take effect
+ */
+static void
+two_scale_logout_dialog(GSettings *scale)
+{
+    show_question(scale);
+}
+
+
 static void
 auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 {
@@ -1406,6 +1500,12 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         int x;
         GError *error;
         gboolean applicable;
+        
+        int screen1_height;
+        int screen2_height;
+        gboolean once_scale;
+        GSettings *settings = g_settings_new("org.ukui.font-rendering");
+
 
         config = mate_rr_config_new_current (priv->rw_screen, NULL);
 
@@ -1454,8 +1554,27 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         g_assert (mate_rr_output_info_is_connected (output));
 
                         mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
-			mate_rr_output_info_set_geometry (output, x, 0, width, height);
+                        mate_rr_output_info_set_geometry (output, x, 0, width, height);
+		       /* Detect 4K screen switching and prompt whether to zoom.
+                        * 检测4K屏切换，并提示是否缩放 
+                        */
+                        if(height > 2000){
+                            double dpi = g_settings_get_double (settings,"dpi");
+                            g_settings_set_int(settings,"screen-height1",height);
+                            once_scale = FALSE;
+                            if(dpi <= 96){
+                                two_scale_logout_dialog(settings);//设置缩放为2倍
+                            }
+                        }
+                        screen1_height = g_settings_get_int(settings,"screen-height1");
+                        screen2_height = g_settings_get_int(settings,"screen-height2");
 
+                        if((height <= 2000 && screen1_height >2000) || (height <=2000 && screen2_height > 2000)) {
+                            g_settings_set_int(settings,"screen-height1",height);
+                            g_settings_set_int(settings,"screen-height2",height);
+                            once_scale = TRUE;
+                        } 
+                        
                         x += width;
                 }
         }
@@ -1464,7 +1583,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         for (l = just_turned_on; l; l = l->next) {
                 MateRROutputInfo *output;
-		int width;
+		int width,height;
 
                 i = GPOINTER_TO_INT (l->data);
                 output = outputs[i];
@@ -1473,8 +1592,30 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
                 /* since the output was off, use its preferred width/height (it doesn't have a real width/height yet) */
                 width = mate_rr_output_info_get_preferred_width (output);
-                mate_rr_output_info_set_geometry (output, x, 0, width, mate_rr_output_info_get_preferred_height (output));
-
+                height = mate_rr_output_info_get_preferred_height (output);
+                mate_rr_output_info_set_geometry (output, x, 0, width, height);
+                
+                 /* Detect 4K screen switching and prompt whether to zoom.
+                  * 检测4K屏切换，并提示是否缩放 
+                  */
+                if(height > 2000){
+                        double dpi = g_settings_get_double (settings,"dpi");
+                        g_settings_set_int(settings,"screen-height2",height);
+                        once_scale = FALSE;
+                        if (dpi <= 96){
+                                two_scale_logout_dialog(settings);//设置缩放为2倍
+                        }
+                }
+                screen1_height = g_settings_get_int(settings,"screen-height1");
+                screen2_height = g_settings_get_int(settings,"screen-height2");
+                
+                if( height<=2000 && screen2_height>2000){
+                    g_settings_set_int(settings,"screen-height2",height);
+                    double dpi = g_settings_get_double (settings,"dpi");
+                    if (dpi > 96)
+                        one_scale_logout_dialog(settings);//设置缩放为1倍
+                } 
+                
                 x += width;
         }
 
@@ -1515,7 +1656,12 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         if (applicable)
                 apply_configuration_and_display_error (manager, config, timestamp);
-
+        if(once_scale){
+            double dpi = g_settings_get_double (settings,"dpi");
+            if(dpi>96)
+                one_scale_logout_dialog(settings);
+        }
+        g_object_unref (settings);
         g_list_free (just_turned_on);
         g_object_unref (config);
 
@@ -1561,79 +1707,7 @@ apply_color_profiles (void)
 }
 
 
-/* 
- * Function: show_question()
- * urpose :  When the system detects the high clear screen, the pops up change scale window 
- */
-void show_question(GSettings *session,int gdk_scala, int qt_scale)
-{
-    GtkWidget *dialog;
-    GtkResponseType result;
-    dialog = gtk_message_dialog_new(NULL,
-                GTK_DIALOG_MODAL,
-                GTK_MESSAGE_QUESTION,
-                GTK_BUTTONS_NONE,
-                _("Does the system detect high clear equipment"
-                " and whether to switch to recommended scaling (200%%)?"
-                " Click on the confirmation logout."));
-    gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
 
-    result = gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    if (result){
-        system("ukui-session-tools --logout");
-    }
-    else{
-        g_settings_set_int (session,"qt-scale-factor",gdk_scala);
-        g_settings_set_int (session,"gdk-scale",qt_scale);
-    }
-}
-
-/* 
- * Function: scale_logout_dialog()
- * urpose :  When the system detects the high clear screen, the pops up change scale window.
- * To determine whether or not to log out and scate take effect
- */
-static void
-scale_logout_dialog()
-{
-	GdkScreen   *screen;
-    GSettings   *session;
-    int width, height, screen_num;
-    int gdk_scala,qt_scale;
-
-    screen     = gdk_screen_get_default();
-    screen_num = gdk_screen_get_n_monitors(screen);
-
-    if(screen_num == 1){
-        
-        width  = gdk_screen_get_width(screen);
-        height = gdk_screen_get_height(screen);
-        
-        if((width == 4096 && height == 3112) || 
-           (width == 3656 && height == 2664) || 
-           (width == 3840 && height == 2160) ){
-            
-            session = g_settings_new("org.ukui.session");
-            
-            gdk_scala = g_settings_get_int (session,"gdk-scale");
-            qt_scale  = g_settings_get_int (session,"qt-scale-factor");
-            
-            if(gdk_scala == 1 || qt_scale == 1)
-            {
-                g_settings_set_int (session,"qt-scale-factor",2);
-                g_settings_set_int (session,"gdk-scale",2);
-                show_question(session,gdk_scala,qt_scale);
-            }
-            g_object_unref (session);
-        } 
-    }
-}
-
-
-static gboolean flag = FALSE;
 static void
 on_randr_event (MateRRScreen *screen, gpointer data)
 {
@@ -1643,12 +1717,6 @@ on_randr_event (MateRRScreen *screen, gpointer data)
 	
         if (!priv->running)
                 return;
-	    /* Flag bit  avoid twice pop-up windows */
-        if(flag){
-            flag = !flag;
-            scale_logout_dialog();
-        }else
-            flag = !flag;
         
         mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
 

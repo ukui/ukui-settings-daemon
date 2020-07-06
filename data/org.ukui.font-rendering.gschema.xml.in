@@ -22,6 +22,16 @@
       <summary>DPI</summary>
       <description>The resolution used for converting font sizes to pixel sizes,  in dots per inch.</description>
     </key>
+    <key name="screen-height1" type="i">
+      <default>2160</default>
+      <summary>screen height</summary>
+      <description>Get the height before the first screen switch.</description>
+    </key>
+    <key name="screen-height2" type="i">
+      <default>0</default>
+      <summary>screen height</summary>
+      <description>Get the height before the second screen switch.</description>
+    </key>
     <key name="antialiasing" enum="org.ukui.font-rendering.Antialiasing">
       <default>'rgba'</default>
       <summary>Antialiasing</summary>

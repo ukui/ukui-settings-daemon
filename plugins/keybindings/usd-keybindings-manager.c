@@ -462,7 +462,6 @@ keybindings_filter (GdkXEvent             *gdk_xevent,
                     GdkEvent              *event,
                     UsdKeybindingsManager *manager)
 {
-	syslog(LOG_ERR, "keybindings_filter");
         XEvent *xevent = (XEvent *) gdk_xevent;
         GSList *li;
 
@@ -500,7 +499,7 @@ keybindings_filter (GdkXEvent             *gdk_xevent,
                         */
 						char execPathName[255];
 						sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
-						syslog(LOG_ERR, "==shutcut==========%s========",execPathName);
+						//syslog(LOG_ERR, "==shutcut==========%s========",execPathName);
                         GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(execPathName);
 						retval = g_app_info_launch_uris(info, NULL, NULL, NULL);
                         g_strfreev (argv);
@@ -545,7 +544,6 @@ gboolean
 usd_keybindings_manager_start (UsdKeybindingsManager *manager,
                                GError               **error)
 {
-	syslog(LOG_ERR, "------usd_keybindings_manager_start-------");
         GdkDisplay  *dpy;
         GdkScreen   *screen;
         GdkWindow   *window;

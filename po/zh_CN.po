@@ -1346,6 +1346,10 @@ msgstr "配置硬件时钟需要权限"
 msgid "Does the system detect high clear equipment and whether to switch to recommended scaling (200%%)? Click on the confirmation logout."
 msgstr "系统检测到高清设备，是否需要切换至推荐缩放(200%)？点击确认后注销生效。"
 
+#:../plugin/xrandr/usd-xrandr-manager.c:1618
+msgid "The system detects that the HD device has been replaced.Do you need to switch to the recommended zoom (100%%)? Click on the confirmation logout."
+msgstr "系统检测到高清设备已被更换，您是否需要切至推荐缩放（100％）？点击确认后注销生效。"
+
 #: ../plugin/xrandr/usd-xrandr-manager.c:1554
 msgid "Prompt"
 msgstr "提示框"
