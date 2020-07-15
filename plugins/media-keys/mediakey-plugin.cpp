@@ -5,9 +5,17 @@ PluginInterface* MediakeyPlugin::mInstance = nullptr;
 
 MediakeyPlugin::MediakeyPlugin()
 {
-    syslog_init("ukui-settings-daemon-mediakey", LOG_LOCAL6);
     CT_SYSLOG(LOG_DEBUG, "mediakey plugin init...");
-//    if (nullptr == )
+    mManager = MediaKeysManager::mediaKeysNew();
+}
+
+MediakeyPlugin::~MediakeyPlugin()
+{
+    CT_SYSLOG(LOG_DEBUG,"MediakeyPlugin deconstructor!");
+    if(mManager){
+        delete mManager;
+        mManager = nullptr;
+    }
 }
 
 PluginInterface *MediakeyPlugin::getInstance()
@@ -21,13 +29,19 @@ PluginInterface *MediakeyPlugin::getInstance()
 
 void MediakeyPlugin::activate()
 {
+    GError *error = NULL;
     CT_SYSLOG(LOG_DEBUG, "activating mediakey plugin ...");
-//    if (!)
+
+    if (!mManager->mediaKeysStart(error)) {
+            CT_SYSLOG(LOG_DEBUG,"Unable to start media-keys manager: %s", error->message);
+            g_error_free (error);
+    }
 }
 
 void MediakeyPlugin::deactivate()
 {
     CT_SYSLOG(LOG_DEBUG, "deactivating mediakey plugin ...");
+    mManager->mediaKeysStop();
 }
 
 PluginInterface* createSettingsPlugin()

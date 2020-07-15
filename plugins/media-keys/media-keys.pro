@@ -17,27 +17,33 @@ LIBS += \
     -lX11 -lXi \
     $$PWD/../common/libcommon.so
 
+include($$PWD/../../common/common.pri)
+
 DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 SOURCES += \
         devicewindow.cpp     \
         mediakeysmanager.cpp \
-        volumewindow.cpp
-#        mediakey-plugin.cpp
-
-# Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+        volumewindow.cpp \
+        mediakey-plugin.cpp
 
 HEADERS += \
     acme.h \
     devicewindow.h      \
     mediakeysmanager.h  \
-    volumewindow.h
-#    mediakey-plugin.h
+    volumewindow.h \
+    mediakey-plugin.h
 
 FORMS += \
     devicewindow.ui \
     volumewindow.ui
 
+DISTFILES += \
+    media-keys.ukui-settings-plugin.in
+
+DESTDIR = $$PWD/
+
+media_keys_lib.path = /usr/local/lib/ukui-settings-daemon/
+media_keys_lib.files = $$PWD/libmedia-keys.so
+
+INSTALLS += media_keys_lib
