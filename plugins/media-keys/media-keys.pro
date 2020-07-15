@@ -1,30 +1,48 @@
+QT += gui widgets svg x11extras
 TEMPLATE = lib
-TARGET = media-keys
-
-QT += gui
-CONFIG += no_keywords c++11 plugin link_pkgconfig
+CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
-
-include($$PWD/../../common/common.pri)
+PKGCONFIG += \
+    glib-2.0 \
+    gio-2.0 \
+    gtk+-3.0 \
+    gsettings-qt \
+    libmatemixer
 
 INCLUDEPATH += \
+    $$PWD/../common
 
-PKGCONFIG += \
-        gdk-3.0
+LIBS += \
+    -lX11 -lXi \
+    $$PWD/../common/libcommon.so
+
+DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 SOURCES += \
-    $$PWD/mediakey-plugin.cpp \
-    mediakey-manager.cpp
+        devicewindow.cpp \
+        eggaccelerators.c \
+        main.cpp \
+        mediakeysmanager.cpp \
+        usd-input-helper.c \
+        usd-keygrab.cpp \
+        volumewindow.cpp
+
+# Default rules for deployment.
+qnx: target.path = /tmp/$${TARGET}/bin
+else: unix:!android: target.path = /opt/$${TARGET}/bin
+!isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    $$PWD/mediakey-plugin.h \
-    mediakey-manager.h
+    acme.h \
+    devicewindow.h \
+    eggaccelerators.h \
+    mediakeysmanager.h \
+    usd-input-helper.h \
+    usd-keygrab.h \
+    volumewindow.h
 
-DESTDIR = $$PWD/
+FORMS += \
+    devicewindow.ui \
+    volumewindow.ui
 
-media_keys_lib.path = /usr/local/lib/ukui-settings-daemon/
-media_keys_lib.files = $$PWD/libclipboard.so
-
-INSTALLS += media_keys_lib

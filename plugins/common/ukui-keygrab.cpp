@@ -1,76 +1,51 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
- *
- * Copyright (C) 2001-2003 Bastien Nocera <hadess@hadess.net>
- * Copyright (C) 2006-2007 William Jon McCann <mccann@jhu.edu>
- * Copyright (C) 2008 Jens Granseuer <jensgr@gmx.net>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- */
+#include "ukui-keygrab.h"
 
-#include "config.h"
-
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKB.h>
 #include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
 #endif
 
 #include "eggaccelerators.h"
 
-#include "ukui-keygrab.h"
-
 /* these are the mods whose combinations are ignored by the keygrabbing code */
-static GdkModifierType usd_ignored_mods = 0;
+static GdkModifierType usd_ignored_mods = (GdkModifierType)0;
 
 /* these are the ones we actually use for global keys, we always only check
  * for these set */
-static GdkModifierType usd_used_mods = 0;
+static GdkModifierType usd_used_mods = (GdkModifierType)0;
 
 static void
 setup_modifiers (void)
 {
-        if (usd_used_mods == 0 || usd_ignored_mods == 0) {
-                GdkModifierType dynmods;
+    if (usd_used_mods == 0 || usd_ignored_mods == 0) {
+        GdkModifierType dynmods;
 
-                /* default modifiers */
-                usd_ignored_mods = \
-                        0x2000 /*Xkb modifier*/ | GDK_LOCK_MASK | GDK_HYPER_MASK;
-		usd_used_mods = \
-                        GDK_SHIFT_MASK | GDK_CONTROL_MASK |\
-                        GDK_MOD1_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK |\
-                        GDK_MOD5_MASK | GDK_SUPER_MASK | GDK_META_MASK;
+        /* default modifiers */
+        usd_ignored_mods = \
+                GdkModifierType(0x2000 /*Xkb modifier*/ | GDK_LOCK_MASK | GDK_HYPER_MASK);
+        usd_used_mods = \
+                    GdkModifierType(GDK_SHIFT_MASK | GDK_CONTROL_MASK |\
+                    GDK_MOD1_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK |\
+                    GDK_MOD5_MASK | GDK_SUPER_MASK | GDK_META_MASK);
 
-                /* NumLock can be assigned to varying keys so we need to
-                 * resolve and ignore it specially */
-                dynmods = 0;
-                egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_default (),
-                                                      EGG_VIRTUAL_NUM_LOCK_MASK,
-                                                      &dynmods);
+        /* NumLock can be assigned to varying keys so we need to
+         * resolve and ignore it specially */
+        dynmods = (GdkModifierType)0;
+        egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_default (),
+                                              EGG_VIRTUAL_NUM_LOCK_MASK,
+                                              &dynmods);
 
-                usd_ignored_mods |= dynmods;
-                usd_used_mods &= ~dynmods;
+        usd_ignored_mods = GdkModifierType (usd_ignored_mods | dynmods);
+        usd_used_mods = GdkModifierType (usd_used_mods & ~dynmods);
 	}
 }
 
 static void
 grab_key_real (guint      keycode,
                GdkWindow *root,
-               gboolean   grab,
+               bool   grab,
                int        mask)
 {
         if (grab) {
@@ -112,8 +87,8 @@ grab_key_real (guint      keycode,
 #define N_BITS 32
 void
 grab_key_unsafe (Key                 *key,
-                 gboolean             grab,
-                 GSList              *screens)
+                 bool             grab,
+                 QList<GdkScreen*>   *screens)
 {
         int   indexes[N_BITS]; /* indexes of bits we need to flip */
         int   i;
@@ -139,7 +114,7 @@ grab_key_unsafe (Key                 *key,
         uppervalue = 1 << bits_set_cnt;
         /* grab all possible modifier combinations for our mask */
         for (i = 0; i < uppervalue; ++i) {
-                GSList *l;
+                QList<GdkScreen*>::iterator l,begin,end;
                 int     j;
                 int     result = 0;
 
@@ -150,13 +125,15 @@ grab_key_unsafe (Key                 *key,
                         }
                 }
 
-                for (l = screens; l; l = l->next) {
-                        GdkScreen *screen = l->data;
-                        guint *code;
-
-                        for (code = key->keycodes; *code; ++code) {
+                l = begin = screens->begin();
+                end = screens->end();
+                for (; l != end; ++l) {
+                        GdkScreen *screen = *l;
+                        GdkWindow *window = gdk_screen_get_root_window (screen);
+                        guint *code = key->keycodes ;
+                        for (; *code; ++code) {
                                 grab_key_real (*code,
-                                               gdk_screen_get_root_window (screen),
+                                               window,
                                                grab,
                                                result | key->state);
                         }
@@ -223,7 +200,7 @@ match_key (Key *key, XEvent *event)
 
 	/* Check if we find a keysym that matches our current state */
 	if (gdk_keymap_translate_keyboard_state (gdk_keymap_get_default(), event->xkey.keycode,
-					     event->xkey.state, group,
+                         (GdkModifierType)event->xkey.state, group,
 					     &keyval, NULL, NULL, &consumed)) {
 		guint lower, upper;
 
@@ -233,7 +210,7 @@ match_key (Key *key, XEvent *event)
 		 * keysym, we might need the Shift state for matching,
 		 * so remove it from the consumed modifiers */
 		if (lower == key->keysym)
-			consumed &= ~GDK_SHIFT_MASK;
+            consumed = GdkModifierType (consumed & ~GDK_SHIFT_MASK);
 
 		return ((lower == key->keysym || upper == key->keysym)
 			&& (event->xkey.state & ~consumed & usd_used_mods) == key->state);

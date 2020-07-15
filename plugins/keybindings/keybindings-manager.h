@@ -7,6 +7,8 @@
 #include <QGSettings>
 #include <QApplication>
 #include <QKeyEvent>
+#include <QMessageBox>
+#include <QScreen>
 
 #include <sys/types.h>
 #include <sys/wait.h>

@@ -2,8 +2,9 @@
 #define KEYBINDINGSPLUGIN_H
 
 #include "keybindings_global.h"
-#include "keybindings-manager.h"
 #include "plugin-interface.h"
+#include "keybindings-manager.h"
+
 
 class KeybindingsPlugin : public PluginInterface
 {

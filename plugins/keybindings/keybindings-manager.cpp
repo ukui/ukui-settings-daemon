@@ -1,9 +1,6 @@
 #include "keybindings-manager.h"
-#include "config.h"
 #include "clib-syslog.h"
 #include "dconf-util.h"
-#include <QMessageBox>
-#include <QScreen>
 
 #define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
 #define CUSTOM_KEYBINDING_SCHEMA  "org.ukui.control-center.keybinding"
