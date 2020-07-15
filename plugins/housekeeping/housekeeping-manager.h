@@ -2,7 +2,7 @@
 #define HOUSEKEEPINGMANAGER_H
 
 #include <QObject>
-#include <QGSettings/qgsettings.h>
+#include <QGSettings>
 #include <QApplication>
 
 
@@ -35,8 +35,8 @@ public:
 private:
     static HousekeepingManager *mHouseManager;
     static DIskSpace *mDisk;
-    unsigned int long_term_cb;
-    unsigned int short_term_cb;
+    QTimer *long_term_handler;
+    QTimer *short_term_handler;
     QGSettings   *settings;
 
 };

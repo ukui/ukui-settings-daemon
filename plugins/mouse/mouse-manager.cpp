@@ -1234,7 +1234,7 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
                                PropModeReplace, &data, 1);
 
         XCloseDevice (display, device);
-        gdk_flush ();
+        // gdk_flush ();
     } catch (int x) {
         CT_SYSLOG(LOG_ERR,"Error %s device \"%s\"",
                   (state) ? "enabling" : "disabling",
@@ -1345,7 +1345,7 @@ void set_devicepresence_handler (MouseManager *manager)
                            RootWindow (display, DefaultScreen (display)),
                            &class_presence, 1);
 
-    gdk_flush ();
+    //gdk_flush ();
     //if (!gdk_error_trap_pop ())
     gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }

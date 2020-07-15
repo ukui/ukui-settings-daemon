@@ -200,7 +200,8 @@ QVariant qconf_types_to_qvariant(GVariant *value)
                 return map;
             }
 
-            // fall through
+            // fall throughsudo apt install qtbase5-dev qt5-qmake qtchooser qtscript5-dev qttools5-dev-tools qtbase5-dev-tools libgsettings-qt-dev
+
         default:
             g_assert_not_reached();
         }

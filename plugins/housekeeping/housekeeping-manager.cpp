@@ -3,6 +3,8 @@
 #include "housekeeping-manager.h"
 #include "clib-syslog.h"
 
+#include "qtimer.h"
+
 /* General */
 #define INTERVAL_ONCE_A_DAY     24*60*60
 #define INTERVAL_TWO_MINUTES    2*60
@@ -29,17 +31,28 @@ typedef struct {
         long    size;
 } ThumbData;
 
+/*
+ * 初始化DIskSpace， QGSettings，两个QTimer
+*/
 HousekeepingManager::HousekeepingManager()
 {
-    if(nullptr == mDisk)
-        mDisk = DIskSpace::DiskSpaceNew();
+    mDisk = new DIskSpace();
     settings = new QGSettings(THUMB_CACHE_SCHEMA);
+    long_term_handler = new QTimer(this);
+    connect(long_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup()));
+    short_term_handler = new QTimer(this);
+    connect(short_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup_once()));
 }
+
+/*
+ * 清理DIskSpace， QGSettings，两个QTimer
+*/
 HousekeepingManager::~HousekeepingManager()
 {
-    if(mDisk)
-        delete mDisk;
+    delete mDisk;
     delete settings;
+    delete long_term_handler;
+    delete short_term_handler;
 }
 
 HousekeepingManager *HousekeepingManager::HousekeepingManagerNew()
@@ -68,6 +81,7 @@ read_dir_for_purge (const char *path, GList *files)
         GFileInfo *info;
         while ((info = g_file_enumerator_next_file (enum_dir, NULL, NULL)) != NULL)
         {
+            syslog(LOG_ERR, "===read_path = %s===", read_path);
             const char *name;
             name = g_file_info_get_name (info);
 
@@ -143,6 +157,7 @@ void HousekeepingManager::purge_thumbnail_cache ()
     if ((purge_data.max_age < 0) && (purge_data.max_size < 0))
             return;
 
+    syslog(LOG_ERR, "in ===%s, g_get_user_cache_dir () is:=%s====", __func__, g_get_user_cache_dir ());
     path = g_build_filename (g_get_user_cache_dir (),
                              "thumbnails",
                              "normal",
@@ -195,18 +210,16 @@ bool HousekeepingManager::do_cleanup ()
 bool HousekeepingManager::do_cleanup_once ()
 {
         do_cleanup ();
-        short_term_cb = 0;
+        short_term_handler->stop();
         return false;
 }
 
 
 void HousekeepingManager::do_cleanup_soon()
 {
-    if(short_term_cb == 0){
+    if(short_term_handler == 0){
         qDebug("housekeeping: will tidy up in 2 minutes");
-        short_term_cb = g_timeout_add_seconds (INTERVAL_TWO_MINUTES,
-                                               (GSourceFunc) do_cleanup_once(),
-                                               this);
+        short_term_handler->start(INTERVAL_TWO_MINUTES);
     }
 }
 
@@ -217,34 +230,30 @@ void HousekeepingManager::settings_changed_callback(QString key)
 
 bool HousekeepingManager::HousekeepingManagerStart()
 {
-    CT_SYSLOG(LOG_DEBUG,"Housekeeping Manager Start ");
+    syslog(LOG_DEBUG,"Housekeeping Manager Start ");
 
     mDisk->UsdLdsmSetup(false);
 
-    connect (settings, SIGNAL(changed(QString)),this, SLOT(settings_changed_callback(QString)));
+    connect (settings, SIGNAL(changed(QString("changeds"))),this, SLOT(HousekeepingManager::settings_changed_callback(QString)));
 
     /* Clean once, a few minutes after start-up */
     do_cleanup_soon ();
 
-    /* Clean periodically, on a daily basis. */
-    long_term_cb = g_timeout_add_seconds (INTERVAL_ONCE_A_DAY,
-                                  (GSourceFunc) do_cleanup(),
-                                   this);
+    long_term_handler->start(INTERVAL_ONCE_A_DAY);
 
     return true;
 }
 
 void HousekeepingManager::HousekeepingManagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG, "Housekeeping Manager Stop");
-    if (short_term_cb) {
-        g_source_remove (short_term_cb);
-        short_term_cb = 0;
+    syslog(LOG_DEBUG, "Housekeeping Manager Stop");
+    // 时间
+    if (short_term_handler) {
+        short_term_handler->stop();
     }
-
-    if (long_term_cb) {
-        g_source_remove (long_term_cb);
-        long_term_cb = 0;
+    // 时间
+    if (long_term_handler) {
+        long_term_handler->stop();
 
         /* Do a clean-up on shutdown if and only if the size or age
          * limits have been set to a paranoid level of cleaning (zero)
