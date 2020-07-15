@@ -20,13 +20,10 @@ LIBS += \
 DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 SOURCES += \
-        devicewindow.cpp \
-        eggaccelerators.c \
-        main.cpp \
+        devicewindow.cpp     \
         mediakeysmanager.cpp \
-        usd-input-helper.c \
-        usd-keygrab.cpp \
         volumewindow.cpp
+#        mediakey-plugin.cpp
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
@@ -35,12 +32,10 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     acme.h \
-    devicewindow.h \
-    eggaccelerators.h \
-    mediakeysmanager.h \
-    usd-input-helper.h \
-    usd-keygrab.h \
+    devicewindow.h      \
+    mediakeysmanager.h  \
     volumewindow.h
+#    mediakey-plugin.h
 
 FORMS += \
     devicewindow.ui \

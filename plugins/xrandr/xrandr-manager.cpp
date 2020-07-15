@@ -228,7 +228,7 @@ void XrandrManager::AutoConfigureOutputs (XrandrManager *manager, guint32 timest
                 continue;
 
         if (mate_rr_output_info_is_active (output)) {
-            int width, height;
+            int width=0, height=0;
             char *name;
 
             g_assert (mate_rr_output_info_is_connected (output));
@@ -259,7 +259,7 @@ void XrandrManager::AutoConfigureOutputs (XrandrManager *manager, guint32 timest
      */
     for (l = just_turned_on; l; l = l->next) {
         MateRROutputInfo *output;
-        int width,height;
+        int width=0,height=0;
         char *name;
         i = GPOINTER_TO_INT (l->data);
         output = outputs[i];
@@ -389,7 +389,8 @@ void XrandrManager::StartXrandrIdleCb()
             }
         }
         SetScreenSize(dpy, root, width, height);
-    }else if(ScreenNum > 1){
+    }
+    /*else if(ScreenNum > 1){
         if(XmlFileTag.value("clone")=="true"){
             //
         }else{
@@ -402,6 +403,7 @@ void XrandrManager::StartXrandrIdleCb()
             }
         }
     }
+    */
 }
 
 

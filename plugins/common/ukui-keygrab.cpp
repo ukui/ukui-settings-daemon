@@ -131,7 +131,7 @@ grab_key_unsafe (Key                 *key,
                         GdkScreen *screen = *l;
                         GdkWindow *window = gdk_screen_get_root_window (screen);
                         guint *code = key->keycodes ;
-                        for (; *code; ++code) {
+                        for (; code&&(*code); ++code) {
                                 grab_key_real (*code,
                                                window,
                                                grab,
