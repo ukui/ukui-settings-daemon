@@ -1,5 +1,5 @@
 #include "usd-disk-space.h"
-
+#include <QDebug>
 #define GIGABYTE                   1024 * 1024 * 1024
 
 #define CHECK_EVERY_X_SECONDS      60
@@ -13,12 +13,12 @@
 #define SETTINGS_MIN_NOTIFY_PERIOD        "min-notify-period"
 #define SETTINGS_IGNORE_PATHS             "ignore-paths"
 
-DIskSpace *DIskSpace::mDisk = nullptr;
+//DIskSpace *DIskSpace::mDisk = nullptr;
 static unsigned long       *time_read;
 
 DIskSpace::DIskSpace()
 {
-    ldsm_notified_hash = NULL;
+
     ldsm_timeout_id = 0;
     ldsm_monitor = NULL;
     free_percent_notify = 0.05;
@@ -26,7 +26,24 @@ DIskSpace::DIskSpace()
     free_size_gb_no_notify = 2;
     min_notify_period = 10;
     ignore_paths = NULL;
-    settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
+
+    if (QGSettings::isSchemaInstalled(SETTINGS_HOUSEKEEPING_SCHEMA)) {
+        settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
+
+        //监听key的value是否发生了变化
+        connect(settings, &QGSettings::changed, this, [=] (const QString &key) {
+            if (key == "name") {
+
+            }
+            else if (key == "age") {
+                //int age = get_int_value("age");
+                //emit this->send_int(ValueType::AgeType, age);
+            }
+            else if (key == "male") {
+
+            }
+        });
+    }
     dialog = NULL;
 }
 
@@ -34,14 +51,6 @@ DIskSpace::~DIskSpace()
 {
 
 }
-
-DIskSpace *DIskSpace::DiskSpaceNew()
-{
-    if(nullptr == mDisk)
-        mDisk = new DIskSpace();
-    return mDisk;
-}
-
 
 static gint
 ldsm_ignore_path_compare (gconstpointer a,
@@ -59,18 +68,19 @@ bool DIskSpace::ldsm_mount_is_user_ignore (const char *path)
         return FALSE;
 }
 
-static gboolean
-ldsm_is_hash_item_in_ignore_paths (gpointer key,
-                                   gpointer value,
-                                   gpointer user_data)
-{
-    return DIskSpace::ldsm_mount_is_user_ignore ((char *)key);
-}
+//static gboolean
+//ldsm_is_hash_item_in_ignore_paths (gpointer key,
+//                                   gpointer value,
+//                                   gpointer user_data)
+//{
+//    return this->ldsm_mount_is_user_ignore ((char *)key);
+//}
 
 void DIskSpace::usdLdsmGetConfig()
 {
     gchar **settings_list;
 
+    // 先取得清理提醒的百分比时机
     free_percent_notify =settings->get(SETTINGS_FREE_PC_NOTIFY_KEY).toDouble();
     if (free_percent_notify >= 1 || free_percent_notify < 0) {
         /* FIXME define min and max in gschema! */
@@ -78,7 +88,7 @@ void DIskSpace::usdLdsmGetConfig()
                    "Using sensible default", free_percent_notify);
         free_percent_notify = 0.05;
     }
-
+    // 取得第二次提醒的百分比时机
     free_percent_notify_again = settings->get(SETTINGS_FREE_PC_NOTIFY_AGAIN_KEY).toDouble();
     if (free_percent_notify_again >= 1 || free_percent_notify_again < 0) {
         /* FIXME define min and max in gschema! */
@@ -87,7 +97,9 @@ void DIskSpace::usdLdsmGetConfig()
         free_percent_notify_again = 0.01;
     }
 
+    // 取得不通知的g
     free_size_gb_no_notify = settings->get(SETTINGS_FREE_SIZE_NO_NOTIFY).toInt();
+    // 取得最小通知周期
     min_notify_period = settings->get(SETTINGS_MIN_NOTIFY_PERIOD).toInt();
 
     if (ignore_paths != NULL) {
@@ -96,20 +108,20 @@ void DIskSpace::usdLdsmGetConfig()
         ignore_paths = NULL;
     }
 
-    settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
+    // 取得清理忽略的目录
+    // settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
+    QVariantList ignoreList = settings->choices(SETTINGS_IGNORE_PATHS);
     if (settings_list != NULL) {
-        unsigned int i;
-
-        for (i = 0; settings_list[i] != NULL; i++) {
-                if (settings_list[i] != NULL)
-                        ignore_paths = g_slist_prepend (ignore_paths, g_strdup (settings_list[i]));
-        }
-
-        /* Make sure we dont leave stale entries in ldsm_notified_hash */
-        g_hash_table_foreach_remove (ldsm_notified_hash,
-                                     ldsm_is_hash_item_in_ignore_paths, NULL);
-
-        g_strfreev (settings_list);
+        //unsigned int i;
+        // 清理m_notified_hash中ignoreList存在的。
+//        QVariant it;
+//        foreach ( it, ignoreList) {
+//            qDebug() << it;
+//            // m_notified_hash.remove(it.key())
+//        }
+        for (auto i = ignoreList.constBegin(); i != ignoreList.constEnd(); ++i) {
+           qDebug() << "====\n";
+       }
     }
 }
 
@@ -128,21 +140,16 @@ void DIskSpace::usdLdsmUpdateConfig(QString key)
     usdLdsmGetConfig();
 }
 
-static gboolean
-ldsm_is_hash_item_not_in_mounts (gpointer key,
-                                 gpointer value,
-                                 gpointer user_data)
-{
-    GList *l;
 
-    for (l = (GList *) user_data; l != NULL; l = l->next) {
+static gboolean is_hash_item_not_in_mounts(QHash<const char*, LdsmMountInfo*> &hash, GList* user_data) {
+    for (GList *l = (GList *) user_data; l != NULL; l = l->next) {
         GUnixMountEntry *mount = (GUnixMountEntry *)l->data;
         const char *path;
 
         path = g_unix_mount_get_mount_path (mount);
-
-        if (strcmp (path, (char *)key) == 0)
-                return FALSE;
+        // 找到了，返回false
+        if (hash.find(path) !=hash.end() )
+            return FALSE;
     }
 
     return TRUE;
@@ -154,20 +161,19 @@ is_in (const gchar *value, const gchar *set[])
     int i;
     for (i = 0; set[i] != NULL; i++)
     {
-          if (strcmp (set[i], value) == 0)
+        if (strcmp (set[i], value) == 0)
             return TRUE;
     }
     return FALSE;
 }
-
 
 bool DIskSpace::ldsm_mount_should_ignore (GUnixMountEntry *mount)
 {
     const gchar *fs, *device, *path;
 
     path = g_unix_mount_get_mount_path (mount);
-    if (ldsm_mount_is_user_ignore (path))
-            return TRUE;
+    if (DIskSpace::ldsm_mount_is_user_ignore (path))
+        return TRUE;
 
     /* This is borrowed from GLib and used as a way to determine
      * which mounts we should ignore by default. GLib doesn't
@@ -178,49 +184,49 @@ bool DIskSpace::ldsm_mount_should_ignore (GUnixMountEntry *mount)
     /* We also ignore network filesystems */
 
     const gchar *ignore_fs[] = {
-            "adfs",
-            "afs",
-            "auto",
-            "autofs",
-            "autofs4",
-            "cifs",
-            "cxfs",
-            "devfs",
-            "devpts",
-            "ecryptfs",
-            "fdescfs",
-            "gfs",
-            "gfs2",
-            "kernfs",
-            "linprocfs",
-            "linsysfs",
-            "lustre",
-            "lustre_lite",
-            "ncpfs",
-            "nfs",
-            "nfs4",
-            "nfsd",
-            "ocfs2",
-            "proc",
-            "procfs",
-            "ptyfs",
-            "rpc_pipefs",
-            "selinuxfs",
-            "smbfs",
-            "sysfs",
-            "tmpfs",
-            "usbfs",
-            "zfs",
-            NULL
+        "adfs",
+        "afs",
+        "auto",
+        "autofs",
+        "autofs4",
+        "cifs",
+        "cxfs",
+        "devfs",
+        "devpts",
+        "ecryptfs",
+        "fdescfs",
+        "gfs",
+        "gfs2",
+        "kernfs",
+        "linprocfs",
+        "linsysfs",
+        "lustre",
+        "lustre_lite",
+        "ncpfs",
+        "nfs",
+        "nfs4",
+        "nfsd",
+        "ocfs2",
+        "proc",
+        "procfs",
+        "ptyfs",
+        "rpc_pipefs",
+        "selinuxfs",
+        "smbfs",
+        "sysfs",
+        "tmpfs",
+        "usbfs",
+        "zfs",
+        NULL
     };
     const gchar *ignore_devices[] = {
-            "none",
-            "sunrpc",
-            "devpts",
-            "nfsd",
-            "/dev/loop",
-            "/dev/vn",
-            NULL
+        "none",
+        "sunrpc",
+        "devpts",
+        "nfsd",
+        "/dev/loop",
+        "/dev/vn",
+        NULL
     };
 
     fs = g_unix_mount_get_fs_type (mount);
@@ -242,10 +248,10 @@ bool  DIskSpace::ldsm_mount_has_space (LdsmMountInfo *mount)
     free_space = (double) mount->buf.f_bavail / (double) mount->buf.f_blocks;
     /* enough free space, nothing to do */
     if (free_space > free_percent_notify)
-            return true;
+        return true;
 
     if (((gint64) mount->buf.f_frsize * (gint64) mount->buf.f_bavail) > ((gint64) free_size_gb_no_notify * GIGABYTE))
-            return true;
+        return true;
 
     /* If we got here, then this volume is low on space */
     return false;
@@ -356,7 +362,7 @@ ldsm_analyze_path (const gchar *path)
     const gchar *argv[] = { DISK_SPACE_ANALYZER, path, NULL };
 
     g_spawn_async (NULL, (gchar **) argv, NULL, G_SPAWN_SEARCH_PATH,
-                    NULL, NULL, NULL, NULL);
+                   NULL, NULL, NULL, NULL);
 }
 
 bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
@@ -372,8 +378,8 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
     char  *path;
 
     /* Don't show a dialog if one is already displayed */
-        if (dialog)
-            return retval;
+    if (dialog)
+        return retval;
 
     name = g_unix_mount_guess_name (mount->mount);
     free_space = (gint64) mount->buf.f_frsize * (gint64) mount->buf.f_bavail;
@@ -385,12 +391,12 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
     g_free (program);
 
     dialog = new LdsmDialog (other_usable_volumes,
-                              multiple_volumes,
-                              has_disk_analyzer,
-                              has_trash,
-                              free_space,
-                              name,
-                              path);
+                             multiple_volumes,
+                             has_disk_analyzer,
+                             has_trash,
+                             free_space,
+                             name,
+                             path);
 
     g_free (name);
 
@@ -399,28 +405,29 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
 
     switch (response) {
     case GTK_RESPONSE_CANCEL:
-            retval = FALSE;
-            break;
+        retval = FALSE;
+        break;
     case LDSM_DIALOG_RESPONSE_ANALYZE:
-            retval = FALSE;
-            ldsm_analyze_path (path);
-            break;
+        retval = FALSE;
+        ldsm_analyze_path (path);
+        break;
     case LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
-            retval = TRUE;
-            //usd_ldsm_trash_empty ();//调清空回收站dialog
-            break;
+        retval = TRUE;
+        //usd_ldsm_trash_empty ();//调清空回收站dialog
+        break;
 
     case GTK_RESPONSE_NONE:
     case GTK_RESPONSE_DELETE_EVENT:
-            retval = TRUE;
-            break;
+        retval = TRUE;
+        break;
     default:
-            g_assert_not_reached ();
+        g_assert_not_reached ();
     }
     free (path);
     return retval;
 }
 
+// 目前希望吧GList mounts替换为QList
 void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
                                         bool multiple_volumes,
                                         bool other_usable_volumes)
@@ -447,17 +454,26 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
 
         path = g_unix_mount_get_mount_path (mount_info->mount);
 
-        previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
-        if (previous_mount_info != NULL)
-            previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
+        //        previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
+        //        if (previous_mount_info != NULL)
+        //            previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
+        //        liutong
+        // 找m_notified_hash中(mount_info->mount)得到的path
+        QHash<const char*, LdsmMountInfo*>::iterator it = m_notified_hash.find(path);
+        if (it != m_notified_hash.end()) {
+            // 如果找到了，就计算上一次的
 
+            //LdsmMountInfo* ptmp = it.value()
+            previous_free_space = (gdouble) ((*it)->buf.f_bavail) / (gdouble) ((*it)->buf.f_blocks);
+        }
         free_space = (gdouble) mount_info->buf.f_bavail / (gdouble) mount_info->buf.f_blocks;
 
         if (previous_mount_info == NULL) {
             /* We haven't notified for this mount yet */
             show_notify = TRUE;
             mount_info->notify_time = time (NULL);
-            g_hash_table_replace (ldsm_notified_hash, g_strdup (path), mount_info);
+
+            m_notified_hash.insert(path, mount_info);
         } else if ((previous_free_space - free_space) > free_percent_notify_again) {
             /* We've notified for this mount before and free space has decreased sufficiently since last time to notify again */
             curr_time = time (NULL);
@@ -472,7 +488,7 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
                 show_notify = FALSE;
                 mount_info->notify_time = previous_mount_info->notify_time;
             }
-            g_hash_table_replace (ldsm_notified_hash, g_strdup (path), mount_info);
+            m_notified_hash.insert(path, mount_info);
         } else {
             /* We've notified for this mount before, but the free space hasn't decreased sufficiently to notify again */
             ldsm_free_mount_info (mount_info);
@@ -513,8 +529,8 @@ bool DIskSpace::ldsm_check_all_mounts (gpointer data)
         mount = g_unix_mount_at (path, time_read);
         g_unix_mount_point_free (mount_point);
         if (mount == NULL) {
-                /* The GUnixMountPoint is not mounted */
-                continue;
+            /* The GUnixMountPoint is not mounted */
+            continue;
         }
 
         mount_info = g_new0 (LdsmMountInfo, 1);
@@ -556,14 +572,13 @@ bool DIskSpace::ldsm_check_all_mounts (gpointer data)
         if (!ldsm_mount_has_space (mount_info)) {
             full_mounts = g_list_prepend (full_mounts, mount_info);
         } else {
-            g_hash_table_remove (ldsm_notified_hash, g_unix_mount_get_mount_path (mount_info->mount));
             ldsm_free_mount_info (mount_info);
         }
     }
 
     number_of_full_mounts = g_list_length (full_mounts);
     if (number_of_mounts > number_of_full_mounts)
-            other_usable_volumes = TRUE;
+        other_usable_volumes = TRUE;
 
     ldsm_maybe_warn_mounts (full_mounts, multiple_volumes,
                             other_usable_volumes);
@@ -580,8 +595,8 @@ void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data)
 
     /* remove the saved data for mounts that got removed */
     mounts = g_unix_mounts_get (time_read);
-    g_hash_table_foreach_remove (ldsm_notified_hash,
-                                 ldsm_is_hash_item_not_in_mounts, mounts);
+
+    is_hash_item_not_in_mounts(m_notified_hash, mounts);
     g_list_free_full (mounts, (GDestroyNotify) g_unix_mount_free);
 
     /* check the status now, for the new mounts */
@@ -589,20 +604,18 @@ void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data)
 
     /* and reset the timeout */
     if (ldsm_timeout_id)
-            g_source_remove (ldsm_timeout_id);
+        g_source_remove (ldsm_timeout_id);
     ldsm_timeout_id = g_timeout_add_seconds (CHECK_EVERY_X_SECONDS,
                                              (GSourceFunc)ldsm_check_all_mounts, NULL);
 }
 
 void DIskSpace::UsdLdsmSetup(bool check_now)
 {
-    if (ldsm_notified_hash || ldsm_timeout_id || ldsm_monitor) {
+    if (!m_notified_hash.empty() || ldsm_timeout_id || ldsm_monitor) {
         qWarning ("Low disk space monitor already initialized.");
         return;
     }
-    ldsm_notified_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
-                                                g_free,
-                                                ldsm_free_mount_info);
+
     usdLdsmGetConfig();
     connect(settings,SIGNAL(changes(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
 #if GLIB_CHECK_VERSION (2, 44, 0)
@@ -612,33 +625,41 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
     g_unix_mount_monitor_set_rate_limit (ldsm_monitor, 1000);
 #endif
     g_signal_connect (ldsm_monitor, "mounts-changed",
-                      G_CALLBACK (ldsm_mounts_changed), NULL);
+                      G_CALLBACK (DIskSpace::ldsm_mounts_changed), NULL);
 
     if (check_now)
-        ldsm_check_all_mounts (NULL);
+        DIskSpace::ldsm_check_all_mounts (NULL);
 
     ldsm_timeout_id = g_timeout_add_seconds (CHECK_EVERY_X_SECONDS,
-                                             (GSourceFunc)ldsm_check_all_mounts, NULL);
+                                             (GSourceFunc)DIskSpace::ldsm_check_all_mounts, NULL);
 
 
+}
+
+void DIskSpace::cleanNotifyHash() {
+    for(auto it=m_notified_hash.begin();it!=m_notified_hash.end();it++) {
+        auto p = it.value();
+        if (nullptr != p) {
+            delete p;
+        }
+    }
+    m_notified_hash.clear();
 }
 
 void DIskSpace::UsdLdsmClean()
 {
     if (ldsm_timeout_id)
-            g_source_remove (ldsm_timeout_id);
+        g_source_remove (ldsm_timeout_id);
     ldsm_timeout_id = 0;
 
-    if (ldsm_notified_hash)
-            g_hash_table_destroy (ldsm_notified_hash);
-    ldsm_notified_hash = NULL;
+    cleanNotifyHash();
 
     if (ldsm_monitor)
-            g_object_unref (ldsm_monitor);
+        g_object_unref (ldsm_monitor);
     ldsm_monitor = NULL;
 
     if (settings) {
-            g_object_unref (settings);
+        g_object_unref (settings);
     }
 
     /*if (dialog) {
@@ -646,10 +667,10 @@ void DIskSpace::UsdLdsmClean()
             dialog = NULL;
     }*/
 
-    if (ignore_paths) {
-            g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
-            g_slist_free (ignore_paths);
-    }
+    //    if (ignore_paths) {
+    //            g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
+    //            g_slist_free (ignore_paths);
+    //    }
 }
 
 #ifdef TEST

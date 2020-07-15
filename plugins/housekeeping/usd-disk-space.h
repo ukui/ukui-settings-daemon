@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QApplication>
-#include <QGSettings/qgsettings.h>
+#include <QGSettings>
 
 #include "config.h"
 
@@ -20,6 +20,8 @@
 
 #include "usd-ldsm-dialog.h"
 
+#include <qhash.h>
+class QGSettings;
 typedef struct
 {
     GUnixMountEntry *mount;
@@ -30,22 +32,21 @@ typedef struct
 class DIskSpace :  public QObject
 {
     Q_OBJECT
-private:
+public:
     DIskSpace();
     DIskSpace(DIskSpace&)=delete;
 
-public:
+
     ~DIskSpace();
-    static DIskSpace *DiskSpaceNew();
     void UsdLdsmSetup (bool check_now);
     void UsdLdsmClean ();
-    static void usdLdsmGetConfig ();
-    static bool ldsm_mount_is_user_ignore (const char *path);
-    static void ldsm_mounts_changed (GObject  *monitor,gpointer  data);
-    static bool ldsm_check_all_mounts (gpointer data);
-    static bool ldsm_mount_should_ignore (GUnixMountEntry *mount);
-    static bool ldsm_mount_has_space (LdsmMountInfo *mount);
-    static void ldsm_maybe_warn_mounts (GList *mounts,
+     void usdLdsmGetConfig ();
+     static bool ldsm_mount_is_user_ignore (const char *path);
+     static void ldsm_mounts_changed (GObject  *monitor,gpointer  data);
+     static bool ldsm_check_all_mounts (gpointer data);
+     static bool ldsm_mount_should_ignore (GUnixMountEntry *mount);
+     static bool ldsm_mount_has_space (LdsmMountInfo *mount);
+     static void ldsm_maybe_warn_mounts (GList *mounts,
                                         bool multiple_volumes,
                                         bool other_usable_volumes);
     static bool ldsm_notify_for_mount (LdsmMountInfo *mount,
@@ -56,8 +57,10 @@ public Q_SLOTS:
     void usdLdsmUpdateConfig(QString);
 
 private:
+    void cleanNotifyHash();
     static DIskSpace *mDisk;
     static GHashTable        *ldsm_notified_hash ;
+    static QHash<const char*, LdsmMountInfo*> m_notified_hash;
     static unsigned int       ldsm_timeout_id;
     static GUnixMountMonitor *ldsm_monitor;
     static double             free_percent_notify;
@@ -67,7 +70,7 @@ private:
     static GSList            *ignore_paths;
     static QGSettings        *settings;
     static LdsmDialog        *dialog;
-
+    QVariantList             ignoreList;
 };
 
 #endif // DISKSPACE_H

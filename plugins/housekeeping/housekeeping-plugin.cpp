@@ -6,14 +6,14 @@ HousekeepingManager *HousekeepingPlugin::mHouseManager=nullptr;
 
 HousekeepingPlugin::HousekeepingPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"HousekeppingPlugin initializing!");
+    syslog(LOG_DEBUG,"HousekeppingPlugin initializing!");
     if(nullptr == mHouseManager)
         mHouseManager = HousekeepingManager::HousekeepingManagerNew();
 }
 
 HousekeepingPlugin::~HousekeepingPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"HousekeepingPlugin free");
+    syslog(LOG_DEBUG,"HousekeepingPlugin free");
     if(mHouseManager){
         delete mHouseManager;
         mHouseManager = nullptr;
@@ -23,10 +23,10 @@ HousekeepingPlugin::~HousekeepingPlugin()
 void HousekeepingPlugin::activate()
 {
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"Activating HousekeepingPlugin");
+    syslog(LOG_ERR,"liutong Activating HousekeepingPlugin");
     res = mHouseManager->HousekeepingManagerNew();
     if(!res)
-        CT_SYSLOG(LOG_ERR,"Unable to start Housekeeping Manager!");
+        syslog(LOG_ERR,"Unable to start Housekeeping Manager!");
 }
 
 PluginInterface *HousekeepingPlugin::getInstance()
@@ -38,7 +38,7 @@ PluginInterface *HousekeepingPlugin::getInstance()
 
 void HousekeepingPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating Housekeeping Plugin");
+    syslog(LOG_DEBUG,"Deactivating Housekeeping Plugin");
     mHouseManager->HousekeepingManagerStop();
 }
 

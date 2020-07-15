@@ -8,12 +8,13 @@ CONFIG += c++11 no_keywords link_pkgconfig plugin
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-include($$PWD/../../common/common.pri)
+#include($$PWD/../../common/common.pri)
+
 
 PKGCONFIG += \
         gtk+-3.0 \
         glib-2.0  harfbuzz  gmodule-2.0  \
-        libxklavier gobject-2.0 gio-2.0 \
+        libxklavier gobject-2.0 gio-2.0 gio-unix-2.0 \
         cairo cairo-gobject gsettings-qt
 
 INCLUDEPATH += \
