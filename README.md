@@ -27,23 +27,17 @@ debuild -D
 ### 插件进度
 
 > 选中表示确定可正常运行
-- [ ] a11y-keyboard
-- [x] a11y-settings
 - [x] background
 - [x] clipboard
 - [x] common
-- [x] datetime
-- [ ] dummy
 - [ ] housekepping
 - [x] keybindings
 - [x] keyboard
 - [ ] media-keys
 - [x] mouse
-- [x] mpris
-- [ ] sound
-- [ ] smartcard
-- [x] typing-break
-- [ ] xrandr
+- [ ] mpris
+- [x] sound
+- [x] xrandr
 - [x] xrdb
 - [x] xsettings
 
@@ -51,12 +45,10 @@ debuild -D
 
 | 插件 | 问题 | 负责人 |
 | --- | --- | --- |
-| a11y-keyboard | 未完成 | 商晓阳 |
-| dummy | 未完成 | 闫焕章 |
-| housekeeping | 未完成 | 丁敬 |
-| datetime | 需要测试是否可用，运行未报错 | 闫焕章 |
-| media-key | 未完成| 丁敬 |
-| smartcard | 如果检测到硬件，内部段错误 | 商晓阳 |
-| sound | 运行有报错:空链表 | 闫焕章 |
-| xrandr | 运行有报错:未定义的 `mate_rr_config_equal` | 商晓阳 |
-| xrdb | 运行报错:有未定义的接口，父类代码需要调整| 刘彤 |
+| a11y-keyboard | 搁置 |  |
+| a11y-settings | 搁置 |  |
+| smartcard | 搁置 |  |
+| housekeeping | 调试出错 | 刘彤 |
+| media-key | 未完成 | 闫焕章 |
+| mpris | 未完成 | 岳帅 |
+| xrandr |功能不完善 | 商晓阳 |
