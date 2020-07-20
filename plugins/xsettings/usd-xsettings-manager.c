@@ -457,7 +457,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 		strncpy(tmpCursorTheme, settings->cursor_theme, 255);
 	} else {
 		// unset, use default
-		strncpy(tmpCursorTheme, "Breeze_Snow", 255);
+		strncpy(tmpCursorTheme, "DMZ-Black", 255);
 	        syslog(LOG_INFO, "use default theme name=%s=", tmpCursorTheme);
 	}
 	if (settings->cursor_size > 0) {
