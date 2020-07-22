@@ -15,7 +15,7 @@
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL RED HAT
  * BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
  * WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
- * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ * OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN 
  * CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  *
  * Author:  Owen Taylor, Red Hat, Inc.
@@ -23,10 +23,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <glib.h>
 #include <X11/Xmd.h>		/* For CARD16 */
 
 #include "xsettings-manager.h"
+
+#define XSETTINGS_VARIANT_TYPE_COLOR  (G_VARIANT_TYPE ("(qqqq)"))
 
 struct _XSettingsManager
 {
@@ -41,13 +43,13 @@ struct _XSettingsManager
   XSettingsTerminateFunc terminate;
   void *cb_data;
 
-  XSettingsList *settings;
+  GHashTable *settings;
   unsigned long serial;
+
+  GVariant *overrides;
 };
 
-static XSettingsList *settings;
-
-typedef struct
+typedef struct 
 {
   Window window;
   Atom timestamp_prop_atom;
@@ -74,9 +76,9 @@ timestamp_predicate (Display *display,
  * @window: a #Window, used for communication with the server.
  *          The window must have PropertyChangeMask in its
  *          events mask or a hang will result.
- *
- * Routine to get the current X server time stamp.
- *
+ * 
+ * Routine to get the current X server time stamp. 
+ * 
  * Return value: the time stamp.
  **/
 static Time
@@ -106,7 +108,7 @@ xsettings_manager_check_running (Display *display,
 {
   char buffer[256];
   Atom selection_atom;
-
+  
   sprintf(buffer, "_XSETTINGS_S%d", screen);
   selection_atom = XInternAtom (display, buffer, False);
 
@@ -128,9 +130,7 @@ xsettings_manager_new (Display                *display,
 
   char buffer[256];
 
-  manager = malloc (sizeof *manager);
-  if (!manager)
-    return NULL;
+  manager = g_slice_new (XSettingsManager);
 
   manager->display = display;
   manager->screen = screen;
@@ -143,8 +143,9 @@ xsettings_manager_new (Display                *display,
   manager->terminate = terminate;
   manager->cb_data = cb_data;
 
-  manager->settings = NULL;
+  manager->settings = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, (GDestroyNotify) xsettings_setting_free);
   manager->serial = 0;
+  manager->overrides = NULL;
 
   manager->window = XCreateSimpleWindow (display,
 					 RootWindow (display, screen),
@@ -174,7 +175,7 @@ xsettings_manager_new (Display                *display,
       xev.data.l[2] = manager->window;
       xev.data.l[3] = 0;	/* manager specific data */
       xev.data.l[4] = 0;	/* manager specific data */
-
+      
       XSendEvent (display, RootWindow (display, screen),
 		  False, StructureNotifyMask, (XEvent *)&xev);
     }
@@ -182,7 +183,7 @@ xsettings_manager_new (Display                *display,
     {
       manager->terminate (manager->cb_data);
     }
-
+  
   return manager;
 }
 
@@ -191,234 +192,201 @@ xsettings_manager_destroy (XSettingsManager *manager)
 {
   XDestroyWindow (manager->display, manager->window);
 
-  xsettings_list_free (manager->settings);
-  free (manager);
+  g_hash_table_unref (manager->settings);
+
+  g_slice_free (XSettingsManager, manager);
 }
 
-Window
-xsettings_manager_get_window (XSettingsManager *manager)
-{
-  return manager->window;
-}
-
-Bool
-xsettings_manager_process_event (XSettingsManager *manager,
-				 XEvent           *xev)
-{
-  if (xev->xany.window == manager->window &&
-      xev->xany.type == SelectionClear &&
-      xev->xselectionclear.selection == manager->selection_atom)
-    {
-      manager->terminate (manager->cb_data);
-      return True;
-    }
-
-  return False;
-}
-
-XSettingsResult
-xsettings_manager_delete_setting (XSettingsManager *manager,
-                                  const char       *name)
-{
-  return xsettings_list_delete (&settings, name);
-}
-
-XSettingsResult
+static void
 xsettings_manager_set_setting (XSettingsManager *manager,
-			       XSettingsSetting *setting)
+                               const gchar      *name,
+                               gint              tier,
+                               GVariant         *value)
 {
-  XSettingsSetting *old_setting = xsettings_list_lookup (settings, setting->name);
-  XSettingsSetting *new_setting;
-  XSettingsResult result;
+  XSettingsSetting *setting;
 
-  if (old_setting)
+  setting = g_hash_table_lookup (manager->settings, name);
+
+  if (setting == NULL)
     {
-      if (xsettings_setting_equal (old_setting, setting))
-	return XSETTINGS_SUCCESS;
-
-      xsettings_list_delete (&settings, setting->name);
+      setting = xsettings_setting_new (name);
+      setting->last_change_serial = manager->serial;
+      g_hash_table_insert (manager->settings, setting->name, setting);
     }
 
-  new_setting = xsettings_setting_copy (setting);
-  if (!new_setting)
-    return XSETTINGS_NO_MEM;
+  xsettings_setting_set (setting, tier, value, manager->serial);
 
-  new_setting->last_change_serial = manager->serial;
-
-  result = xsettings_list_insert (&settings, new_setting);
-
-  if (result != XSETTINGS_SUCCESS)
-    xsettings_setting_free (new_setting);
-
-  return result;
+  if (xsettings_setting_get (setting) == NULL)
+    g_hash_table_remove (manager->settings, name);
 }
 
-XSettingsResult
+void
 xsettings_manager_set_int (XSettingsManager *manager,
 			   const char       *name,
 			   int               value)
 {
-  XSettingsSetting setting;
-
-  setting.name = (char *)name;
-  setting.type = XSETTINGS_TYPE_INT;
-  setting.data.v_int = value;
-
-  return xsettings_manager_set_setting (manager, &setting);
+  xsettings_manager_set_setting (manager, name, 0, g_variant_new_int32 (value));
 }
 
-XSettingsResult
+void
 xsettings_manager_set_string (XSettingsManager *manager,
 			      const char       *name,
 			      const char       *value)
 {
-  XSettingsSetting setting;
-
-  setting.name = (char *)name;
-  setting.type = XSETTINGS_TYPE_STRING;
-  setting.data.v_string = (char *)value;
-
-  return xsettings_manager_set_setting (manager, &setting);
+  xsettings_manager_set_setting (manager, name, 0, g_variant_new_string (value));
 }
 
-XSettingsResult
+void
 xsettings_manager_set_color (XSettingsManager *manager,
 			     const char       *name,
 			     XSettingsColor   *value)
 {
-  XSettingsSetting setting;
+  GVariant *tmp;
 
-  setting.name = (char *)name;
-  setting.type = XSETTINGS_TYPE_COLOR;
-  setting.data.v_color = *value;
-
-  return xsettings_manager_set_setting (manager, &setting);
+  tmp = g_variant_new ("(qqqq)", value->red, value->green, value->blue, value->alpha);
+  g_assert (g_variant_is_of_type (tmp, XSETTINGS_VARIANT_TYPE_COLOR)); /* paranoia... */
+  xsettings_manager_set_setting (manager, name, 0, tmp);
 }
 
-static size_t
-setting_length (XSettingsSetting *setting)
+void
+xsettings_manager_delete_setting (XSettingsManager *manager,
+                                  const char       *name)
 {
-  size_t length = 8;	/* type + pad + name-len + last-change-serial */
-  length += XSETTINGS_PAD (strlen (setting->name), 4);
+  xsettings_manager_set_setting (manager, name, 0, NULL);
+}
 
-  switch (setting->type)
+static gchar
+xsettings_get_typecode (GVariant *value)
+{
+  switch (g_variant_classify (value))
     {
-    case XSETTINGS_TYPE_INT:
-      length += 4;
-      break;
-    case XSETTINGS_TYPE_STRING:
-      length += 4 + XSETTINGS_PAD (strlen (setting->data.v_string), 4);
-      break;
-    case XSETTINGS_TYPE_COLOR:
-      length += 8;
-      break;
+    case G_VARIANT_CLASS_INT32:
+      return XSETTINGS_TYPE_INT;
+    case G_VARIANT_CLASS_STRING:
+      return XSETTINGS_TYPE_STRING;
+    case G_VARIANT_CLASS_TUPLE:
+      return XSETTINGS_TYPE_COLOR;
+    default:
+      g_assert_not_reached ();
     }
+}
 
-  return length;
+static void
+align_string (GString *string,
+              gint     alignment)
+{
+  /* Adds nul-bytes to the string until its length is an even multiple
+   * of the specified alignment requirement.
+   */
+  while ((string->len % alignment) != 0)
+    g_string_append_c (string, '\0');
 }
 
 static void
 setting_store (XSettingsSetting *setting,
-	       XSettingsBuffer *buffer)
+               GString          *buffer)
 {
-  size_t string_len;
-  size_t length;
+  XSettingsType type;
+  GVariant *value;
+  guint16 len16;
 
-  *(buffer->pos++) = setting->type;
-  *(buffer->pos++) = 0;
+  value = xsettings_setting_get (setting);
 
-  string_len = strlen (setting->name);
-  *(CARD16 *)(buffer->pos) = string_len;
-  buffer->pos += 2;
+  type = xsettings_get_typecode (value);
 
-  length = XSETTINGS_PAD (string_len, 4);
-  memcpy (buffer->pos, setting->name, string_len);
-  length -= string_len;
-  buffer->pos += string_len;
+  g_string_append_c (buffer, type);
+  g_string_append_c (buffer, 0);
 
-  while (length > 0)
+  len16 = strlen (setting->name);
+  g_string_append_len (buffer, (gchar *) &len16, 2);
+  g_string_append (buffer, setting->name);
+  align_string (buffer, 4);
+
+  g_string_append_len (buffer, (gchar *) &setting->last_change_serial, 4);
+
+  if (type == XSETTINGS_TYPE_STRING)
     {
-      *(buffer->pos++) = 0;
-      length--;
+      const gchar *string;
+      gsize stringlen;
+      guint32 len32;
+
+      string = g_variant_get_string (value, &stringlen);
+      len32 = stringlen;
+      g_string_append_len (buffer, (gchar *) &len32, 4);
+      g_string_append (buffer, string);
+      align_string (buffer, 4);
     }
-
-  *(CARD32 *)(buffer->pos) = setting->last_change_serial;
-  buffer->pos += 4;
-
-  switch (setting->type)
-    {
-    case XSETTINGS_TYPE_INT:
-      *(CARD32 *)(buffer->pos) = setting->data.v_int;
-      buffer->pos += 4;
-      break;
-    case XSETTINGS_TYPE_STRING:
-      string_len = strlen (setting->data.v_string);
-      *(CARD32 *)(buffer->pos) = string_len;
-      buffer->pos += 4;
-
-      length = XSETTINGS_PAD (string_len, 4);
-      memcpy (buffer->pos, setting->data.v_string, string_len);
-      length -= string_len;
-      buffer->pos += string_len;
-
-      while (length > 0)
-	{
-	  *(buffer->pos++) = 0;
-	  length--;
-	}
-      break;
-    case XSETTINGS_TYPE_COLOR:
-      *(CARD16 *)(buffer->pos) = setting->data.v_color.red;
-      *(CARD16 *)(buffer->pos + 2) = setting->data.v_color.green;
-      *(CARD16 *)(buffer->pos + 4) = setting->data.v_color.blue;
-      *(CARD16 *)(buffer->pos + 6) = setting->data.v_color.alpha;
-      buffer->pos += 8;
-      break;
-    }
+  else
+    /* GVariant format is the same as XSETTINGS format for the non-string types */
+    g_string_append_len (buffer, g_variant_get_data (value), g_variant_get_size (value));
 }
 
-XSettingsResult
+void
 xsettings_manager_notify (XSettingsManager *manager)
 {
-  XSettingsBuffer buffer;
-  XSettingsList *iter;
-  int n_settings = 0;
+  GString *buffer;
+  GHashTableIter iter;
+  int n_settings;
+  gpointer value;
 
-  buffer.len = 12;		/* byte-order + pad + SERIAL + N_SETTINGS */
+  n_settings = g_hash_table_size (manager->settings);
 
-  iter = settings;
-  while (iter)
-    {
-      buffer.len += setting_length (iter->setting);
-      n_settings++;
-      iter = iter->next;
-    }
+  buffer = g_string_new (NULL);
+  g_string_append_c (buffer, xsettings_byte_order ());
+  g_string_append_c (buffer, '\0');
+  g_string_append_c (buffer, '\0');
+  g_string_append_c (buffer, '\0');
 
-  buffer.data = buffer.pos = malloc (buffer.len);
-  if (!buffer.data)
-    return XSETTINGS_NO_MEM;
+  g_string_append_len (buffer, (gchar *) &manager->serial, 4);
+  g_string_append_len (buffer, (gchar *) &n_settings, 4);
 
-  *buffer.pos = xsettings_byte_order ();
-
-  buffer.pos += 4;
-  *(CARD32 *)buffer.pos = manager->serial++;
-  buffer.pos += 4;
-  *(CARD32 *)buffer.pos = n_settings;
-  buffer.pos += 4;
-
-  iter = settings;
-  while (iter)
-    {
-      setting_store (iter->setting, &buffer);
-      iter = iter->next;
-    }
+  g_hash_table_iter_init (&iter, manager->settings);
+  while (g_hash_table_iter_next (&iter, NULL, &value))
+    setting_store (value, buffer);
 
   XChangeProperty (manager->display, manager->window,
-		   manager->xsettings_atom, manager->xsettings_atom,
-		   8, PropModeReplace, buffer.data, buffer.len);
+                   manager->xsettings_atom, manager->xsettings_atom,
+                   8, PropModeReplace, (guchar *) buffer->str, buffer->len);
 
-  free (buffer.data);
-
-  return XSETTINGS_SUCCESS;
+  g_string_free (buffer, TRUE);
+  manager->serial++;
 }
 
+void
+xsettings_manager_set_overrides (XSettingsManager *manager,
+                                 GVariant         *overrides)
+{
+  GVariantIter iter;
+  const gchar *key;
+  GVariant *value;
+
+  g_return_if_fail (overrides != NULL && g_variant_is_of_type (overrides, G_VARIANT_TYPE_VARDICT));
+
+  if (manager->overrides)
+    {
+      /* unset the existing overrides */
+
+      g_variant_iter_init (&iter, manager->overrides);
+      while (g_variant_iter_next (&iter, "{&sv}", &key, NULL))
+        /* only unset it at this point if it's not in the new list */
+        if (!g_variant_lookup (overrides, key, "*", NULL))
+          xsettings_manager_set_setting (manager, key, 1, NULL);
+      g_variant_unref (manager->overrides);
+    }
+
+  /* save this so we can do the unsets next time */
+  manager->overrides = g_variant_ref_sink (overrides);
+
+  /* set the new values */
+  g_variant_iter_init (&iter, overrides);
+  while (g_variant_iter_loop (&iter, "{&sv}", &key, &value))
+    {
+      /* only accept recognised types... */
+      if (!g_variant_is_of_type (value, G_VARIANT_TYPE_STRING) &&
+          !g_variant_is_of_type (value, G_VARIANT_TYPE_INT32) &&
+          !g_variant_is_of_type (value, XSETTINGS_VARIANT_TYPE_COLOR))
+        continue;
+
+      xsettings_manager_set_setting (manager, key, 1, value);
+    }
+}
