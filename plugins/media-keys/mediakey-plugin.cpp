@@ -5,13 +5,13 @@ PluginInterface* MediakeyPlugin::mInstance = nullptr;
 
 MediakeyPlugin::MediakeyPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG, "mediakey plugin init...");
+    syslog(LOG_ERR, "mediakey plugin init...");
     mManager = MediaKeysManager::mediaKeysNew();
 }
 
 MediakeyPlugin::~MediakeyPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"MediakeyPlugin deconstructor!");
+    syslog(LOG_ERR,"MediakeyPlugin deconstructor!");
     if(mManager){
         delete mManager;
         mManager = nullptr;
@@ -30,17 +30,17 @@ PluginInterface *MediakeyPlugin::getInstance()
 void MediakeyPlugin::activate()
 {
     GError *error = NULL;
-    CT_SYSLOG(LOG_DEBUG, "activating mediakey plugin ...");
+    syslog(LOG_ERR, "activating mediakey plugin ...");
 
     if (!mManager->mediaKeysStart(error)) {
-            CT_SYSLOG(LOG_DEBUG,"Unable to start media-keys manager: %s", error->message);
+            syslog(LOG_DEBUG,"Unable to start media-keys manager: %s", error->message);
             g_error_free (error);
     }
 }
 
 void MediakeyPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG, "deactivating mediakey plugin ...");
+    syslog(LOG_ERR, "deactivating mediakey plugin ...");
     mManager->mediaKeysStop();
 }
 

@@ -43,8 +43,8 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-housekeeping_lib.path = /usr/local/lib/ukui-settings-daemon/
-housekeeping_lib.files = $$PWD/housekeeping.so
+housekeeping_lib.path = /usr/local/lib/ukui-settings-daemon
+housekeeping_lib.files = $$PWD/libhousekeeping.so
 
 INSTALLS += housekeeping_lib
 

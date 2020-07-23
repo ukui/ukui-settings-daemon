@@ -14,12 +14,12 @@
 class HousekeepingManager : public QObject
 {
     Q_OBJECT
-private:
+// private:
+public:
     HousekeepingManager();
     HousekeepingManager(HousekeepingManager&)=delete;
-public:
+
     ~HousekeepingManager();
-    static HousekeepingManager *HousekeepingManagerNew();
     bool HousekeepingManagerStart();
     void HousekeepingManagerStop();
 

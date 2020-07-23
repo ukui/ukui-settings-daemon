@@ -18,7 +18,7 @@ private:
     HousekeepingPlugin(HousekeepingPlugin&)=delete;
 
 private:
-    static HousekeepingManager *mHouseManager;
+    HousekeepingManager *mHouseManager;
     static PluginInterface     *mInstance;
 
 };

@@ -1,5 +1,7 @@
 #include "usd-disk-space.h"
 #include <QDebug>
+#include <syslog.h>
+#include "qtimer.h"
 #define GIGABYTE                   1024 * 1024 * 1024
 
 #define CHECK_EVERY_X_SECONDS      60
@@ -15,11 +17,30 @@
 
 //DIskSpace *DIskSpace::mDisk = nullptr;
 static unsigned long       *time_read;
+QTimer* DIskSpace::ldsm_timeout_cb = NULL;
+
+
+ DIskSpace *DIskSpace::mDisk = NULL;
+ GHashTable        *DIskSpace::ldsm_notified_hash  = NULL;
+ QHash<const char*, LdsmMountInfo*> DIskSpace::m_notified_hash;
+
+
+ GUnixMountMonitor *DIskSpace::ldsm_monitor = NULL;
+ double             DIskSpace::free_percent_notify;
+ double             DIskSpace::free_percent_notify_again;
+ unsigned int       DIskSpace::free_size_gb_no_notify;
+ unsigned int       DIskSpace::min_notify_period = 0;
+ GSList            *DIskSpace::ignore_paths = NULL;
+ QGSettings        *DIskSpace::settings;
+ LdsmDialog        *DIskSpace::dialog = NULL;
 
 DIskSpace::DIskSpace()
 {
 
-    ldsm_timeout_id = 0;
+        syslog(LOG_ERR, "%s=====11111111111111111111111", __FUNCTION__);
+    ldsm_timeout_cb = new QTimer();
+    connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
+
     ldsm_monitor = NULL;
     free_percent_notify = 0.05;
     free_percent_notify_again = 0.01;
@@ -502,7 +523,7 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
     }
 }
 
-bool DIskSpace::ldsm_check_all_mounts (gpointer data)
+bool DIskSpace::ldsm_check_all_mounts ()
 {
     GList *mounts;
     GList *l;
@@ -600,18 +621,17 @@ void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data)
     g_list_free_full (mounts, (GDestroyNotify) g_unix_mount_free);
 
     /* check the status now, for the new mounts */
-    ldsm_check_all_mounts (NULL);
+    ldsm_check_all_mounts ();
+
+
 
     /* and reset the timeout */
-    if (ldsm_timeout_id)
-        g_source_remove (ldsm_timeout_id);
-    ldsm_timeout_id = g_timeout_add_seconds (CHECK_EVERY_X_SECONDS,
-                                             (GSourceFunc)ldsm_check_all_mounts, NULL);
+    ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
 }
 
 void DIskSpace::UsdLdsmSetup(bool check_now)
 {
-    if (!m_notified_hash.empty() || ldsm_timeout_id || ldsm_monitor) {
+    if (!m_notified_hash.empty() || ldsm_timeout_cb || ldsm_monitor) {
         qWarning ("Low disk space monitor already initialized.");
         return;
     }
@@ -628,10 +648,9 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
                       G_CALLBACK (DIskSpace::ldsm_mounts_changed), NULL);
 
     if (check_now)
-        DIskSpace::ldsm_check_all_mounts (NULL);
+        ldsm_check_all_mounts ();
 
-    ldsm_timeout_id = g_timeout_add_seconds (CHECK_EVERY_X_SECONDS,
-                                             (GSourceFunc)DIskSpace::ldsm_check_all_mounts, NULL);
+    ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
 
 
 }
@@ -648,9 +667,6 @@ void DIskSpace::cleanNotifyHash() {
 
 void DIskSpace::UsdLdsmClean()
 {
-    if (ldsm_timeout_id)
-        g_source_remove (ldsm_timeout_id);
-    ldsm_timeout_id = 0;
 
     cleanNotifyHash();
 

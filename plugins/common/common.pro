@@ -37,7 +37,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-common_lib.path = /usr/local/lib/ukui-settings-daemon/
+common_lib.path = /usr/local/lib/ukui-settings-daemon
 common_lib.files = $$PWD/libcommon.so
 
 INSTALLS += common_lib

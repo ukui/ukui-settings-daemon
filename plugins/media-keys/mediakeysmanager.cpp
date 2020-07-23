@@ -31,6 +31,7 @@ MediaKeysManager* MediaKeysManager::mediaKeysNew()
 
 bool MediaKeysManager::mediaKeysStart(GError*)
 {
+        mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
     syslog(LOG_DEBUG,"Starting mediakeys manager!");
@@ -44,7 +45,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
-    mate_mixer_init();
+
 
     if(mate_mixer_is_initialized()){
         mContext = mate_mixer_context_new();

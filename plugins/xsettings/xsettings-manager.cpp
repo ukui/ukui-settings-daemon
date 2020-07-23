@@ -14,9 +14,7 @@ XsettingsManager::XsettingsManager(Display                *display,
         XSettingsTerminateFunc  terminate,
         int                   *cb_data)
 {
-    syslog(LOG_ERR, "===gdk_init===BEGIN");
     gdk_init(NULL,NULL);
-    syslog(LOG_ERR, "===gdk_init===END");
     this->display = display;
     this->screen = screen;
     this->terminate = terminate;
