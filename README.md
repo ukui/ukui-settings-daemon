@@ -35,8 +35,6 @@ debuild -D
 ### 插件进度
 
 > 选中表示确定可正常运行
-- [ ] a11y-keyboard
-- [x] a11y-settings
 - [x] background
 - [x] clipboard
 - [x] common
@@ -47,11 +45,9 @@ debuild -D
 - [x] keyboard
 - [ ] media-keys
 - [x] mouse
-- [x] mpris
-- [ ] sound
-- [ ] smartcard
-- [x] typing-break
-- [ ] xrandr
+- [ ] mpris
+- [x] sound
+- [x] xrandr
 - [x] xrdb
 - [x] xsettings
 
@@ -67,5 +63,3 @@ debuild -D
 | sound | 运行有报错:空链表 | 闫焕章 |
 | xrdb | 运行报错:有未定义的接口，父类代码需要调整| 刘彤 |
 | xsettings | 初步重构完成，测试过字体部分可用| 刘彤 |
-
-
