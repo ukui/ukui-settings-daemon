@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QTimer>
 #include <QtX11Extras/QX11Info>
-#include <QGSettings>
+#include <QGSettings/qgsettings.h>
 #include <QApplication>
 
 #include <glib.h>
@@ -37,9 +37,9 @@ public Q_SLOTS:
     void mouse_callback(QString);
     void touchpad_callback(QString);
 
+public:
+    bool get_touchpad_handedness (bool mouse_left_handed);
 private:
-    friend bool get_touchpad_handedness (MouseManager *manager,
-                                         bool mouse_left_handed);
     friend void set_left_handed_all     (MouseManager *manager,
                                          bool mouse_left_handed,
                                          bool touchpad_left_handed);

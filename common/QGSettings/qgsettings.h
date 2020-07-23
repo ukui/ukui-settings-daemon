@@ -63,6 +63,13 @@ public:
     int getEnum(const char *key);
 
     /**
+     * g_settings_get()字符串数组的便捷变体。
+     * 给出一个key 未指定为的架构中的字符串类型数组是程序员的错误settings 。
+     * return: 一个新分配的，NULL终止的字符串数组，该值存储在key 中settings
+     */
+    char **getStrv(const char *key);
+
+    /**
      *
      */
     bool trySet (const QString& key, const QVariant& value);

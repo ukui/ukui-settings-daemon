@@ -9,16 +9,17 @@
 #include <gio/gio.h>
 #include <glib/gstdio.h>
 #include <string.h>
+#include "usd-disk-space.h"
 
 class HousekeepingManager : public QObject
 {
     Q_OBJECT
-private:
+// private:
+public:
     HousekeepingManager();
     HousekeepingManager(HousekeepingManager&)=delete;
-public:
+
     ~HousekeepingManager();
-    static HousekeepingManager *HousekeepingManagerNew();
     bool HousekeepingManagerStart();
     void HousekeepingManagerStop();
 
@@ -33,8 +34,9 @@ public:
 
 private:
     static HousekeepingManager *mHouseManager;
-    unsigned int long_term_cb;
-    unsigned int short_term_cb;
+    static DIskSpace *mDisk;
+    QTimer *long_term_handler;
+    QTimer *short_term_handler;
     QGSettings   *settings;
 
 };

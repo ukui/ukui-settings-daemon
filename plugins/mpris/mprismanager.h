@@ -1,15 +1,24 @@
-/*
- */
-
 #ifndef MPRISMANAGER_H
 #define MPRISMANAGER_H
 
-#include <glib.h>
-#include <glib-object.h>
-#include <gio/gio.h>        //for GDBusProxy
+#include <QObject>
 #include <QQueue>
+#include <QString>
+#include <QDBusServiceWatcher>
+#include <QDBusInterface>
+#include <QDBusConnection>
 
-class MprisManager{
+/** undef 'signals' from qt,avoid conflict with Glib
+ *  undef qt中的 'signals' 关键字，避免与 Glib 冲突
+ */
+#ifdef signals
+#undef signals
+#endif
+
+#include <gio/gio.h>        //for GError
+
+class MprisManager : public QObject{
+    Q_OBJECT
 public:
     ~MprisManager();
     static MprisManager* MprisManagerNew();
@@ -17,33 +26,19 @@ public:
     void MprisManagerStop();
 
 private:
-    MprisManager();
-    static void mp_name_appeared(GDBusConnection  *connection,
-                          const char      *name,
-                          const char      *name_owner);
-    static void mp_name_vanished (GDBusConnection *connection,
-                                  const char     *name);
-    static void on_media_player_key_pressed (const char      *key);
-    static void grab_media_player_keys_cb (GDBusProxy       *proxy,
-                                    GAsyncResult     *res);
-    static void grab_media_player_keys();
-    static void key_pressed (GDBusProxy          *proxy,
-                             char               *sender_name,
-                             char               *signal_name,
-                             GVariant            *parameters);
-    static void got_proxy_cb (GObject           *source_object,
-                                GAsyncResult      *res);
-    static void usd_name_appeared (GDBusConnection     *connection,
-                                    const char         *name,
-                                    const char         *name_owner);
-    static void usd_name_vanished (GDBusConnection   *connection,
-                                    const char       *name);
+    MprisManager(QObject *parent = nullptr);
+    MprisManager(const MprisManager&) = delete;
+
+private Q_SLOTS:
+    void serviceRegisteredSlot(const QString&);
+    void serviceUnregisteredSlot(const QString&);
+    void keyPressed(QString,QString);
 
 private:
     static MprisManager   *mMprisManager;
-    QQueue<QString>       *media_player_queue;
-    GDBusProxy            *media_keys_proxy;
-    guint                 watch_id;
+    QDBusServiceWatcher   *mDbusWatcher;
+    QDBusInterface        *mDbusInterface;
+    QQueue<QString>       *mPlayerQuque;
 };
 
 #endif /* MPRISMANAGER_H */

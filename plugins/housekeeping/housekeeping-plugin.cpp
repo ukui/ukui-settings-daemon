@@ -2,18 +2,16 @@
 #include "clib-syslog.h"
 
 PluginInterface     *HousekeepingPlugin::mInstance=nullptr;
-HousekeepingManager *HousekeepingPlugin::mHouseManager=nullptr;
 
 HousekeepingPlugin::HousekeepingPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"HousekeppingPlugin initializing!");
-    if(nullptr == mHouseManager)
-        mHouseManager = HousekeepingManager::HousekeepingManagerNew();
+    mHouseManager = new HousekeepingManager();
+    if(!mHouseManager)
+        syslog(LOG_ERR,"Unable to start Housekeeping Manager!");
 }
 
 HousekeepingPlugin::~HousekeepingPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"HousekeepingPlugin free");
     if(mHouseManager){
         delete mHouseManager;
         mHouseManager = nullptr;
@@ -22,11 +20,8 @@ HousekeepingPlugin::~HousekeepingPlugin()
 
 void HousekeepingPlugin::activate()
 {
-    bool res;
-    CT_SYSLOG(LOG_DEBUG,"Activating HousekeepingPlugin");
-    res = mHouseManager->HousekeepingManagerNew();
-    if(!res)
-        CT_SYSLOG(LOG_ERR,"Unable to start Housekeeping Manager!");
+    mHouseManager->HousekeepingManagerStart();
+
 }
 
 PluginInterface *HousekeepingPlugin::getInstance()
@@ -38,7 +33,7 @@ PluginInterface *HousekeepingPlugin::getInstance()
 
 void HousekeepingPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating Housekeeping Plugin");
+    syslog(LOG_ERR,"Deactivating Housekeeping Plugin");
     mHouseManager->HousekeepingManagerStop();
 }
 

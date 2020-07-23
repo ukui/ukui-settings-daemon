@@ -3,46 +3,59 @@
 #include "housekeeping-manager.h"
 #include "clib-syslog.h"
 
+#include "qtimer.h"
+
 /* General */
 #define INTERVAL_ONCE_A_DAY     24*60*60
-#define INTERVAL_TWO_MINUTES    2*60
-
+//#define INTERVAL_TWO_MINUTES    2*60
+#define INTERVAL_TWO_MINUTES    2
 /* Thumbnail cleaner */
 #define THUMB_CACHE_SCHEMA      "org.mate.thumbnail-cache"
 #define THUMB_CACHE_KEY_AGE     "maximum-age"
 #define THUMB_CACHE_KEY_SIZE	"maximum-size"
 
 HousekeepingManager  *HousekeepingManager::mHouseManager = nullptr;
+DIskSpace   *HousekeepingManager::mDisk = nullptr;
 
 typedef struct {
-        long now;
-        long max_age;
-        signed long total_size;
-        signed long max_size;
+    long now;
+    long max_age;
+    signed long total_size;
+    signed long max_size;
 } PurgeData;
 
 
 typedef struct {
-        time_t  mtime;
-        char   *path;
-        long    size;
+    time_t  mtime;
+    char   *path;
+    long    size;
 } ThumbData;
 
+/*
+ * 初始化DIskSpace， QGSettings，两个QTimer
+*/
 HousekeepingManager::HousekeepingManager()
 {
+    mDisk = new DIskSpace();
     settings = new QGSettings(THUMB_CACHE_SCHEMA);
-}
-HousekeepingManager::~HousekeepingManager()
-{
-    delete settings;
+    long_term_handler = new QTimer(this);
+    connect(long_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup()));
+    short_term_handler = new QTimer(this);
+    connect(short_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup_once()));
 }
 
-HousekeepingManager *HousekeepingManager::HousekeepingManagerNew()
+/*
+ * 清理DIskSpace， QGSettings，两个QTimer
+*/
+HousekeepingManager::~HousekeepingManager()
 {
-    if(nullptr == mHouseManager)
-        mHouseManager = new HousekeepingManager();
-    return mHouseManager;
+    delete mDisk;
+    delete settings;
+    delete long_term_handler;
+    delete short_term_handler;
 }
+
+
 
 static GList *
 read_dir_for_purge (const char *path, GList *files)
@@ -51,6 +64,7 @@ read_dir_for_purge (const char *path, GList *files)
     GFileEnumerator *enum_dir;
 
     read_path = g_file_new_for_path (path);
+    syslog(LOG_ERR, "===read_path = %s===", path);
     enum_dir = g_file_enumerate_children (read_path,
                                           G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                           G_FILE_ATTRIBUTE_TIME_MODIFIED ","
@@ -63,6 +77,7 @@ read_dir_for_purge (const char *path, GList *files)
         GFileInfo *info;
         while ((info = g_file_enumerator_next_file (enum_dir, NULL, NULL)) != NULL)
         {
+
             const char *name;
             name = g_file_info_get_name (info);
 
@@ -98,10 +113,10 @@ static void
 purge_old_thumbnails (ThumbData *info, PurgeData *purge_data)
 {
     if ((purge_data->now - info->mtime) > purge_data->max_age) {
-            g_unlink (info->path);
-            info->size = 0;
+        g_unlink (info->path);
+        info->size = 0;
     } else {
-            purge_data->total_size += info->size;
+        purge_data->total_size += info->size;
     }
 }
 
@@ -114,12 +129,12 @@ sort_file_mtime (ThumbData *file1, ThumbData *file2)
 static void
 thumb_data_free (gpointer data)
 {
-        ThumbData *info = (ThumbData *)data;
+    ThumbData *info = (ThumbData *)data;
 
-        if (info) {
-                g_free (info->path);
-                g_free (info);
-        }
+    if (info) {
+        g_free (info->path);
+        g_free (info);
+    }
 }
 
 void HousekeepingManager::purge_thumbnail_cache ()
@@ -129,15 +144,16 @@ void HousekeepingManager::purge_thumbnail_cache ()
     PurgeData  purge_data;
     GTimeVal   current_time;
 
-    g_debug ("housekeeping: checking thumbnail cache size and freshness");
+    syslog (LOG_ERR, "housekeeping: checking thumbnail cache size and freshness");
 
     purge_data.max_age  = settings->get(THUMB_CACHE_KEY_AGE).toInt() * 24 * 60 * 60;
     purge_data.max_size = settings->get(THUMB_CACHE_KEY_SIZE).toInt() * 1024 * 1024;
 
     /* if both are set to -1, we don't need to read anything */
     if ((purge_data.max_age < 0) && (purge_data.max_size < 0))
-            return;
+        return;
 
+    syslog(LOG_ERR, "in ===%s, g_get_user_cache_dir () is:=%s====", __func__, g_get_user_cache_dir ());
     path = g_build_filename (g_get_user_cache_dir (),
                              "thumbnails",
                              "normal",
@@ -166,43 +182,41 @@ void HousekeepingManager::purge_thumbnail_cache ()
     purge_data.total_size = 0;
 
     if (purge_data.max_age >= 0)
-            g_list_foreach (files, (GFunc) purge_old_thumbnails, &purge_data);
+        g_list_foreach (files, (GFunc) purge_old_thumbnails, &purge_data);
 
     if ((purge_data.total_size > purge_data.max_size) && (purge_data.max_size >= 0)) {
-            GList *scan;
-            files = g_list_sort (files, (GCompareFunc) sort_file_mtime);
-            for (scan = files; scan && (purge_data.total_size > purge_data.max_size); scan = scan->next) {
-                    ThumbData *info = (ThumbData *)scan->data;
-                    g_unlink (info->path);
-                    purge_data.total_size -= info->size;
-            }
+        GList *scan;
+        files = g_list_sort (files, (GCompareFunc) sort_file_mtime);
+        for (scan = files; scan && (purge_data.total_size > purge_data.max_size); scan = scan->next) {
+            ThumbData *info = (ThumbData *)scan->data;
+            g_unlink (info->path);
+            purge_data.total_size -= info->size;
+        }
     }
 
     g_list_foreach (files, (GFunc) thumb_data_free, NULL);
     g_list_free (files);
 }
+
+
 bool HousekeepingManager::do_cleanup ()
 {
-        purge_thumbnail_cache ();
-        return true;
+    purge_thumbnail_cache ();
+    return true;
 }
 
 bool HousekeepingManager::do_cleanup_once ()
 {
-        do_cleanup ();
-        short_term_cb = 0;
-        return false;
+    do_cleanup ();
+    short_term_handler->stop();
+    return false;
 }
 
 
 void HousekeepingManager::do_cleanup_soon()
 {
-    if(short_term_cb == 0){
-        qDebug("housekeeping: will tidy up in 2 minutes");
-        short_term_cb = g_timeout_add_seconds (INTERVAL_TWO_MINUTES,
-                                               (GSourceFunc) do_cleanup_once(),
-                                               this);
-    }
+    syslog(LOG_ERR, "housekeeping: will tidy up in 2 minutes");
+    short_term_handler->start(INTERVAL_TWO_MINUTES);
 }
 
 void HousekeepingManager::settings_changed_callback(QString key)
@@ -212,24 +226,38 @@ void HousekeepingManager::settings_changed_callback(QString key)
 
 bool HousekeepingManager::HousekeepingManagerStart()
 {
-    CT_SYSLOG(LOG_DEBUG,"Housekeeping Manager Start ");
+    syslog(LOG_ERR,"Housekeeping Manager Start ");
 
-    //usd_ldsm_setup (FALSE);
+    mDisk->UsdLdsmSetup(false);
 
-    connect (settings, SIGNAL(changed(QString)),this, SLOT(settings_changed_callback(QString)));
+    connect (settings, SIGNAL(changed(QString("changeds"))),this, SLOT(HousekeepingManager::settings_changed_callback(QString)));
 
     /* Clean once, a few minutes after start-up */
     do_cleanup_soon ();
 
-    /* Clean periodically, on a daily basis. */
-    long_term_cb = g_timeout_add_seconds (INTERVAL_ONCE_A_DAY,
-                                  (GSourceFunc) do_cleanup(),
-                                   this);
+    long_term_handler->start(INTERVAL_ONCE_A_DAY);
 
     return true;
 }
 
 void HousekeepingManager::HousekeepingManagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG, "Housekeeping Manager Stop");
+    syslog(LOG_DEBUG, "Housekeeping Manager Stop");
+    // 时间
+    if (short_term_handler) {
+        short_term_handler->stop();
+    }
+    // 时间
+    if (long_term_handler) {
+        long_term_handler->stop();
+
+        /* Do a clean-up on shutdown if and only if the size or age
+         * limits have been set to a paranoid level of cleaning (zero)
+         */
+        if ((settings->get(THUMB_CACHE_KEY_AGE).toInt() == 0)  ||
+                (settings->get(THUMB_CACHE_KEY_SIZE).toInt() == 0)) {
+            do_cleanup ();
+        }
+    }
+    mDisk->UsdLdsmClean();
 }

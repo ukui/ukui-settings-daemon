@@ -1,8 +1,8 @@
 #ifndef MEDIAKEYPLUGIN_H
 #define MEDIAKEYPLUGIN_H
 #include "plugin-interface.h"
-
 #include <QtCore/QtGlobal>
+#include "mediakeysmanager.h"
 
 class MediakeyPlugin : public PluginInterface
 {
@@ -18,7 +18,7 @@ private:
     MediakeyPlugin(MediakeyPlugin&)=delete;
 
 private:
-//    static MediakeyManager*        mManager;
+    MediaKeysManager*        mManager;
     static PluginInterface*         mInstance;
 };
 

@@ -189,10 +189,9 @@ bool touchpad_is_present (void)
 
 
 
-bool get_touchpad_handedness (MouseManager *manager,
-                              bool  mouse_left_handed)
+bool MouseManager::get_touchpad_handedness (bool  mouse_left_handed)
 {
-    int a = manager->settings_touchpad->get(KEY_LEFT_HANDED).Int;
+    int a = settings_touchpad->getEnum(KEY_LEFT_HANDED);
 
     switch (a) {
     case TOUCHPAD_HANDEDNESS_RIGHT:
@@ -251,12 +250,13 @@ void property_set_bool (XDeviceInfo *device_info,
     unsigned char *data;
     int act_format;
     Atom act_type, property;
-    Display *display = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+    Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
     property = property_from_name (property_name);
     if (!property)
             return;
 
     try {
+        //gdk_error_trap_push ();
         rc = XGetDeviceProperty (display, device,
                                  property, 0, 1, False,
                                  XA_INTEGER, &act_type, &act_format, &nitems,
@@ -270,6 +270,7 @@ void property_set_bool (XDeviceInfo *device_info,
         }
         if (rc == Success)
                 XFree (data);
+        //gdk_error_trap_pop ();
 
     } catch (int x) {
         CT_SYSLOG(LOG_DEBUG,"MOUSE:Error while setting %s on \"%s\"", property_name, device_info->name)
@@ -879,7 +880,7 @@ void MouseManager::mouse_callback (QString keys)
 {
     if (keys.compare(QString::fromLocal8Bit(KEY_LEFT_HANDED))==0){
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
-        bool touchpad_left_handed = get_touchpad_handedness (this, mouse_left_handed);
+        bool touchpad_left_handed = get_touchpad_handedness (mouse_left_handed);
         set_left_handed_all (this, mouse_left_handed, touchpad_left_handed);
 
     } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION))==0)
@@ -991,6 +992,25 @@ void set_disable_w_typing (MouseManager *manager,
         set_disable_w_typing_libinput (manager, state);
 }
 
+static void
+set_tap_to_click_libinput (XDeviceInfo *device_info, bool   state)
+{
+        touchpad_set_bool (device_info, "libinput Tapping Enabled", 0, state);
+}
+
+static void
+set_tap_to_click (XDeviceInfo *device_info,  bool state,  bool left_handed,
+                  int one_finger_tap, int two_finger_tap, int three_finger_tap)
+{
+        if (property_from_name ("Synaptics Tap Action"))
+                set_tap_to_click_synaptics (device_info, state, left_handed,
+                                            one_finger_tap, two_finger_tap, three_finger_tap);
+
+        if (property_from_name ("libinput Tapping Enabled"))
+                set_tap_to_click_libinput (device_info, state);
+}
+
+
 void set_tap_to_click_all (MouseManager *manager)
 {
     int numdevices, i;
@@ -1000,13 +1020,13 @@ void set_tap_to_click_all (MouseManager *manager)
             return;
 
     bool state = manager->settings_touchpad->get(KEY_TOUCHPAD_TAP_TO_CLICK).toBool();
-    bool left_handed = get_touchpad_handedness (manager, manager->settings_mouse->get(KEY_LEFT_HANDED).toBool());
+    bool left_handed = manager->get_touchpad_handedness (manager->settings_mouse->get(KEY_LEFT_HANDED).toBool());
     int one_finger_tap = manager->settings_touchpad->get(KEY_TOUCHPAD_ONE_FINGER_TAP).toInt();
     int two_finger_tap = manager->settings_touchpad->get(KEY_TOUCHPAD_TWO_FINGER_TAP).toBool();
     int three_finger_tap = manager->settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toBool();
 
     for (i = 0; i < numdevices; i++) {
-//                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+                set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
     }
 
     XFreeDeviceList (devicelist);
@@ -1198,7 +1218,8 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
     XDevice *device;
     Atom prop_enabled;
     unsigned char data = state;
-    Display *display = QX11Info::display();
+    Display *display =  gdk_x11_get_default_xdisplay ();//QX11Info::display();//
+
     prop_enabled = property_from_name ("Device Enabled");
     if (!prop_enabled)
         return;
@@ -1213,7 +1234,7 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
                                PropModeReplace, &data, 1);
 
         XCloseDevice (display, device);
-        gdk_flush ();
+        // gdk_flush ();
     } catch (int x) {
         CT_SYSLOG(LOG_ERR,"Error %s device \"%s\"",
                   (state) ? "enabling" : "disabling",
@@ -1225,10 +1246,12 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
 void set_touchpad_enabled_all (bool state)
 {
     int numdevices, i;
+
     XDeviceInfo *devicelist = XListInputDevices ( QX11Info::display(), &numdevices);
 
     if (devicelist == NULL)
             return;
+    
     for (i = 0; i < numdevices; i++) {
             set_touchpad_enabled (&devicelist[i], state);
     }
@@ -1242,7 +1265,7 @@ void MouseManager::touchpad_callback (QString keys)
             set_disable_w_typing (this, settings_touchpad->get(keys).toBool());
     } else if (keys.compare(QString::fromLocal8Bit(KEY_LEFT_HANDED))== 0) {
             bool mouse_left_handed = settings_mouse->get(keys).toBool();
-            bool touchpad_left_handed = get_touchpad_handedness (this, mouse_left_handed);
+            bool touchpad_left_handed = get_touchpad_handedness (mouse_left_handed);
             set_left_handed_all (this, mouse_left_handed, touchpad_left_handed);
     } else if ((keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_TAP_TO_CLICK))    == 0)
             || (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ONE_FINGER_TAP))  == 0)
@@ -1272,7 +1295,7 @@ void MouseManager::touchpad_callback (QString keys)
 void set_mouse_settings (MouseManager *manager)
 {
     bool mouse_left_handed = manager->settings_mouse->get(KEY_LEFT_HANDED).toBool();
-    bool touchpad_left_handed = get_touchpad_handedness (manager, mouse_left_handed);
+    bool touchpad_left_handed = manager->get_touchpad_handedness (mouse_left_handed);
 
     set_left_handed_all (manager, mouse_left_handed, touchpad_left_handed);
 
@@ -1322,7 +1345,7 @@ void set_devicepresence_handler (MouseManager *manager)
                            RootWindow (display, DefaultScreen (display)),
                            &class_presence, 1);
 
-    gdk_flush ();
+    //gdk_flush ();
     //if (!gdk_error_trap_pop ())
     gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }

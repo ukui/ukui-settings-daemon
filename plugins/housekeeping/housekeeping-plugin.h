@@ -1,7 +1,7 @@
 #ifndef HOUSEKEPPINGPLUGIN_H
 #define HOUSEKEPPINGPLUGIN_H
 
-#include "housekepping_global.h"
+#include "housekeeping_global.h"
 #include "housekeeping-manager.h"
 #include "plugin-interface.h"
 
@@ -18,7 +18,7 @@ private:
     HousekeepingPlugin(HousekeepingPlugin&)=delete;
 
 private:
-    static HousekeepingManager *mHouseManager;
+    HousekeepingManager *mHouseManager;
     static PluginInterface     *mInstance;
 
 };

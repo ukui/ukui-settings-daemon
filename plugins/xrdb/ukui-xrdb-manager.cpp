@@ -1,329 +1,255 @@
+#include <QFile>
+#include <QString>
+#include <QList>
+#include <QDir>
 #include "ukui-xrdb-manager.h"
+#include "clib-syslog.h"
 
-#define SYSCONFDIR       ""
-#define SYSTEM_AD_DIR    SYSCONFDIR "/xrdb"
-#define GENERAL_AD       SYSTEM_AD_DIR "/General.ad"
-#define USER_AD_DIR      ".config/ukui/xrdb"
-#define USER_X_RESOURCES ".Xresources"
-#define USER_X_DEFAULTS  ".Xdefaults"
+#define midColor(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))
+
+ukuiXrdbManager* ukuiXrdbManager::mXrdbManager = nullptr;
 
 ukuiXrdbManager::ukuiXrdbManager()
 {
+    settings = new QGSettings(SCHEMAS);
+    allUsefulAdFiles = new QList<QString>();
 
+    gtk_init(NULL,NULL);
+    widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_ensure_style(widget);
 }
 
 ukuiXrdbManager::~ukuiXrdbManager()
 {
-
+    if(mXrdbManager)
+        delete mXrdbManager;
 }
 
-static GdkColor*
-color_shade (GdkColor *a,
-             gdouble   shade,
-             GdkColor *b)
+//singleton
+ukuiXrdbManager* ukuiXrdbManager::ukuiXrdbManagerNew()
 {
-    guint16 red, green, blue;
-
-    red = CLAMP ((a->red) * shade, 0, 0xFFFF);
-    green = CLAMP ((a->green) * shade, 0, 0xFFFF);
-    blue = CLAMP ((a->blue) * shade, 0, 0xFFFF);
-
-    b->red = red;
-    b->green = green;
-    b->blue = blue;
-    return b;
+    if(nullptr == mXrdbManager)
+        mXrdbManager = new ukuiXrdbManager();
+    return mXrdbManager;
 }
 
-
-static void append_color_define (GString        *string,
-                                 const char     *name,
-                                 const GdkColor *color)
+bool ukuiXrdbManager::start(GError **error)
 {
-    g_return_if_fail (string != NULL);
-    g_return_if_fail (name != NULL);
-    g_return_if_fail (color != NULL);
+    /* the initialization is done here otherwise
+       ukui_settings_xsettings_load would generate
+       false hit as gtk-theme-name is set to Default in
+       ukui_settings_xsettings_init */
+    CT_SYSLOG(LOG_DEBUG,"Starting xrdb manager!");
+    if(nullptr != settings)
+        connect(settings,SIGNAL(changed(const QString&)),this,SLOT(themeChanged(const QString&)));
 
-    g_string_append_printf (string,
-                            "#define %s #%2.2hx%2.2hx%2.2hx\n",
-                            name,
-                            color->red>>8,
-                            color->green>>8,
-                            color->blue>>8);
+    return true;
 }
 
-void ukuiXrdbManager::append_theme_colors (GtkStyle *style, GString  *string)
+void ukuiXrdbManager::stop()
 {
-    GdkColor tmp;
-
-    g_return_if_fail (style != NULL);
-    g_return_if_fail (string != NULL);
-
-    append_color_define (string,
-                         "BACKGROUND",
-                         &style->bg[GTK_STATE_NORMAL]);
-    append_color_define (string,
-                         "FOREGROUND",
-                         &style->fg[GTK_STATE_NORMAL]);
-    append_color_define (string,
-                         "SELECT_BACKGROUND",
-                         &style->bg[GTK_STATE_SELECTED]);
-    append_color_define (string,
-                         "SELECT_FOREGROUND",
-                         &style->text[GTK_STATE_SELECTED]);
-    append_color_define (string,
-                         "WINDOW_BACKGROUND",
-                         &style->base[GTK_STATE_NORMAL]);
-    append_color_define (string,
-                         "WINDOW_FOREGROUND",
-                         &style->text[GTK_STATE_NORMAL]);
-    append_color_define (string,
-                         "INACTIVE_BACKGROUND",
-                         &style->bg[GTK_STATE_INSENSITIVE]);
-    append_color_define (string,
-                         "INACTIVE_FOREGROUND",
-                         &style->text[GTK_STATE_INSENSITIVE]);
-    append_color_define (string,
-                         "ACTIVE_BACKGROUND",
-                         &style->bg[GTK_STATE_SELECTED]);
-    append_color_define (string,
-                         "ACTIVE_FOREGROUND",
-                         &style->text[GTK_STATE_SELECTED]);
-
-    append_color_define (string,
-                         "HIGHLIGHT",
-                         (&style->bg[GTK_STATE_NORMAL], 1.2, &tmp));
-    append_color_define (string,
-                         "LOWLIGHT",
-                         color_shade (&style->bg[GTK_STATE_NORMAL], 2.0/3.0, &tmp));
-    return;
-}
-
-/**
- * Scan a single directory for .ad files, and return them all in a
- * GSList*
- */
-static GSList*
-scan_ad_directory (const char *path,
-                   GError    **error)
-{
-    GSList     *list;
-    GDir       *dir;
-    const char *entry;
-    GError     *local_error;
-
-    list = NULL;
-
-    g_return_val_if_fail (path != NULL, NULL);
-
-    local_error = NULL;
-    dir = g_dir_open (path, 0, &local_error);
-    if (local_error != NULL) {
-        g_propagate_error (error, local_error);
-        return NULL;
+    CT_SYSLOG(LOG_DEBUG,"Stopping xrdb manager!");
+    if(settings)
+        delete settings;
+    if(allUsefulAdFiles){
+        allUsefulAdFiles->clear();
+        delete allUsefulAdFiles;
     }
 
-    while ((entry = g_dir_read_name (dir)) != NULL) {
-        if (g_str_has_suffix (entry, ".ad")) {
-            list = g_slist_prepend (list, g_strdup_printf ("%s/%s", path, entry));
-        }
+    //destroy newed GtkWidget window
+    gtk_widget_destroy(widget);
+}
+
+/* func : Scan a single directory for .ad files, and return them all in a
+ * QList*
+ */
+QList<QString>* scanAdDirectory(QString path,GError** error)
+{
+    QFileInfoList fileList;
+    QString tmpFileName;
+    QList<QString>* tmpFileList;
+    QDir dir;
+    int fileCount;
+    int i = 0;
+
+    dir.setPath(path);
+    if(!dir.exists()){
+        g_set_error(error,
+                    G_FILE_ERROR,
+                    G_FILE_ERROR_EXIST,
+                    "%s does not exist!",
+                    path.toLatin1().data());
+        return nullptr;
     }
 
-    g_dir_close (dir);
+    fileList = dir.entryInfoList();
+    fileCount = fileList.count();
+    tmpFileList = new QList<QString>();
+    for(;i < fileCount; ++i){
+        tmpFileName =  fileList.at(i).absoluteFilePath();
+        if(tmpFileName.contains(".ad"))
+            tmpFileList->push_back(tmpFileName);
+    }
 
-    /* TODO: sort still? */
-    return g_slist_sort (list, (GCompareFunc)strcmp);
+    if(tmpFileList->size() > 0)
+        tmpFileList->sort();
+
+    return tmpFileList;
 }
-
-
-/**
- * Compare two file names on their base names.
- */
-static gint
-compare_basenames (gconstpointer a,
-                   gconstpointer b)
-{
-    char *base_a;
-    char *base_b;
-    int   res;
-
-    base_a = g_path_get_basename ((gchar*)a);
-    base_b = g_path_get_basename ((gchar*)b);
-    res = strcmp (base_a, base_b);
-    g_free (base_a);
-    g_free (base_b);
-
-    return res;
-}
-
 
 /**
  * Scan the user and system paths, and return a list of strings in the
  * right order for processing.
  */
-static GSList*
-scan_for_files (GError        **error)
+QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
 {
-    const char *home_dir;
-    GSList     *user_list;
-    GSList     *system_list;
-    GSList     *list;
-    GSList     *p;
-    GError     *local_error;
+    QString userHomeDir;
+    QList<QString>* userAdFileList;
+    QList<QString>* systemAdFileList;//remeber free
+    GError* localError;
 
-    list = NULL;
-    user_list = NULL;
-    system_list = NULL;
+    systemAdFileList = userAdFileList = nullptr;
 
-    local_error = NULL;
-    system_list = scan_ad_directory (SYSTEM_AD_DIR, &local_error);
-    if (local_error != NULL) {
-        g_propagate_error (error, local_error);
-        return NULL;
+    //look for system ad files at /etc/xrdb/
+    localError = NULL;
+    systemAdFileList = scanAdDirectory(SYSTEM_AD_DIR,&localError);
+    if(NULL != localError){
+        g_propagate_error(error,localError);
+        return nullptr;
     }
 
-    home_dir = g_get_home_dir ();
-    if (home_dir != NULL) {
-        char *user_ad;
+    //look for ad files at user's home.
+    userHomeDir = QDir::homePath();
+    if(!userHomeDir.isEmpty()){
+        QString userAdDir;
+        QFileInfo fileInfo;
 
-        user_ad = g_build_filename (home_dir, USER_AD_DIR, NULL);
+        userAdDir = userAdDir + USER_AD_DIR;
+        fileInfo.setFile(userAdDir);
+        if(fileInfo.exists() && fileInfo.isDir()){
+            userAdFileList = scanAdDirectory(userAdDir,&localError);
+            if(NULL != localError){
+                g_propagate_error(error,localError);
+                systemAdFileList->clear();//memery free for QList
+                return nullptr;            }
+        }else
+            CT_SYSLOG(LOG_INFO,"User's ad file not found at %s!",userAdDir.toLatin1().data());
+    }else
+        CT_SYSLOG(LOG_WARNING,"Cannot datermine user's home directory!");
 
-        if (g_file_test (user_ad, G_FILE_TEST_IS_DIR)) {
+    //After get all ad files,we handle it.
+    if(systemAdFileList->contains(GENERAL_AD))
+        systemAdFileList->removeOne(GENERAL_AD);
+    if(nullptr != userAdFileList)
+        removeSameItemFromFirst(systemAdFileList,userAdFileList);
 
-            local_error = NULL;
-            user_list = scan_ad_directory (user_ad, &local_error);
-            if (local_error != NULL) {
-                g_propagate_error (error, local_error);
+    //here,we get all ad files that we needed.
+    allUsefulAdFiles->append(*systemAdFileList);
+    if(nullptr != userAdFileList)
+        allUsefulAdFiles->append(*userAdFileList);
+    allUsefulAdFiles->append(GENERAL_AD);
 
-                g_slist_foreach (system_list, (GFunc)g_free, NULL);
-                g_slist_free (system_list);
-                g_free (user_ad);
-                return NULL;
-            }
-        }
+    //QList.append() operator is deep-copy,so we free memory.
+    systemAdFileList->clear();
+    delete systemAdFileList;
 
-        g_free (user_ad);
-
-    } else {
-        g_warning (_("Cannot determine user's home directory"));
+    if(nullptr != userAdFileList){
+        userAdFileList->clear();
+        delete userAdFileList;
     }
 
-    /* An alternative approach would be to strdup() the strings
-           and free the entire contents of these lists, but that is a
-           little inefficient for my liking - RB */
-    for (p = system_list; p != NULL; p = g_slist_next (p)) {
-        if (strcmp ((char*)p->data, GENERAL_AD) == 0) {
-            /* We ignore this, free the data now */
-            g_free (p->data);
-            continue;
-        }
-        if (g_slist_find_custom (user_list, p->data, compare_basenames)) {
-            /* Ditto */
-            g_free (p->data);
-            continue;
-        }
-        list = g_slist_prepend (list, p->data);
-    }
-    g_slist_free (system_list);
-
-    for (p = user_list; p != NULL; p = g_slist_next (p)) {
-        list = g_slist_prepend (list, p->data);
-    }
-    g_slist_free (user_list);
-
-    /* Reverse the order so it is the correct way */
-    list = g_slist_reverse (list);
-
-    /* Add the initial file */
-    list = g_slist_prepend (list, g_strdup (GENERAL_AD));
-
-    return list;
+    return allUsefulAdFiles;
 }
 
 /**
- * Append the contents of a file onto the end of a GString
+ * Append the contents of a file onto the end of a QString
  */
-static void
-append_file (const char *file,
-             GString    *string,
-             GError    **error)
+void ukuiXrdbManager::appendFile(QString file,GError** error)
 {
-    char *contents;
+    GError* localError;
+    QString fileContents;
 
-    g_return_if_fail (string != NULL);
-    g_return_if_fail (file != NULL);
+    //first get all contents from file.
+    localError = NULL;
+    fileContents =  fileGetContents(file,&localError);
 
-    if (g_file_get_contents (file, &contents, NULL, error)) {
-        g_string_append (string, contents);
-        g_free (contents);
-    }
-}
-
-
-static void
-append_xresource_file (const char *filename,
-                       GString    *string,
-                       GError    **error)
-{
-    const char *home_path;
-    char       *xresources;
-
-    g_return_if_fail (string != NULL);
-
-    home_path = g_get_home_dir ();
-    if (home_path == NULL) {
-        g_warning (_("Cannot determine user's home directory"));
+    if(NULL != localError){
+        //CT_SYSLOG(LOG_ERR,"%s",localError->message);
+        g_propagate_error(error,localError);
+        localError = NULL;
         return;
     }
 
-    xresources = g_build_filename (home_path, filename, NULL);
-    if (g_file_test (xresources, G_FILE_TEST_EXISTS)) {
-        GError *local_error;
-
-        local_error = NULL;
-
-        append_file (xresources, string, &local_error);
-        if (local_error != NULL) {
-            g_warning ("%s", local_error->message);
-            g_propagate_error (error, local_error);
-        }
-    }
-    g_free (xresources);
+    //then append all contents to @needMerge
+    if(!fileContents.isEmpty())
+        needMerge.append(fileContents);
 }
 
-static gboolean
+/* func : append contents from .Xresources or .Xdefaults  to @needMerge.
+ */
+void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
+{
+    QString homePath;
+    QString xResources;
+    QFile file;
+    GError* localError;
+    char* tmpName;
+
+    homePath = QDir::homePath();
+    xResources = homePath + fileName;
+    file.setFileName(xResources);
+
+    if(!file.exists()){
+        tmpName = xResources.toLatin1().data();
+        g_set_error(error,G_FILE_ERROR,
+                    G_FILE_ERROR_NOENT,
+                    "%s does not exist!",tmpName);
+        //CT_SYSLOG(LOG_WARNING,"%s does not exist!",tmpName);
+        return;
+    }
+
+    localError = NULL;
+    appendFile(xResources,&localError);
+    if(NULL != localError){
+        g_propagate_error(error,localError);
+        //CT_SYSLOG(LOG_WARNING,"%s",localError->message);
+        localError = NULL;
+    }
+}
+
+bool
 write_all (int         fd,
            const char *buf,
-           gsize       to_write)
+           ulong       to_write)
 {
     while (to_write > 0) {
-        gssize count = write (fd, buf, to_write);
+        long count = write (fd, buf, to_write);
         if (count < 0) {
-            //if (errno != EINTR)
-            return FALSE;
+            return false;
         } else {
             to_write -= count;
             buf += count;
         }
     }
 
-    return TRUE;
+    return true;
 }
 
 
-static void
-child_watch_cb (GPid     pid,
+void
+child_watch_cb (int     pid,
                 int      status,
                 gpointer user_data)
 {
     char *command = (char*)user_data;
 
     if (!WIFEXITED (status) || WEXITSTATUS (status)) {
-        g_warning ("Command %s failed", command);
+        CT_SYSLOG (LOG_WARNING,"Command %s failed", command);
     }
 }
 
 
-static void
+void
 spawn_with_input (const char *command,
                   const char *input)
 {
@@ -331,12 +257,12 @@ spawn_with_input (const char *command,
     int      child_pid;
     int      inpipe;
     GError  *error;
-    gboolean res;
+    bool res;
 
     argv = NULL;
     res = g_shell_parse_argv (command, NULL, &argv, NULL);
     if (! res) {
-        g_warning ("Unable to parse command: %s", command);
+        CT_SYSLOG (LOG_WARNING,"Unable to parse command: %s", command);
         return;
     }
 
@@ -355,17 +281,17 @@ spawn_with_input (const char *command,
     g_strfreev (argv);
 
     if (! res) {
-        g_warning ("Could not execute %s: %s", command, error->message);
+        CT_SYSLOG(LOG_WARNING,"Could not execute %s: %s", command, error->message);
         g_error_free (error);
-
         return;
     }
 
+    //sleep(15);
+
     if (input != NULL) {
         if (! write_all (inpipe, input, strlen (input))) {
-            g_warning ("Could not write input to %s", command);
+            CT_SYSLOG(LOG_WARNING,"Could not write input to %s", command);
         }
-
         close (inpipe);
     }
 
@@ -373,104 +299,281 @@ spawn_with_input (const char *command,
 
 }
 
-void ukuiXrdbManager::apply_settings (GtkStyle       *style)
-{
-    const char *command;
-    GString    *string;
-    GSList     *list;
-    GSList     *p;
-    GError     *error;
-
-    // ukui_settings_profile_start (NULL);
+/* 1 according to the current theme,get color value.
+ * 2 get contents from ad files.
+ * 3 exec command: "xrdb -merge -quiet ....".
+ */
+void ukuiXrdbManager::applySettings(){
+    char* command;
+    GError* error;
+    int i,fileNum;
+    int listCount;
+    char* input;
 
     command = "xrdb -merge -quiet";
 
-    string = g_string_sized_new (256);
-    append_theme_colors (style, string);
-
-    error = NULL;
-    list = scan_for_files (&error);
-    if (error != NULL) {
-        g_warning ("%s", error->message);
-        g_error_free (error);
+    if(!colorDefineList.isEmpty()){
+        listCount = colorDefineList.count();
+        for( i = 0; i < listCount; ++i)
+            needMerge.append(colorDefineList.at(i));
+        colorDefineList.clear();
     }
 
-    for (p = list; p != NULL; p = p->next) {
+    //first, get system ad files and user's ad files
+    error = NULL;
+    scanForFiles(&error);
+    if(NULL != error){
+        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        g_error_free(error);
+    }
+
+    //second, get contents from every file,and append contends to @needMerge.
+    fileNum = allUsefulAdFiles->count();
+    for(i = 0; i < fileNum; ++i){
         error = NULL;
-        append_file ((gchar*)p->data, string, &error);
-        if (error != NULL) {
-            g_warning ("%s", error->message);
-            g_error_free (error);
+        appendFile(allUsefulAdFiles->at(i),&error);
+        if(NULL != error){
+            CT_SYSLOG(LOG_WARNING,"%s",error->message);
+            g_error_free(error);
         }
     }
 
-    g_slist_foreach (list, (GFunc)g_free, NULL);
-    g_slist_free (list);
-
+    //third, append Xresources file's contents to @needMerge.
     error = NULL;
-    append_xresource_file (USER_X_RESOURCES, string, &error);
-    if (error != NULL) {
-        g_warning ("%s", error->message);
-        g_error_free (error);
+    appendXresourceFile(USER_X_RESOURCES,&error);
+    if(NULL != error){
+        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        g_error_free(error);
     }
 
     error = NULL;
-    append_xresource_file (USER_X_DEFAULTS, string, &error);
-    if (error != NULL) {
-        g_warning ("%s", error->message);
-        g_error_free (error);
+    appendXresourceFile(USER_X_DEFAULTS,&error);
+    if(NULL != error){
+        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        g_error_free(error);
     }
 
-    spawn_with_input (command, string->str);
-    g_string_free (string, TRUE);
+    //last, exec shell: @command + @needMerge
+    spawn_with_input(command,needMerge.toLatin1().data());
 
-    // ukui_settings_profile_end (NULL);
-
-    return;
+    needMerge.clear();
+    allUsefulAdFiles->clear();
 }
 
-void theme_changed (GtkSettings    *settings,
-                    GParamSpec     *pspec,
-                    ukuiXrdbManager *manager)
+/* func : private slots for gsettings key 'gtk-theme' changed
+ * example: on ukui-3.0, @key == "ukui-black" or @key == "ukui-white"
+ */
+void ukuiXrdbManager::themeChanged (const QString& key)
 {
-    manager->apply_settings (gtk_widget_get_style (manager->widget));
+
+    QString themeName;
+    QString themeColorCssFile = nullptr;
+    themeName = settings->get(key).toString();
+    themeColorCssFile = SYSTEM_THEME_DIR + themeName + "/gtk-3.0/_ukui-colors.scss";
+
+    if(!themeColorCssFile.isNull()){
+        //readCssFile(themeColorCssFile);
+        getColorConfigFromGtkWindow();
+        applySettings();
+    }
 }
 
-int ukuiXrdbManager::start()
-{
-    // ukui_settings_profile_start (NULL);
+/*func : get color config for gtk-3.0 from css file
+ */
+void ukuiXrdbManager::readCssFile(const QString& cssFile){
+    QFile file;
+    QString lineContent;
 
-    /* the initialization is done here otherwise
-       ukui_settings_xsettings_load would generate
-       false hit as gtk-theme-name is set to Default in
-       ukui_settings_xsettings_init */
-    g_signal_connect (gtk_settings_get_default (),
-                      "notify::gtk-theme-name",
-                      G_CALLBACK (theme_changed),
-                      this);
-
-    widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    gtk_widget_ensure_style (widget);
-
-    // ukui_settings_profile_end (NULL);
-
-    return TRUE;
-
-}
-
-int ukuiXrdbManager::stop()
-{
-
-    g_debug ("Stopping xrdb manager");
-
-    g_signal_handlers_disconnect_by_func (gtk_settings_get_default (),
-                                          (void*)G_CALLBACK (theme_changed),
-                                          this);
-
-    if (widget != NULL) {
-        gtk_widget_destroy (widget);
-        widget = NULL;
+    file.setFileName(cssFile);
+    if(!file.exists()){
+        CT_SYSLOG(LOG_ERR,"%s does not exist!",cssFile.toLatin1().data());
+        return;
     }
 
+    if(!file.open(QIODevice::ReadOnly)){
+        CT_SYSLOG(LOG_ERR,"%s open failed! cannot get color value!",cssFile.toLatin1().data());
+        return;
+    }
+
+    while(!file.atEnd()){
+        lineContent = file.readLine();
+        if(!lineContent.contains('#'))
+            continue;
+        if(lineContent.contains("button")){
+            goto out;
+        }
+
+        handleLineContent(lineContent);
+        lineContent.clear();
+    }
+
+out:
+    file.close();
 }
 
+/* func : delete character ';' from Qstring.
+ * example : "#0c0c0d;\n" -> "#0c0c0d\n"
+ */
+void ukuiXrdbManager::handleLineContent(const QString& lineContent){
+    QStringList colorSplit;
+    QString tmp1,tmp2;
+
+    if(lineContent.isEmpty())
+        return;
+
+    colorSplit = lineContent.split(':');
+    tmp1 = colorSplit.at(0);
+    tmp2 = colorSplit.at(1);
+    tmp2.remove(';');
+
+    if(tmp1 == "$bg_color"){
+        colorDefineList.insert(0,"#define BACKGROUND "+tmp2);
+        colorDefineList.append("#define WINDOW_BACKGROUND "+tmp2);
+        colorDefineList.append("#define HIGHLIGHT "+calorShade(tmp2,1.2));
+    }
+    else if(tmp1 == "$fg_color"){
+        colorDefineList.insert(1,"#define FOREGROUND "+tmp2);
+        colorDefineList.append("#define WINDOW_FOREGROUND "+tmp2);
+        colorDefineList.append("#define LOWLIGHT "+calorShade(tmp2,2.0/3.0));
+    }
+    else if(tmp1 == "$active_bg_color")
+        colorDefineList.append("#define ACTIVE_BACKGROUND "+tmp2);
+    else if(tmp1 == "$active_fg_color")
+        colorDefineList.append("#define ACTIVE_FOREGROUND "+tmp2);
+    else if(tmp1 == "$selected_bg_color")
+        colorDefineList.append("#define SELECT_BACKGROUND "+tmp2);
+    else if(tmp1 == "$selected_fg_color")
+        colorDefineList.append("#define SELECT_FOREGROUND "+tmp2);
+    else if(tmp1 == "$disable_bg_color")
+        colorDefineList.append("#define INACTIVE_BACKGROUND "+tmp2);
+    else if(tmp1 == "$disable_fg_color")
+        colorDefineList.append("#define INACTIVE_FOREGROUND "+tmp2);
+}
+
+QString ukuiXrdbManager::calorShade(const QString color,double shade){
+    int red,green,blue;
+    QString tmp;
+
+    red = color.mid(1,2).toInt(nullptr,16);
+    green = color.mid(3,2).toInt(nullptr,16);
+    blue = color.mid(5,2).toInt(nullptr,16);
+
+    red = midColor(red*shade,0,255);
+    green = midColor(green*shade,0,255);
+    blue = midColor(green*shade,0,255);
+
+    tmp = QString("#%1%2%3\n").arg(red,2,16,QLatin1Char('0'))
+            .arg(green,2,16,QLatin1Char('0')).arg(blue,2,16,QLatin1Char('0'));
+
+    return tmp;
+}
+
+/* func : remove one item from first,if second have this item too.
+ *        the point is : name is same.
+ * example: first.at(3) == "/etc/xrdb/tmp1.ad"
+ *          second.at(1) == $QDir::homePath + "/.config/ukui/tmp1.ad"
+ *          then exec : first.removeAt(3);
+ */
+void ukuiXrdbManager::removeSameItemFromFirst(QList<QString>* first,
+                             QList<QString>* second){
+    QFileInfo tmpFirstName;
+    QFileInfo tmpSecondName;
+    QString firstBaseName;
+    QString secondBaseName;
+    int i,j;
+    int firstSize,secondSize;
+//    if(first->isEmpty() || second->isEmpty()){
+//        return;
+//    }
+
+    first->length();
+    firstSize = first->size();
+    secondSize = second->size();
+
+    for(i = 0; i < firstSize; ++i){
+        firstBaseName.clear();
+        tmpFirstName.setFile(first->at(i));
+        firstBaseName = tmpFirstName.fileName();
+        for(j = 0; j < secondSize; ++j){
+            secondBaseName.clear();
+            tmpSecondName.setFile(second->at(j));
+            secondBaseName = tmpSecondName.fileName();
+            if(firstBaseName == secondBaseName){
+                first->removeAt(i);
+                firstSize -= 1;
+                break;
+            }
+        }
+    }
+}
+
+/* func : get all contents from file.
+ */
+QString ukuiXrdbManager::fileGetContents(QString fileName,GError **error)
+{
+    QFile file;
+    QString fileContents;
+
+    file.setFileName(fileName);
+    if(!file.exists()){
+        g_set_error(error,G_FILE_ERROR,
+                    G_FILE_ERROR_NOENT,
+                    "%s does not exists!",fileName.toLatin1().data());
+        return nullptr;
+    }
+
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text)){
+        g_set_error(error,G_FILE_ERROR,
+                    G_FILE_ERROR_FAILED,
+                    "%s open failed!",fileName.toLatin1().data());
+        return nullptr;
+    }
+
+    fileContents = file.readAll();
+
+    return fileContents;
+}
+
+void ukuiXrdbManager::getColorConfigFromGtkWindow()
+{
+    GtkWidget* widget;
+    GtkStyle* style;
+
+    style = gtk_widget_get_style(widget);
+
+    appendColor("BACKGROUND",&style->bg[GTK_STATE_NORMAL]);
+    appendColor("FOREGROUND",&style->fg[GTK_STATE_NORMAL]);
+    appendColor("SELECT_BACKGROUND",&style->bg[GTK_STATE_SELECTED]);
+    appendColor("SELECT_FOREGROUND",&style->text[GTK_STATE_SELECTED]);
+    appendColor("WINDOW_BACKGROUND",&style->base[GTK_STATE_NORMAL]);
+    appendColor("WINDOW_FOREGROUND",&style->text[GTK_STATE_NORMAL]);
+    appendColor("INACTIVE_BACKGROUND",&style->bg[GTK_STATE_INSENSITIVE]);
+    appendColor("INACTIVE_FOREGROUND",&style->text[GTK_STATE_INSENSITIVE]);
+    appendColor("ACTIVE_BACKGROUND",&style->bg[GTK_STATE_SELECTED]);
+    appendColor("ACTIVE_FOREGROUND",&style->text[GTK_STATE_SELECTED]);
+
+    colorShade2("HIGHLIGHT",&style->bg[GTK_STATE_NORMAL],1.2);
+    colorShade2("LOWLIGHT",&style->fg[GTK_STATE_NORMAL],2.0/3.0);
+}
+
+/* func : Gets the hexadecimal value of the color
+ * example : #define BACKGROUND #ffffff\n
+ */
+void ukuiXrdbManager::appendColor(QString name,GdkColor* color)
+{
+    QString tmp;
+    tmp = QString("#%1%2%3\n").arg(color->red>>8,2,16,QLatin1Char('0'))
+                .arg(color->green>>8,2,16,QLatin1Char('0')).arg(color->blue>>8,2,16,QLatin1Char('0'));
+    colorDefineList.append("#define " + name + " " + tmp);
+}
+
+void ukuiXrdbManager::colorShade2(QString name,GdkColor* color,double shade)
+{
+    GdkColor tmp;
+
+    tmp.red = midColor((color->red)*shade,0,0xFFFF);
+    tmp.green = midColor((color->green)*shade,0,0xFFFF);
+    tmp.blue = midColor((color->blue)*shade,0,0xFFFF);
+
+    appendColor(name,&tmp);
+}

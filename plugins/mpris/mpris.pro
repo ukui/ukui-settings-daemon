@@ -1,4 +1,5 @@
 QT -= gui
+QT += dbus
 TEMPLATE = lib
 TARGET = mpris
 

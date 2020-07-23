@@ -4,14 +4,14 @@
 #
 #-------------------------------------------------
 
-QT       -= gui
+QT       += gui
 
 TARGET = common
 TEMPLATE = lib
 CONFIG += c++11 no_keywords link_pkgconfig plugin
 DEFINES += COMMON_LIBRARY
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 include($$PWD/../../common/common.pri)
 
@@ -24,25 +24,20 @@ INCLUDEPATH += \
         -I $$PWD \
     -I $$PWD/../..
 
-
-
-
 SOURCES += \
         eggaccelerators.c \
-        ukui-osd-window.cpp \
         ukui-input-helper.c \
-        ukui-keygrab.c
+        ukui-keygrab.cpp
 
 HEADERS += \
         eggaccelerators.h \
-        ukui-osd-window.h \
         common_global.h \
-        usd-input-helper.h \
+        ukui-input-helper.h \
         ukui-keygrab.h
 
 DESTDIR = $$PWD/
 
-common_lib.path = /usr/local/lib/ukui-settings-daemon/
+common_lib.path = /usr/local/lib/ukui-settings-daemon
 common_lib.files = $$PWD/libcommon.so
 
 INSTALLS += common_lib

@@ -1,24 +1,27 @@
 #ifndef XRDB_H
 #define XRDB_H
 
-#include "xrdb_global.h"
+//#include "xrdb_global.h"
 #include "plugin-interface.h"
 #include "ixrdb-manager.h"
 
-class Xrdb : public PluginInterface
+class XrdbPlugin : public PluginInterface
 {
 
 public:
-    Xrdb();
-public:
-    virtual ~Xrdb() = 0;
+    ~XrdbPlugin();
+    static PluginInterface* getInstance();
 
-    virtual void activate () = 0;
-    virtual void deactivate () = 0;
+    virtual void activate ();
+    virtual void deactivate ();
 
 protected:
-    QString pluginName;
+    static XrdbPlugin* mXrdbPlugin;
     IXrdbManager *m_pIXdbMgr;
+
+private:
+    XrdbPlugin();
 };
 
+extern "C" PluginInterface* Q_DECL_EXPORT createSettingsPlugin();
 #endif // XRDB_H

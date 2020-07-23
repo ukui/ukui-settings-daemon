@@ -50,18 +50,21 @@ public:
     static KeybindingsManager *KeybindingsManagerNew();
     bool KeybindingsManagerStart();
     void KeybindingsManagerStop();
+    void get_screens_list();
 
 public:
     static void bindings_callback (DConfClient  *client,
                                    gchar        *prefix,
                                    GStrv        changes,
-                                   gchar        *tag);
-    static bool key_already_used (Binding  *binding);
-    static void binding_register_keys ();
-    static void binding_unregister_keys ();
-    static void bindings_clear();
-    static void bindings_get_entries();
-    static bool bindings_get_entry (const char *settings_path);
+                                   gchar        *tag,
+                                   KeybindingsManager *manager);
+
+    static bool key_already_used (KeybindingsManager *manager,Binding  *binding);
+    static void binding_register_keys (KeybindingsManager *manager);
+    static void binding_unregister_keys (KeybindingsManager *manager);
+    static void bindings_clear(KeybindingsManager *manager);
+    static void bindings_get_entries(KeybindingsManager *manager);
+    static bool bindings_get_entry (KeybindingsManager *manager,const char *settings_path);
 
     friend GdkFilterReturn keybindings_filter (GdkXEvent           *gdk_xevent,
                                                GdkEvent            *event,
@@ -70,8 +73,8 @@ public:
 private:
     static KeybindingsManager *mKeybinding;
     DConfClient *client;
-    static GSList   *binding_list;
-    static GSList   *screens;
+    GSList   *binding_list;
+    QList<GdkScreen*> *screens;
 
 };
 

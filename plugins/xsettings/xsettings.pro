@@ -38,8 +38,7 @@ HEADERS += \
 
 
 DESTDIR = $$PWD
-xsettings_ib.path = /usr/local/lib/ukui-settings-daemon/
-xsettings_lib.files += $$PWD/xsettings.so \
+xsettings_lib.path = /usr/local/lib/ukui-settings-daemon
+xsettings_lib.files += $$PWD/libxsettings.so
 
 INSTALLS += xsettings_lib
-

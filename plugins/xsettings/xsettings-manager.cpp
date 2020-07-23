@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <syslog.h>
+
+
 static XSettingsList *Settings;
 XsettingsManager::XsettingsManager(Display                *display,
         int                     screen,
@@ -189,6 +192,7 @@ Bool xsettings_manager_check_running (Display *display,
     Atom selection_atom;
 
     sprintf(buffer, "_XSETTINGS_S%d", screen);
+    syslog(LOG_ERR, "===IN: xsettings_manager_check_running():get_x_atom_buffer:%s===", buffer);
     selection_atom = XInternAtom (display, buffer, False);
 
     if (XGetSelectionOwner (display, selection_atom))

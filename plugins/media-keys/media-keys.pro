@@ -1,30 +1,49 @@
+QT += gui widgets svg x11extras dbus
 TEMPLATE = lib
-TARGET = media-keys
-
-QT += gui
-CONFIG += no_keywords c++11 plugin link_pkgconfig
+CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+PKGCONFIG += \
+    glib-2.0 \
+    gio-2.0 \
+    gtk+-3.0 \
+    gsettings-qt \
+    libmatemixer
+
+INCLUDEPATH += \
+    $$PWD/../common
+
+LIBS += \
+    -lX11 -lXi \
+    $$PWD/../common/libcommon.so
 
 include($$PWD/../../common/common.pri)
 
-INCLUDEPATH += \
-
-PKGCONFIG += \
-        gdk-3.0
+DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 SOURCES += \
-    $$PWD/mediakey-plugin.cpp \
-    mediakey-manager.cpp
+        devicewindow.cpp     \
+        mediakeysmanager.cpp \
+        volumewindow.cpp \
+        mediakey-plugin.cpp
 
 HEADERS += \
-    $$PWD/mediakey-plugin.h \
-    mediakey-manager.h
+    acme.h \
+    devicewindow.h      \
+    mediakeysmanager.h  \
+    volumewindow.h \
+    mediakey-plugin.h
+
+FORMS += \
+    devicewindow.ui \
+    volumewindow.ui
+
+DISTFILES += \
+    media-keys.ukui-settings-plugin.in
 
 DESTDIR = $$PWD/
 
 media_keys_lib.path = /usr/local/lib/ukui-settings-daemon/
-media_keys_lib.files = $$PWD/libclipboard.so
+media_keys_lib.files = $$PWD/libmedia-keys.so
 
 INSTALLS += media_keys_lib
