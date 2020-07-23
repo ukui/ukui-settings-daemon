@@ -1,4 +1,4 @@
-QT += gui widgets svg x11extras
+QT += gui widgets svg x11extras dbus
 TEMPLATE = lib
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle

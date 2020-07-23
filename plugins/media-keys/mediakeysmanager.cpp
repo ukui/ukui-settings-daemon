@@ -1,6 +1,6 @@
+#include <QTime>
 #include "mediakeysmanager.h"
 #include "eggaccelerators.h"
-
 
 MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
@@ -10,6 +10,12 @@ const int VOLUMESTEP = 6;
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     gdk_init(NULL,NULL);
+    //session bus 会话总线
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    if(sessionBus.registerService("org.ukui.SettingsDaemon")){
+        sessionBus.registerObject("/org/ukui/SettingsDaemon/MediaKeys",this,
+                                  QDBusConnection::ExportAllContents);
+    }
 }
 
 MediaKeysManager::~MediaKeysManager()
@@ -49,12 +55,9 @@ bool MediaKeysManager::mediaKeysStart(GError*)
         mate_mixer_context_open(mContext);
     }
 
-    //qDebug()<<"1111111111111111111111"<<endl;
     initScreens();
-    //qDebug()<<"44444444444444444444444"<<endl;
     initKbd();
 
-    //qDebug()<<"22222222222222222222222"<<endl;
     l = begin = mScreenList->begin();
     end = mScreenList->end();
     for(; l != end; ++l){
@@ -64,7 +67,6 @@ bool MediaKeysManager::mediaKeysStart(GError*)
                                  NULL);
     }
 
-    //qDebug()<<"3333333333333333333333"<<endl;
     return true;
 }
 
@@ -141,7 +143,6 @@ void MediaKeysManager::initScreens()
 GdkFilterReturn
 MediaKeysManager::acmeFilterEvents(GdkXEvent* xevent,GdkEvent* event,void* data)
 {
-    qDebug()<<__func__<<endl;
     XEvent    *xev = (XEvent *) xevent;
     XAnyEvent *xany = (XAnyEvent *) xevent;
     int       i;
@@ -150,7 +151,6 @@ MediaKeysManager::acmeFilterEvents(GdkXEvent* xevent,GdkEvent* event,void* data)
     if (xev->type != KeyPress && xev->type != KeyRelease)
         return GDK_FILTER_CONTINUE;
 
-    qDebug()<<"keycode = "<<xev->xkey.keycode<<endl;
     for (i = 0; i < HANDLED_KEYS; i++) {
         if (match_key (keys[i].key, xev)) {
             switch (keys[i].key_type) {
@@ -167,13 +167,10 @@ MediaKeysManager::acmeFilterEvents(GdkXEvent* xevent,GdkEvent* event,void* data)
 
             mManager->mCurrentScreen = mManager->acmeGetScreenFromEvent(xany);
 
-//            if (mManager->doAction(keys[i].key_type) == false)
-//                return GDK_FILTER_REMOVE;
-//            else
-//                return GDK_FILTER_CONTINUE;
-//            mManager->doOpenHomeDirAction();
-            //mManager->doSoundAction(MUTE_KEY);
-            return GDK_FILTER_REMOVE;
+            if (mManager->doAction(keys[i].key_type) == false)
+                return GDK_FILTER_REMOVE;
+            else
+                return GDK_FILTER_CONTINUE;
         }
     }
 
@@ -257,7 +254,6 @@ MediaKeysManager::acmeGetScreenFromEvent (XAnyEvent *xanyev)
 
 bool MediaKeysManager::doAction(int type)
 {
-    qDebug()<<"type="<<type<<endl;
     switch(type){
     case TOUCHPAD_KEY:
         doTouchpadAction();
@@ -306,22 +302,31 @@ bool MediaKeysManager::doAction(int type)
         doOpenCalcAction();
         break;
     case PLAY_KEY:
+        doMultiMediaPlayerAction("Play");
         break;
     case PAUSE_KEY:
+        doMultiMediaPlayerAction("Pause");
         break;
     case STOP_KEY:
+        doMultiMediaPlayerAction("Stop");
         break;
     case PREVIOUS_KEY:
+        doMultiMediaPlayerAction("Previous");
         break;
     case NEXT_KEY:
+        doMultiMediaPlayerAction("Next");
         break;
     case REWIND_KEY:
+        doMultiMediaPlayerAction("Rewind");
         break;
     case FORWARD_KEY:
+        doMultiMediaPlayerAction("FastForward");
         break;
     case REPEAT_KEY:
+        doMultiMediaPlayerAction("Repeat");
         break;
     case RANDOM_KEY:
+        doMultiMediaPlayerAction("Shuffle");
         break;
     case MAGNIFIER_KEY:
         doMagnifierAction();
@@ -378,7 +383,6 @@ void MediaKeysManager::initKbd()
         }else
             tmp = keys[i].hard_coded;
 
-        qDebug()<<"eeeeeeeeeeeeeeeeeeeeeeeeeeeeee"<<endl;
         if(!isValidShortcut(tmp)){
             syslog(LOG_DEBUG,"Not a valid shortcut: '%s'(%s %s)",tmp.toLatin1().data(),
                    keys[i].settings_key,keys[i].hard_coded);
@@ -386,7 +390,6 @@ void MediaKeysManager::initKbd()
             continue;
         }
 
-        qDebug()<<"qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq"<<endl;
         key = g_new0(Key,1);
         if(!egg_accelerator_parse_virtual(tmp.toLatin1().data(),&key->keysym,&key->keycodes,
                                           (EggVirtualModifierType*)&key->state)){
@@ -395,17 +398,13 @@ void MediaKeysManager::initKbd()
             g_free(key);
             continue;
         }
-        qDebug()<<"rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr "<<
-                  tmp.toLatin1().data()<<" "<<key->keysym<<" "<<key->keycodes<<" "
-               <<key->state<<endl;
+
         tmp.clear();
         keys[i].key = key;
         needFlush = true;
         grab_key_unsafe(key,true,mScreenList);
-        qDebug()<<"tttttttttttttttttttttttttttttt"<<endl;
     }
 
-    qDebug()<<"wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww"<<endl;
     if(needFlush)
         gdk_flush();
     if(gdk_error_trap_pop())
@@ -736,4 +735,140 @@ void MediaKeysManager::doUrlAction(const QString scheme)
     }else
         syslog(LOG_DEBUG,"Could not find default application for '%s' scheme",
                    scheme.toLatin1().data());
+}
+
+/**
+ * @brief MediaKeysManager::doMultiMediaPlayerAction
+ *        for detailed purposes,refer to the definition of MediaPlayerKeyPressed()
+ *        有关该函数的详细用途，请参考MediaPlayerKeyPressed()的声明
+ * @param operation
+ *        @operation can take the following values: Play、Pause、Stop...
+ */
+void MediaKeysManager::doMultiMediaPlayerAction(const QString operation)
+{
+    if(!mediaPlayers.isEmpty())
+        Q_EMIT MediaPlayerKeyPressed(mediaPlayers.first()->application,operation);
+}
+
+
+/**
+ * @brief MediaKeysManager::GrabMediaPlayerKeys
+ *        this is a dbus method,it will be called follow org.ukui.SettingsDaemon.MediaKeys in mpris plugin
+ *        这是一个dbus method,它将会跟随org.ukui.SettingsDaemon.MediaKeys这个dbus在mpris插件中调用
+ * @param app
+ *        app=="UsdMpris" is true according to the open source.
+ *        按照开源的写法，这个变量的值为"UsdMpris"
+ * @param time
+ */
+void MediaKeysManager::GrabMediaPlayerKeys(QString app)
+{
+    QTime currentTime;
+    uint curTime = 0;       //current time(s) 当前时间(秒)
+    bool containApp;
+
+
+    currentTime = QTime::currentTime();
+    curTime = 60*currentTime.minute() + currentTime.second() + currentTime.msec()/1000;
+
+    //whether @app is inclued in @mediaPlayers  @mediaPlayers中是否包含@app
+    containApp = findMediaPlayerByApplication(app);
+
+    if(true == containApp)
+        removeMediaPlayerByApplication(app,curTime);
+
+    syslog(LOG_DEBUG,"org.ukui.SettingsDaemon.MediaKeys registering %s at %u",app.toLatin1().data(),curTime);
+    MediaPlayer* newPlayer = new MediaPlayer;
+    newPlayer->application = app;
+    newPlayer->time = curTime;
+    mediaPlayers.insert(findMediaPlayerByTime(newPlayer),newPlayer);
+
+}
+
+/**
+ * @brief MediaKeysManager::ReleaseMediaPlayerKeys
+ * @param app
+ */
+void MediaKeysManager::ReleaseMediaPlayerKeys(QString app)
+{
+    bool containApp;
+    QList<MediaPlayer*>::iterator item,end;
+    MediaPlayer* tmp;
+
+    item = mediaPlayers.begin();
+    end = mediaPlayers.end();
+
+    containApp = findMediaPlayerByApplication(app);
+
+    if(true == containApp){
+        for(; item != end; ++item){
+            tmp = *item;
+            //find @player successfully 在链表中成功找到该元素
+            if(tmp->application == app){
+                tmp->application.clear();
+                delete tmp;
+                mediaPlayers.removeOne(tmp);
+                break;
+            }
+        }
+    }
+}
+
+/**
+ * @brief MediaKeysManager::findMediaPlayerByApplication
+ * @param app   app=="UsdMpris" is true at general 一般情况下app=="UsdMpris"
+ * @param player    if@app can be founded in @mediaPlayers, @player recored it's position
+ *                  如果@app 存在于@mediaPlayers内，则@player 记录它的位置
+ * @return return true if @app can be founded in @mediaPlayers
+ */
+bool MediaKeysManager::findMediaPlayerByApplication(const QString& app)
+{
+    QList<MediaPlayer*>::iterator item,end;
+    MediaPlayer* tmp;
+
+    item = mediaPlayers.begin();
+    end = mediaPlayers.end();
+
+    for(; item != end; ++item){
+        tmp = *item;
+        //find @player successfully 在链表中成功找到该元素
+        if(tmp->application == app){
+            return true;
+        }
+    }
+
+    //can not find @player at QList<MediaPlayer*> 查找失败
+    return false;
+}
+
+/**
+ * @brief MediaKeysManager::findMediaPlayerByTime determine insert location at the @mediaPlayers
+ *        确定在@mediaPlayers中的插入位置
+ * @param player
+ * @return  return index.    返回下标
+ */
+uint MediaKeysManager::findMediaPlayerByTime(MediaPlayer* player)
+{
+    if(mediaPlayers.isEmpty())
+        return 0;
+    return player->time < mediaPlayers.first()->time;
+}
+
+void MediaKeysManager::removeMediaPlayerByApplication(const QString& app,uint currentTime)
+{
+    QList<MediaPlayer*>::iterator item,end;
+    MediaPlayer* tmp;
+
+    item = mediaPlayers.begin();
+    end = mediaPlayers.end();
+
+    for(; item != end; ++item){
+        tmp = *item;
+        //find @player successfully 在链表中成功找到该元素
+        if(tmp->application == app && tmp->time < currentTime){
+            tmp->application.clear();
+            delete tmp;
+            mediaPlayers.removeOne(tmp);
+            break;
+        }
+    }
 }
