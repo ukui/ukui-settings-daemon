@@ -31,6 +31,12 @@ KeybindingsManager *KeybindingsManager::KeybindingsManagerNew()
     return mKeybinding;
 }
 
+/**
+ * @brief parse_binding
+ * Whether the binding exists
+ * 获取此绑定的条目
+ * @return
+ */
 static bool
 parse_binding (Binding *binding)
 {
@@ -70,6 +76,12 @@ compare_bindings (gconstpointer a,
     return g_strcmp0 (key_b, key_a->settings_path);
 }
 
+/**
+ * @brief KeybindingsManager::bindings_get_entry
+ * Gets binding shortcut data
+ * 获取绑定快捷键数据
+ * @return
+ */
 bool KeybindingsManager::bindings_get_entry (KeybindingsManager *manager,const char *settings_path)
 {
     GSettings *settings;
@@ -79,10 +91,12 @@ bool KeybindingsManager::bindings_get_entry (KeybindingsManager *manager,const c
     char      *key    = nullptr;
 
     if (!settings_path) {
-            return FALSE;
+            return false;
     }
 
-    /* Get entries for this binding */
+    /* Get entries for this binding
+     * 获取此绑定的条目
+     */
     settings = g_settings_new_with_path (CUSTOM_KEYBINDING_SCHEMA, settings_path);
     action = g_settings_get_string (settings, "action");
     key = g_settings_get_string (settings, "binding");
@@ -93,11 +107,6 @@ bool KeybindingsManager::bindings_get_entry (KeybindingsManager *manager,const c
             qWarning ("Key binding (%s) is incomplete", settings_path);
             return false;
     }
-
-
-    qDebug ("keybindings: get entries from '%s' (action: '%s', key: '%s')",
-            settings_path, action, key);
-
 
     tmp_elem = g_slist_find_custom (manager->binding_list,
                                     settings_path,
@@ -122,29 +131,27 @@ bool KeybindingsManager::bindings_get_entry (KeybindingsManager *manager,const c
     new_binding->settings_path = g_strdup (settings_path);
 
     if (parse_binding (new_binding)) {
-        syslog(LOG_ERR,"parse_binding (new_binding) = TRUE");
         if (!tmp_elem)
             manager->binding_list = g_slist_prepend (manager->binding_list, new_binding);
     } else {
-        syslog(LOG_ERR,"parse_binding (new_binding) = false");
         g_free (new_binding->binding_str);
         g_free (new_binding->action);
         g_free (new_binding->settings_path);
-        /*new_binding->binding_str = nullptr;
-        new_binding->action = nullptr;
-        new_binding->settings_path = nullptr;*/
         g_free (new_binding->previous_key.keycodes);
-        qDebug()<<__func__<<"----5-------";
         g_free (new_binding);
-        qDebug()<<__func__<<"----6-------";
         if (tmp_elem)
             manager->binding_list = g_slist_delete_link (manager->binding_list, tmp_elem);
-        return FALSE;
+        return false;
     }
 
-    return TRUE;
+    return true;
 }
 
+/**
+ * @brief KeybindingsManager::bindings_clear
+ * Clear binding cache
+ * 清除绑定缓存
+ */
 void KeybindingsManager::bindings_clear (KeybindingsManager *manager)
 {
     GSList *l;
@@ -180,13 +187,18 @@ void KeybindingsManager::bindings_get_entries (KeybindingsManager *manager)
             gchar *settings_path;
             settings_path = g_strdup_printf("%s%s", GSETTINGS_KEYBINDINGS_DIR, custom_list[i]);
             bindings_get_entry (manager,settings_path);
-            qDebug()<<"settings_path = "<<settings_path;
             g_free (settings_path);
         }
         g_strfreev (custom_list);
     }
 }
 
+/**
+ * @brief same_keycode
+ * Is it the same key code
+ * 是否为相同的键码
+ * @return
+ */
 static bool
 same_keycode (const Key *key, const Key *other)
 {
@@ -202,9 +214,9 @@ same_keycode (const Key *key, const Key *other)
 }
 
 /**
- * @brief same_key  对比按键是否为快捷键
- * @param key
- * @param other
+ * @brief same_key
+ * Compare whether the keys are shortcuts
+ * 对比按键是否为快捷键
  * @return
  */
 static bool same_key (const Key *key, const Key *other)
@@ -227,9 +239,9 @@ static bool same_key (const Key *key, const Key *other)
 }
 
 /**
- * @brief KeybindingsManager::key_already_used 已经使用的快捷键 进行比对
- * @param manager
- * @param binding
+ * @brief KeybindingsManager::key_already_used
+ * @English Compare the shortcuts already used
+ * @简体 已经使用的快捷键 进行比对
  * @return
  */
 bool KeybindingsManager::key_already_used (KeybindingsManager*manager,Binding   *binding)
@@ -249,37 +261,42 @@ bool KeybindingsManager::key_already_used (KeybindingsManager*manager,Binding   
 }
 
 /**
- * @brief KeybindingsManager::binding_unregister_keys 绑定注销按键
- * @param manager
+ * @brief KeybindingsManager::binding_unregister_keys
+ * Unbind key
+ * 注销绑定按键
  */
 void KeybindingsManager::binding_unregister_keys (KeybindingsManager *manager)
 {
     GSList *li;
-    //gboolean need_flush = FALSE;
+    bool need_flush = FALSE;
+    gdk_x11_display_error_trap_push (gdk_display_get_default());
     try {
         for (li = manager->binding_list; li != NULL; li = li->next) {
             Binding *binding = (Binding *) li->data;
 
             if (binding->key.keycodes) {
-                //need_flush = TRUE;
+                need_flush = TRUE;
                 grab_key_unsafe (&binding->key, FALSE, manager->screens);
             }
         }
-        /*if (need_flush)
-            gdk_flush ();*/
+        if (need_flush)
+            gdk_display_flush(gdk_display_get_default());
     } catch (...) {
 
     }
+    gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
 }
 
 /**
- * @brief KeybindingsManager::binding_register_keys 绑定寄存器键
- * @param manager
+ * @brief KeybindingsManager::binding_register_keys
+ * Bind register key
+ * 绑定寄存器按键
  */
 void KeybindingsManager::binding_register_keys (KeybindingsManager *manager)
 {
     GSList *li;
-
+    bool need_flush = false;
+    gdk_x11_display_error_trap_push (gdk_display_get_default());
     /* Now check for changes and grab new key if not already used
      * 现在检查更改并获取新密钥（如果尚未使用）
      */
@@ -290,7 +307,7 @@ void KeybindingsManager::binding_register_keys (KeybindingsManager *manager)
             /* Ungrab key if it changed and not clashing with previously set binding */
             if (!key_already_used (manager,binding)) {
                 gint i;
-                //need_flush = TRUE;
+                need_flush = true;
                 if (binding->previous_key.keycodes) {
                         grab_key_unsafe (&binding->previous_key, FALSE, manager->screens);
                 }
@@ -310,8 +327,10 @@ void KeybindingsManager::binding_register_keys (KeybindingsManager *manager)
         }
     }
 
-    /*if (need_flush)
-        gdk_flush ();*/
+    if (need_flush)
+        gdk_display_flush (gdk_display_get_default());
+    if(gdk_x11_display_error_trap_pop (gdk_display_get_default()))
+        qWarning("Grab failed for some keys, another application may already have access the them.");
 }
 
 /**
@@ -355,7 +374,6 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
             sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
             GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(execPathName);
             retval = g_app_info_launch_uris((GAppInfo *)info, NULL, NULL, NULL);
-            qDebug()<<execPathName;
 
             g_strfreev (argv);
 
@@ -436,13 +454,16 @@ bool KeybindingsManager::KeybindingsManagerStart()
                            (GdkFilterFunc) keybindings_filter,
                            this);
 
+
     try {
         /* Add KeyPressMask to the currently reportable event masks
          * 将KeyPressMask添加到当前可报告的事件掩码
          */
+        gdk_x11_display_error_trap_push (gdk_display_get_default());
         XGetWindowAttributes (xdpy, xwindow, &atts);
         XSelectInput (xdpy, xwindow, atts.your_event_mask | KeyPressMask);
-   } catch (int) {
+        gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
+    } catch (int) {
 
     }
     screens = new QList<GdkScreen*>();

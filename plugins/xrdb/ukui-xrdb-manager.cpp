@@ -2,8 +2,9 @@
 #include <QString>
 #include <QList>
 #include <QDir>
+#include <QVariant>
 #include "ukui-xrdb-manager.h"
-#include "clib-syslog.h"
+#include <syslog.h>
 
 #define midColor(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))
 
@@ -11,12 +12,7 @@ ukuiXrdbManager* ukuiXrdbManager::mXrdbManager = nullptr;
 
 ukuiXrdbManager::ukuiXrdbManager()
 {
-    settings = new QGSettings(SCHEMAS);
-    allUsefulAdFiles = new QList<QString>();
-
     gtk_init(NULL,NULL);
-    widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-    gtk_widget_ensure_style(widget);
 }
 
 ukuiXrdbManager::~ukuiXrdbManager()
@@ -35,11 +31,17 @@ ukuiXrdbManager* ukuiXrdbManager::ukuiXrdbManagerNew()
 
 bool ukuiXrdbManager::start(GError **error)
 {
+    syslog(LOG_DEBUG,"Starting xrdb manager!");
+
+    settings = new QGSettings(SCHEMAS);
+    allUsefulAdFiles = new QList<QString>();
+    widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_widget_ensure_style(widget);
+
     /* the initialization is done here otherwise
        ukui_settings_xsettings_load would generate
        false hit as gtk-theme-name is set to Default in
        ukui_settings_xsettings_init */
-    CT_SYSLOG(LOG_DEBUG,"Starting xrdb manager!");
     if(nullptr != settings)
         connect(settings,SIGNAL(changed(const QString&)),this,SLOT(themeChanged(const QString&)));
 
@@ -48,7 +50,7 @@ bool ukuiXrdbManager::start(GError **error)
 
 void ukuiXrdbManager::stop()
 {
-    CT_SYSLOG(LOG_DEBUG,"Stopping xrdb manager!");
+    syslog(LOG_DEBUG,"Stopping xrdb manager!");
     if(settings)
         delete settings;
     if(allUsefulAdFiles){
@@ -60,8 +62,8 @@ void ukuiXrdbManager::stop()
     gtk_widget_destroy(widget);
 }
 
-/* func : Scan a single directory for .ad files, and return them all in a
- * QList*
+/** func : Scan .ad file from @path, and return them all in a QList
+ *         从@path目录下查找 .ad 文件，并存储在 QList。
  */
 QList<QString>* scanAdDirectory(QString path,GError** error)
 {
@@ -98,8 +100,11 @@ QList<QString>* scanAdDirectory(QString path,GError** error)
 }
 
 /**
- * Scan the user and system paths, and return a list of strings in the
- * right order for processing.
+ * @brief ukuiXrdbManager::scanForFiles
+ *        scan .ad file from @SYSTEM_AD_DIR and $HOME, and return them at a QList;
+ *        从@SYSTEM_AD_DIR 和 $HOME扫描 .ad 文件，将结果存储在QList
+ * @param error
+ * @return
  */
 QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
 {
@@ -114,7 +119,7 @@ QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
     localError = NULL;
     systemAdFileList = scanAdDirectory(SYSTEM_AD_DIR,&localError);
     if(NULL != localError){
-        g_propagate_error(error,localError);
+        g_propagate_error(error,localError);        //copy error info
         return nullptr;
     }
 
@@ -124,32 +129,35 @@ QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
         QString userAdDir;
         QFileInfo fileInfo;
 
-        userAdDir = userAdDir + USER_AD_DIR;
+        userAdDir = userHomeDir + "/" + USER_AD_DIR;
         fileInfo.setFile(userAdDir);
         if(fileInfo.exists() && fileInfo.isDir()){
             userAdFileList = scanAdDirectory(userAdDir,&localError);
+            //what remians here is open source logic 这里保留的是开源的逻辑
             if(NULL != localError){
-                g_propagate_error(error,localError);
-                systemAdFileList->clear();//memery free for QList
-                return nullptr;            }
+                g_propagate_error(error,localError);    //copy error info
+                systemAdFileList->clear();              //memery free for QList
+                delete systemAdFileList;
+                return nullptr;
+            }
         }else
-            CT_SYSLOG(LOG_INFO,"User's ad file not found at %s!",userAdDir.toLatin1().data());
+            syslog(LOG_INFO,"User's ad file not found at %s!",userAdDir.toLatin1().data());
     }else
-        CT_SYSLOG(LOG_WARNING,"Cannot datermine user's home directory!");
+        syslog(LOG_WARNING,"Cannot datermine user's home directory!");
 
-    //After get all ad files,we handle it.
+    //After get all ad files,we handle it. 在得到所有的ad文件后，我们开始处理数据
     if(systemAdFileList->contains(GENERAL_AD))
         systemAdFileList->removeOne(GENERAL_AD);
     if(nullptr != userAdFileList)
         removeSameItemFromFirst(systemAdFileList,userAdFileList);
 
-    //here,we get all ad files that we needed.
+    //here,we get all ad files that we needed(without repetition). 到这里，取得我们所有需要的 ad 文件(不重复)
     allUsefulAdFiles->append(*systemAdFileList);
     if(nullptr != userAdFileList)
         allUsefulAdFiles->append(*userAdFileList);
     allUsefulAdFiles->append(GENERAL_AD);
 
-    //QList.append() operator is deep-copy,so we free memory.
+    //QList.append() operator is deep-copy,so we free memory. QList.append()会进行深拷贝，所以这里释放内存
     systemAdFileList->clear();
     delete systemAdFileList;
 
@@ -162,7 +170,8 @@ QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
 }
 
 /**
- * Append the contents of a file onto the end of a QString
+ * Append the contents of @file onto the end of a QString
+ * 追加 @file 文件的内容到QString尾部
  */
 void ukuiXrdbManager::appendFile(QString file,GError** error)
 {
@@ -174,18 +183,17 @@ void ukuiXrdbManager::appendFile(QString file,GError** error)
     fileContents =  fileGetContents(file,&localError);
 
     if(NULL != localError){
-        //CT_SYSLOG(LOG_ERR,"%s",localError->message);
-        g_propagate_error(error,localError);
+        g_propagate_error(error,localError);    //copy error info
         localError = NULL;
         return;
     }
 
     //then append all contents to @needMerge
-    if(!fileContents.isEmpty())
+    if(!fileContents.isNull())
         needMerge.append(fileContents);
 }
 
-/* func : append contents from .Xresources or .Xdefaults  to @needMerge.
+/** func : append contents from .Xresources or .Xdefaults  to @needMerge.
  */
 void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
 {
@@ -196,7 +204,7 @@ void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
     char* tmpName;
 
     homePath = QDir::homePath();
-    xResources = homePath + fileName;
+    xResources = homePath + "/" + fileName;
     file.setFileName(xResources);
 
     if(!file.exists()){
@@ -204,7 +212,7 @@ void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
         g_set_error(error,G_FILE_ERROR,
                     G_FILE_ERROR_NOENT,
                     "%s does not exist!",tmpName);
-        //CT_SYSLOG(LOG_WARNING,"%s does not exist!",tmpName);
+        //syslog(LOG_WARNING,"%s does not exist!",tmpName);
         return;
     }
 
@@ -212,15 +220,13 @@ void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
     appendFile(xResources,&localError);
     if(NULL != localError){
         g_propagate_error(error,localError);
-        //CT_SYSLOG(LOG_WARNING,"%s",localError->message);
+        //syslog(LOG_WARNING,"%s",localError->message);
         localError = NULL;
     }
 }
 
 bool
-write_all (int         fd,
-           const char *buf,
-           ulong       to_write)
+write_all (int fd,const char *buf,ulong to_write)
 {
     while (to_write > 0) {
         long count = write (fd, buf, to_write);
@@ -244,7 +250,7 @@ child_watch_cb (int     pid,
     char *command = (char*)user_data;
 
     if (!WIFEXITED (status) || WEXITSTATUS (status)) {
-        CT_SYSLOG (LOG_WARNING,"Command %s failed", command);
+        syslog (LOG_WARNING,"Command %s failed", command);
     }
 }
 
@@ -262,7 +268,7 @@ spawn_with_input (const char *command,
     argv = NULL;
     res = g_shell_parse_argv (command, NULL, &argv, NULL);
     if (! res) {
-        CT_SYSLOG (LOG_WARNING,"Unable to parse command: %s", command);
+        syslog (LOG_WARNING,"Unable to parse command: %s", command);
         return;
     }
 
@@ -281,16 +287,14 @@ spawn_with_input (const char *command,
     g_strfreev (argv);
 
     if (! res) {
-        CT_SYSLOG(LOG_WARNING,"Could not execute %s: %s", command, error->message);
+        syslog(LOG_WARNING,"Could not execute %s: %s", command, error->message);
         g_error_free (error);
         return;
     }
 
-    //sleep(15);
-
     if (input != NULL) {
         if (! write_all (inpipe, input, strlen (input))) {
-            CT_SYSLOG(LOG_WARNING,"Could not write input to %s", command);
+            syslog(LOG_WARNING,"Could not write input to %s", command);
         }
         close (inpipe);
     }
@@ -323,7 +327,7 @@ void ukuiXrdbManager::applySettings(){
     error = NULL;
     scanForFiles(&error);
     if(NULL != error){
-        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        syslog(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 
@@ -333,7 +337,7 @@ void ukuiXrdbManager::applySettings(){
         error = NULL;
         appendFile(allUsefulAdFiles->at(i),&error);
         if(NULL != error){
-            CT_SYSLOG(LOG_WARNING,"%s",error->message);
+            syslog(LOG_WARNING,"%s",error->message);
             g_error_free(error);
         }
     }
@@ -342,14 +346,14 @@ void ukuiXrdbManager::applySettings(){
     error = NULL;
     appendXresourceFile(USER_X_RESOURCES,&error);
     if(NULL != error){
-        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        syslog(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 
     error = NULL;
     appendXresourceFile(USER_X_DEFAULTS,&error);
     if(NULL != error){
-        CT_SYSLOG(LOG_WARNING,"%s",error->message);
+        syslog(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 
@@ -360,112 +364,13 @@ void ukuiXrdbManager::applySettings(){
     allUsefulAdFiles->clear();
 }
 
-/* func : private slots for gsettings key 'gtk-theme' changed
- * example: on ukui-3.0, @key == "ukui-black" or @key == "ukui-white"
+/** func : private slots for gsettings key 'gtk-theme' changed
+ *         监听 'gtk-theme' key值变化的槽函数
  */
 void ukuiXrdbManager::themeChanged (const QString& key)
 {
-
-    QString themeName;
-    QString themeColorCssFile = nullptr;
-    themeName = settings->get(key).toString();
-    themeColorCssFile = SYSTEM_THEME_DIR + themeName + "/gtk-3.0/_ukui-colors.scss";
-
-    if(!themeColorCssFile.isNull()){
-        //readCssFile(themeColorCssFile);
-        getColorConfigFromGtkWindow();
-        applySettings();
-    }
-}
-
-/*func : get color config for gtk-3.0 from css file
- */
-void ukuiXrdbManager::readCssFile(const QString& cssFile){
-    QFile file;
-    QString lineContent;
-
-    file.setFileName(cssFile);
-    if(!file.exists()){
-        CT_SYSLOG(LOG_ERR,"%s does not exist!",cssFile.toLatin1().data());
-        return;
-    }
-
-    if(!file.open(QIODevice::ReadOnly)){
-        CT_SYSLOG(LOG_ERR,"%s open failed! cannot get color value!",cssFile.toLatin1().data());
-        return;
-    }
-
-    while(!file.atEnd()){
-        lineContent = file.readLine();
-        if(!lineContent.contains('#'))
-            continue;
-        if(lineContent.contains("button")){
-            goto out;
-        }
-
-        handleLineContent(lineContent);
-        lineContent.clear();
-    }
-
-out:
-    file.close();
-}
-
-/* func : delete character ';' from Qstring.
- * example : "#0c0c0d;\n" -> "#0c0c0d\n"
- */
-void ukuiXrdbManager::handleLineContent(const QString& lineContent){
-    QStringList colorSplit;
-    QString tmp1,tmp2;
-
-    if(lineContent.isEmpty())
-        return;
-
-    colorSplit = lineContent.split(':');
-    tmp1 = colorSplit.at(0);
-    tmp2 = colorSplit.at(1);
-    tmp2.remove(';');
-
-    if(tmp1 == "$bg_color"){
-        colorDefineList.insert(0,"#define BACKGROUND "+tmp2);
-        colorDefineList.append("#define WINDOW_BACKGROUND "+tmp2);
-        colorDefineList.append("#define HIGHLIGHT "+calorShade(tmp2,1.2));
-    }
-    else if(tmp1 == "$fg_color"){
-        colorDefineList.insert(1,"#define FOREGROUND "+tmp2);
-        colorDefineList.append("#define WINDOW_FOREGROUND "+tmp2);
-        colorDefineList.append("#define LOWLIGHT "+calorShade(tmp2,2.0/3.0));
-    }
-    else if(tmp1 == "$active_bg_color")
-        colorDefineList.append("#define ACTIVE_BACKGROUND "+tmp2);
-    else if(tmp1 == "$active_fg_color")
-        colorDefineList.append("#define ACTIVE_FOREGROUND "+tmp2);
-    else if(tmp1 == "$selected_bg_color")
-        colorDefineList.append("#define SELECT_BACKGROUND "+tmp2);
-    else if(tmp1 == "$selected_fg_color")
-        colorDefineList.append("#define SELECT_FOREGROUND "+tmp2);
-    else if(tmp1 == "$disable_bg_color")
-        colorDefineList.append("#define INACTIVE_BACKGROUND "+tmp2);
-    else if(tmp1 == "$disable_fg_color")
-        colorDefineList.append("#define INACTIVE_FOREGROUND "+tmp2);
-}
-
-QString ukuiXrdbManager::calorShade(const QString color,double shade){
-    int red,green,blue;
-    QString tmp;
-
-    red = color.mid(1,2).toInt(nullptr,16);
-    green = color.mid(3,2).toInt(nullptr,16);
-    blue = color.mid(5,2).toInt(nullptr,16);
-
-    red = midColor(red*shade,0,255);
-    green = midColor(green*shade,0,255);
-    blue = midColor(green*shade,0,255);
-
-    tmp = QString("#%1%2%3\n").arg(red,2,16,QLatin1Char('0'))
-            .arg(green,2,16,QLatin1Char('0')).arg(blue,2,16,QLatin1Char('0'));
-
-    return tmp;
+    getColorConfigFromGtkWindow();
+    applySettings();
 }
 
 /* func : remove one item from first,if second have this item too.
@@ -478,8 +383,8 @@ void ukuiXrdbManager::removeSameItemFromFirst(QList<QString>* first,
                              QList<QString>* second){
     QFileInfo tmpFirstName;
     QFileInfo tmpSecondName;
-    QString firstBaseName;
-    QString secondBaseName;
+    QString firstBaseName;      //real file name,not include path 不含路径的真实文件名
+    QString secondBaseName;     //same as above 同上
     int i,j;
     int firstSize,secondSize;
 //    if(first->isEmpty() || second->isEmpty()){
@@ -494,6 +399,7 @@ void ukuiXrdbManager::removeSameItemFromFirst(QList<QString>* first,
         firstBaseName.clear();
         tmpFirstName.setFile(first->at(i));
         firstBaseName = tmpFirstName.fileName();
+
         for(j = 0; j < secondSize; ++j){
             secondBaseName.clear();
             tmpSecondName.setFile(second->at(j));
@@ -507,7 +413,11 @@ void ukuiXrdbManager::removeSameItemFromFirst(QList<QString>* first,
     }
 }
 
-/* func : get all contents from file.
+/** func : read all contents from @fileName.
+ *         从文件 @fileName 读取全部内容
+ *  @return
+ *      return nullptr if open failed or @fileName does not exist
+ *      若文件 @fileName 不存在或者对打开失败，则返回 nullptr
  */
 QString ukuiXrdbManager::fileGetContents(QString fileName,GError **error)
 {
@@ -533,12 +443,14 @@ QString ukuiXrdbManager::fileGetContents(QString fileName,GError **error)
 
     return fileContents;
 }
-
+/**
+ * @brief ukuiXrdbManager::getColorConfigFromGtkWindow
+ *  gets the color configuration for the gtk window.
+ *  获取gtk窗体的颜色配置信息
+ */
 void ukuiXrdbManager::getColorConfigFromGtkWindow()
 {
-    GtkWidget* widget;
     GtkStyle* style;
-
     style = gtk_widget_get_style(widget);
 
     appendColor("BACKGROUND",&style->bg[GTK_STATE_NORMAL]);
@@ -552,11 +464,13 @@ void ukuiXrdbManager::getColorConfigFromGtkWindow()
     appendColor("ACTIVE_BACKGROUND",&style->bg[GTK_STATE_SELECTED]);
     appendColor("ACTIVE_FOREGROUND",&style->text[GTK_STATE_SELECTED]);
 
-    colorShade2("HIGHLIGHT",&style->bg[GTK_STATE_NORMAL],1.2);
-    colorShade2("LOWLIGHT",&style->fg[GTK_STATE_NORMAL],2.0/3.0);
+    colorShade("HIGHLIGHT",&style->bg[GTK_STATE_NORMAL],1.2);
+    colorShade("LOWLIGHT",&style->fg[GTK_STATE_NORMAL],2.0/3.0);
+
 }
 
 /* func : Gets the hexadecimal value of the color
+ *        获取颜色值的16进制表示
  * example : #define BACKGROUND #ffffff\n
  */
 void ukuiXrdbManager::appendColor(QString name,GdkColor* color)
@@ -567,7 +481,7 @@ void ukuiXrdbManager::appendColor(QString name,GdkColor* color)
     colorDefineList.append("#define " + name + " " + tmp);
 }
 
-void ukuiXrdbManager::colorShade2(QString name,GdkColor* color,double shade)
+void ukuiXrdbManager::colorShade(QString name,GdkColor* color,double shade)
 {
     GdkColor tmp;
 

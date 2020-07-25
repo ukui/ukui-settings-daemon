@@ -56,7 +56,6 @@ void flush_cache (void)
     pa_context *c = NULL;
     pa_proplist *pl = NULL;
     pa_operation *o = NULL;
-    syslog(LOG_DEBUG,"Flushing sample cache");
 
     if (!(ml = pa_mainloop_new ())) {
         syslog(LOG_DEBUG,"Failed to allocate pa_mainloop");
@@ -120,7 +119,6 @@ void flush_cache (void)
         }
     }
 
-    syslog(LOG_DEBUG,"Sample cache flushed");
 
 fail:
     if (o) {
@@ -159,7 +157,6 @@ void SoundManager::trigger_flush ()
 void
 SoundManager::gsettings_notify_cb (const QString& key)
 {
-    syslog(LOG_DEBUG,"%s.%s changed",UKUI_SOUND_SCHEMA, key.toLatin1().data());
     trigger_flush();
 }
 /*func : listen for follow directory.
@@ -171,7 +168,6 @@ SoundManager::gsettings_notify_cb (const QString& key)
 void
 SoundManager::file_monitor_changed_cb (const QString& path)
 {
-    syslog(LOG_DEBUG,"%s changed",path.toLatin1().data());
     trigger_flush ();
 }
 
@@ -183,7 +179,6 @@ SoundManager::register_directory_callback (const QString path,
     QFileSystemWatcher* w;
     bool succ = false;
 
-    syslog(LOG_DEBUG,"Registering directory monitor for %s", path.toLatin1().data());
 
     w = new QFileSystemWatcher();
     if(w->addPath(path)){

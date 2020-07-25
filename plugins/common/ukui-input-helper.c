@@ -30,16 +30,16 @@ device_has_property (XDevice    *device,
         if (!prop)
                 return FALSE;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default());
         if ((XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 1, False,
                                 XA_INTEGER, &realtype, &realformat, &nitems,
                                 &bytes_after, &data) == Success) && (realtype != None)) {
-                gdk_error_trap_pop_ignored ();
+                gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
                 XFree (data);
                 return TRUE;
         }
 
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
         return FALSE;
 }
 
@@ -51,9 +51,9 @@ device_is_touchpad (XDeviceInfo *deviceinfo)
         if (deviceinfo->type != XInternAtom (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), XI_TOUCHPAD, True))
                 return NULL;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default());
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), deviceinfo->id);
-        if (gdk_error_trap_pop () || (device == NULL))
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default()) || (device == NULL))
                 return NULL;
 
         if (device_has_property (device, "libinput Tapping Enabled") ||
@@ -69,8 +69,8 @@ gboolean
 touchpad_is_present (void)
 {
         XDeviceInfo *device_info;
-        gint n_devices;
-        guint i;
+        int n_devices;
+        int i;
         gboolean retval;
 
         if (supports_xinput_devices () == FALSE)

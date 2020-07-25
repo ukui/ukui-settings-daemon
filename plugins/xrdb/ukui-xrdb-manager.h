@@ -41,9 +41,8 @@ public:
 
 private:
     ukuiXrdbManager();
-    void readCssFile(const QString& cssFile);
-    void handleLineContent(const QString& lineContent);
-    QString calorShade(const QString color,double shade);
+    ukuiXrdbManager(const ukuiXrdbManager&) = delete;
+
     QList<QString>* scanForFiles(GError** error);
     void removeSameItemFromFirst(QList<QString>* first,
                                  QList<QString>* second);
@@ -54,7 +53,7 @@ private:
     QString fileGetContents(QString fileName,GError **error);
     void getColorConfigFromGtkWindow();
     void appendColor(QString name,GdkColor* color);
-    void colorShade2(QString name,GdkColor* color,double shade);
+    void colorShade(QString name,GdkColor* color,double shade);
 private Q_SLOTS:
     void themeChanged (const QString& key);
 
@@ -64,9 +63,9 @@ private:
     GtkWidget* widget;
 
     //after call spawn_with_input(),the following three members must be Empty.
-    QList<QString>* allUsefulAdFiles;
-    QStringList colorDefineList;
-    QString needMerge;
+    QList<QString>  *allUsefulAdFiles;
+    QStringList     colorDefineList;
+    QString         needMerge;
 };
 
 #endif // UKUIXRDBMANAGER_H

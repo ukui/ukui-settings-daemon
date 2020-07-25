@@ -62,7 +62,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
     mDbusInterface = new QDBusInterface(DBUS_NAME,MEDIAKEYS_DBUS_PATH,MEDIAKEYS_DBUS_NAME,
                                         conn);
 
-    syslog (LOG_DEBUG,"Starting mpris manager");
+   syslog (LOG_DEBUG,"Starting mpris manager");
 
     /* Register all the names we wish to watch.*/
     mDbusWatcher->setWatchedServices(busNames);
@@ -211,7 +211,6 @@ void MprisManager::keyPressed(QString application,QString operation)
 
     mprisHead = mPlayerQuque->head();
     mprisName = MPRIS_PREFIX + mprisHead;
-    syslog(LOG_ERR,"MPRIS Sending %s to %s",mprisKey.toLatin1().data(),mprisName.toLatin1().data());
 
     /* create a dbus method call by QDBusMessage, the @mprisName is a member of @busNames
      * 通过QDBusMessage的方式创建一个dbus方法调用，@mprisName 来自于 @busNames

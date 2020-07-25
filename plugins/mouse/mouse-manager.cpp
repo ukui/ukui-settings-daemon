@@ -73,12 +73,9 @@ bool MouseManager::MouseManagerStart()
         CT_SYSLOG(LOG_ERR,"XInput is not supported, not applying any settings");
         return TRUE;
     }
-
     time = new QTimer(this);
-
     connect(time,SIGNAL(timeout()),this,SLOT(usd_mouse_manager_idle_cb()));
     time->start();
-
     return true;
 }
 
@@ -93,6 +90,9 @@ void MouseManager::MouseManagerStop()
 }
 
 /*  transplant usd-input-helper.h  */
+/* Checks whether the XInput device is supported 
+ * 检测是否支持xinput设备
+ */
 bool
 supports_xinput_devices (void)
 {
@@ -141,7 +141,7 @@ XDevice* device_is_touchpad (XDeviceInfo *deviceinfo)
 
     try {
         device = XOpenDevice (QX11Info::display(), deviceinfo->id);
-        if ((device == NULL))
+        if (device == NULL)
             throw 1;
 
         if (device_has_property (device, "libinput Tapping Enabled") ||
@@ -160,24 +160,24 @@ bool touchpad_is_present (void)
 {
     XDeviceInfo *device_info;
     int     n_devices;
-    uint    i;
+    int    i;
     bool    retval;
 
-    if (supports_xinput_devices () == FALSE)
-            return TRUE;
+    if (supports_xinput_devices () == false)
+            return true;
 
-    retval = FALSE;
+    retval = false;
 
     device_info = XListInputDevices (QX11Info::display(), &n_devices);
     if (device_info == NULL)
-            return FALSE;
+            return false;
 
     for (i = 0; i < n_devices; i++) {
             XDevice *device;
 
             device = device_is_touchpad (&device_info[i]);
             if (device != NULL) {
-                    retval = TRUE;
+                    retval = true;
                     break;
             }
     }
@@ -250,13 +250,13 @@ void property_set_bool (XDeviceInfo *device_info,
     unsigned char *data;
     int act_format;
     Atom act_type, property;
-    Display *display = QX11Info::display();//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
     property = property_from_name (property_name);
     if (!property)
             return;
 
     try {
-        //gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default());
         rc = XGetDeviceProperty (display, device,
                                  property, 0, 1, False,
                                  XA_INTEGER, &act_type, &act_format, &nitems,
@@ -270,7 +270,8 @@ void property_set_bool (XDeviceInfo *device_info,
         }
         if (rc == Success)
                 XFree (data);
-        //gdk_error_trap_pop ();
+        if(gdk_x11_display_error_trap_pop (gdk_display_get_default()))
+            qWarning ("Error while setting %s on \"%s\"", property_name, device_info->name);
 
     } catch (int x) {
         CT_SYSLOG(LOG_DEBUG,"MOUSE:Error while setting %s on \"%s\"", property_name, device_info->name)
@@ -369,7 +370,7 @@ void set_tap_to_click_synaptics (XDeviceInfo *device_info,
     unsigned long nitems, bytes_after;
     unsigned char* data;
     Atom prop, type;
-    Display *display = QX11Info::display();
+    Display *display = gdk_x11_get_default_xdisplay (); //QX11Info::display();
     prop = property_from_name ("Synaptics Tap Action");
 
     if (!prop)
@@ -577,7 +578,7 @@ void set_motion_libinput (MouseManager *manager,
     unsigned long nitems, bytes_after;
     QGSettings *settings;
 
-    Display * dpy = QX11Info::display();
+    Display * dpy = gdk_x11_get_default_xdisplay ();//QX11Info::display();
 
     union {
         unsigned char *c;
@@ -652,7 +653,7 @@ void set_motion_legacy_driver (MouseManager *manager,
     int motion_threshold;
     int numerator, denominator;
 
-    Display * dpy = QX11Info::display();
+    Display * dpy = gdk_x11_get_default_xdisplay ();//QX11Info::display();
 
     device = device_is_touchpad (device_info);
     if (device != NULL) {
@@ -1234,7 +1235,7 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
                                PropModeReplace, &data, 1);
 
         XCloseDevice (display, device);
-        // gdk_flush ();
+        gdk_display_flush (gdk_display_get_default());
     } catch (int x) {
         CT_SYSLOG(LOG_ERR,"Error %s device \"%s\"",
                   (state) ? "enabling" : "disabling",
@@ -1339,15 +1340,15 @@ void set_devicepresence_handler (MouseManager *manager)
     int xi_presence;
     display = QX11Info::display();//gdk_x11_get_default_xdisplay ();
 
-    //gdk_error_trap_push ();
+    gdk_x11_display_error_trap_push (gdk_display_get_default());
     DevicePresence (display, xi_presence, class_presence);
     XSelectExtensionEvent (display,
                            RootWindow (display, DefaultScreen (display)),
                            &class_presence, 1);
 
-    //gdk_flush ();
-    //if (!gdk_error_trap_pop ())
-    gdk_window_add_filter (NULL, devicepresence_filter, manager);
+    gdk_display_flush (gdk_display_get_default());
+    if (!gdk_x11_display_error_trap_pop (gdk_display_get_default()))
+        gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }
 
 void MouseManager::usd_mouse_manager_idle_cb()

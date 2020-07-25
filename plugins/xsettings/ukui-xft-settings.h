@@ -10,6 +10,8 @@ private:
         gboolean    antialias;
         gboolean    hinting;
         int         dpi;
+        int         scaled_dpi;
+        int         window_scale;
         char       *cursor_theme;
         int         cursor_size;
         const char *rgba;

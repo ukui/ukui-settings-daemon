@@ -1,9 +1,13 @@
+ukui-settings-daemon (0.0.2) experimental; urgency=medium
+
+  [ Kylin Team ]
+  * Update plugin.
+
+ -- Shang Xiaoyang <shangxiaoyang@kylinos.cn>  Sat, 25 Jul 2020 19:49:44 +0800
+
 ukui-settings-daemon (0.0.1) experimental; urgency=low
 
   [ Kylin Team ]
   * Initial release.
 
-  [ dingjing ]
-  * 
-
- -- dingjing <dingjing@dingjing-pc>  Tue, 24 Mar 2020 10:13:31 +0800
+ -- dingjing <dingjing@kylinos.cn>  Tue, 24 Mar 2020 10:13:31 +0800

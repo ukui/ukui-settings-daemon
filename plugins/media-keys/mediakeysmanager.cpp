@@ -1,4 +1,5 @@
 #include <QTime>
+#include <QDebug>
 #include "mediakeysmanager.h"
 #include "eggaccelerators.h"
 
@@ -62,7 +63,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     l = begin = mScreenList->begin();
     end = mScreenList->end();
     for(; l != end; ++l){
-        syslog(LOG_DEBUG,"adding key filter for screen: %d",gdk_screen_get_number(*l));
+        //syslog(LOG_DEBUG,"adding key filter for screen: %d",gdk_screen_get_number(*l));
         gdk_window_add_filter(gdk_screen_get_root_window(*l),
                                  (GdkFilterFunc)acmeFilterEvents,
                                  NULL);
@@ -99,7 +100,7 @@ void MediaKeysManager::mediaKeysStop()
     mScreenList = nullptr;
 
     needFlush = false;
-    gdk_error_trap_push();
+    gdk_x11_display_error_trap_push(gdk_display_get_default());
     for(i = 0; i < HANDLED_KEYS; ++i){
         if(keys[i].key){
             needFlush = true;
@@ -111,9 +112,9 @@ void MediaKeysManager::mediaKeysStop()
     }
 
     if(needFlush)
-        gdk_flush();
+        gdk_display_flush(gdk_display_get_default());
 
-    gdk_error_trap_pop_ignored();
+    gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
 
     g_clear_object(&mStream);
     g_clear_object(&mControl);
@@ -124,17 +125,13 @@ void MediaKeysManager::initScreens()
 {
     GdkDisplay *display;
     GdkScreen  *screen;
-    int i,screenNums;
 
     display = gdk_display_get_default();
-    screenNums = gdk_display_get_n_screens(display);
 
-    for(i = 0; i < screenNums; ++i){
-        screen = gdk_display_get_screen(display,i);
-        if(NULL == screen)
-            continue;
+    screen = gdk_display_get_default_screen(display);
+    if(NULL != screen)
         mScreenList->append(screen);
-    }
+
     if(mScreenList->count() > 0)
         mCurrentScreen = mScreenList->at(0);
     else
@@ -205,17 +202,14 @@ void MediaKeysManager::updateDefaultOutput()
 {
    MateMixerStream        *stream;
    MateMixerStreamControl *control = NULL;
-
    stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
    if (stream != NULL)
            control = mate_mixer_stream_get_default_control (stream);
-
    if (stream == mManager->mStream)
            return;
-
-   g_clear_object (&mManager->mStream);
-   g_clear_object (&mManager->mControl);
-
+   //g_clear_object (&mManager->mStream);
+   //g_clear_object (&mManager->mControl);
+   
    if (control != NULL) {
            MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
 
@@ -371,7 +365,7 @@ void MediaKeysManager::initKbd()
     int i;
     bool needFlush = false;
 
-    gdk_error_trap_push();
+    gdk_x11_display_error_trap_push(gdk_display_get_default());
     connect(mSettings,SIGNAL(changed(const QString&)),this,SLOT(updateKbdCallback(const QString&)));
 
     for(i = 0; i < HANDLED_KEYS; ++i){
@@ -407,8 +401,8 @@ void MediaKeysManager::initKbd()
     }
 
     if(needFlush)
-        gdk_flush();
-    if(gdk_error_trap_pop())
+        gdk_display_flush(gdk_display_get_default());
+    if(gdk_x11_display_error_trap_pop(gdk_display_get_default()))
         syslog(LOG_WARNING,"Grab failed for some keys,another application may already have access the them.");
 }
 
@@ -420,7 +414,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
     if(key.isNull())
         return;
 
-    gdk_error_trap_push ();
+    gdk_x11_display_error_trap_push (gdk_display_get_default());
 
     /* Find the key that was modified */
     for (i = 0; i < HANDLED_KEYS; i++) {
@@ -467,8 +461,8 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
     }
 
     if (needFlush)
-        gdk_flush ();
-    if (gdk_error_trap_pop ())
+        gdk_display_flush (gdk_display_get_default());
+    if (gdk_x11_display_error_trap_pop (gdk_display_get_default()))
         syslog(LOG_WARNING,"Grab failed for some keys, another application may already have access the them.");
 }
 

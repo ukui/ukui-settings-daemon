@@ -23,7 +23,6 @@
 
 #include <gio/gio.h>
 #include <fontconfig/fontconfig.h>
-#include <syslog.h>
 
 
 #define TIMEOUT_SECONDS 2
@@ -52,7 +51,6 @@ monitor_files (GPtrArray *monitors,
                FcStrList *list,
                gpointer   data)
 {
-    syslog(LOG_ERR, "begin: %s", __func__);
     const char *str;
 
     while ((str = (const char *) FcStrListNext (list))) {
@@ -68,7 +66,6 @@ monitor_files (GPtrArray *monitors,
     }
 
     FcStrListDone (list);
-    syslog(LOG_ERR, "end: %s", __func__);
 }
 
 
@@ -85,10 +82,8 @@ static GPtrArray *
 monitors_create (gpointer data)
 {
     GPtrArray *monitors = g_ptr_array_new ();
-    syslog(LOG_ERR, "begin %s", __func__);
     monitor_files (monitors, FcConfigGetConfigFiles (NULL), data);
     monitor_files (monitors, FcConfigGetFontDirs (NULL), data);
-    syslog(LOG_ERR, "end %s", __func__);
     return monitors;
 }
 
@@ -146,13 +141,11 @@ fontconfig_monitor_handle_t *
 fontconfig_monitor_start (GFunc    notify_callback,
                           gpointer notify_data)
 {
-    syslog(LOG_ERR, "begin %s", __func__);
     fontconfig_monitor_handle_t *handle = g_slice_new0 (fontconfig_monitor_handle_t);
 
     handle->notify_callback = notify_callback;
     handle->notify_data = notify_data;
     handle->monitors = monitors_create (handle);
-    syslog(LOG_ERR, "end %s", __func__);
     return handle;
 }
 

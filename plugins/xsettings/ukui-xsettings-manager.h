@@ -17,15 +17,15 @@ class ukuiXSettingsManager
 public:
     ukuiXSettingsManager();
     ~ukuiXSettingsManager();
-    int start(GError **error);
+    bool start();
     int stop();
 
     //gboolean setup_xsettings_managers (ukuiXSettingsManager *manager);
     XsettingsManager **pManagers;
-    GHashTable *gsettings;
-    GSettings *gsettings_font;
+    GHashTable  *gsettings;
+    GSettings   *gsettings_font;
+    //GSettings   *plugin_settings;
     fontconfig_monitor_handle_t *fontconfig_handle;
-    int xSettingsError;
 };
 
 #endif // UKUIXSETTINGSMANAGER_H

@@ -64,7 +64,6 @@ read_dir_for_purge (const char *path, GList *files)
     GFileEnumerator *enum_dir;
 
     read_path = g_file_new_for_path (path);
-    syslog(LOG_ERR, "===read_path = %s===", path);
     enum_dir = g_file_enumerate_children (read_path,
                                           G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                           G_FILE_ATTRIBUTE_TIME_MODIFIED ","
@@ -144,7 +143,6 @@ void HousekeepingManager::purge_thumbnail_cache ()
     PurgeData  purge_data;
     GTimeVal   current_time;
 
-    syslog (LOG_ERR, "housekeeping: checking thumbnail cache size and freshness");
 
     purge_data.max_age  = settings->get(THUMB_CACHE_KEY_AGE).toInt() * 24 * 60 * 60;
     purge_data.max_size = settings->get(THUMB_CACHE_KEY_SIZE).toInt() * 1024 * 1024;
@@ -153,7 +151,6 @@ void HousekeepingManager::purge_thumbnail_cache ()
     if ((purge_data.max_age < 0) && (purge_data.max_size < 0))
         return;
 
-    syslog(LOG_ERR, "in ===%s, g_get_user_cache_dir () is:=%s====", __func__, g_get_user_cache_dir ());
     path = g_build_filename (g_get_user_cache_dir (),
                              "thumbnails",
                              "normal",
@@ -215,7 +212,6 @@ bool HousekeepingManager::do_cleanup_once ()
 
 void HousekeepingManager::do_cleanup_soon()
 {
-    syslog(LOG_ERR, "housekeeping: will tidy up in 2 minutes");
     short_term_handler->start(INTERVAL_TWO_MINUTES);
 }
 

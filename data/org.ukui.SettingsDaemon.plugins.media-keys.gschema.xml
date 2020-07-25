@@ -50,6 +50,16 @@
       <summary>Log out</summary>
       <description>Binding to log out.</description>
     </key>
+    <key name="logout1" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;KP_Delete'</default>
+      <summary>Log out</summary>
+      <description>Binding to log out.</description>
+    </key>
+    <key name="logout2" type="s">
+      <default>'&lt;Primary&gt;&lt;Alt&gt;KP_Decimal'</default>
+      <summary>Log out</summary>
+      <description>Binding to log out.</description>
+    </key>
     <key name="eject" type="s">
       <default>'XF86Eject'</default>
       <summary>Eject</summary>

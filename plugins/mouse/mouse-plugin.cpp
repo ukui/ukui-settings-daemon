@@ -6,7 +6,7 @@ MouseManager * MousePlugin::UsdMouseManager = nullptr;
 
 MousePlugin::MousePlugin()
 {
-    //syslog_init("ukui-setting-daemon-mouse",LOG_LOCAL6);
+
     CT_SYSLOG(LOG_DEBUG,"MousePlugin initializing!");
     if (nullptr == UsdMouseManager)
         UsdMouseManager = MouseManager::MouseManagerNew();

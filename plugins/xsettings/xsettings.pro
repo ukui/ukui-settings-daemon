@@ -20,19 +20,19 @@ INCLUDEPATH += \
     -I $$PWD/../../common
 
 SOURCES += \
+    ukui-xsettings-plugin.cpp \
     xsettings-manager.cpp \
     ukui-xsettings-manager.cpp \
     ukui-xft-settings.cpp \
-    xsettings-plugin.cpp \
     xsettings-common.c \
     fontconfig-monitor.c
 
 HEADERS += \
+    ukui-xsettings-plugin.h \
     xsettings-manager.h \
     ukui-xsettings-manager.h \
     ukui-xft-settings.h \
     xsettings-const.h \
-    xsettings-plugin.h  \
     xsettings-common.h  \
     fontconfig-monitor.h
 

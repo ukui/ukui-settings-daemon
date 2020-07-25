@@ -1,6 +1,0 @@
-# /debian/ukui-settings-daemon/usr/bin/			/usr/bin/
-# /debian/ukui-settings-daemon/usr/share/gnome/		/usr/share/gnome/
-# /debian/ukui-settings-daemon/usr/share/dbus-1/		/usr/share/dbus-1/
-# /debian/ukui-settings-daemon/usr/share/glib-2.0/	/usr/share/glib-2.0/
-plugins/*/*.so	/usr/local/lib/ukui-settings-daemon/
-plugins/*/*.prl	/usr/local/lib/ukui-settings-daemon/

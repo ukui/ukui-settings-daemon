@@ -1,6 +1,5 @@
 #include "usd-disk-space.h"
 #include <QDebug>
-#include <syslog.h>
 #include "qtimer.h"
 #define GIGABYTE                   1024 * 1024 * 1024
 
@@ -37,7 +36,6 @@ QTimer* DIskSpace::ldsm_timeout_cb = NULL;
 DIskSpace::DIskSpace()
 {
 
-        syslog(LOG_ERR, "%s=====11111111111111111111111", __FUNCTION__);
     ldsm_timeout_cb = new QTimer();
     connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
 
