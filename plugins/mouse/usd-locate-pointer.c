@@ -481,7 +481,6 @@ event_filter (GdkXEvent *gdkxevent,
                                            &keyval,
                                            NULL, NULL, NULL);
 
-      syslog(LOG_ERR, "xevent->xkey.state =%d", xevent->xkey.state);
       //if ((keyval == GDK_KEY_m || keyval == GDK_KEY_M) )
       if ((keyval == GDK_KEY_m || keyval == GDK_KEY_M) && (xevent->xkey.state == 5))
         {
