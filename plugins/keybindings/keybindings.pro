@@ -1,3 +1,8 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2020-05-24T09:30:00
+#
+#-------------------------------------------------
 QT -= gui
 QT += core widgets x11extras
 TARGET = keybindings

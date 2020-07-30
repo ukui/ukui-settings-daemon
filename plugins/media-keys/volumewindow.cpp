@@ -1,8 +1,28 @@
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
+ *
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "volumewindow.h"
 #include "ui_volumewindow.h"
 #include <QPalette>
 #include <QSize>
 #include <QRect>
+#include <QScreen>
+#include <QX11Info>
 #include <QDebug>
 
 const QString ICONDIR = "/usr/share/icons/ukui-icon-theme-default/scalable";
@@ -35,11 +55,20 @@ VolumeWindow::~VolumeWindow()
 
 void VolumeWindow::initWindowInfo()
 {
+    int num,screenWidth,screenHeight;
+    QScreen* currentScreen;
+
+    num = QX11Info::appScreen();                       //curent screen number 当前屏幕编号
+    currentScreen = QApplication::screens().at(num);   //current screen       当前屏幕
+    screenWidth = currentScreen->size().width();
+    screenHeight = currentScreen->size().height();
+
     //窗口性质
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint);
     setWindowOpacity(0.95);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
+    move(screenWidth*0.01,screenHeight*0.04);
 
     //new memery
     mVLayout = new QVBoxLayout(this);

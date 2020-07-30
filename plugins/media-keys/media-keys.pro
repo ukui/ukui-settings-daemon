@@ -1,3 +1,8 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2020-06-16T09:30:00
+#
+#-------------------------------------------------
 QT += gui widgets svg x11extras dbus
 TEMPLATE = lib
 CONFIG += c++11 plugin link_pkgconfig

@@ -1,6 +1,23 @@
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
+ *
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include <QCoreApplication>
 #include <QApplication>
-
 #include "xrandr-manager.h"
 #include <syslog.h>
 
@@ -320,6 +337,20 @@ void XrandrManager::AutoConfigureOutputs (XrandrManager *manager, guint32 timest
     g_object_unref (config);
 }
 
+/*检测到旋转，更改触摸屏鼠标光标位置*/
+void SetTouchscreenCursor(void *date)
+{
+        Display *xdisplay = XOpenDisplay(NULL);
+        Atom property_atom;
+        property_atom = XInternAtom (xdisplay, "Coordinate Transformation Matrix", True);
+        if (!property_atom)
+            return;
+        Atom type = XInternAtom (xdisplay, "FLOAT", False);
+        XIChangeProperty (xdisplay, XITouchClass, property_atom, type,
+                          32, XIPropModeReplace, (unsigned char *)date, 9);
+        XCloseDisplay(xdisplay);
+}
+
 /**
  * @brief XrandrManager::OnRandrEvent : 屏幕事件回调函数
  * @param screen
@@ -347,7 +378,52 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
         manager->ReadMonitorsXml();
         manager->AutoConfigureOutputs (manager, config_timestamp);
     }
+    /* 添加触摸屏鼠标设置 */
+    MateRRConfig *result;
+    MateRROutputInfo **outputs;
+    int i;
+    result = mate_rr_config_new_current (screen, NULL);
+    outputs = mate_rr_config_get_outputs (result);
+    for(i=0; outputs[i] != NULL;++i)
+    {
+        MateRROutputInfo *info = outputs[i];
+        if(mate_rr_output_info_is_connected (info)){
+            int rotation = mate_rr_output_info_get_rotation(info);
+            switch(rotation){
+                case MATE_RR_ROTATION_0:
+                {
+                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                case MATE_RR_ROTATION_90:
+                {
+                    float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                case MATE_RR_ROTATION_180:
+                {
+                    float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                case MATE_RR_ROTATION_270:
+                {
+                    float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                default:
+                {
+                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                }
+            }
+        }
+    }
 }
+
 /**
  * @brief XrandrManager::StartXrandrIdleCb
  * 开始时间回调函数
@@ -390,20 +466,51 @@ void XrandrManager::StartXrandrIdleCb()
         }
         SetScreenSize(dpy, root, width, height);
     }
-    /*else if(ScreenNum > 1){
-        if(XmlFileTag.value("clone")=="true"){
-            //
-        }else{
-            for(int i=0;i<XmlNum;i++){
-                if(XmlFileTag.values("primary")[i] == "yes"){
-
+    /* 添加触摸屏鼠标设置 */
+    MateRRConfig *result;
+    MateRROutputInfo **outputs;
+    int i;
+    result = mate_rr_config_new_current (rw_screen, NULL);
+    outputs = mate_rr_config_get_outputs (result);
+    for(i=0; outputs[i] != NULL;++i)
+    {
+        MateRROutputInfo *info = outputs[i];
+        if(mate_rr_output_info_is_connected (info)){
+            int rotation = mate_rr_output_info_get_rotation(info);
+            qDebug()<<"rotation  = %d"<<rotation;
+            switch(rotation){
+                case MATE_RR_ROTATION_0:
+                {
+                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
                 }
-
-
+                case MATE_RR_ROTATION_90:
+                {
+                    float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                case MATE_RR_ROTATION_180:
+                {
+                    float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                case MATE_RR_ROTATION_270:
+                {
+                    float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                    break;
+                }
+                default:
+                {
+                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                    SetTouchscreenCursor(&full_matrix);
+                }
             }
         }
     }
-    */
 }
 
 

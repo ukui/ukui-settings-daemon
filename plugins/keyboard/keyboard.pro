@@ -1,3 +1,8 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2020-04-20T09:30:00
+#
+#-------------------------------------------------
 QT += gui
 QT += core widgets x11extras
 TARGET = keyboard

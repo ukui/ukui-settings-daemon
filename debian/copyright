@@ -4,116 +4,190 @@ Source: <url://example.com>
 #
 # Please double check copyright with the licensecheck(1) command.
 
-Files:     .gitignore
-           .qmake.stash
-           Makefile
-           README.md
-           common/QGSettings/qconftype.cpp
+Files:     common/QGSettings/qconftype.cpp
            common/QGSettings/qconftype.h
            common/QGSettings/qgsettings.cpp
            common/QGSettings/qgsettings.h
            common/clib-syslog.c
            common/clib-syslog.h
-           common/common.pri
            common/plugin-interface.h
-           daemon/.gitignore
-           daemon/Makefile
-           daemon/Makefile.Debug
-           daemon/Makefile.Release
-           daemon/daemon.pro
+           common/xeventmonitor.cpp
+           common/xeventmonitor.h
            daemon/global.h
            daemon/main.cpp
-           daemon/manager-interface.cpp
            daemon/manager-interface.h
+           daemon/plugin-info.cpp
            daemon/plugin-info.h
            daemon/plugin-manager.cpp
            daemon/plugin-manager.h
-           daemon/ukui-settings-daemon
-           data/a11y-settings.ukui-settings-plugin
-           data/background.ukui-settings-plugin
-           data/clipboard.ukui-settings-plugin_bak
-           data/data.pri
-           data/mpris.ukui-settings-plugin_bak
-           data/org.ukui.SettingsDaemon.service
-           data/sound.ukui-settings-plugin
-           data/typing-break.ukui-settings-plugin
-           data/ukui-settings-daemon.desktop
-           install
-           install.sh
-           library/liba11y-settings.so
-           library/libbackground.so
-           library/libclipboard.so
-           library/libmpris.so
-           library/libsound.so
-           library/libtyping-break.so
-           plugins/README.md
-           plugins/a11y-settings/Makefile
-           plugins/a11y-settings/a11y-settings.pro
-           plugins/a11y-settings/a11ysettingsmanager.cpp
-           plugins/a11y-settings/a11ysettingsmanager.h
-           plugins/a11y-settings/a11ysettingsplugin.cpp
-           plugins/a11y-settings/a11ysettingsplugin.h
-           plugins/background/Makefile
            plugins/background/background-manager.cpp
            plugins/background/background-manager.h
-           plugins/background/background.pro
            plugins/background/backgroundplugin.cpp
            plugins/background/backgroundplugin.h
-           plugins/clipboard/Makefile
            plugins/clipboard/clipboard-manager.cpp
            plugins/clipboard/clipboard-manager.h
            plugins/clipboard/clipboard-plugin.cpp
            plugins/clipboard/clipboard-plugin.h
-           plugins/clipboard/clipboard.pro
-           plugins/clipboard/main.cpp
-           plugins/clipboard/xutils.h
-           plugins/datetime/.qmake.stash
-           plugins/datetime/Makefile
-           plugins/datetime/datetime
-           plugins/datetime/datetime-mechanism-main.cpp
-           plugins/datetime/datetime-mechanism.cpp
-           plugins/datetime/datetime-mechanism.h
-           plugins/datetime/datetime.pro
-           plugins/datetime/system-timezone.cpp
-           plugins/datetime/system-timezone.h
-           plugins/dummy/dummy.pro
-           plugins/dummy/dummy_global.h
-           plugins/dummy/dummymanager.cpp
-           plugins/dummy/dummymanager.h
-           plugins/dummy/dummyplugin.cpp
-           plugins/dummy/dummyplugin.h
-           plugins/media-keys/Makefile
-           plugins/media-keys/media-keys.pro
-           plugins/media-keys/mediakey-manager.cpp
-           plugins/media-keys/mediakey-manager.h
+           plugins/common/common_global.h
+           plugins/common/eggaccelerators.c
+           plugins/common/eggaccelerators.h
+           plugins/common/ukui-input-helper.c
+           plugins/common/ukui-input-helper.h
+           plugins/common/ukui-keygrab.cpp
+           plugins/common/ukui-keygrab.h
+           plugins/housekeeping/housekeeping-manager.cpp
+           plugins/housekeeping/housekeeping-manager.h
+           plugins/housekeeping/housekeeping-plugin.cpp
+           plugins/housekeeping/housekeeping-plugin.h
+           plugins/housekeeping/housekeeping_global.h
+           plugins/housekeeping/ldsm-trash-empty.cpp
+           plugins/housekeeping/ldsm-trash-empty.h
+           plugins/housekeeping/usd-disk-space.cpp
+           plugins/housekeeping/usd-disk-space.h
+           plugins/housekeeping/usd-ldsm-dialog.cpp
+           plugins/housekeeping/usd-ldsm-dialog.h
+           plugins/keybindings/keybindings-manager.cpp
+           plugins/keybindings/keybindings-manager.h
+           plugins/keybindings/keybindings-plugin.cpp
+           plugins/keybindings/keybindings-plugin.h
+           plugins/keybindings/keybindings_global.h
+           plugins/keyboard/keyboard-manager.cpp
+           plugins/keyboard/keyboard-manager.h
+           plugins/keyboard/keyboard-plugin.cpp
+           plugins/keyboard/keyboard-plugin.h
+           plugins/keyboard/keyboard-xkb.cpp
+           plugins/keyboard/keyboard-xkb.h
+           plugins/keyboard/keyboard_global.h
+           plugins/media-keys/acme.h
+           plugins/media-keys/devicewindow.cpp
+           plugins/media-keys/devicewindow.h
            plugins/media-keys/mediakey-plugin.cpp
            plugins/media-keys/mediakey-plugin.h
-           plugins/mpris/Makefile
-           plugins/mpris/mpris.pro
-           plugins/mpris/mpris.ukui-settings-plugin.in
+           plugins/media-keys/mediakeysmanager.cpp
+           plugins/media-keys/mediakeysmanager.h
+           plugins/media-keys/volumewindow.cpp
+           plugins/media-keys/volumewindow.h
+           plugins/mouse/mouse-manager.cpp
+           plugins/mouse/mouse-manager.h
+           plugins/mouse/mouse-plugin.cpp
+           plugins/mouse/mouse-plugin.h
            plugins/mpris/mprismanager.cpp
            plugins/mpris/mprismanager.h
            plugins/mpris/mprisplugin.cpp
            plugins/mpris/mprisplugin.h
-           plugins/sound/Makefile
-           plugins/sound/sound.pro
            plugins/sound/soundmanager.cpp
            plugins/sound/soundmanager.h
            plugins/sound/soundplugin.cpp
-           plugins/typing-break/Makefile
-           plugins/typing-break/typing-break.pro
-           plugins/typing-break/typingbreakmanager.cpp
-           plugins/typing-break/typingbreakmanager.h
-           plugins/typing-break/typingbreakplugin.cpp
-           plugins/typing-break/typingbreakplugin.h
+           plugins/sound/soundplugin.h
+           plugins/xrandr/xrandr-manager.cpp
+           plugins/xrandr/xrandr-manager.h
+           plugins/xrandr/xrandr-plugin.cpp
+           plugins/xrandr/xrandr-plugin.h
+           plugins/xrdb/ixrdb-manager.h
+           plugins/xrdb/ukui-xrdb-manager.cpp
+           plugins/xrdb/ukui-xrdb-manager.h
+           plugins/xrdb/xrdb.cpp
+           plugins/xrdb/xrdb.h
+           plugins/xsettings/ukui-xft-settings.cpp
+           plugins/xsettings/ukui-xft-settings.h
+           plugins/xsettings/ukui-xsettings-manager.cpp
+           plugins/xsettings/ukui-xsettings-manager.h
+           plugins/xsettings/ukui-xsettings-plugin.cpp
+           plugins/xsettings/ukui-xsettings-plugin.h
+           plugins/xsettings/xsettings-const.h
+           plugins/xsettings/xsettings-manager.cpp
+           plugins/xsettings/xsettings-manager.h
+Copyright: 2020 KylinSoft Co., Ltd.
+License:   GPL-3.0+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ Version 3 can be found in `/usr/share/common-licenses/GPL-3'.
+
+Files:     README.md
+           common/common.pri
+           config.h
+           daemon/.gitignore
+           daemon/daemon.pro
+           daemon/manager-interface.cpp
+           data/a11y-keyboard.ukui-settings-plugin
+           data/a11y-settings.ukui-settings-plugin
+           data/background.ukui-settings-plugin
+           data/clipboard.ukui-settings-plugin
+           data/data.pri
+           data/housekeeping.ukui-settings-plugin
+           data/keybindings.ukui-settings-plugin
+           data/keyboard.ukui-settings-plugin
+           data/media-keys.ukui-settings-plugin
+           data/mouse.ukui-settings-plugin
+           data/mpris.ukui-settings-plugin
+           data/org.ukui.SettingsDaemon.service
+           data/smartcard.ukui-settings-plugin
+           data/sound.ukui-settings-plugin
+           data/typing-break.ukui-settings-plugin
+           data/ukui-settings-daemon.desktop
+           data/xrandr.ukui-settings-plugin
+           data/xrdb.ukui-settings-plugin
+           data/xsettings.ukui-settings-plugin
+           doc/debian.md
+           install
+           install.sh
+           plugins/README.md
+           plugins/background/background.pro
+           plugins/clipboard/clipboard.pro
+           plugins/clipboard/main.cpp
+           plugins/clipboard/xutils.h
+           plugins/common/common.pro
+           plugins/housekeeping/housekeeping.pro
+           plugins/housekeeping/warning.png
+           plugins/keybindings/keybindings.pro
+           plugins/keyboard/keyboard.pro
+           plugins/locate-pointer/usd-locate-pointer.pro
+           plugins/media-keys/media-keys.pro
+           plugins/media-keys/media-keys.ukui-settings-plugin.in
+           plugins/mouse/mouse.pro
+           plugins/mpris/mpris.pro
+           plugins/mpris/mpris.ukui-settings-plugin.in
+           plugins/sound/sound.pro
+           plugins/xrandr/xrandr.pro
+           plugins/xrdb/xrdb.pro
+           plugins/xsettings/xsettings.pro
            ukui-settings-daemon.pro
-Copyright: __NO_COPYRIGHT_NOR_LICENSE__
-License:   __NO_COPYRIGHT_NOR_LICENSE__
+Copyright: 2020 KylinSoft Co., Ltd.
+License:   GPL-3.0+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ Version 3 can be found in `/usr/share/common-licenses/GPL-3'.
 
 Files:     plugins/clipboard/list.c
            plugins/clipboard/list.h
            plugins/clipboard/xutils.c
-Copyright: 2004 Red Hat, Inc.
+           plugins/xsettings/xsettings-common.c
+           plugins/xsettings/xsettings-common.h
+Copyright: 2001-2004 Red Hat, Inc.
 License:   ISC
  Permission to use, copy, modify, distribute, and sell this software and its
  documentation for any purpose is hereby granted without fee, provided that
@@ -132,18 +206,23 @@ License:   ISC
  OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 
-Files:     plugins/sound/soundplugin.h
-Copyright: 2008 Lennart Poettering <lennart@poettering.net>
+Files:     plugins/locate-pointer/usd-locate-pointer.c
+           plugins/locate-pointer/usd-timeline.c
+           plugins/locate-pointer/usd-timeline.h
+           plugins/xsettings/fontconfig-monitor.c
+           plugins/xsettings/fontconfig-monitor.h
+Copyright: 2008 Carlos Garnacho  <carlos@imendio.com>
+           2008 Red Hat, Inc.
 License:   GPL-2.0+
- This program is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2, or (at your option)
- any later version.
+ This program is free software; you can redistribute it and/or modify it
+ under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
  .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
  .
  You should have received a copy of the GNU General Public License
  along with this program; if not, write to the Free Software
@@ -152,21 +231,78 @@ License:   GPL-2.0+
  On Debian systems, the complete text of the GNU General Public License
  Version 2 can be found in `/usr/share/common-licenses/GPL-2'.
 
-Files:     daemon/plugin-info.cpp
-Copyright: __NO_COPYRIGHT__ in: daemon/plugin-info.cpp
-License:   __UNKNOWN__
- /* Get Copyright */
+Files:     plugins/keybindings/dconf-util.c
+           plugins/keybindings/dconf-util.h
+Copyright: 2012 Stefano Karapetsas
+License:   GPL-2.0+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of the GNU General Public License as
+ published by the Free Software Foundation; either version 2 of the
+ License, or (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+ .
+ You should have received a copy of the GNU General Public License
+ along with this program; if not, write to the Free Software
+ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ 02110-1301, USA.
+ .
+ Authors:
+ Stefano Karapetsas <stefano@karapetsas.com>
+ Vincent Untz <vuntz@gnome.org>
+ .
+ On Debian systems, the complete text of the GNU General Public License
+ Version 2 can be found in `/usr/share/common-licenses/GPL-2'.
+
+Files:     plugins/locate-pointer/usd-locate-pointer.h
+Copyright: 2001 Jonathan Blandford <jrb@gnome.org>
+License:   ISC
+ Permission to use, copy, modify, distribute, and sell this software and its
+ documentation for any purpose is hereby granted without fee, provided that
+ the above copyright notice appear in all copies and that both that
+ copyright notice and this permission notice appear in supporting
+ documentation, and that the name of Red Hat not be used in advertising or
+ publicity pertaining to distribution of the software without specific,
+ written prior permission.  Red Hat makes no representations about the
+ suitability of this software for any purpose.  It is provided "as is"
+ without express or implied warranty.
 
 #----------------------------------------------------------------------------
 # xml and html files (skipped):
 #         ukui-settings-daemon.pro.user
-#         daemon/ukui-settings-daemon.xml
-#         data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml
-#         data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml
-#         data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml
-#         data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml
-#         data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml
+#         plugins/housekeeping/usd-ldsm-dialog.ui
+#         plugins/housekeeping/ldsm-trash-empty.ui
+#         plugins/housekeeping/trash_empty.qrc
+#         plugins/media-keys/volumewindow.ui
+#         plugins/media-keys/devicewindow.ui
+#         plugins/xrandr/usd-xrandr-manager.xml
+#         data/org.ukui.peripherals-mouse.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml
 #         data/org.ukui.SettingsDaemon.plugins.background.gschema.xml
+#         data/org.ukui.peripherals-smartcard.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml
+#         data/org.ukui.peripherals-touchscreen.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml
+#         data/org.ukui.peripherals-touchpad.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml
+#         data/org.ukui.font-rendering.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml
+#         data/zh_CN.ts
+#         data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml
+#         data/org.ukui.peripherals-keyboard.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.sound.gschema.xml
+#         data/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml
+#         daemon/ukui-settings-daemon.xml
 
 #----------------------------------------------------------------------------
 # Files marked as NO_LICENSE_TEXT_FOUND may be covered by the following

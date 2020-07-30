@@ -1,3 +1,8 @@
+#-------------------------------------------------
+#
+# Project created by QtCreator 2020-03-17T09:30:00
+#
+#-------------------------------------------------
 OTHER_FILES += \
     $$PWD/ukui-settings-daemon.desktop\
     $$PWD/org.ukui.SettingsDaemon.service\

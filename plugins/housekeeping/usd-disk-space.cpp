@@ -1,6 +1,27 @@
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
+ *
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "usd-disk-space.h"
 #include <QDebug>
 #include "qtimer.h"
+#include "syslog.h"
+
 #define GIGABYTE                   1024 * 1024 * 1024
 
 #define CHECK_EVERY_X_SECONDS      60
@@ -19,19 +40,19 @@ static unsigned long       *time_read;
 QTimer* DIskSpace::ldsm_timeout_cb = NULL;
 
 
- DIskSpace *DIskSpace::mDisk = NULL;
- GHashTable        *DIskSpace::ldsm_notified_hash  = NULL;
- QHash<const char*, LdsmMountInfo*> DIskSpace::m_notified_hash;
+DIskSpace *DIskSpace::mDisk = NULL;
+GHashTable        *DIskSpace::ldsm_notified_hash  = NULL;
+QHash<const char*, LdsmMountInfo*> DIskSpace::m_notified_hash;
 
 
- GUnixMountMonitor *DIskSpace::ldsm_monitor = NULL;
- double             DIskSpace::free_percent_notify;
- double             DIskSpace::free_percent_notify_again;
- unsigned int       DIskSpace::free_size_gb_no_notify;
- unsigned int       DIskSpace::min_notify_period = 0;
- GSList            *DIskSpace::ignore_paths = NULL;
- QGSettings        *DIskSpace::settings;
- LdsmDialog        *DIskSpace::dialog = NULL;
+GUnixMountMonitor *DIskSpace::ldsm_monitor = NULL;
+double             DIskSpace::free_percent_notify;
+double             DIskSpace::free_percent_notify_again;
+unsigned int       DIskSpace::free_size_gb_no_notify;
+unsigned int       DIskSpace::min_notify_period = 0;
+GSList            *DIskSpace::ignore_paths = NULL;
+QGSettings        *DIskSpace::settings;
+LdsmDialog        *DIskSpace::dialog = NULL;
 
 DIskSpace::DIskSpace()
 {
@@ -49,19 +70,6 @@ DIskSpace::DIskSpace()
     if (QGSettings::isSchemaInstalled(SETTINGS_HOUSEKEEPING_SCHEMA)) {
         settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
 
-        //监听key的value是否发生了变化
-        connect(settings, &QGSettings::changed, this, [=] (const QString &key) {
-            if (key == "name") {
-
-            }
-            else if (key == "age") {
-                //int age = get_int_value("age");
-                //emit this->send_int(ValueType::AgeType, age);
-            }
-            else if (key == "male") {
-
-            }
-        });
     }
     dialog = NULL;
 }
@@ -133,14 +141,12 @@ void DIskSpace::usdLdsmGetConfig()
     if (settings_list != NULL) {
         //unsigned int i;
         // 清理m_notified_hash中ignoreList存在的。
-//        QVariant it;
-//        foreach ( it, ignoreList) {
-//            qDebug() << it;
-//            // m_notified_hash.remove(it.key())
-//        }
-        for (auto i = ignoreList.constBegin(); i != ignoreList.constEnd(); ++i) {
-           qDebug() << "====\n";
-       }
+
+        QVariantList::const_iterator it;
+
+        for (it = ignoreList.constBegin(); it != ignoreList.constEnd(); ++it) {
+            m_notified_hash.remove((*it).toString().toLatin1().data());
+        }
     }
 }
 
@@ -276,8 +282,7 @@ bool  DIskSpace::ldsm_mount_has_space (LdsmMountInfo *mount)
     return false;
 }
 
-static bool
-ldsm_mount_is_virtual (LdsmMountInfo *mount)
+static bool ldsm_mount_is_virtual (LdsmMountInfo *mount)
 {
     if (mount->buf.f_blocks == 0) {
         /* Filesystems with zero blocks are virtual */
@@ -287,8 +292,7 @@ ldsm_mount_is_virtual (LdsmMountInfo *mount)
     return false;
 }
 
-static gchar*
-ldsm_get_fs_id_for_path (const gchar *path)
+static gchar* ldsm_get_fs_id_for_path (const gchar *path)
 {
     GFile *file;
     GFileInfo *fileinfo;
@@ -310,8 +314,7 @@ ldsm_get_fs_id_for_path (const gchar *path)
     return attr_id_fs;
 }
 
-static gboolean
-ldsm_mount_has_trash (LdsmMountInfo *mount)
+static gboolean ldsm_mount_has_trash (LdsmMountInfo *mount)
 {
     const gchar *user_data_dir;
     gchar *user_data_attr_id_fs;
@@ -375,8 +378,7 @@ ldsm_mount_has_trash (LdsmMountInfo *mount)
     return has_trash;
 }
 
-static void
-ldsm_analyze_path (const gchar *path)
+static void ldsm_analyze_path (const gchar *path)
 {
     const gchar *argv[] = { DISK_SPACE_ANALYZER, path, NULL };
 
@@ -432,7 +434,7 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
         break;
     case LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
         retval = TRUE;
-        //usd_ldsm_trash_empty ();//调清空回收站dialog
+        // usd_ldsm_trash_empty ();//调清空回收站dialog
         break;
 
     case GTK_RESPONSE_NONE:
@@ -531,7 +533,6 @@ bool DIskSpace::ldsm_check_all_mounts ()
     guint number_of_full_mounts;
     gboolean multiple_volumes = FALSE;
     gboolean other_usable_volumes = FALSE;
-
     /* We iterate through the static mounts in /etc/fstab first, seeing if
      * they're mounted by checking if the GUnixMountPoint has a corresponding GUnixMountEntry.
      * Iterating through the static mounts means we automatically ignore dynamically mounted media.
@@ -556,7 +557,6 @@ bool DIskSpace::ldsm_check_all_mounts ()
         mount_info->mount = mount;
 
         path = g_unix_mount_get_mount_path (mount);
-
         if (g_unix_mount_is_readonly (mount)) {
             ldsm_free_mount_info (mount_info);
             continue;
@@ -587,7 +587,6 @@ bool DIskSpace::ldsm_check_all_mounts ()
 
     for (l = check_mounts; l != NULL; l = l->next) {
         LdsmMountInfo *mount_info = (LdsmMountInfo *)l->data;
-
         if (!ldsm_mount_has_space (mount_info)) {
             full_mounts = g_list_prepend (full_mounts, mount_info);
         } else {
@@ -621,8 +620,6 @@ void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data)
     /* check the status now, for the new mounts */
     ldsm_check_all_mounts ();
 
-
-
     /* and reset the timeout */
     ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
 }
@@ -633,7 +630,6 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
         qWarning ("Low disk space monitor already initialized.");
         return;
     }
-
     usdLdsmGetConfig();
     connect(settings,SIGNAL(changes(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
 #if GLIB_CHECK_VERSION (2, 44, 0)
@@ -644,7 +640,6 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
 #endif
     g_signal_connect (ldsm_monitor, "mounts-changed",
                       G_CALLBACK (DIskSpace::ldsm_mounts_changed), NULL);
-
     if (check_now)
         ldsm_check_all_mounts ();
 
@@ -675,16 +670,17 @@ void DIskSpace::UsdLdsmClean()
     if (settings) {
         g_object_unref (settings);
     }
-
-    /*if (dialog) {
-            gtk_widget_destroy (GTK_WIDGET (dialog));
-            dialog = NULL;
-    }*/
-
-    //    if (ignore_paths) {
-    //            g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
-    //            g_slist_free (ignore_paths);
-    //    }
+    /*
+    if (dialog) {
+        delete dialog;
+        dialog = NULL;
+    }
+*/
+    if (ignore_paths) {
+        g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
+        g_slist_free (ignore_paths);
+        ignore_paths = NULL;
+    }
 }
 
 #ifdef TEST

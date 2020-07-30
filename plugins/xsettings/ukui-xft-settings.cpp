@@ -1,3 +1,21 @@
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
+ *
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 #include "xsettings-const.h"
 #include "ukui-xft-settings.h"
 #include "ukui-xsettings-manager.h"
@@ -273,13 +291,27 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     char        dpibuf[G_ASCII_DTOSTR_BUF_SIZE];
     Display    *dpy;
 
-    //ukui_settings_profile_start (NULL);
 
     /* get existing properties */
     dpy = XOpenDisplay (NULL);
     g_return_if_fail (dpy != NULL);
     add_string = g_string_new (XResourceManagerString (dpy));
     g_debug("xft_settings_set_xresources: orig res '%s'", add_string->str);
+    
+    char tmpCursorTheme[255] = {'\0'};
+    int tmpCursorSize = 0;
+    if (strlen (this->cursor_theme) > 0) {
+        strncpy(tmpCursorTheme, this->cursor_theme, 255);
+    } else {
+        // unset, use default
+        strncpy(tmpCursorTheme, "DMZ-Black", 255);
+    }
+    if (this->cursor_size > 0) {
+        tmpCursorSize = this->cursor_size;
+    } else {
+        tmpCursorSize = XcursorGetDefaultSize(dpy);
+    }
+
     update_property (add_string, "Xft.dpi",
             g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->scaled_dpi / 1024.0));
     update_property (add_string, "Xft.antialias",
@@ -300,7 +332,42 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     /* Set the new X property */
     XChangeProperty(dpy, RootWindow (dpy, 0),
             XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
+    
+    // begin add:for qt adjust cursor size&theme. add by liutong
+    const char *qtCursorsNames[] = {
+              "left_ptr"       , "up_arrow"      , "cross"      , "wait"
+            , "left_ptr_watch" , "ibeam"         , "size_ver"   , "size_hor"
+            , "size_bdiag"     , "size_fdiag"    , "size_all"   , "split_v"
+            , "split_h"        , "pointing_hand" , "openhand"
+            , "closedhand"     , "forbidden"     , "whats_this" , "copy"
+            , "move" , "link"  ,  NULL};
+
+
+    if (strlen (tmpCursorTheme) > 0 ) {
+        int len = sizeof(qtCursorsNames)/sizeof(*qtCursorsNames);
+        for (int i = 0; i < len-1; i++) {
+            XcursorImages *images = XcursorLibraryLoadImages(qtCursorsNames[i], tmpCursorTheme, tmpCursorSize);
+            if (!images) {
+                g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
+                continue;
+            }
+            Cursor handle = XcursorImagesLoadCursor(dpy, images);
+            int event_base, error_base;
+            if (XFixesQueryExtension(dpy, &event_base, &error_base))
+            {
+                int major, minor;
+                XFixesQueryVersion(dpy, &major, &minor);
+                if (major >= 2) {
+                    g_debug("set CursorNmae=%s", qtCursorsNames[i]);
+                    XFixesSetCursorName(dpy, handle, qtCursorsNames[i]);
+                }
+            }
+            XFixesChangeCursorByName(dpy, handle, qtCursorsNames[i]);
+            XcursorImagesDestroy(images);
+        }
+    }
+    // end add
+
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
-    // ukui_settings_profile_end (NULL);
 }
