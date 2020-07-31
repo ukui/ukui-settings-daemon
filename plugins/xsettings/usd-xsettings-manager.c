@@ -44,8 +44,6 @@
 #include "xsettings-manager.h"
 #include "fontconfig-monitor.h"
 
-#include "syslog.h"
-
 #define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, UkuiXSettingsManagerPrivate))
 
 #define MOUSE_SCHEMA          "org.ukui.peripherals-mouse"
@@ -607,8 +605,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 		strncpy(tmpCursorTheme, settings->cursor_theme, 255);
 	} else {
 		// unset, use default
-		strncpy(tmpCursorTheme, "DMZ-Black", 255);
-	    //syslog(LOG_INFO, "use default theme name=%s=", tmpCursorTheme);
+		strncpy(tmpCursorTheme, "DMZ-White", 255);
 	}
 	if (settings->cursor_size > 0) {
 		tmpCursorSize = settings->cursor_size;
@@ -623,9 +620,9 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
     gchar    *date;
     gboolean  res;
     XreFilePath = g_build_filename (g_get_home_dir (), ".Xresources", NULL);
-    date = g_malloc (40);
-    g_sprintf(date,"Xft.dpi:%d\nXcursor.size:%d",
-                    settings->scaled_dpi/1024, settings->cursor_size);
+    date = g_malloc (128);
+    g_sprintf(date,"Xft.dpi:%d\nXcursor.size:%d\nXcursor.theme:%s\n",
+                    settings->scaled_dpi/1024, settings->cursor_size, tmpCursorTheme);
     res = g_file_set_contents(XreFilePath,date,strlen(date),NULL);
     if(!res)
         g_debug("Xresources File write failed ");

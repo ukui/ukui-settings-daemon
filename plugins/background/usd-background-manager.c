@@ -30,7 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
+#include <syslog.h>
 #include <locale.h>
 
 #include <glib.h>
@@ -198,8 +198,7 @@ real_draw_bg (UsdBackgroundManager *manager,
 	gint height  = gdk_screen_get_height (screen);
 
 	free_bg_surface (manager);
-//modify begin by liutong
-/*	p->surface = mate_bg_create_surface (p->bg, window, width, height, TRUE);
+	p->surface = mate_bg_create_surface (p->bg, window, width, height, TRUE);
 	if (p->do_fade)
 	{
 		free_fade (manager);
@@ -210,8 +209,7 @@ real_draw_bg (UsdBackgroundManager *manager,
 	{
 		mate_bg_set_surface_as_root (screen, p->surface);
 	}
-*/
-//modify end by liutong
+
 	p->scr_sizes = g_list_prepend (p->scr_sizes, g_strdup_printf ("%dx%d", width, height));
 }
 
@@ -341,7 +339,7 @@ settings_change_event_cb (GSettings            *settings,
 	/* Complements on_bg_handling_changed() */
 	p->usd_can_draw = usd_can_draw_bg (manager);
 	p->peony_can_draw = peony_can_draw_bg (manager);
-
+	syslog(LOG_ERR," --------------------    %s -----------------------",__func__);
 	if (p->usd_can_draw && p->bg != NULL && !peony_is_drawing_bg (manager))
 	{
 		/* Defer signal processing to avoid making the dconf backend deadlock */
@@ -432,6 +430,7 @@ queue_setup_background (UsdBackgroundManager *manager)
 static void
 queue_timeout (UsdBackgroundManager *manager)
 {
+
 	if (manager->priv->timeout_id > 0)
 		return;
 
@@ -512,10 +511,14 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 
 	p->usd_can_draw = usd_can_draw_bg (manager);
 	p->peony_can_draw = peony_can_draw_bg (manager);
-
+	syslog(LOG_ERR,"--------- START -------------------");
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
 			  G_CALLBACK (on_bg_handling_changed), manager);
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
+			  G_CALLBACK (on_bg_handling_changed), manager);
+	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_PICTURE_FILENAME,
+			  G_CALLBACK (on_bg_handling_changed), manager);
+	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_PRIMARY_COLOR,
 			  G_CALLBACK (on_bg_handling_changed), manager);
 
 	/* If Peony is set to draw the background, it is very likely in our session.
