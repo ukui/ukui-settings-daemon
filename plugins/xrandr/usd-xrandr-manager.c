@@ -42,10 +42,7 @@
 #include <dbus/dbus-glib.h>
 
 #include <X11/extensions/XInput2.h>
-#include <X11/XKBlib.h>
-#include <X11/keysym.h>
-#include <X11/Xatom.h>
-#include <X11/extensions/XInput.h>
+#include <X11/Xlib.h>
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr-config.h>
@@ -1726,6 +1723,55 @@ void set_touchscreen_cursor(void *date)
         XCloseDisplay(xdisplay);
 }
 
+/* 设置触摸屏触点的角度 */
+void set_touchscreen_cursor_rotation(MateRRScreen *screen)
+{
+        /* 添加触摸屏鼠标设置 */
+        MateRRConfig *result;
+        MateRROutputInfo **outputs;
+        int i;
+        result = mate_rr_config_new_current (screen, NULL);
+        outputs = mate_rr_config_get_outputs (result);
+        for(i=0; outputs[i] != NULL;++i)
+        {
+            MateRROutputInfo *info = outputs[i];
+            if(mate_rr_output_info_is_connected (info)){
+                int rotation = mate_rr_output_info_get_rotation(info);
+                switch(rotation){
+                    case MATE_RR_ROTATION_0:
+                    {
+                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                        set_touchscreen_cursor(&full_matrix);
+                        break;
+                    }
+                    case MATE_RR_ROTATION_90:
+                    {
+                        float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
+                        set_touchscreen_cursor(&full_matrix);
+                        break;
+                    }
+                    case MATE_RR_ROTATION_180:
+                    {
+                        float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
+                        set_touchscreen_cursor(&full_matrix);
+                        break;
+                    }
+                    case MATE_RR_ROTATION_270:
+                    {
+                        float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
+                        set_touchscreen_cursor(&full_matrix);
+                        break;
+                    }
+                    default:
+                    {
+                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
+                        set_touchscreen_cursor(&full_matrix);
+                    }
+                }
+            }
+        }
+}
+
 static void
 on_randr_event (MateRRScreen *screen, gpointer data)
 {
@@ -1801,51 +1847,11 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                 } else
                         log_msg ("Applied stored configuration to deal with event\n");
         }
-
+        
         /* 添加触摸屏鼠标设置 */
-        MateRRConfig *result;
-        MateRROutputInfo **outputs;
-        int i;
-        result = mate_rr_config_new_current (screen, NULL);
-        outputs = mate_rr_config_get_outputs (result);
-        for(i=0; outputs[i] != NULL;++i)
-        {
-            MateRROutputInfo *info = outputs[i];
-            if(mate_rr_output_info_is_connected (info)){
-                int rotation = mate_rr_output_info_get_rotation(info);
-                switch(rotation){
-                    case MATE_RR_ROTATION_0:
-                    {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_90:
-                    {
-                        float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_180:
-                    {
-                        float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_270:
-                    {
-                        float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    default:
-                    {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                    }
-                }
-            }
-        }
+        set_touchscreen_cursor_rotation(screen);
+
+
         /* poke mate-color-manager */
         apply_color_profiles ();
 
@@ -2611,50 +2617,11 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
         gdk_window_add_filter (gdk_get_default_root_window(),
                                (GdkFilterFunc)event_filter,
                                manager);
+        
         /* 添加触摸屏鼠标设置 */
-        MateRRConfig *result;
-        MateRROutputInfo **outputs;
-        int i;
-        result = mate_rr_config_new_current (manager->priv->rw_screen, NULL);
-        outputs = mate_rr_config_get_outputs (result);
-        for(i=0; outputs[i] != NULL;++i)
-        {
-            MateRROutputInfo *info = outputs[i];
-            if(mate_rr_output_info_is_connected (info)){
-                int rotation = mate_rr_output_info_get_rotation(info);
-                switch(rotation){
-                    case MATE_RR_ROTATION_0:
-                    {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_90:
-                    {
-                        float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_180:
-                    {
-                        float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_270:
-                    {
-                        float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    default:
-                    {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                    }
-                }
-            }
-        }
+        set_touchscreen_cursor_rotation(manager->priv->rw_screen);
+
+
         start_or_stop_icon (manager);
 
         log_close ();
