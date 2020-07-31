@@ -44,8 +44,6 @@
 #include "xsettings-manager.h"
 #include "fontconfig-monitor.h"
 
-#include "syslog.h"
-
 #define UKUI_XSETTINGS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), UKUI_TYPE_XSETTINGS_MANAGER, UkuiXSettingsManagerPrivate))
 
 #define MOUSE_SCHEMA          "org.ukui.peripherals-mouse"
@@ -456,15 +454,14 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 		strncpy(tmpCursorTheme, settings->cursor_theme, 255);
 	} else {
 		// unset, use default
-		strncpy(tmpCursorTheme, "Breeze_Snow", 255);
-	        syslog(LOG_INFO, "use default theme name=%s=", tmpCursorTheme);
+		strncpy(tmpCursorTheme, "DMZ-White", 255);
 	}
 	if (settings->cursor_size > 0) {
 		tmpCursorSize = settings->cursor_size;
 	} else {
 		tmpCursorSize = XcursorGetDefaultSize(dpy);
 	}
-	// end add by liutong 
+	// end add by liutong
 
         update_property (add_string, "Xft.dpi",
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->dpi / 1024.0));
