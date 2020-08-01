@@ -48,7 +48,7 @@ DISTFILES += \
 
 DESTDIR = $$PWD/
 
-media_keys_lib.path = /usr/local/lib/ukui-settings-daemon/
+media_keys_lib.path = $${PLUGIN_INSTALL_DIRS}
 media_keys_lib.files = $$PWD/libmedia-keys.so
 
 INSTALLS += media_keys_lib

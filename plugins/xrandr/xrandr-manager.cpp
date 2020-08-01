@@ -120,7 +120,8 @@ bool XrandrManager::ReadMonitorsXml()
                                 XmlFileTag.insert("y",node2.toElement().text());
                             else if(node2.toElement().tagName() == "primary")
                                 XmlFileTag.insert("primary",node2.toElement().text());
-
+                            else if("rotation" == node2.toElement().tagName())
+                                 XmlFileTag.insert("rotation",node2.toElement().text());
                         }
                         mNum++;
                     }
@@ -261,6 +262,7 @@ void XrandrManager::AutoConfigureOutputs (XrandrManager *manager, guint32 timest
                     //x = manager->XmlFileTag.values("height")[x].toLatin1().toInt();
                 }
             }
+
             if(width ==0 ||height ==0)
                 mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
             mate_rr_output_info_set_geometry (output, x, 0, width, height);
@@ -351,33 +353,8 @@ void SetTouchscreenCursor(void *date)
         XCloseDisplay(xdisplay);
 }
 
-/**
- * @brief XrandrManager::OnRandrEvent : 屏幕事件回调函数
- * @param screen
- * @param data
- */
-void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
+void SetTouchscreenCursorRotation(MateRRScreen *screen)
 {
-    unsigned int change_timestamp, config_timestamp;
-    XrandrManager *manager = (XrandrManager*) data;
-
-    /* 获取 更改时间 和 配置时间 */
-    mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
-
-    //qDebug("change_timestamp=%d, config_timestamp=%d",change_timestamp,config_timestamp);
-
-    if (change_timestamp >= config_timestamp) {
-        /* The event is due to an explicit configuration change.
-         * If the change was performed by us, then we need to do nothing.
-         * If the change was done by some other X client, we don't need
-         * to do anything, either; the screen is already configured.
-         */
-        qDebug()<<"Ignoring event since change >= config";
-    } else {
-        qDebug()<<__func__;
-        manager->ReadMonitorsXml();
-        manager->AutoConfigureOutputs (manager, config_timestamp);
-    }
     /* 添加触摸屏鼠标设置 */
     MateRRConfig *result;
     MateRROutputInfo **outputs;
@@ -425,6 +402,38 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
 }
 
 /**
+ * @brief XrandrManager::OnRandrEvent : 屏幕事件回调函数
+ * @param screen
+ * @param data
+ */
+void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
+{
+    unsigned int change_timestamp, config_timestamp;
+    XrandrManager *manager = (XrandrManager*) data;
+
+    /* 获取 更改时间 和 配置时间 */
+    mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
+
+    //qDebug("change_timestamp=%d, config_timestamp=%d",change_timestamp,config_timestamp);
+
+    if (change_timestamp >= config_timestamp) {
+        /* The event is due to an explicit configuration change.
+         * If the change was performed by us, then we need to do nothing.
+         * If the change was done by some other X client, we don't need
+         * to do anything, either; the screen is already configured.
+         */
+        qDebug()<<"Ignoring event since change >= config";
+    } else {
+        qDebug()<<__func__;
+        manager->ReadMonitorsXml();
+        manager->AutoConfigureOutputs (manager, config_timestamp);
+    }
+    /* 添加触摸屏鼠标设置 */
+    SetTouchscreenCursorRotation(screen);
+
+}
+
+/**
  * @brief XrandrManager::StartXrandrIdleCb
  * 开始时间回调函数
  */
@@ -467,50 +476,7 @@ void XrandrManager::StartXrandrIdleCb()
         SetScreenSize(dpy, root, width, height);
     }
     /* 添加触摸屏鼠标设置 */
-    MateRRConfig *result;
-    MateRROutputInfo **outputs;
-    int i;
-    result = mate_rr_config_new_current (rw_screen, NULL);
-    outputs = mate_rr_config_get_outputs (result);
-    for(i=0; outputs[i] != NULL;++i)
-    {
-        MateRROutputInfo *info = outputs[i];
-        if(mate_rr_output_info_is_connected (info)){
-            int rotation = mate_rr_output_info_get_rotation(info);
-            qDebug()<<"rotation  = %d"<<rotation;
-            switch(rotation){
-                case MATE_RR_ROTATION_0:
-                {
-                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
-                    break;
-                }
-                case MATE_RR_ROTATION_90:
-                {
-                    float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
-                    break;
-                }
-                case MATE_RR_ROTATION_180:
-                {
-                    float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
-                    break;
-                }
-                case MATE_RR_ROTATION_270:
-                {
-                    float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
-                    break;
-                }
-                default:
-                {
-                    float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
-                }
-            }
-        }
-    }
+    SetTouchscreenCursorRotation(rw_screen);
 }
 
 

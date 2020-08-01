@@ -31,7 +31,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-mpris_lib.path = /usr/local/lib/ukui-settings-daemon/
+mpris_lib.path = $${PLUGIN_INSTALL_DIRS}
 mpris_lib.files = $$PWD/libmpris.so
 
 INSTALLS += mpris_lib

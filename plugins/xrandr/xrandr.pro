@@ -37,7 +37,7 @@ HEADERS += \
     xrandr-plugin.h
 
 DESTDIR = $$PWD/
-xrandr_lib.path  = /usr/local/lib/ukui-settings-daemon/
+xrandr_lib.path  = $${PLUGIN_INSTALL_DIRS}
 xrandr_lib.files = $$PWD/libxrandr.so
 
 INSTALLS += xrandr_lib

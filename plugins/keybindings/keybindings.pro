@@ -45,7 +45,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-keybindings_lib.path = /usr/local/lib/ukui-settings-daemon
+keybindings_lib.path = $${PLUGIN_INSTALL_DIRS}
 keybindings_lib.files = $$PWD/libkeybindings.so
 
 INSTALLS += keybindings_lib

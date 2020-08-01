@@ -30,7 +30,7 @@ debuild -D
 - [x] background
 - [x] clipboard
 - [x] common
-- [ ] housekepping
+- [x] housekepping
 - [x] keybindings
 - [x] keyboard
 - [x] media-keys
@@ -48,6 +48,5 @@ debuild -D
 | a11y-keyboard | 搁置 |  |
 | a11y-settings | 搁置 |  |
 | smartcard | 搁置 |  |
-| housekeeping | 调试出错 | 刘彤 |
 | media-key | 功能不完善 | 闫焕章 |
 | xrandr | 功能不完善 | 商晓阳 |

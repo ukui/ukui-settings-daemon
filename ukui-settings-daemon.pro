@@ -28,6 +28,5 @@ include($$PWD/data/data.pri)
 
 OTHER_FILES += \
     $$PWD/LICENSE \
-    $$PWD/README.md \
-    $$PWD/install.sh
+    $$PWD/README.md 
 

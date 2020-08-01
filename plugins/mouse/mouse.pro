@@ -40,7 +40,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-mouse_lib.path = /usr/local/lib/ukui-settings-daemon/
+mouse_lib.path = $${PLUGIN_INSTALL_DIRS}
 mouse_lib.files = $$PWD/libmouse.so
 
 INSTALLS += mouse_lib

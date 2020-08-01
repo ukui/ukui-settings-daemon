@@ -17,15 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "xeventmonitor.h"
-#include <iostream>
+//#include <iostream>
 #include <QVector>
 #include <QSet>
-#include <X11/Xlibint.h>
-#include <X11/XKBlib.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/record.h>
-#include <X11/keysym.h>
+#include "xeventmonitor.h"
 
 // Virtual button codes that are not defined by X11.
 #define Button1            1

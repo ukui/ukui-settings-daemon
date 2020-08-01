@@ -28,7 +28,7 @@ INCLUDEPATH += \
         -I /usr/include/libmatekbd
 
 LIBS += \
-        -L/usr/lib/x86_64-linux-gnu -lmatekbdui -lmatekbd \
+        -L/usr/lib/*-linux-gnu -lmatekbdui -lmatekbd \
         -Wl,--export-dynamic -lgmodule-2.0 \
         -pthread -lgdk-3 -lpangocairo-1.0 \
         -lpango-1.0 -lharfbuzz -lgdk_pixbuf-2.0 \
@@ -47,7 +47,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-keyboard_lib.path = /usr/local/lib/ukui-settings-daemon/
+keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}
 keyboard_lib.files = $$PWD/libkeyboard.so
 
 INSTALLS += keyboard_lib

@@ -38,7 +38,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-sound_lib.path = /usr/local/lib/ukui-settings-daemon/
+sound_lib.path = $${PLUGIN_INSTALL_DIRS}
 sound_lib.files = $$PWD/libsound.so
 
 INSTALLS += plugin_lib

@@ -50,7 +50,7 @@ HEADERS += \
 
 DESTDIR = $$PWD
 
-xrdb_lib.path = /usr/local/lib/ukui-settings-daemon/
+xrdb_lib.path = $${PLUGIN_INSTALL_DIRS}
 xrdb_lib.files += $$PWD/libxrdb.so \
 
 INSTALLS += xrdb_lib

@@ -43,7 +43,6 @@ BackgroundManager* BackgroundManager::getInstance()
     if (nullptr == mBackgroundManager) {
         mBackgroundManager = new BackgroundManager(nullptr);
     }
-
     return mBackgroundManager;
 }
 
@@ -66,6 +65,10 @@ bool BackgroundManager::managerStart()
     g_signal_connect (mSetting, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
                   G_CALLBACK (on_bg_handling_changed), this);
     g_signal_connect (mSetting, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
+                  G_CALLBACK (on_bg_handling_changed), this);
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PRIMARY_COLOR,
+                  G_CALLBACK (on_bg_handling_changed), this);
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PICTURE_FILENAME,
                   G_CALLBACK (on_bg_handling_changed), this);
 
     if (mUsdCanDraw) {
@@ -95,6 +98,11 @@ void BackgroundManager::managerStop()
 
 BackgroundManager::BackgroundManager(QObject *parent) : QObject(parent)
 {
+    mSetting = nullptr;
+    mMateBG  = nullptr;
+    mSurface = nullptr;
+    mFade    = nullptr;
+    mScrSizes= nullptr;
 }
 
 void BackgroundManager::onBgHandingChangedSlot(const QString &)
@@ -174,15 +182,14 @@ void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager)
     if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
         return;
 
-    gint scrNum = gdk_screen_get_number (screen);
-    gchar* oldSize = (gchar*)g_list_nth_data (manager->mScrSizes, scrNum);
+    gchar* oldSize = (gchar*)g_list_nth_data (manager->mScrSizes, 1);
     gchar* newSize = g_strdup_printf ("%dx%d", gdk_screen_get_width (screen), gdk_screen_get_height (screen));
     if (g_strcmp0 (oldSize, newSize) != 0)
     {
-        CT_SYSLOG(LOG_DEBUG, "Screen%d size changed: %s -> %s", scrNum, oldSize, newSize);
+        CT_SYSLOG(LOG_DEBUG, "Screen size changed: %s -> %s", oldSize, newSize);
         draw_background (manager, FALSE);
     } else {
-        CT_SYSLOG(LOG_DEBUG, "Screen%d size unchanged (%s). Ignoring.", scrNum, oldSize);
+        CT_SYSLOG(LOG_DEBUG, "Screen size unchanged (%s). Ignoring.", oldSize);
     }
     g_free (newSize);
 }
@@ -257,7 +264,6 @@ void draw_background (BackgroundManager* manager, bool mayFade)
 {
     if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
         return;
-
     GdkDisplay *display   = gdk_display_get_default ();
     int         n_screens = gdk_display_get_n_screens (display);
     int         scr;
@@ -274,6 +280,7 @@ void draw_background (BackgroundManager* manager, bool mayFade)
     manager->mScrSizes = g_list_reverse (manager->mScrSizes);
 
     manager->mDrawInProgress = false;
+
 }
 
 bool usd_can_draw_bg (BackgroundManager* manager)
@@ -393,9 +400,9 @@ void free_bg_surface (BackgroundManager* manager)
 
 void disconnect_screen_signals (BackgroundManager* manager)
 {
-    int                 i;
-    GdkDisplay          *display  = gdk_display_get_default();
-    int                 n_screens = gdk_display_get_n_screens (display);
+    int         i;
+    GdkDisplay *display  = gdk_display_get_default();
+    int         n_screens = gdk_display_get_n_screens (display);
 
     for (i = 0; i < n_screens; i++) {
         g_signal_handlers_disconnect_by_func (gdk_display_get_screen (display, i), (gpointer)G_CALLBACK (on_screen_size_changed), manager);

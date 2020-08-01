@@ -33,7 +33,7 @@ HEADERS += \
 
 DESTDIR = $$PWD/
 
-clipboard_lib.path = /usr/local/lib/ukui-settings-daemon/
+clipboard_lib.path = $${PLUGIN_INSTALL_DIRS}
 clipboard_lib.files = $$PWD/libclipboard.so
 
 INSTALLS += clipboard_lib

@@ -4,6 +4,8 @@ CONFIG -= app_bundle
 
 INCLUDEPATH += -I $$PWD/
 
+PLUGIN_INSTALL_DIRS = /usr/lib/ukui-settings-daemon
+
 PKGCONFIG += \
         glib-2.0\
         gio-2.0 libxklavier \

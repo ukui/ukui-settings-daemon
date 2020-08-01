@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+rm -rf /usr/lib/*-linux-gnu/ukui-settings-daemon
+
+#DEBHELPER#
