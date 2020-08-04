@@ -514,9 +514,8 @@ msgid "Binding to lock the screen."
 msgstr "锁住屏幕的键绑定。"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:31
-#, fuzzy
 msgid "Open System Settings"
-msgstr "X 设置"
+msgstr "打开控制面板"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
 #, fuzzy
@@ -525,7 +524,7 @@ msgstr "打开主文件夹的键绑定。"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:33
 msgid "Open File Manager"
-msgstr ""
+msgstr "打开文件管理器"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:34
 #, fuzzy
