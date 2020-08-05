@@ -578,7 +578,7 @@ set_locate_pointer (void)
                         keys[j].keycode,
                         AnyModifier,
                         xroot,
-                        True,
+                        False,
                         GrabModeAsync,
                         GrabModeSync);
               /* XGrabKey (GDK_DISPLAY_XDISPLAY (display),
