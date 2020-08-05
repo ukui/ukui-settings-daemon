@@ -61,23 +61,26 @@ public:
 
 public Q_SLOTS:
     void StartXrandrIdleCb ();
-    //void slotDeviceAdded();
 
 public:
-    bool ReadMonitorsXml();
-    bool SetScreenSize(Display  *dpy, Window root, int width, int height);
-    static void AutoConfigureOutputs (XrandrManager *manager, guint32 timestamp);
-    static void OnRandrEvent(MateRRScreen *screen, gpointer data);
+   void RestoreBackupConfiguration(XrandrManager *manager,
+                                    const char    *backup_filename,
+                                    const char    *intended_filename,
+                                    unsigned int   timestamp);
+
+    static void OnRandrEvent (MateRRScreen *screen, gpointer data);
+    static void AutoConfigureOutputs (XrandrManager *manager,
+                                      unsigned int  timestamp);
+    static bool ApplyConfigurationFromFilename   (XrandrManager *manager,
+                                                  const char    *filename,
+                                                  unsigned int   timestamp);
+    static bool ApplyStoredConfigurationAtStartup(XrandrManager *manager,
+                                                  unsigned int timestamp);
 
 private:
     QTimer *time;
     static XrandrManager  *mXrandrManager;
-    MateRRScreen *rw_screen;
-
-protected:
-    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
-    QMultiMap<QString, int>     mIntDate;
-
+    MateRRScreen *mScreen;
 };
 
 #endif // XRANDRMANAGER_H

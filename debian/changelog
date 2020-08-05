@@ -1,19 +1,6 @@
-ukui-settings-daemon (3.0.0-1.1) experimental; urgency=medium
+ukui-settings-daemon (3.0.0) groovy; urgency=medium
 
-  * rebuild.
+  * [ Kylin Team ]
+  * Initial release. 
 
- -- Shang Xiaoyang <shangxiaoyang@kylinos.cn>  Thu, 30 Jul 2020 09:01:42 +0800
-
-ukui-settings-daemon (3.0.0-1) experimental; urgency=medium
-
-  [ Kylin Team ]
-  * Update plugin.
-
- -- Shang Xiaoyang <shangxiaoyang@kylinos.cn>  Sat, 25 Jul 2020 19:49:44 +0800
-
-ukui-settings-daemon (3.0.0) experimental; urgency=low
-
-  [ Kylin Team ]
-  * Initial release.
-
- -- dingjing <dingjing@kylinos.cn>  Tue, 24 Mar 2020 10:13:31 +0800
+ -- shangxiaoyang <shangxiaoyang@kylinos.cn>  Wed, 05 Aug 2020 17:01:33 +0800

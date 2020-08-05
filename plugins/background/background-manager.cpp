@@ -16,85 +16,20 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QApplication>
+#include <QScreen>
+#include <QDebug>
 #include "background-manager.h"
 #include "clib-syslog.h"
-
 #include <glib.h>
-#include <stdio.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <gio/gio.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <sys/wait.h>
-#include <sys/types.h>
 #include <X11/Xatom.h>
-#include <glib-object.h>
 
 #define UKUI_SESSION_MANAGER_DBUS_NAME "org.gnome.SessionManager"
 #define UKUI_SESSION_MANAGER_DBUS_PATH "/org/gnome/SessionManager"
 
 BackgroundManager* BackgroundManager::mBackgroundManager = nullptr;
-
-BackgroundManager* BackgroundManager::getInstance()
-{
-    if (nullptr == mBackgroundManager) {
-        mBackgroundManager = new BackgroundManager(nullptr);
-    }
-    return mBackgroundManager;
-}
-
-void on_bg_handling_changed (GSettings* settings, const char* key, BackgroundManager* manager)
-{
-    if (peony_is_drawing_bg (manager)) {
-        if (nullptr != manager->mMateBG) remove_background (manager);
-    } else if (manager->mUsdCanDraw && nullptr == manager->mMateBG) {
-        setup_background (manager);
-    }
-}
-
-bool BackgroundManager::managerStart()
-{
-    mSetting = g_settings_new(MATE_BG_SCHEMA);
-
-    mUsdCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_DRAW_BACKGROUND);
-    mPeonyCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_SHOW_DESKTOP);
-
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
-                  G_CALLBACK (on_bg_handling_changed), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
-                  G_CALLBACK (on_bg_handling_changed), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PRIMARY_COLOR,
-                  G_CALLBACK (on_bg_handling_changed), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PICTURE_FILENAME,
-                  G_CALLBACK (on_bg_handling_changed), this);
-
-    if (mUsdCanDraw) {
-        if (mPeonyCanDraw) {
-            draw_bg_after_session_loads (this);
-        } else {
-            setup_background (this);
-        }
-    }
-
-    return true;
-}
-
-void BackgroundManager::managerStop()
-{
-    if (this->mProxy) {
-        disconnect_session_manager_listener (this);
-        g_object_unref (mProxy);
-    }
-    if (0 != mTimeoutID) {
-        g_source_remove (mTimeoutID);
-        mTimeoutID = 0;
-    }
-
-    remove_background (this);
-}
 
 BackgroundManager::BackgroundManager(QObject *parent) : QObject(parent)
 {
@@ -113,6 +48,14 @@ void BackgroundManager::onBgHandingChangedSlot(const QString &)
 void BackgroundManager::onSessionManagerSignal(GDBusProxy *, const gchar *, const gchar *, GVariant *, gpointer)
 {
 
+}
+
+BackgroundManager* BackgroundManager::getInstance()
+{
+    if (nullptr == mBackgroundManager) {
+        mBackgroundManager = new BackgroundManager(nullptr);
+    }
+    return mBackgroundManager;
 }
 
 void on_session_manager_signal (GDBusProxy* proxy, const gchar* senderName, const gchar  *signalName, GVariant* parameters, gpointer udata)
@@ -196,16 +139,10 @@ void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager)
 
 void connect_screen_signals (BackgroundManager* manager)
 {
-    GdkDisplay *display   = gdk_display_get_default();
-    int         n_screens = gdk_display_get_n_screens (display);
-    int         i;
+    GdkScreen *screen = gdk_screen_get_default();
 
-    for (i = 0; i < n_screens; i++) {
-        GdkScreen *screen = gdk_display_get_screen (display, i);
-
-        g_signal_connect (screen, "size-changed", G_CALLBACK (on_screen_size_changed), manager);
-        g_signal_connect (screen, "monitors-changed", G_CALLBACK (on_screen_size_changed), manager);
-    }
+    g_signal_connect (screen, "size-changed", G_CALLBACK (on_screen_size_changed), manager);
+    g_signal_connect (screen, "monitors-changed", G_CALLBACK (on_screen_size_changed), manager);
 }
 
 
@@ -264,23 +201,14 @@ void draw_background (BackgroundManager* manager, bool mayFade)
 {
     if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
         return;
-    GdkDisplay *display   = gdk_display_get_default ();
-    int         n_screens = gdk_display_get_n_screens (display);
-    int         scr;
-
-    manager->mDrawInProgress = false;
+    manager->mDrawInProgress = true;
     manager->mDoFade = mayFade && can_fade_bg (manager);
     free_scr_sizes (manager);
 
-    for (scr = 0; scr < n_screens; scr++)
-    {
-        CT_SYSLOG(LOG_ERR, "Drawing background on Screen%d", scr);
-        real_draw_bg (manager, gdk_display_get_screen (display, scr));
-    }
+    real_draw_bg (manager, gdk_screen_get_default());
     manager->mScrSizes = g_list_reverse (manager->mScrSizes);
 
     manager->mDrawInProgress = false;
-
 }
 
 bool usd_can_draw_bg (BackgroundManager* manager)
@@ -374,16 +302,13 @@ void real_draw_bg (BackgroundManager* manager, GdkScreen* screen)
     gint height  = gdk_screen_get_height (screen);
 
     free_bg_surface (manager);
-    manager->mSurface = mate_bg_create_surface (manager->mMateBG, window, width, height, false);
+    manager->mSurface = mate_bg_create_surface (manager->mMateBG, window, width, height, true);
 
-    if (manager->mDoFade)
-    {
+    if (manager->mDoFade) {
         free_fade (manager);
         manager->mFade = mate_bg_set_surface_as_root_with_crossfade (screen, manager->mSurface);
         g_signal_connect_swapped (manager->mFade, "finished", G_CALLBACK (free_fade), manager);
-    }
-    else
-    {
+    } else {
         mate_bg_set_surface_as_root (screen, manager->mSurface);
     }
     manager->mScrSizes = g_list_prepend (manager->mScrSizes, g_strdup_printf ("%dx%d", width, height));
@@ -400,13 +325,8 @@ void free_bg_surface (BackgroundManager* manager)
 
 void disconnect_screen_signals (BackgroundManager* manager)
 {
-    int         i;
-    GdkDisplay *display  = gdk_display_get_default();
-    int         n_screens = gdk_display_get_n_screens (display);
 
-    for (i = 0; i < n_screens; i++) {
-        g_signal_handlers_disconnect_by_func (gdk_display_get_screen (display, i), (gpointer)G_CALLBACK (on_screen_size_changed), manager);
-    }
+    g_signal_handlers_disconnect_by_func (gdk_screen_get_default(), (gpointer)G_CALLBACK (on_screen_size_changed), manager);
 }
 
 void remove_background (BackgroundManager* manager)
@@ -428,4 +348,54 @@ void remove_background (BackgroundManager* manager)
     free_scr_sizes (manager);
     free_bg_surface (manager);
     free_fade (manager);
+}
+
+void on_bg_handling_changed (GSettings* settings, const char* key, BackgroundManager* manager)
+{
+    if (peony_is_drawing_bg (manager)) {
+        if (nullptr != manager->mMateBG) remove_background (manager);
+    } else if (manager->mUsdCanDraw && nullptr == manager->mMateBG) {
+        setup_background (manager);
+    }
+}
+
+
+bool BackgroundManager::managerStart()
+{
+    mSetting = g_settings_new(MATE_BG_SCHEMA);
+
+    mUsdCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_DRAW_BACKGROUND);
+    mPeonyCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_SHOW_DESKTOP);
+
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
+                  G_CALLBACK (on_bg_handling_changed), this);
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
+                  G_CALLBACK (on_bg_handling_changed), this);
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PRIMARY_COLOR,
+                  G_CALLBACK (on_bg_handling_changed), this);
+    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PICTURE_FILENAME,
+                  G_CALLBACK (on_bg_handling_changed), this);
+
+    if (mUsdCanDraw) {
+        if (mPeonyCanDraw) {
+            draw_bg_after_session_loads (this);
+        } else {
+            setup_background (this);
+        }
+    }
+
+    return true;
+}
+
+void BackgroundManager::managerStop()
+{
+    if (this->mProxy) {
+        disconnect_session_manager_listener (this);
+        g_object_unref (mProxy);
+    }
+    if (0 != mTimeoutID) {
+        g_source_remove (mTimeoutID);
+        mTimeoutID = 0;
+    }
+    remove_background (this);
 }

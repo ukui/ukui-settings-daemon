@@ -18,12 +18,13 @@
  */
 #ifndef MOUSEMANAGER_H
 #define MOUSEMANAGER_H
-
+#include <QApplication>
+#include <QDebug>
 #include <QObject>
 #include <QTimer>
 #include <QtX11Extras/QX11Info>
 #include <QGSettings/qgsettings.h>
-#include <QApplication>
+
 
 #include <glib.h>
 #include <errno.h>
@@ -51,12 +52,13 @@ public:
     void MouseManagerStop();
 
 public Q_SLOTS:
-    void usd_mouse_manager_idle_cb();
-    void mouse_callback(QString);
-    void touchpad_callback(QString);
+    void MouseManagerIdleCb();
+    void MouseCallback(QString);
+    void TouchpadCallback(QString);
 
 public:
-    bool get_touchpad_handedness (bool mouse_left_handed);
+    bool GetTouchpadHandedness (bool mouse_left_handed);
+
 private:
     friend void set_left_handed_all     (MouseManager *manager,
                                          bool mouse_left_handed,
