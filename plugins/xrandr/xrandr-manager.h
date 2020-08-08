@@ -63,7 +63,9 @@ public Q_SLOTS:
     void StartXrandrIdleCb ();
 
 public:
-   void RestoreBackupConfiguration(XrandrManager *manager,
+    bool ReadMonitorsXml();
+    bool SetScreenSize(Display  *dpy, Window root, int width, int height);
+    void RestoreBackupConfiguration(XrandrManager *manager,
                                     const char    *backup_filename,
                                     const char    *intended_filename,
                                     unsigned int   timestamp);
@@ -81,6 +83,9 @@ private:
     QTimer *time;
     static XrandrManager  *mXrandrManager;
     MateRRScreen *mScreen;
+protected:
+    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
+    QMultiMap<QString, int>     mIntDate;
 };
 
 #endif // XRANDRMANAGER_H

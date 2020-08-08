@@ -7,8 +7,8 @@ OTHER_FILES += \
     $$PWD/ukui-settings-daemon.desktop\
     $$PWD/org.ukui.SettingsDaemon.service\
     $$PWD/org.ukui.font-rendering.gschema.xml.in \
-\#    $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
-\#    $$PWD/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.background.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml \
@@ -45,8 +45,8 @@ ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
 INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus
 
 DISTFILES += \
-\#    $$PWD/a11y-settings.ukui-settings-plugin \
-\#    $$PWD/a11y-keyboard.ukui-settings-plugin \
+    $$PWD/a11y-settings.ukui-settings-plugin \
+    $$PWD/a11y-keyboard.ukui-settings-plugin \
     $$PWD/background.ukui-settings-plugin \
     $$PWD/clipboard.ukui-settings-plugin     \
     $$PWD/housekeeping.ukui-settings-plugin  \

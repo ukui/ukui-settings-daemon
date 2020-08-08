@@ -363,6 +363,7 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
                 settings->setEnum(KEY_NUMLOCK_STATE,numlockState);
                 old_state = numlockState;
         }
+        XCloseDisplay (display);
     }
 }
 

@@ -151,12 +151,15 @@ void XEventMonitorPrivate::run()
     Display* display_datalink = XOpenDisplay(0);
     if (display_datalink == 0) {
         fprintf(stderr, "unable to open second display\n");
+        XCloseDisplay (display_datalink);
         return;
     }
     if (!XRecordEnableContext(display_datalink, context,  callback, (XPointer) this)) {
         fprintf(stderr, "XRecordEnableContext() failed\n");
+        XCloseDisplay (display_datalink);
         return;
     }
+    XCloseDisplay (display_datalink);
 
 }
 
@@ -258,5 +261,6 @@ bool checkCapsState()
         XkbGetIndicatorState(display, XkbUseCoreKbd, &n);
         capsState = (n & 0x01) == 1;
     }
+    XCloseDisplay (display);
     return capsState;
 }

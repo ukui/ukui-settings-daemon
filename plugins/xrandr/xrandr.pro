@@ -19,13 +19,10 @@ include($$PWD/../../common/common.pri)
 INCLUDEPATH += \
         -I $$PWD/../../common/          \
         -I ukui-settings-daemon/        \
-        -I /usr/include/mate-desktop-2.0/
-LIBS += \
-        /usr/lib/x86_64-linux-gnu/libmate-desktop-2.so
-
 
 PKGCONFIG += \
-            xrandr x11 gtk+-3.0 glib-2.0
+            xrandr x11 gtk+-3.0 \
+            glib-2.0 mate-desktop-2.0
 
 SOURCES += \
     xrandr-manager.cpp \

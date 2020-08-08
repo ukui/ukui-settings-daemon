@@ -27,6 +27,7 @@ debuild -D
 ### 插件进度
 
 > 选中表示确定可正常运行
+- [x] a11y-settings
 - [x] background
 - [x] clipboard
 - [x] common
@@ -45,8 +46,7 @@ debuild -D
 
 | 插件 | 问题 | 负责人 |
 | --- | --- | --- |
-| a11y-keyboard | 搁置 |  |
-| a11y-settings | 搁置 |  |
+| a11y-keyboard | 待完善 |  |
 | smartcard | 搁置 |  |
 | media-key | 功能不完善 | 闫焕章 |
 | xrandr | 功能不完善 | 商晓阳 |

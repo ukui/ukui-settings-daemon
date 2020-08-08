@@ -62,6 +62,143 @@ void XrandrManager::XrandrManagerStop()
     syslog(LOG_ERR,"Xrandr Manager Stop");
 }
 
+
+/**
+ * @name ReadMonitorsXml();
+ * @brief 读取monitors.xml文件
+ */
+bool XrandrManager::ReadMonitorsXml()
+{
+    int mNum = 0;
+    QString homePath = getenv("HOME");
+    QString monitorFile = homePath+"/.config/monitors.xml";
+    QFile file(monitorFile);
+    if(!file.open(QIODevice::ReadOnly))
+            return false;
+
+    QDomDocument doc;
+    if(!doc.setContent(&file))
+    {
+        file.close();
+        return false;
+    }
+    file.close();
+
+    XmlFileTag.clear();
+    mIntDate.clear();
+
+    QDomElement root=doc.documentElement(); //返回根节点
+    //qDebug()<<root.nodeName();
+    QDomNode n=root.firstChild();
+
+    while(!n.isNull())
+    {
+        if(n.isElement()){
+            QDomElement e=n.toElement();
+            QDomNodeList list=e.childNodes();
+
+            for(int i=0;i<list.count();i++){
+                QDomNode node=list.at(i);
+
+                if(node.isElement()){
+                    QDomNodeList e2 = node.childNodes();
+
+                    if(node.toElement().tagName() == "clone"){
+                        XmlFileTag.insert("clone",node.toElement().text());
+                        qDebug()<<"clone:"<<node.toElement().tagName()<<node.toElement().text();
+                    }else if("output" == node.toElement().tagName()){
+                        XmlFileTag.insert("name",node.toElement().attribute("name"));
+                        for(int j=0;j<e2.count();j++){
+                            QDomNode node2 = e2.at(j);
+
+                            if(node2.toElement().tagName() == "width")
+                                XmlFileTag.insert("width",node2.toElement().text());
+                            else if(node2.toElement().tagName() == "height")
+                                XmlFileTag.insert("height",node2.toElement().text());
+                            else if("x" == node2.toElement().tagName())
+                                XmlFileTag.insert("x",node2.toElement().text());
+                            else if("y" == node2.toElement().tagName())
+                                XmlFileTag.insert("y",node2.toElement().text());
+                            else if(node2.toElement().tagName() == "primary")
+                                XmlFileTag.insert("primary",node2.toElement().text());
+
+                        }
+                        mNum++;
+                    }
+                }
+            }
+        }
+        n = n.nextSibling();
+    }
+    qDebug()<<"mNum = "<<mNum;
+    mIntDate.insert("XmlNum",mNum);
+    return true;
+}
+
+/**
+ * @name SetScreenSize();
+ * @brief 设置单个屏幕分辨率
+ */
+bool XrandrManager::SetScreenSize(Display  *dpy, Window root, int width, int height)
+{
+    SizeID          current_size;
+    Rotation        current_rotation;
+    XRRScreenSize   *sizes;
+    XRRScreenConfiguration *sc;
+    int     nsize;
+    int     size = -1;
+    int     rot  = -1;
+    short   current_rate;
+    double  rate = -1;
+    int     reflection = 0;
+
+    sc = XRRGetScreenInfo (dpy, root);
+    if (sc == NULL){
+        syslog(LOG_ERR,"Screen configuration is Null");
+        return false;
+    }
+    /* 配置当前配置 */
+    current_size = XRRConfigCurrentConfiguration (sc, &current_rotation);
+    sizes = XRRConfigSizes(sc, &nsize);
+
+    for (size = 0;size < nsize; size++)
+    {
+        if (sizes[size].width == width && sizes[size].height == height)
+            break;
+    }
+
+    if (size >= nsize) {
+        syslog(LOG_ERR,"Size %dx%d not found in available modes\n", width, height);
+        return false;
+    }
+    else if (size < 0)
+        size = current_size;
+    else if (size >= nsize) {
+        syslog(LOG_ERR,"Size index %d is too large, there are only %d sizes\n", size, nsize);
+        return false;
+    }
+
+    if (rot < 0) {
+        for (rot = 0; rot < 4; rot++)
+            if (1 << rot == (current_rotation & 0xf))
+                break;
+    }
+    current_rate = XRRConfigCurrentRate (sc);
+    if (rate < 0) {
+        if (size == current_size)
+            rate = current_rate;
+        else
+            rate = 0;
+    }
+    XSelectInput (dpy, root, StructureNotifyMask);
+    Rotation rotation = 1 << rot;
+    XRRSetScreenConfigAndRate (dpy, sc, root, (SizeID) size,
+                               (Rotation) (rotation | reflection),
+                               rate, CurrentTime);
+    XRRFreeScreenConfigInfo(sc);
+    return true;
+}
+
 /**
  * @name AutoConfigureOutputs();
  * @brief 自动配置输出,在进行硬件HDMI屏幕插拔时
@@ -313,8 +450,13 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
  */
 void XrandrManager::StartXrandrIdleCb()
 {
-    time->stop();
+    Display     *dpy;
+    Window      root;
+    QString ScreenName;
+    int ScreenNum = 1;
+    int width,  height;
 
+    time->stop();
     mScreen = mate_rr_screen_new (gdk_screen_get_default (),NULL);
     if(mScreen == nullptr){
         qDebug()<<"Could not initialize the RANDR plugin";
@@ -322,6 +464,26 @@ void XrandrManager::StartXrandrIdleCb()
     }
     g_signal_connect (mScreen, "changed", G_CALLBACK (OnRandrEvent), this);
 
+    /*设置虚拟机分辨率*/
+    ScreenNum  = QApplication::screens().length();
+    ScreenName = QApplication::primaryScreen()->name();
+    if((ScreenNum==1) && (ScreenName == "Virtual1")){
+        int screen, XmlNum;
+        dpy = XOpenDisplay(0);
+        screen = DefaultScreen(dpy);
+        root = RootWindow(dpy, screen);
+        ReadMonitorsXml();
+        XmlNum = mIntDate.value("XmlNum");
+        for(int i=0;i<XmlNum;i++){
+            QString DisplayName = XmlFileTag.values("name")[i];
+            if(ScreenName == DisplayName){
+                width = XmlFileTag.values("width")[i].toLatin1().toInt();
+                height = XmlFileTag.values("height")[i].toLatin1().toInt();
+            }
+        }
+        SetScreenSize(dpy, root, width, height);
+        XCloseDisplay (dpy);
+    }
     /*登录读取注销配置*/
     ApplyStoredConfigurationAtStartup(this,GDK_CURRENT_TIME);
 

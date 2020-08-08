@@ -18,8 +18,7 @@ INCLUDEPATH += \
     -I $$PWD/../../common
 
 LIBS += \
-    -lpulse \
-    -L /usr/lib/x86_64-linux-gnu/
+    -lpulse 
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
