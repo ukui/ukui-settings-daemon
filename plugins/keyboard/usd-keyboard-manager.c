@@ -36,6 +36,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
+#include <gdk/gdkkeysyms.h>
 
 #ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
 #include <X11/extensions/xf86misc.h>
@@ -67,6 +68,7 @@
 #define KEY_BELL_MODE      "bell-mode"
 
 #define KEY_NUMLOCK_STATE    "numlock-state"
+#define KET_CAPSLOCK_STATE   "capslock-state"
 #define KEY_NUMLOCK_REMEMBER "remember-numlock-state"
 
 
@@ -230,9 +232,9 @@ xkb_events_filter (GdkXEvent *xev_,
 		        /* Determine if the capslock indicator is on and write Settings */
                 gboolean caps;
                 if(locked_mods == 2 || locked_mods == 18)
-                    caps = g_settings_set_boolean (manager->priv->settings,"capslock-state",TRUE);
+                    caps = g_settings_set_boolean (manager->priv->settings,KET_CAPSLOCK_STATE,TRUE);
                 else
-                    caps = g_settings_set_boolean (manager->priv->settings,"capslock-state",FALSE);
+                    caps = g_settings_set_boolean (manager->priv->settings,KET_CAPSLOCK_STATE,FALSE);
 
 
                 numlock_state = (num_mask & locked_mods) ? NUMLOCK_STATE_ON : NUMLOCK_STATE_OFF;
@@ -377,10 +379,8 @@ apply_settings (GSettings          *settings,
             /* Fix numlock and capslock indicator problem,
              * Negate is reset the status of the lamp.
              */
-            numlock_set_xkb_state (!numlock_get_settings_state (settings));
             numlock_set_xkb_state (numlock_get_settings_state (settings));
-            capslock_set_xkb_state(!g_settings_get_boolean(settings,"capslock-state"));
-            capslock_set_xkb_state(g_settings_get_boolean(settings,"capslock-state"));
+            capslock_set_xkb_state(g_settings_get_boolean(settings, KET_CAPSLOCK_STATE));
         }
     }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -412,6 +412,86 @@ usd_keyboard_manager_apply_settings (UsdKeyboardManager *manager)
         apply_settings (manager->priv->settings, NULL, manager);
 }
 
+
+/* Set ScrollLock state*/
+#define KEYBOARD_GROUP_SHIFT 13
+#define KEYBOARD_GROUP_MASK ((1 << 13) | (1 << 14))
+static GdkFilterReturn
+scroll_event_filter (GdkXEvent *xevent,
+        GdkEvent  *event,
+        gpointer   data)
+{
+  	XEvent *xev = (XEvent *) xevent;
+  	guint keyval;
+  	gint group;
+        static gboolean scroll_state = FALSE; 
+  	GdkScreen *screen = (GdkScreen *)data;
+
+  	if (xev->type == KeyPress || xev->type == KeyRelease)
+    	{
+      		/* get the keysym */
+      	    group = (xev->xkey.state & KEYBOARD_GROUP_MASK) >> KEYBOARD_GROUP_SHIFT;
+      	    gdk_keymap_translate_keyboard_state (gdk_keymap_get_default (),
+              	                                 xev->xkey.keycode,
+                                                 xev->xkey.state,
+                                	          group,
+                                        	  &keyval,
+                                          	  NULL, NULL, NULL);
+           if (keyval == GDK_KEY_Scroll_Lock)
+           {
+            	if (xev->type == KeyRelease)
+            	{
+			XAllowEvents (xev->xkey.display,
+                             	        SyncKeyboard,
+                         	        xev->xkey.time);
+			if(!scroll_state){
+			        scroll_state = !scroll_state;
+				system("xset led  named 'Scroll Lock'");
+			}else{
+                                scroll_state = !scroll_state;
+                                system("xset -led  named 'Scroll Lock'");
+                       }
+	    	}else{
+		        XAllowEvents (xev->xkey.display,
+                                     AsyncKeyboard,
+                                     xev->xkey.time);
+
+	    	}
+            }else {
+		XAllowEvents (xev->xkey.display,
+                ReplayKeyboard,
+                xev->xkey.time);
+          	XUngrabKeyboard (gdk_x11_get_default_xdisplay (),
+                      		 xev->xkey.time);
+	     }
+   	}
+}
+static void 
+scroll_lock_install()
+{
+
+	GdkKeymapKey *keys;
+        GdkDisplay *display;
+        int n_keys;
+        display = gdk_display_get_default ();
+        gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (),
+                                                       GDK_KEY_Scroll_Lock,
+                                                       &keys,
+                                                       &n_keys);
+        Window xroot;
+        GdkScreen *screen = gdk_screen_get_default();
+        xroot = gdk_x11_window_get_xid (gdk_screen_get_root_window (screen));
+        XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+                            keys[0].keycode,
+                            AnyModifier,
+                            xroot,
+                            False,
+                            GrabModeAsync,
+                            GrabModeSync);
+	gdk_window_add_filter (gdk_screen_get_root_window (screen),
+                                     scroll_event_filter,  screen);
+}
+
 static gboolean
 start_keyboard_idle_cb (UsdKeyboardManager *manager)
 {
@@ -433,7 +513,10 @@ start_keyboard_idle_cb (UsdKeyboardManager *manager)
 
         /* apply current settings before we install the callback */
         usd_keyboard_manager_apply_settings (manager);
-
+        
+        /* set ScrollLock led state*/
+        scroll_lock_install();
+        
         g_signal_connect (manager->priv->settings, "changed", G_CALLBACK (apply_settings), manager);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
