@@ -481,7 +481,7 @@ event_filter (GdkXEvent *gdkxevent,
                                            &keyval,
                                            NULL, NULL, NULL);
 
-      if ((keyval == GDK_KEY_m || keyval == GDK_KEY_M) && (xevent->xkey.state == 21))
+      if ((keyval == GDK_KEY_m || keyval == GDK_KEY_M) )
         {
           if (xevent->xany.type == KeyRelease)
             { 
@@ -576,14 +576,43 @@ set_locate_pointer (void)
               // xroot = DefaultRootWindow(GDK_DISPLAY_XDISPLAY (display));
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
+                        ControlMask|ShiftMask|Mod2Mask|LockMask,
+                        xroot,
+                        False,
+                        GrabModeAsync,
+                        GrabModeSync);
+              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+                        keys[j].keycode,
+                        ControlMask|ShiftMask|LockMask,
+                        xroot,
+                        False,
+                        GrabModeAsync,
+                        GrabModeSync);
+              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+                        keys[j].keycode,
+                        ControlMask|ShiftMask|Mod2Mask,
+                        xroot,
+                        False,
+                        GrabModeAsync,
+                        GrabModeSync);
+              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+                        keys[j].keycode,
+                        ControlMask|ShiftMask,
+                        xroot,
+                        False,
+                        GrabModeAsync,
+                        GrabModeSync);
+              /*
+              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+                        keys[j].keycode,
                         AnyModifier,
                         xroot,
                         False,
                         GrabModeAsync,
                         GrabModeSync);
-              /* XGrabKey (GDK_DISPLAY_XDISPLAY (display),
+              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
-                        LockMask,
+                        ControlMask|ShiftMask,
                         xroot,
                         False,
                         GrabModeAsync,
@@ -603,6 +632,7 @@ set_locate_pointer (void)
                         GrabModeAsync,
                         GrabModeSync);
               */
+
             }
           g_free (keys);
         }
