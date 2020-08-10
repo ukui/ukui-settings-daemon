@@ -274,7 +274,6 @@ Comment:
  License assumed from COPYING file.
 
 Files: data/Makefile.am
-       data/*.in.in
        data/*.in
        data/usd-datetime-mechanism.1
        data/usd-locate-pointer.1
@@ -307,9 +306,8 @@ Files: data/Makefile.am
        plugins/keyboard/*.png
        plugins/Makefile.am
        plugins/media-keys/Makefile.am
-       plugins/media-keys/usd-marshal.*
+       plugins/media-keys/usd-marshal.list
        plugins/media-keys/*.ukui-settings-plugin.in
-       plugins/media-keys/*.list
        plugins/media-keys/*.png
        plugins/media-keys/*.svg
        plugins/media-keys/*.ui

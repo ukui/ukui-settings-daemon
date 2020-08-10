@@ -1,9 +1,8 @@
-ukui-settings-daemon (1.2.1-2kylin1.1) unstable; urgency=medium
+ukui-settings-daemon (3.0.0-1) unstable; urgency=medium
 
-  * Sync from v10 mate-settings-daemon
-    - Sync patch
+  * New upstream release.
 
- -- liutong <liutong@kylinos.cn>  Fri, 08 May 2020 12:00:00 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 10 Aug 2020 07:24:01 +0000
 
 ukui-settings-daemon (1.2.1-1) unstable; urgency=medium
 
@@ -12,7 +11,7 @@ ukui-settings-daemon (1.2.1-1) unstable; urgency=medium
     - Fix the numlock issue.
     - Fix that the settings of cursor theme didn't work.
 
- -- liutong <liutong@kylinos.cn>  Thu, 07 May 2020 12:00:00 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 26 Mar 2020 12:00:00 +0800
 
 ukui-settings-daemon (1.2.0-1) unstable; urgency=medium
 

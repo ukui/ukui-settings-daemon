@@ -5,7 +5,7 @@ Maintainer: Kylin Team <team+kylin@tracker.debian.org>
 Uploaders: Aron Xu <aron@debian.org>,
            handsome_feng <jianfengli@ubuntukylin.com>
 Build-Depends: debhelper-compat (= 12),
-               dpkg-dev,
+               dpkg-dev (>= 1.16.1.1),
                intltool,
                libcanberra-gtk3-dev,
                libdbus-glib-1-dev,
@@ -29,7 +29,6 @@ Build-Depends: debhelper-compat (= 12),
                libxrandr-dev,
                libxt-dev,
                mate-common,
-               mate-utils,
                x11proto-kb-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
