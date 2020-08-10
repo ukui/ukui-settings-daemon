@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: ukui-settings-daemon
-Upstream-Contact: zhang heng <zhangheng@kylin.cn>
+Upstream-Contact: Shang Xiaoyang <shangxiaoyang@kylinos.cn>
 Source: http://github.com/ukui/ukui-settings-daemon
 
 Files: ukui-settings-daemon/main.c
