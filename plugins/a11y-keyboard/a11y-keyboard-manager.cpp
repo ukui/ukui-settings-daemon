@@ -1,15 +1,9 @@
 #include "a11y-keyboard-manager.h"
 #include "clib-syslog.h"
-#include "config.h"
 
 #define CONFIG_SCHEMA "org.mate.accessibility-keyboard"
 #define NOTIFICATION_TIMEOUT 30
-#undef DEBUG_ACCESSIBILITY
-#ifdef DEBUG_ACCESSIBILITY
-#define d(str)          g_debug (str)
-#else
-#define d(str)          do { } while (0)
-#endif
+
 static GdkFilterReturn DevicepresenceFilter (GdkXEvent *xevent, GdkEvent  *event,gpointer   data);
 GdkFilterReturn CbXkbEventFilter (GdkXEvent  *xevent, GdkEvent *ignored1, A11yKeyboardManager *manager);
 
@@ -47,24 +41,24 @@ void A11yKeyboardManager::A11yKeyboardManagerStop()
    CT_SYSLOG(LOG_DEBUG,"Stoping A11y Keyboard manager");
    gdk_window_remove_filter (NULL, DevicepresenceFilter, this);
 
-    if (status_icon)
-       gtk_status_icon_set_visible (status_icon, FALSE);
-
+    /*if (status_icon)
+       gtk_status_icon_set_visible (status_icon, false);
+    */
     gdk_window_remove_filter (NULL,
                          (GdkFilterFunc) CbXkbEventFilter,
                          this);
 
     /* Disable all the AccessX bits
     */
-    restore_server_xkb_config (this);
-    if (slowkeys_alert != NULL)
-       gtk_widget_destroy (slowkeys_alert);
+    RestoreServerXkbConfig (this);
+    if (SlowkeysAlert != NULL)
+        delete SlowkeysAlert;
 
-    if (stickykeys_alert != NULL)
-       gtk_widget_destroy (stickykeys_alert);
+    if (SlowkeysAlert != NULL)
+        delete SlowkeysAlert;
 
-    slowkeys_shortcut_val = FALSE;
-    stickykeys_shortcut_val = FALSE;
+    SlowkeysShortcutVal = false;
+    StickykeysShortcutVal = false;
 
 }
 
@@ -78,8 +72,8 @@ static int GetInt (QGSettings  *settings,
         return res;
 }
 
-static gboolean
-set_int (QGSettings      *settings,
+static bool
+SetInt (QGSettings      *settings,
          char const     *key,
          int             val)
 {
@@ -120,7 +114,7 @@ static unsigned long SetClear(bool flag, unsigned long value, unsigned long mask
      return value & ~mask;
 }
 
-void A11yKeyboardManager::restore_server_xkb_config (A11yKeyboardManager *manager)
+void A11yKeyboardManager::RestoreServerXkbConfig (A11yKeyboardManager *manager)
 {
         gdk_x11_display_error_trap_push (gdk_display_get_default());
         XkbSetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
@@ -133,15 +127,15 @@ void A11yKeyboardManager::restore_server_xkb_config (A11yKeyboardManager *manage
                         XkbAccessXTimeoutMask   |
                         XkbAccessXFeedbackMask  |
                         XkbControlsEnabledMask,
-                        manager->original_xkb_desc);
+                        manager->OriginalXkbDesc);
 
-        XkbFreeKeyboard (manager->original_xkb_desc,
+        XkbFreeKeyboard (manager->OriginalXkbDesc,
                          XkbAllComponentsMask, True);
 
-        XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), FALSE);
+        XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), false);
         gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 
-        manager->original_xkb_desc = NULL;
+        manager->OriginalXkbDesc = NULL;
 }
 
 XkbDescRec * A11yKeyboardManager::GetXkbDescRec()
@@ -301,59 +295,56 @@ void A11yKeyboardManager::SetServerFromSettings(A11yKeyboardManager *manager)
 
     XkbFreeKeyboard (desc, XkbAllComponentsMask, True);
 
-    XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), FALSE);
+    XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), false);
     gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
-void A11yKeyboardManager::on_status_icon_activate(GtkStatusIcon *status_icon, A11yKeyboardManager *manager)
+void A11yKeyboardManager::OnPreferencesDialogResponse(A11yKeyboardManager *manager)
 {
-    // 等待图形界面 Wait graphical interface
-    /*
-    if (manager->preferences_dialog == NULL) {
-            manager->preferences_dialog = usd_a11y_preferences_dialog_new ();
-            g_signal_connect (manager->preferences_dialog,
-                              "response",
-                              G_CALLBACK (on_preferences_dialog_response),
-                              manager);
-            gtk_window_present (GTK_WINDOW (manager->preferences_dialog));
-    } else {
-            g_signal_handlers_disconnect_by_func (manager->preferences_dialog,
-                                                  on_preferences_dialog_response,
-                                                  manager);
-            gtk_widget_destroy (GTK_WIDGET (manager->preferences_dialog));
-            manager->preferences_dialog = NULL;
-            }
-    }
-    */
-}
-void A11yKeyboardManager::usd_a11y_keyboard_manager_ensure_status_icon(A11yKeyboardManager *manager)
-{
-    if (!manager->status_icon) {
-        manager->status_icon = gtk_status_icon_new_from_icon_name ("preferences-desktop-accessibility");
-        g_signal_connect (manager->status_icon,
-                          "activate",
-                          G_CALLBACK (on_status_icon_activate),
-                          manager);
-    }
+    manager->preferences_dialog->close();
+    delete manager->preferences_dialog;
 }
 
-void A11yKeyboardManager::maybe_show_status_icon(A11yKeyboardManager *manager)
+void A11yKeyboardManager::OnStatusIconActivate(GtkStatusIcon *status_icon, A11yKeyboardManager *manager)
+{
+    if (manager->preferences_dialog == NULL) {
+            manager->preferences_dialog = new A11yPreferencesDialog();
+            connect(manager->preferences_dialog,SIGNAL(response(A11yKeyboardManager)),manager,SLOT(OnPreferencesDialogResponse(A11yKeyboardManager)));
+            manager->preferences_dialog->show();
+    } else {
+            manager->preferences_dialog->close();
+            delete manager->preferences_dialog;
+            }
+}
+
+void A11yKeyboardManager::A11yKeyboardManagerEnsureStatusIcon(A11yKeyboardManager *manager)
+{
+    /*if (!manager->status_icon) {
+        manager->status_icon = gtk_status_icon_new_from_icon_name ("preferences-desktop-accessibility");
+        g_signal_connect (manager->status_icon,
+                      "activate",
+                      G_CALLBACK (OnStatusIconActivate),
+                      manager);
+    }*/
+}
+
+void A11yKeyboardManager::MaybeShowStatusIcon(A11yKeyboardManager *manager)
 {
     bool     show;
     /* for now, show if accessx is enabled */
     show = manager->settings->get("enable").toBool();
 
-    if (!show && manager->status_icon == NULL)
+   /* if (!show && manager->status_icon == NULL)
             return;
-
-    usd_a11y_keyboard_manager_ensure_status_icon (manager);
-    gtk_status_icon_set_visible (manager->status_icon, show);
+    */
+    A11yKeyboardManagerEnsureStatusIcon (manager);
+    //gtk_status_icon_set_visible (manager->status_icon, show);
 }
 
 void A11yKeyboardManager::KeyboardCallback(QString key)
 {
     SetServerFromSettings (this);
-    maybe_show_status_icon (this);
+    //MaybeShowStatusIcon (this);
 }
 
 bool A11yKeyboardManager::XkbEnabled (A11yKeyboardManager *manager)
@@ -388,103 +379,441 @@ DevicepresenceFilter (GdkXEvent *xevent,
                       GdkEvent  *event,
                       gpointer   data)
 {
-        XEvent *xev = (XEvent *) xevent;
-        XEventClass class_presence;
-        int xi_presence;
-        A11yKeyboardManager *manager = (A11yKeyboardManager *)data;
-        DevicePresence (gdk_x11_get_default_xdisplay (), xi_presence, class_presence);
+    XEvent *xev = (XEvent *) xevent;
+    XEventClass class_presence;
+    int xi_presence;
+    A11yKeyboardManager *manager = (A11yKeyboardManager *)data;
+    DevicePresence (gdk_x11_get_default_xdisplay (), xi_presence, class_presence);
 
-        if (xev->type == xi_presence)
-        {
-            XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
-            if (dpn->devchange == DeviceEnabled) {
-                manager->SetServerFromSettings (manager);
-            }
+    if (xev->type == xi_presence)
+    {
+        XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
+        if (dpn->devchange == DeviceEnabled) {
+            manager->SetServerFromSettings (manager);
         }
-        return GDK_FILTER_CONTINUE;
+    }
+    return GDK_FILTER_CONTINUE;
 }
 
 void A11yKeyboardManager::SetDevicepresenceHandler (A11yKeyboardManager *manager)
 {
-        Display *display;
-        XEventClass class_presence;
-        int xi_presence;
+    Display *display;
+    XEventClass class_presence;
+    int xi_presence;
 
-        if (!SupportsXinputDevices ())
-                return;
+    if (!SupportsXinputDevices ())
+            return;
 
-        display = gdk_x11_get_default_xdisplay ();
+    display = gdk_x11_get_default_xdisplay ();
 
-        gdk_x11_display_error_trap_push(gdk_display_get_default());
-        DevicePresence (display, xi_presence, class_presence);
-        /* FIXME:
-         * Note that this might overwrite other events, see:
-         * https://bugzilla.gnome.org/show_bug.cgi?id=610245#c2
-         **/
-        XSelectExtensionEvent (display,
-                               RootWindow (display, DefaultScreen (display)),
-                               &class_presence, 1);
+    gdk_x11_display_error_trap_push(gdk_display_get_default());
+    DevicePresence (display, xi_presence, class_presence);
+    /* FIXME:
+     * Note that this might overwrite other events, see:
+     * https://bugzilla.gnome.org/show_bug.cgi?id=610245#c2
+     **/
+    XSelectExtensionEvent (display,
+                           RootWindow (display, DefaultScreen (display)),
+                           &class_presence, 1);
 
-        gdk_display_flush(gdk_display_get_default());
-        if (!gdk_x11_display_error_trap_pop(gdk_display_get_default()))
-                gdk_window_add_filter (NULL, DevicepresenceFilter, manager);
+    gdk_display_flush(gdk_display_get_default());
+    if (!gdk_x11_display_error_trap_pop(gdk_display_get_default()))
+            gdk_window_add_filter (NULL, DevicepresenceFilter, manager);
 }
 
 GdkFilterReturn CbXkbEventFilter (GdkXEvent              *xevent,
                                   GdkEvent               *ignored1,
                                   A11yKeyboardManager    *manager)
 {
-        XEvent   *xev   = (XEvent *) xevent;
-        XkbEvent *xkbEv = (XkbEvent *) xevent;
+    XEvent   *xev   = (XEvent *) xevent;
+    XkbEvent *xkbEv = (XkbEvent *) xevent;
 
-        if (xev->xany.type == (manager->xkbEventBase + XkbEventCode) &&
-            xkbEv->any.xkb_type == XkbControlsNotify) {
-                d ("XKB state changed");
-                manager->set_settings_from_server (manager);
-        } else if (xev->xany.type == (manager->xkbEventBase + XkbEventCode) &&
-                   xkbEv->any.xkb_type == XkbAccessXNotify) {
-                if (xkbEv->accessx.detail == XkbAXN_AXKWarning) {
-                        d ("About to turn on an AccessX feature from the keyboard!");
-                        /*
-                         * TODO: when XkbAXN_AXKWarnings start working, we need to
-                         * invoke ax_keys_warning_dialog_run here instead of in
-                         * set_settings_from_server().
-                         */
-                }
+    if (xev->xany.type == (manager->xkbEventBase + XkbEventCode) &&
+        xkbEv->any.xkb_type == XkbControlsNotify) {
+            qDebug ("XKB state changed");
+            manager->SetSettingsFromServer (manager);
+    } else if (xev->xany.type == (manager->xkbEventBase + XkbEventCode) &&
+               xkbEv->any.xkb_type == XkbAccessXNotify) {
+            if (xkbEv->accessx.detail == XkbAXN_AXKWarning) {
+                    qDebug ("About to turn on an AccessX feature from the keyboard!");
+                    /*
+                     * TODO: when XkbAXN_AXKWarnings start working, we need to
+                     * invoke ax_keys_warning_dialog_run here instead of in
+                     * SetSettingsFromServer().
+                     */
+            }
+    }
+
+    return GDK_FILTER_CONTINUE;
+}
+
+bool A11yKeyboardManager::AxResponseCallback(A11yKeyboardManager *manager,
+                                             QMessageBox         *parent,
+                                             int                  response_id,
+                                             unsigned int revert_controls_mask,
+                                             bool                 enabled)
+{
+    switch (response_id) {
+    case GTK_RESPONSE_DELETE_EVENT:
+    case GTK_RESPONSE_REJECT:
+    case GTK_RESPONSE_CANCEL:
+
+        /* we're reverting, so we invert sense of 'enabled' flag */
+        qDebug ("cancelling AccessX request");
+        if (revert_controls_mask == XkbStickyKeysMask) {
+            manager->settings->set("stickykeys-enable", !enabled);
+        }
+        else if (revert_controls_mask == XkbSlowKeysMask) {
+            manager->settings->set("slowkeys-enable",!enabled);
+        }
+        manager->SetServerFromSettings (manager);
+        break;
+    case GTK_RESPONSE_HELP:
+        if(!parent->isActiveWindow())
+        {
+            QMessageBox *error_dialog = new QMessageBox();
+            error_dialog->warning(nullptr,nullptr,tr("There was an error displaying help"),QMessageBox::Close);
+            error_dialog->setResult(false);
+            error_dialog->show();
+        }
+        return FALSE;
+    default:
+        break;
+    }
+return TRUE;
+}
+
+
+#ifdef HAVE_LIBNOTIFY
+void OnNotificationClosed (NotifyNotification     *notification,
+                                                A11yKeyboardManager *manager)
+{
+        g_object_unref (manager->notification);
+        manager->notification = NULL;
+}
+
+void
+on_sticky_keys_action (NotifyNotification     *notification,
+                       const char             *action,
+                       A11yKeyboardManager    *manager)
+{
+    bool res;
+    int      response_id;
+
+    g_assert (action != NULL);
+
+    if (strcmp (action, "accept") == 0) {
+            response_id = GTK_RESPONSE_ACCEPT;
+    } else if (strcmp (action, "reject") == 0) {
+            response_id = GTK_RESPONSE_REJECT;
+    } else {
+            return;
+    }
+
+    res = manager->AxResponseCallback (manager, nullptr,
+                                       response_id, XkbStickyKeysMask,
+                                       manager->StickykeysShortcutVal);
+    if (res) {
+            notify_notification_close (manager->notification, NULL);
+    }
+}
+
+void
+on_slow_keys_action (NotifyNotification     *notification,
+                     const char             *action,
+                     A11yKeyboardManager *manager)
+{
+        bool res;
+        int      response_id;
+
+        g_assert (action != NULL);
+
+        if (strcmp (action, "accept") == 0) {
+                response_id = GTK_RESPONSE_ACCEPT;
+        } else if (strcmp (action, "reject") == 0) {
+                response_id = GTK_RESPONSE_REJECT;
+        } else {
+                return;
         }
 
-        return GDK_FILTER_CONTINUE;
+        res = manager->AxResponseCallback (manager, nullptr,
+                                    response_id, XkbSlowKeysMask,
+                                    manager->SlowkeysShortcutVal);
+        if (res) {
+                notify_notification_close (manager->notification, NULL);
+        }
+}
+#endif /* HAVE_LIBNOTIFY */
+
+bool AxSlowkeysWarningPostDubble (A11yKeyboardManager *manager,
+                                      bool                 enabled)
+{
+#ifdef HAVE_LIBNOTIFY
+    bool        res;
+    const char *title;
+    const char *message;
+    GError     *error;
+
+    title = enabled ?
+            _("Do you want to activate Slow Keys?") :
+            _("Do you want to deactivate Slow Keys?");
+    message = _("You just held down the Shift key for 8 seconds.  This is the shortcut "
+                "for the Slow Keys feature, which affects the way your keyboard works.");
+
+   /* if (manager->status_icon == NULL || ! gtk_status_icon_is_embedded (manager->status_icon)) {
+            return FALSE;
+    }
+    */
+
+    if (manager->SlowkeysAlert != NULL) {
+        manager->SlowkeysAlert->close();
+        delete manager->SlowkeysAlert;
+    }
+
+    if (manager->notification != NULL) {
+        notify_notification_close (manager->notification, NULL);
+    }
+
+    manager->A11yKeyboardManagerEnsureStatusIcon (manager);
+    manager->notification = notify_notification_new (title,
+                                                           message,
+                                                           "preferences-desktop-accessibility");
+    notify_notification_set_timeout (manager->notification, NOTIFICATION_TIMEOUT * 1000);
+
+    notify_notification_add_action (manager->notification,
+                                    "reject",
+                                    enabled ? _("Don't activate") : _("Don't deactivate"),
+                                    (NotifyActionCallback) on_slow_keys_action,
+                                    manager,
+                                    NULL);
+    notify_notification_add_action (manager->notification,
+                                    "accept",
+                                    enabled ? _("Activate") : _("Deactivate"),
+                                    (NotifyActionCallback) on_slow_keys_action,
+                                    manager,
+                                    NULL);
+
+    g_signal_connect (manager->notification,
+                      "closed",
+                      G_CALLBACK (OnNotificationClosed),
+                      manager);
+
+    error = NULL;
+    res = notify_notification_show (manager->notification, &error);
+    if (! res) {
+            g_warning ("UsdA11yKeyboardManager: unable to show notification: %s", error->message);
+            g_error_free (error);
+            notify_notification_close (manager->notification, NULL);
+    }
+
+    return res;
+#else
+    return false;
+#endif
 }
 
-void ax_slowkeys_warning_post (A11yKeyboardManager *manager,
-                               gboolean             enabled)
+void A11yKeyboardManager::ax_slowkeys_response (QAbstractButton *button)
+{
+    int response_id = 0;
+    if(button == (QAbstractButton *)QMessageBox::Help)
+        response_id = GTK_RESPONSE_HELP;
+    else if(button == (QAbstractButton *)QMessageBox::Cancel)
+        response_id = GTK_RESPONSE_CANCEL;
+    if (AxResponseCallback (this, StickykeysAlert,
+                            response_id, XkbSlowKeysMask,
+                            SlowkeysShortcutVal)) {
+        StickykeysAlert->close();
+    }
+}
+
+void A11yKeyboardManager::AxSlowkeysWarningPostDialog (A11yKeyboardManager *manager,
+                                                       bool                enabled)
+{
+        const char *title;
+        const char *message;
+
+        title = enabled ?
+                _("Do you want to activate Slow Keys?") :
+                _("Do you want to deactivate Slow Keys?");
+        message = _("You just held down the Shift key for 8 seconds.  This is the shortcut "
+                    "for the Slow Keys feature, which affects the way your keyboard works.");
+
+        if (manager->SlowkeysAlert != NULL) {
+                manager->SlowkeysAlert->show();
+                return;
+        }
+
+        manager->SlowkeysAlert = new QMessageBox();
+        manager->SlowkeysAlert->warning(nullptr,QObject::tr("Slow Keys Alert"), title);
+        manager->SlowkeysAlert->setText(message);
+        manager->SlowkeysAlert->setStandardButtons(QMessageBox::Help);
+        manager->SlowkeysAlert->setButtonText(QMessageBox::Rejected,
+                                                enabled ? _("Do_n't activate") : _("Do_n't deactivate"));
+        manager->SlowkeysAlert->setButtonText(QMessageBox::Accepted,
+                                                enabled ? _("_Activate") : _("_Deactivate"));
+
+        manager->StickykeysAlert->setWindowIconText("input-keyboard");
+
+        manager->StickykeysAlert->setDefaultButton(QMessageBox::Default);
+
+        QObject::connect(manager->StickykeysAlert,SIGNAL(buttonClicked(QAbstractButton *button)),
+                         manager,SLOT(ax_slowkeys_response(QAbstractButton *button)));
+
+        manager->StickykeysAlert->show();
+
+        /*g_object_add_weak_pointer (G_OBJECT (manager->StickykeysAlert),
+                                   (gpointer*) &manager->StickykeysAlert);*/
+}
+
+void A11yKeyboardManager::AxSlowkeysWarningPost (A11yKeyboardManager *manager,
+                                                 bool                 enabled)
 {
 
-        manager->slowkeys_shortcut_val = enabled;
+        manager->SlowkeysShortcutVal = enabled;
 
         /* alway try to show something */
-        /*if (! ax_slowkeys_warning_post_bubble (manager, enabled)) {
-                ax_slowkeys_warning_post_dialog (manager, enabled);
-        }*/
+        if (! AxSlowkeysWarningPostDubble (manager, enabled)) {
+                AxSlowkeysWarningPostDialog (manager, enabled);
+        }
 }
-void ax_stickykeys_warning_post (A11yKeyboardManager *manager,
-                            gboolean                enabled)
+
+
+bool AxStickykeysWarningPostBubble (A11yKeyboardManager *manager,
+                                    bool                enabled)
 {
-        manager->stickykeys_shortcut_val = enabled;
+#ifdef HAVE_LIBNOTIFY
+    bool    res;
+    const char *title;
+    const char *message;
+    GError     *error;
+
+    title = enabled ?
+            _("Do you want to activate Sticky Keys?") :
+            _("Do you want to deactivate Sticky Keys?");
+    message = enabled ?
+            _("You just pressed the Shift key 5 times in a row.  This is the shortcut "
+              "for the Sticky Keys feature, which affects the way your keyboard works.") :
+            _("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
+              "This turns off the Sticky Keys feature, which affects the way your keyboard works.");
+
+
+    if (manager->SlowkeysAlert != NULL) {
+            manager->SlowkeysAlert->close();
+            delete manager->SlowkeysAlert;
+    }
+
+    if (manager->notification != NULL) {
+            notify_notification_close (manager->notification, NULL);
+    }
+
+    //usd_a11y_keyboard_manager_ensure_status_icon (manager);
+    manager->notification = notify_notification_new (title,
+                                                     message,
+                                                     "preferences-desktop-accessibility");
+    notify_notification_set_timeout (manager->notification, NOTIFICATION_TIMEOUT * 1000);
+
+    notify_notification_add_action (manager->notification,
+                                    "reject",
+                                    enabled ? _("Don't activate") : _("Don't deactivate"),
+                                    (NotifyActionCallback) on_sticky_keys_action,
+                                    manager,
+                                    NULL);
+    notify_notification_add_action (manager->notification,
+                                    "accept",
+                                    enabled ? _("Activate") : _("Deactivate"),
+                                    (NotifyActionCallback) on_sticky_keys_action,
+                                    manager,
+                                    NULL);
+
+    g_signal_connect (manager->notification,
+                      "closed",
+                      G_CALLBACK (OnNotificationClosed),
+                      manager);
+
+    error = NULL;
+    res = notify_notification_show (manager->notification, &error);
+    if (! res) {
+            qWarning ("UsdA11yKeyboardManager: unable to show notification: %s", error->message);
+            g_error_free (error);
+            notify_notification_close (manager->notification, NULL);
+    }
+
+    return res;
+#else
+    return FALSE;
+#endif /* HAVE_LIBNOTIFY */
+}
+
+void A11yKeyboardManager::ax_stickykeys_response(QAbstractButton *button)
+{
+    int response_id = 0;
+    if(button == (QAbstractButton *)QMessageBox::Help)
+        response_id = GTK_RESPONSE_HELP;
+    else if(button == (QAbstractButton *)QMessageBox::Cancel)
+        response_id = GTK_RESPONSE_CANCEL;
+    if(AxResponseCallback(this,StickykeysAlert, response_id,XkbStickyKeysMask,StickykeysShortcutVal))
+        StickykeysAlert->close();
+}
+
+void A11yKeyboardManager::AxStickykeysWarningPostDialog (A11yKeyboardManager *manager,
+                                                         bool             enabled)
+{
+    const char *title;
+    const char *message;
+
+    title = enabled ?
+            _("Do you want to activate Sticky Keys?") :
+            _("Do you want to deactivate Sticky Keys?");
+    message = enabled ?
+            _("You just pressed the Shift key 5 times in a row.  This is the shortcut "
+              "for the Sticky Keys feature, which affects the way your keyboard works.") :
+            _("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
+              "This turns off the Sticky Keys feature, which affects the way your keyboard works.");
+
+    if (manager->StickykeysAlert != NULL) {
+            manager->StickykeysAlert->show();
+            return;
+    }
+
+    manager->StickykeysAlert = new QMessageBox();
+    manager->StickykeysAlert->warning(nullptr,"Sticky Keys Alert", title);
+    manager->StickykeysAlert->setText(message);
+    manager->StickykeysAlert->setStandardButtons(QMessageBox::Help);
+    manager->StickykeysAlert->setButtonText(QMessageBox::Rejected,
+                                            enabled ? _("Do_n't activate") : _("Do_n't deactivate"));
+    manager->StickykeysAlert->setButtonText(QMessageBox::Accepted,
+                                            enabled ? _("_Activate") : _("_Deactivate"));
+    manager->StickykeysAlert->setWindowIconText("input-keyboard");
+
+    manager->StickykeysAlert->setDefaultButton(QMessageBox::Default);
+
+    QObject::connect(manager->StickykeysAlert,SIGNAL(buttonClicked(QAbstractButton *button)),
+                     manager,SLOT(ax_stickykeys_response(QAbstractButton *button)));
+
+    manager->StickykeysAlert->show();
+
+    /*g_object_add_weak_pointer (G_OBJECT (manager->stickykeys_alert),
+                               (gpointer*) &manager->stickykeys_alert);*/
+}
+
+void A11yKeyboardManager::AxStickykeysWarningPost (A11yKeyboardManager *manager,
+                                                   bool                enabled)
+{
+        manager->StickykeysShortcutVal = enabled;
         /* alway try to show something */
-        /*if (! ax_stickykeys_warning_post_bubble (manager, enabled)) {
-                ax_stickykeys_warning_post_dialog (manager, enabled);
-        }*/
+        if (! AxStickykeysWarningPostBubble (manager, enabled)) {
+                AxStickykeysWarningPostDialog (manager, enabled);
+        }
 }
 
 
-void A11yKeyboardManager::set_settings_from_server(A11yKeyboardManager *manager)
+void A11yKeyboardManager::SetSettingsFromServer(A11yKeyboardManager *manager)
 {
     QGSettings      *settings;
     XkbDescRec     *desc;
-    gboolean        changed = FALSE;
-    gboolean        slowkeys_changed;
-    gboolean        stickykeys_changed;
+    bool        changed = false;
+    bool        slowkeys_changed;
+    bool        stickykeys_changed;
 
     desc = GetXkbDescRec ();
     if (! desc) {
@@ -506,14 +835,14 @@ void A11yKeyboardManager::set_settings_from_server(A11yKeyboardManager *manager)
     changed |= SetBool (settings,
                          "timeout-enable",
                          desc->ctrls->enabled_ctrls & XkbAccessXTimeoutMask);
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "timeout",
                         desc->ctrls->ax_timeout);
 
     changed |= SetBool (settings,
                          "bouncekeys-enable",
                          desc->ctrls->enabled_ctrls & XkbBounceKeysMask);
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "bouncekeys-delay",
                         desc->ctrls->debounce_delay);
     changed |= SetBool (settings,
@@ -523,14 +852,14 @@ void A11yKeyboardManager::set_settings_from_server(A11yKeyboardManager *manager)
     changed |= SetBool (settings,
                          "mousekeys-enable",
                          desc->ctrls->enabled_ctrls & XkbMouseKeysMask);
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "mousekeys-max-speed",
                         desc->ctrls->mk_max_speed * (1000 / desc->ctrls->mk_interval));
     /* NOTE : mk_time_to_max is measured in events not time */
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "mousekeys-accel-time",
                         desc->ctrls->mk_time_to_max * desc->ctrls->mk_interval);
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "mousekeys-init-delay",
                         desc->ctrls->mk_delay);
 
@@ -546,7 +875,7 @@ void A11yKeyboardManager::set_settings_from_server(A11yKeyboardManager *manager)
     changed |= SetBool (settings,
                          "slowkeys-beep-reject",
                          desc->ctrls->ax_options & XkbAX_SKRejectFBMask);
-    changed |= set_int (settings,
+    changed |= SetInt (settings,
                         "slowkeys-delay",
                         desc->ctrls->slow_keys_delay);
 
@@ -577,10 +906,10 @@ void A11yKeyboardManager::set_settings_from_server(A11yKeyboardManager *manager)
             /* sanity check: are keyboard shortcuts available? */
             if (desc->ctrls->enabled_ctrls & XkbAccessXKeysMask) {
                     if (slowkeys_changed) {
-                            ax_slowkeys_warning_post (manager,
+                            AxSlowkeysWarningPost (manager,
                                                       desc->ctrls->enabled_ctrls & XkbSlowKeysMask);
                     } else {
-                            ax_stickykeys_warning_post (manager,
+                            AxStickykeysWarningPost (manager,
                                                         desc->ctrls->enabled_ctrls & XkbStickyKeysMask);
                     }
             }
@@ -613,7 +942,7 @@ void A11yKeyboardManager::StartA11yKeyboardIdleCb()
 
     /* Save current xkb state so we can restore it on exit
      */
-    original_xkb_desc = GetXkbDescRec ();
+    OriginalXkbDesc = GetXkbDescRec ();
 
     event_mask = XkbControlsNotifyMask;
 #ifdef DEBUG_ACCESSIBILITY
@@ -632,7 +961,7 @@ void A11yKeyboardManager::StartA11yKeyboardIdleCb()
                            (GdkFilterFunc) CbXkbEventFilter,
                            this);
 
-    maybe_show_status_icon (this);
+    //MaybeShowStatusIcon (this);
 
 out:
     return;

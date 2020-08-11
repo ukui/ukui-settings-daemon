@@ -1,11 +1,12 @@
 #ifndef A11YKEYBOARDMANAGER_H
 #define A11YKEYBOARDMANAGER_H
-
+#include <QApplication>
 #include <QObject>
 #include <QTimer>
+#include <QWidget>
+#include <QMessageBox>
 #include <QtX11Extras/QX11Info>
 #include "QGSettings/qgsettings.h"
-#include <QApplication>
 
 #include <sys/types.h>
 #include <sys/wait.h>
@@ -14,20 +15,19 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-
 #include <locale.h>
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-
 #include <X11/XKBlib.h>
 #include <X11/extensions/XKBstr.h>
 #include <X11/extensions/XInput.h>
 #include <X11/extensions/XIproto.h>
+#include "config.h"
+#include "a11y-preferences-dialog.h"
 
 #ifdef HAVE_LIBNOTIFY
 #include <libnotify/notify.h>
@@ -51,39 +51,64 @@ public:
 public Q_SLOTS:
     void  StartA11yKeyboardIdleCb();
     void  KeyboardCallback(QString);
+    void  OnPreferencesDialogResponse(A11yKeyboardManager *manager);
+    void  ax_stickykeys_response(QAbstractButton *button);
+    void  ax_slowkeys_response (QAbstractButton *button);
 
 public:
     static XkbDescRec  *GetXkbDescRec ();
-    static void         SetServerFromSettings (A11yKeyboardManager *manager);
-    static void         maybe_show_status_icon   (A11yKeyboardManager *manager);
-    static void         usd_a11y_keyboard_manager_ensure_status_icon(A11yKeyboardManager *manager);
-    static void         on_status_icon_activate (GtkStatusIcon  *status_icon,
-                                                 A11yKeyboardManager *manager);
-    static bool         XkbEnabled (A11yKeyboardManager *manager);
-    static void         SetDevicepresenceHandler (A11yKeyboardManager *manager);
-    static void         set_settings_from_server   (A11yKeyboardManager *manager);
-    static void         restore_server_xkb_config  (A11yKeyboardManager *manager);
-
+    static void SetServerFromSettings (A11yKeyboardManager *manager);
+    static void MaybeShowStatusIcon   (A11yKeyboardManager *manager);
+    static void A11yKeyboardManagerEnsureStatusIcon(A11yKeyboardManager *manager);
+    static void OnStatusIconActivate (GtkStatusIcon  *status_icon,
+                                      A11yKeyboardManager *manager);
+    static bool XkbEnabled (A11yKeyboardManager *manager);
+    static void SetDevicepresenceHandler (A11yKeyboardManager *manager);
+    static void SetSettingsFromServer   (A11yKeyboardManager *manager);
+    static void RestoreServerXkbConfig  (A11yKeyboardManager *manager);
+    static bool AxResponseCallback (A11yKeyboardManager *manager,
+                                    QMessageBox     *parent,
+                                    int             response_id,
+                                    unsigned int    revert_controls_mask,
+                                    bool            enabled);
+    static void AxSlowkeysWarningPost (A11yKeyboardManager *manager, bool enabled);
+    static void AxStickykeysWarningPost (A11yKeyboardManager *manager,bool enabled);
+    static void AxStickykeysWarningPostDialog (A11yKeyboardManager *manager,
+                                               bool             enabled);
+    static void AxSlowkeysWarningPostDialog (A11yKeyboardManager *manager,
+                                                 bool               enabled);
 private:
     friend GdkFilterReturn CbXkbEventFilter (GdkXEvent           *xevent,
                                              GdkEvent          *ignored1,
                                              A11yKeyboardManager *manager);
-    friend void         ax_slowkeys_warning_post (A11yKeyboardManager *manager,
-                                                  gboolean            enabled);
-    friend void         ax_stickykeys_warning_post (A11yKeyboardManager *manager,
-                                                    gboolean            enabled);
+    friend void OnNotificationClosed (NotifyNotification     *notification,
+                                      A11yKeyboardManager    *manager);
+
+    friend bool AxSlowkeysWarningPostDubble (A11yKeyboardManager *manager, bool enabled);
+
+
+    friend void on_sticky_keys_action (NotifyNotification     *notification,
+                                       const char             *action,
+                                       A11yKeyboardManager *manager);
+    friend void on_slow_keys_action (NotifyNotification     *notification,
+                                     const char             *action,
+                                     A11yKeyboardManager *manager);
+
+
+    friend bool AxStickykeysWarningPostBubble (A11yKeyboardManager *manager,
+                                                bool                enabled);
 
 private:
     static A11yKeyboardManager  *mA11yKeyboard;
     QTimer                      *time;
     int                         xkbEventBase;
-    gboolean                    stickykeys_shortcut_val;
-    gboolean                    slowkeys_shortcut_val;
-    GtkWidget                   *stickykeys_alert;
-    GtkWidget                   *slowkeys_alert;
-    GtkWidget                   *preferences_dialog;
-    GtkStatusIcon               *status_icon;
-    XkbDescRec                  *original_xkb_desc;
+    bool                        StickykeysShortcutVal;
+    bool                        SlowkeysShortcutVal;
+    QMessageBox                 *StickykeysAlert;
+    QMessageBox                 *SlowkeysAlert;
+    A11yPreferencesDialog       *preferences_dialog;
+    //GtkStatusIcon               *status_icon;
+    XkbDescRec                  *OriginalXkbDesc;
     QGSettings                  *settings;
 
 #ifdef HAVE_LIBNOTIFY

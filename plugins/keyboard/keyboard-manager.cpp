@@ -30,6 +30,7 @@
 #define KEY_BELL_DURATION    "bell-duration"
 #define KEY_BELL_MODE        "bell-mode"
 #define KEY_NUMLOCK_STATE    "numlock-state"
+#define KEY_CAPSLOCK_STATE   "capslock-state"
 #define KEY_NUMLOCK_REMEMBER "remember-numlock-state"
 
 typedef enum {
@@ -297,10 +298,8 @@ void KeyboardManager::apply_settings (QString keys)
     rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
     if (rnumlock == 0 || key == NULL) {
         if (have_xkb && rnumlock) {
-            numlock_set_xkb_state ((NumLockState)!numlock_get_settings_state (settings));
             numlock_set_xkb_state (numlock_get_settings_state (settings));
-            capslock_set_xkb_state(!settings->get("capslock-state").toBool());
-            capslock_set_xkb_state(settings->get("capslock-state").toBool());
+            capslock_set_xkb_state(settings->get(KEY_CAPSLOCK_STATE).toBool());
         }
     }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -339,7 +338,6 @@ void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *mana
 void KeyboardManager::XkbEventsFilter(int keyCode)
 {
     NumLockState numlockState;
-
     if(keyCode == 66 || keyCode == 77)
     {
         unsigned int lockedMods;
@@ -347,10 +345,10 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
 
         XkbGetIndicatorState(display, XkbUseCoreKbd, &lockedMods);
         if(lockedMods == 1 || lockedMods == 3){
-            settings->set("capslock-state",true);
+            settings->set(KEY_CAPSLOCK_STATE,true);
         }
         else{
-            settings->set("capslock-state",false);
+            settings->set(KEY_CAPSLOCK_STATE,false);
         }
         if(lockedMods == 2 || lockedMods==3)
             numlockState = NUMLOCK_STATE_ON;

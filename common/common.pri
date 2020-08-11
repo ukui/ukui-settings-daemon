@@ -4,7 +4,7 @@ CONFIG -= app_bundle
 
 INCLUDEPATH += -I $$PWD/
 
-PLUGIN_INSTALL_DIRS = /usr/lib/ukui-settings-daemon
+PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/ukui-settings-daemon
 
 PKGCONFIG += \
         glib-2.0\

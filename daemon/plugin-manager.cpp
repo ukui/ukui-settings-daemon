@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "plugin-manager.h"
-
+#include <QStandardPaths>
 #include "global.h"
 #include "clib-syslog.h"
 #include "plugin-info.h"
@@ -75,9 +75,12 @@ bool PluginManager::managerStart()
     GError*                 error = NULL;
     const char*             name = NULL;
 
-    CT_SYSLOG(LOG_DEBUG, "Starting settings manager");
+    qDebug("Starting settings manager");
 
-    QString path(UKUI_SETTINGS_PLUGINDIR);
+    QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
+    QString libpath = qApp->libraryPaths().at(0);
+    QString path = libpath.mid(0,libpath.lastIndexOf('/')-4)+"/ukui-settings-daemon";
+
     dir = g_dir_open ((char*)path.toUtf8().data(), 0, &error);
     if (NULL == dir) {
         CT_SYSLOG(LOG_ERR, "%s", error->message);

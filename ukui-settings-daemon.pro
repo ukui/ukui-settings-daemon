@@ -8,7 +8,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS += \
-\#    $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro   \
+    $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro   \
     $$PWD/plugins/a11y-settings/a11y-settings.pro   \
     $$PWD/plugins/background/background.pro         \
     $$PWD/plugins/clipboard/clipboard.pro           \

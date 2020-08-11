@@ -9,6 +9,9 @@ TARGET = sound
 
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
+DEFINES += QT_DEPRECATED_WARNINGS
+
+include($$PWD/../../common/common.pri)
 
 PKGCONFIG += glib-2.0 \
              gio-2.0 \
@@ -20,9 +23,6 @@ INCLUDEPATH += \
 LIBS += \
     -lpulse 
 
-DEFINES += QT_DEPRECATED_WARNINGS
-
-include($$PWD/../../common/common.pri)
 
 SOURCES += \
     soundmanager.cpp \
@@ -40,4 +40,4 @@ DESTDIR = $$PWD/
 sound_lib.path = $${PLUGIN_INSTALL_DIRS}
 sound_lib.files = $$PWD/libsound.so
 
-INSTALLS += plugin_lib
+INSTALLS += sound_lib

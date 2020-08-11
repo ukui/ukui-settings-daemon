@@ -32,7 +32,7 @@ OTHER_FILES += \
 desktop.path = /etc/xdg/autostart/
 desktop.files = $$PWD/ukui-settings-daemon.desktop
 
-plugin_info.path = /usr/lib/ukui-settings-daemon/
+plugin_info.path = $$[QT_INSTALL_LIBS]/ukui-settings-daemon
 plugin_info.files = $$PWD/*.ukui-settings-plugin
 
 plugin_schema.path = /usr/share/glib-2.0/schemas/

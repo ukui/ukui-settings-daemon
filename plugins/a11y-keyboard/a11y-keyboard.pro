@@ -41,7 +41,7 @@ HEADERS += \
 DESTDIR = $$PWD/
 
 a11y_keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}
-a11y_keyboard_lib.files = $$PWD/liba11ykeyboard.so
+a11y_keyboard_lib.files = $$PWD/liba11y-keyboard.so
 
 INSTALLS += a11y_keyboard_lib
 
