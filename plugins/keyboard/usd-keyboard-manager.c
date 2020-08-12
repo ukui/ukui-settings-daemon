@@ -470,7 +470,10 @@ static void
 scroll_lock_install()
 {
 
-	GdkKeymapKey *keys;
+        /* Add Scroll_Lock key monitoring*/
+        system("xmodmap -e 'add mod3 = Scroll_Lock'");
+#if 0
+        GdkKeymapKey *keys;
         GdkDisplay *display;
         int n_keys;
         display = gdk_display_get_default ();
@@ -488,8 +491,9 @@ scroll_lock_install()
                             False,
                             GrabModeAsync,
                             GrabModeSync);
-	gdk_window_add_filter (gdk_screen_get_root_window (screen),
+	    gdk_window_add_filter (gdk_screen_get_root_window (screen),
                                      scroll_event_filter,  screen);
+#endif
 }
 
 static gboolean

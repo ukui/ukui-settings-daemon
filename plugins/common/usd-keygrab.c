@@ -50,7 +50,7 @@ setup_modifiers (void)
                 /* default modifiers */
                 usd_ignored_mods = \
                         0x2000 /*Xkb modifier*/ | GDK_LOCK_MASK | GDK_HYPER_MASK;
-		usd_used_mods = \
+		        usd_used_mods = \
                         GDK_SHIFT_MASK | GDK_CONTROL_MASK |\
                         GDK_MOD1_MASK | GDK_MOD2_MASK | GDK_MOD3_MASK | GDK_MOD4_MASK |\
                         GDK_MOD5_MASK | GDK_SUPER_MASK | GDK_META_MASK;
@@ -62,6 +62,15 @@ setup_modifiers (void)
                                                       EGG_VIRTUAL_NUM_LOCK_MASK,
                                                       &dynmods);
 
+                usd_ignored_mods |= dynmods;
+                usd_used_mods &= ~dynmods;
+
+                /* ScrollLock can be assigned to varying keys so we need to
+                 * resolve and ignore it specially */
+                dynmods = 0;
+                egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_default (),
+                                                      EGG_VIRTUAL_SCROLL_LOCK_MASK,
+                                                      &dynmods);
                 usd_ignored_mods |= dynmods;
                 usd_used_mods &= ~dynmods;
 	}
