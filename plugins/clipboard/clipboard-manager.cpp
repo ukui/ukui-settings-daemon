@@ -277,7 +277,7 @@ void convert_clipboard_target (IncrConversion* rdata, ClipboardManager* manager)
 
         rdata->data = target_data_ref (tdata);
         items = tdata->length / clipboard_bytes_per_item (tdata->format);
-        if (tdata->length <= SELECTION_MAX_SIZE)
+        if (tdata->length <= (int)SELECTION_MAX_SIZE)
             XChangeProperty (manager->mDisplay, rdata->requestor, rdata->property, tdata->type, tdata->format, PropModeReplace, tdata->data, items);
         else {
             /* start incremental transfer */

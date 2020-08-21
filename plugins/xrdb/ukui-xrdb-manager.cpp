@@ -53,9 +53,9 @@ bool ukuiXrdbManager::start(GError **error)
 
     settings = new QGSettings(SCHEMAS);
     allUsefulAdFiles = new QList<QString>();
-    widget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    //gtk_widget_realize (widget);
     gtk_widget_ensure_style(widget);
-
     /* the initialization is done here otherwise
        ukui_settings_xsettings_load would generate
        false hit as gtk-theme-name is set to Default in
@@ -330,7 +330,6 @@ void ukuiXrdbManager::applySettings(){
     GError* error;
     int i,fileNum;
     int listCount;
-    char* input;
 
     command = "xrdb -merge -quiet";
 

@@ -105,8 +105,6 @@ bool DIskSpace::ldsm_mount_is_user_ignore (const char *path)
 
 void DIskSpace::usdLdsmGetConfig()
 {
-    gchar **settings_list;
-
     // 先取得清理提醒的百分比时机
     free_percent_notify =settings->get(SETTINGS_FREE_PC_NOTIFY_KEY).toDouble();
     if (free_percent_notify >= 1 || free_percent_notify < 0) {
@@ -136,9 +134,9 @@ void DIskSpace::usdLdsmGetConfig()
     }
 
     // 取得清理忽略的目录
-    // settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
+    //settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
     QVariantList ignoreList = settings->choices(SETTINGS_IGNORE_PATHS);
-    if (settings_list != NULL) {
+    if (ignoreList.first().data() != nullptr) {
         //unsigned int i;
         // 清理m_notified_hash中ignoreList存在的。
 
@@ -475,9 +473,9 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
 
         path = g_unix_mount_get_mount_path (mount_info->mount);
 
-        //        previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
-        //        if (previous_mount_info != NULL)
-        //            previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
+                previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
+                if (previous_mount_info != NULL)
+                    previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
         //        liutong
         // 找m_notified_hash中(mount_info->mount)得到的path
         QHash<const char*, LdsmMountInfo*>::iterator it = m_notified_hash.find(path);

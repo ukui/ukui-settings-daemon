@@ -48,4 +48,10 @@ DESTDIR = $$PWD/
 ukui_daemon.path = /usr/bin/
 ukui_daemon.files = $$PWD/ukui-settings-daemon
 
-INSTALLS += ukui_daemon
+zh_CN.path  = /usr/share/ukui-settings-daemon/daemon/res/i18n/
+zh_CN.files = $$PWD/res/i18n/zh_CN.qm
+
+INSTALLS += ukui_daemon zh_CN
+
+RESOURCES += \
+    $$PWD/res/zh_CN.qrc

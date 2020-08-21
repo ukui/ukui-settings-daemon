@@ -21,6 +21,7 @@
 #include "ukui-xsettings-manager.h"
 #include <gio/gio.h>
 #include <glib.h>
+#include <gdk/gdkx.h>
 
 static const char *rgba_types[] = { "rgb", "bgr", "vbgr", "vrgb" };
 
@@ -71,9 +72,10 @@ static double get_dpi_from_x_server (void)
     screen = gdk_screen_get_default ();
     if (screen != NULL) {
         double width_dpi, height_dpi;
+        Screen *xscreen = gdk_x11_screen_get_xscreen (screen);
 
-        width_dpi = dpi_from_pixels_and_mm (gdk_screen_get_width (screen), gdk_screen_get_width_mm (screen));
-        height_dpi = dpi_from_pixels_and_mm (gdk_screen_get_height (screen), gdk_screen_get_height_mm (screen));
+        width_dpi = dpi_from_pixels_and_mm (WidthOfScreen (xscreen), WidthMMOfScreen (xscreen));
+        height_dpi = dpi_from_pixels_and_mm (HeightOfScreen (xscreen), HeightMMOfScreen (xscreen));
 
         if (width_dpi < DPI_LOW_REASONABLE_VALUE || width_dpi > DPI_HIGH_REASONABLE_VALUE
                 || height_dpi < DPI_LOW_REASONABLE_VALUE || height_dpi > DPI_HIGH_REASONABLE_VALUE) {
@@ -230,7 +232,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
         int i;
         gboolean found = FALSE;
 
-        for (i = 0; i < G_N_ELEMENTS (rgba_types) && !found; i++) {
+        for (i = 0; i < (int)G_N_ELEMENTS (rgba_types) && !found; i++) {
             if (strcmp (rgba_order, rgba_types[i]) == 0) {
                 rgba = rgba_types[i];
                 found = TRUE;

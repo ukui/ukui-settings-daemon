@@ -124,15 +124,18 @@ void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager)
 {
     if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
         return;
-
-    gchar* oldSize = (gchar*)g_list_nth_data (manager->mScrSizes, 1);
-    gchar* newSize = g_strdup_printf ("%dx%d", gdk_screen_get_width (screen), gdk_screen_get_height (screen));
+    GdkWindow *window = gdk_screen_get_root_window (screen);
+    int scale = gdk_window_get_scale_factor (window);
+    Screen *xscreen = gdk_x11_screen_get_xscreen (screen);
+    int scr_num = gdk_x11_screen_get_screen_number (screen);
+    gchar* oldSize = (gchar*)g_list_nth_data (manager->mScrSizes, scr_num);
+    gchar* newSize = g_strdup_printf ("%dx%d", WidthOfScreen (xscreen) / scale, HeightOfScreen (xscreen) / scale);
     if (g_strcmp0 (oldSize, newSize) != 0)
     {
-        CT_SYSLOG(LOG_DEBUG, "Screen size changed: %s -> %s", oldSize, newSize);
+        qDebug("Screen size changed: %s -> %s", oldSize, newSize);
         draw_background (manager, FALSE);
     } else {
-        CT_SYSLOG(LOG_DEBUG, "Screen size unchanged (%s). Ignoring.", oldSize);
+        qDebug("Screen size unchanged (%s). Ignoring.", oldSize);
     }
     g_free (newSize);
 }
@@ -298,9 +301,9 @@ void free_fade (BackgroundManager* manager)
 void real_draw_bg (BackgroundManager* manager, GdkScreen* screen)
 {
     GdkWindow *window = gdk_screen_get_root_window (screen);
-    gint width   = gdk_screen_get_width (screen);
-    gint height  = gdk_screen_get_height (screen);
-
+	int scale   = gdk_window_get_scale_factor (window);
+	int width   = WidthOfScreen (gdk_x11_screen_get_xscreen (screen)) / scale;
+	int height  = HeightOfScreen (gdk_x11_screen_get_xscreen (screen)) / scale;
     free_bg_surface (manager);
     manager->mSurface = mate_bg_create_surface (manager->mMateBG, window, width, height, true);
 

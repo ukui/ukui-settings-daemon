@@ -358,7 +358,7 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         //CT_SYSLOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
                   //old_state,lockedMods,numlockState);
         if (numlockState != old_state) {
-                settings->setEnum(KEY_NUMLOCK_STATE,numlockState);
+                settings->setEnum(KEY_NUMLOCK_STATE, numlockState);
                 old_state = numlockState;
         }
         XCloseDisplay (display);

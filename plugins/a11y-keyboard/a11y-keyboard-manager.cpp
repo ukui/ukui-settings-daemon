@@ -486,7 +486,7 @@ return TRUE;
 
 #ifdef HAVE_LIBNOTIFY
 void OnNotificationClosed (NotifyNotification     *notification,
-                                                A11yKeyboardManager *manager)
+                           A11yKeyboardManager    *manager)
 {
         g_object_unref (manager->notification);
         manager->notification = NULL;
@@ -521,7 +521,7 @@ on_sticky_keys_action (NotifyNotification     *notification,
 void
 on_slow_keys_action (NotifyNotification     *notification,
                      const char             *action,
-                     A11yKeyboardManager *manager)
+                     A11yKeyboardManager    *manager)
 {
         bool res;
         int      response_id;
@@ -550,14 +550,15 @@ bool AxSlowkeysWarningPostDubble (A11yKeyboardManager *manager,
 {
 #ifdef HAVE_LIBNOTIFY
     bool        res;
-    const char *title;
-    const char *message;
-    GError     *error;
+    QString     title;
+    QString     message;
+    GError      *error;
 
     title = enabled ?
-            _("Do you want to activate Slow Keys?") :
-            _("Do you want to deactivate Slow Keys?");
-    message = _("You just held down the Shift key for 8 seconds.  This is the shortcut "
+             QObject::tr("Do you want to activate Slow Keys?") :
+             QObject::tr("Do you want to deactivate Slow Keys?");
+
+    message =  QObject::tr("You just held down the Shift key for 8 seconds.  This is the shortcut "
                 "for the Slow Keys feature, which affects the way your keyboard works.");
 
    /* if (manager->status_icon == NULL || ! gtk_status_icon_is_embedded (manager->status_icon)) {
@@ -575,9 +576,9 @@ bool AxSlowkeysWarningPostDubble (A11yKeyboardManager *manager,
     }
 
     manager->A11yKeyboardManagerEnsureStatusIcon (manager);
-    manager->notification = notify_notification_new (title,
-                                                           message,
-                                                           "preferences-desktop-accessibility");
+    manager->notification = notify_notification_new (title.toLatin1().data(),
+                                                     message.toLatin1().data(),
+                                                     "preferences-desktop-accessibility");
     notify_notification_set_timeout (manager->notification, NOTIFICATION_TIMEOUT * 1000);
 
     notify_notification_add_action (manager->notification,
@@ -629,13 +630,13 @@ void A11yKeyboardManager::ax_slowkeys_response (QAbstractButton *button)
 void A11yKeyboardManager::AxSlowkeysWarningPostDialog (A11yKeyboardManager *manager,
                                                        bool                enabled)
 {
-        const char *title;
-        const char *message;
+        QString title;
+        QString message;
 
         title = enabled ?
-                _("Do you want to activate Slow Keys?") :
-                _("Do you want to deactivate Slow Keys?");
-        message = _("You just held down the Shift key for 8 seconds.  This is the shortcut "
+                tr("Do you want to activate Slow Keys?") :
+                tr("Do you want to deactivate Slow Keys?");
+        message = tr("You just held down the Shift key for 8 seconds.  This is the shortcut "
                     "for the Slow Keys feature, which affects the way your keyboard works.");
 
         if (manager->SlowkeysAlert != NULL) {
@@ -644,22 +645,22 @@ void A11yKeyboardManager::AxSlowkeysWarningPostDialog (A11yKeyboardManager *mana
         }
 
         manager->SlowkeysAlert = new QMessageBox();
-        manager->SlowkeysAlert->warning(nullptr,QObject::tr("Slow Keys Alert"), title);
+        manager->SlowkeysAlert->warning(nullptr,tr("Slow Keys Alert"), title);
         manager->SlowkeysAlert->setText(message);
         manager->SlowkeysAlert->setStandardButtons(QMessageBox::Help);
         manager->SlowkeysAlert->setButtonText(QMessageBox::Rejected,
-                                                enabled ? _("Do_n't activate") : _("Do_n't deactivate"));
+                                                enabled ? tr("Do_n't activate") : tr("Do_n't deactivate"));
         manager->SlowkeysAlert->setButtonText(QMessageBox::Accepted,
-                                                enabled ? _("_Activate") : _("_Deactivate"));
+                                                enabled ? tr("_Activate") : tr("_Deactivate"));
 
-        manager->StickykeysAlert->setWindowIconText("input-keyboard");
+        manager->SlowkeysAlert->setWindowIconText(tr("input-keyboard"));
 
-        manager->StickykeysAlert->setDefaultButton(QMessageBox::Default);
+        manager->SlowkeysAlert->setDefaultButton(QMessageBox::Default);
 
-        QObject::connect(manager->StickykeysAlert,SIGNAL(buttonClicked(QAbstractButton *button)),
+        QObject::connect(manager->SlowkeysAlert,SIGNAL(buttonClicked(QAbstractButton *button)),
                          manager,SLOT(ax_slowkeys_response(QAbstractButton *button)));
 
-        manager->StickykeysAlert->show();
+        manager->SlowkeysAlert->show();
 
         /*g_object_add_weak_pointer (G_OBJECT (manager->StickykeysAlert),
                                    (gpointer*) &manager->StickykeysAlert);*/
@@ -683,17 +684,17 @@ bool AxStickykeysWarningPostBubble (A11yKeyboardManager *manager,
 {
 #ifdef HAVE_LIBNOTIFY
     bool    res;
-    const char *title;
-    const char *message;
-    GError     *error;
+    QString title;
+    QString message;
+    GError  *error;
 
     title = enabled ?
-            _("Do you want to activate Sticky Keys?") :
-            _("Do you want to deactivate Sticky Keys?");
+            QObject::tr("Do you want to activate Sticky Keys?") :
+            QObject::tr("Do you want to deactivate Sticky Keys?");
     message = enabled ?
-            _("You just pressed the Shift key 5 times in a row.  This is the shortcut "
+            QObject::tr("You just pressed the Shift key 5 times in a row.  This is the shortcut "
               "for the Sticky Keys feature, which affects the way your keyboard works.") :
-            _("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
+            QObject::tr("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
               "This turns off the Sticky Keys feature, which affects the way your keyboard works.");
 
 
@@ -707,8 +708,8 @@ bool AxStickykeysWarningPostBubble (A11yKeyboardManager *manager,
     }
 
     //usd_a11y_keyboard_manager_ensure_status_icon (manager);
-    manager->notification = notify_notification_new (title,
-                                                     message,
+    manager->notification = notify_notification_new (title.toLatin1().data(),
+                                                     message.toLatin1().data(),
                                                      "preferences-desktop-accessibility");
     notify_notification_set_timeout (manager->notification, NOTIFICATION_TIMEOUT * 1000);
 
@@ -758,16 +759,16 @@ void A11yKeyboardManager::ax_stickykeys_response(QAbstractButton *button)
 void A11yKeyboardManager::AxStickykeysWarningPostDialog (A11yKeyboardManager *manager,
                                                          bool             enabled)
 {
-    const char *title;
-    const char *message;
+    QString  title;
+    QString  message;
 
     title = enabled ?
-            _("Do you want to activate Sticky Keys?") :
-            _("Do you want to deactivate Sticky Keys?");
+            tr("Do you want to activate Sticky Keys?") :
+            tr("Do you want to deactivate Sticky Keys?");
     message = enabled ?
-            _("You just pressed the Shift key 5 times in a row.  This is the shortcut "
+            tr("You just pressed the Shift key 5 times in a row.  This is the shortcut "
               "for the Sticky Keys feature, which affects the way your keyboard works.") :
-            _("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
+            tr("You just pressed two keys at once, or pressed the Shift key 5 times in a row.  "
               "This turns off the Sticky Keys feature, which affects the way your keyboard works.");
 
     if (manager->StickykeysAlert != NULL) {
@@ -776,14 +777,14 @@ void A11yKeyboardManager::AxStickykeysWarningPostDialog (A11yKeyboardManager *ma
     }
 
     manager->StickykeysAlert = new QMessageBox();
-    manager->StickykeysAlert->warning(nullptr,"Sticky Keys Alert", title);
+    manager->StickykeysAlert->warning(nullptr,tr("Sticky Keys Alert"), title);
     manager->StickykeysAlert->setText(message);
     manager->StickykeysAlert->setStandardButtons(QMessageBox::Help);
     manager->StickykeysAlert->setButtonText(QMessageBox::Rejected,
-                                            enabled ? _("Do_n't activate") : _("Do_n't deactivate"));
+                                            enabled ? tr("Do_n't activate") : tr("Do_n't deactivate"));
     manager->StickykeysAlert->setButtonText(QMessageBox::Accepted,
-                                            enabled ? _("_Activate") : _("_Deactivate"));
-    manager->StickykeysAlert->setWindowIconText("input-keyboard");
+                                            enabled ? tr("_Activate") : tr("_Deactivate"));
+    manager->StickykeysAlert->setWindowIconText(tr("input-keyboard"));
 
     manager->StickykeysAlert->setDefaultButton(QMessageBox::Default);
 
@@ -826,32 +827,32 @@ void A11yKeyboardManager::SetSettingsFromServer(A11yKeyboardManager *manager)
       fprintf (stderr, "changed to : 0x%x (2)\n", desc->ctrls->ax_options);
     */
     changed |= SetBool (settings,
-                         "enable",
-                         desc->ctrls->enabled_ctrls & XkbAccessXKeysMask);
+                        "enable",
+                        desc->ctrls->enabled_ctrls & XkbAccessXKeysMask);
 
     changed |= SetBool (settings,
-                         "feature-state-change-beep",
-                         desc->ctrls->ax_options & (XkbAX_FeatureFBMask | XkbAX_SlowWarnFBMask));
+                        "feature-state-change-beep",
+                        desc->ctrls->ax_options & (XkbAX_FeatureFBMask | XkbAX_SlowWarnFBMask));
     changed |= SetBool (settings,
-                         "timeout-enable",
-                         desc->ctrls->enabled_ctrls & XkbAccessXTimeoutMask);
+                        "timeout-enable",
+                        desc->ctrls->enabled_ctrls & XkbAccessXTimeoutMask);
     changed |= SetInt (settings,
                         "timeout",
                         desc->ctrls->ax_timeout);
 
     changed |= SetBool (settings,
-                         "bouncekeys-enable",
-                         desc->ctrls->enabled_ctrls & XkbBounceKeysMask);
+                        "bouncekeys-enable",
+                        desc->ctrls->enabled_ctrls & XkbBounceKeysMask);
     changed |= SetInt (settings,
                         "bouncekeys-delay",
                         desc->ctrls->debounce_delay);
     changed |= SetBool (settings,
-                         "bouncekeys-beep-reject",
-                         desc->ctrls->ax_options & XkbAX_BKRejectFBMask);
+                        "bouncekeys-beep-reject",
+                        desc->ctrls->ax_options & XkbAX_BKRejectFBMask);
 
     changed |= SetBool (settings,
-                         "mousekeys-enable",
-                         desc->ctrls->enabled_ctrls & XkbMouseKeysMask);
+                        "mousekeys-enable",
+                        desc->ctrls->enabled_ctrls & XkbMouseKeysMask);
     changed |= SetInt (settings,
                         "mousekeys-max-speed",
                         desc->ctrls->mk_max_speed * (1000 / desc->ctrls->mk_interval));

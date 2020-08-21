@@ -5,6 +5,7 @@
 #-------------------------------------------------
 OTHER_FILES += \
     $$PWD/ukui-settings-daemon.desktop\
+    $$PWD/zh_CN.po  \
     $$PWD/org.ukui.SettingsDaemon.service\
     $$PWD/org.ukui.font-rendering.gschema.xml.in \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
@@ -42,7 +43,13 @@ plugin_schema.files = $$PWD/org.ukui.*.gschema.xml
 ukui_daemon_dbus.path = /usr/share/dbus-1/services/
 ukui_daemon_dbus.files = $$PWD/org.ukui.SettingsDaemon.service
 
-INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus
+zhCN.commands = $$system(msgfmt -o ukui-settings-daemon.mo $$PWD/zh_CN.po)
+QMAKE_EXTRA_TARGETS += zhCN
+
+zh_CN.path  = /usr/share/locale/zh_CN/LC_MESSAGES/
+zh_CN.files = $$PWD/ukui-settings-daemon.mo
+
+INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN
 
 DISTFILES += \
     $$PWD/a11y-settings.ukui-settings-plugin \
@@ -60,3 +67,4 @@ DISTFILES += \
     $$PWD/xrandr.ukui-settings-plugin       \
     $$PWD/xsettings.ukui-settings-plugin 
 #    $$PWD/smartcard.ukui-settings-plugin    \
+

@@ -421,7 +421,7 @@ bool ukuiXSettingsManager::start()
     for (i = 0;  pManagers [i]; i++) {
         pManagers [i]->notify ( );
     }
-    return TRUE;
+    return true;
 }
 
 int ukuiXSettingsManager::stop()
@@ -442,4 +442,5 @@ int ukuiXSettingsManager::stop()
         gsettings_font = NULL;
     }
     stop_fontconfig_monitor (this);
+    return 1;
 }

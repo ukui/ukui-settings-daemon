@@ -51,12 +51,21 @@ setup_modifiers (void)
         /* NumLock can be assigned to varying keys so we need to
          * resolve and ignore it specially */
         dynmods = (GdkModifierType)0;
-        egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_default (),
+        egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_for_display(gdk_display_get_default()),
                                               EGG_VIRTUAL_NUM_LOCK_MASK,
                                               &dynmods);
 
         usd_ignored_mods = GdkModifierType (usd_ignored_mods | dynmods);
         usd_used_mods = GdkModifierType (usd_used_mods & ~dynmods);
+
+        dynmods = (GdkModifierType)0;
+        egg_keymap_resolve_virtual_modifiers (gdk_keymap_get_for_display(gdk_display_get_default()),
+                                              EGG_VIRTUAL_SCROLL_LOCK_MASK,
+                                              &dynmods);
+
+        usd_ignored_mods = GdkModifierType (usd_ignored_mods | dynmods);
+        usd_used_mods = GdkModifierType (usd_used_mods & ~dynmods);
+
 	}
 }
 
@@ -217,7 +226,7 @@ match_key (Key *key, XEvent *event)
 		group = (event->xkey.state & GDK_KEY_Mode_switch) ? 1 : 0;
 
 	/* Check if we find a keysym that matches our current state */
-	if (gdk_keymap_translate_keyboard_state (gdk_keymap_get_default(), event->xkey.keycode,
+    if (gdk_keymap_translate_keyboard_state (gdk_keymap_get_for_display(gdk_display_get_default()), event->xkey.keycode,
                          (GdkModifierType)event->xkey.state, group,
 					     &keyval, NULL, NULL, &consumed)) {
 		guint lower, upper;

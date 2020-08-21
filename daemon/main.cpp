@@ -41,26 +41,25 @@ int main (int argc, char* argv[])
     PluginManager*          manager = NULL;
 
     syslog_init("ukui-settings-daemon", LOG_LOCAL6);
-    CT_SYSLOG(LOG_INFO, "ukui-settings-daemon starting ...");
-
-    CT_SYSLOG(LOG_DEBUG, "starting...");
+    qDebug( "ukui-settings-daemon starting ...");
 
     QApplication app(argc, argv);
+    QTranslator translator;
+    translator.load("/usr/share/ukui-settings-daemon/daemon/res/i18n/zh_CN.qm");
+    app.installTranslator(&translator);
     parse_args (argc, argv);
 
     if (replace) stop_daemon ();
 
     manager = PluginManager::getInstance();
     if (nullptr == manager) {
-        CT_SYSLOG(LOG_ERR, "get plugin manager error");
+        qDebug("get plugin manager error");
         goto out;
     }
-
     if (!manager->managerStart()) {
-        CT_SYSLOG(LOG_ERR, "manager start error!");
+        qDebug( "manager start error!");
         goto out;
     }
-
     CT_SYSLOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
 out:

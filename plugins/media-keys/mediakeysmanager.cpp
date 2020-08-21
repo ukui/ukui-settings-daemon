@@ -611,11 +611,28 @@ bool binaryFileExists(const QString& binary)
 
     return false;
 }
+
 void MediaKeysManager::executeCommand(const QString& command,const QString& paramter){
-    QString cmd = command;
-    processAbstractPath(cmd);
-    if(!cmd.isEmpty())
-        mExecCmd->start(cmd + paramter);
+    QString cmd = command + paramter;
+    char   **argv;
+    int     argc;
+    bool    retval;
+
+    //processAbstractPath(cmd);
+    if(!cmd.isEmpty()){
+        if (g_shell_parse_argv (cmd.toLatin1().data(), &argc, &argv, NULL)) {
+            retval = g_spawn_async (g_get_home_dir (),
+                                    argv,
+                                    NULL,
+                                    G_SPAWN_SEARCH_PATH,
+                                    NULL,
+                                    NULL,
+                                    NULL,
+                                    NULL);
+            g_strfreev (argv);
+        }
+        //mExecCmd->execute(cmd + paramter);//mExecCmd->start(cmd + paramter);
+    }
     else
         syslog(LOG_DEBUG,"%s cannot found at system path!",command.toLatin1().data());
 }

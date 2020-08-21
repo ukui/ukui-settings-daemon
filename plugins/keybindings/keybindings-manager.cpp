@@ -401,10 +401,10 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
                 QString strs;
                 strs.sprintf("\nError while trying to run (%s)\n\n which is linked to the key (%s)\n",binding->action,binding->binding_str);
                 QMessageBox *msgbox = new QMessageBox();
-                msgbox->setWindowTitle(QObject::tr("快捷键消息弹框"));
+                msgbox->setWindowTitle(QObject::tr("Shortcut message box"));
                 msgbox->setText(QObject::tr(strs.toLatin1().data()));
                 msgbox->setStandardButtons(QMessageBox::Yes);
-                msgbox->setButtonText(QMessageBox::Yes,QObject::tr("确定"));
+                msgbox->setButtonText(QMessageBox::Yes,QObject::tr("Yes"));
                 msgbox->exec();
             }
             return GDK_FILTER_REMOVE;

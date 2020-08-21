@@ -279,7 +279,7 @@ void property_set_bool (XDeviceInfo *device_info,
                                  property, 0, 1, False,
                                  XA_INTEGER, &act_type, &act_format, &nitems,
                                  &bytes_after, &data);
-        if (rc == Success && act_type == XA_INTEGER && act_format == 8 && nitems > property_index) {
+        if (rc == Success && act_type == XA_INTEGER && act_format == 8 && nitems >(unsigned long)property_index) {
                 data[property_index] = enabled ? 1 : 0;
 
                 XChangeDeviceProperty (display, device,
@@ -536,7 +536,7 @@ void set_left_handed_legacy_driver (MouseManager *manager,
                                              buttons,
                                              buttons_capacity);
 
-        while (n_buttons > buttons_capacity) {
+        while (n_buttons > (int)buttons_capacity) {
                 buttons_capacity = n_buttons;
                 buttons = (guchar *) g_realloc (buttons,
                                                 buttons_capacity * sizeof (guchar));
@@ -866,30 +866,32 @@ void set_middle_button_all (bool middle_button)
         XFreeDeviceList (device_info);
 }
 
-
 void set_locate_pointer (MouseManager *manager, bool     state)
 {
     if (state) {
         GError *error = NULL;
-        char *args[2];
+        char **args;
+        int    argc;
 
         if (manager->locate_pointer_spawned)
-                return;
-
-        args[0] ="/usr/bin/usd-locate-pointer";
-        args[1] = NULL;
-
-        g_spawn_async (NULL, args, NULL,
-                      (GSpawnFlags)0, NULL, NULL,
-                       &manager->locate_pointer_pid, &error);
-
-        manager->locate_pointer_spawned = (error == NULL);
-
+            return;
+        QString str = "/usr/bin/usd-locate-pointer";
+        if( g_shell_parse_argv (str.toLatin1().data(), &argc, &args, NULL)){
+            g_spawn_async (g_get_home_dir (),
+                           args,
+                           NULL,
+                           G_SPAWN_SEARCH_PATH,
+                           NULL,
+                           NULL,
+                           &manager->locate_pointer_pid,
+                           &error);
+            manager->locate_pointer_spawned = (error == NULL);
+        }
         if (error) {
             manager->settings_mouse->set(KEY_MOUSE_LOCATE_POINTER,false);
             g_error_free (error);
         }
-
+        g_strfreev (args);
     }
     else if (manager->locate_pointer_spawned) {
             kill (manager->locate_pointer_pid, SIGHUP);
@@ -932,31 +934,30 @@ void set_disable_w_typing_synaptics (MouseManager *manager,
 {
     if (state && touchpad_is_present ()) {
         GError *error = NULL;
-        char *args[6];
-
+        char **args;
+        int    argc;
+        QString cmd = "syndaemon -i 0.5 -K -R";
         if (manager->syndaemon_spawned)
+            return;
+
+        if (!have_program_in_path ("syndaemon"))
                 return;
-
-        args[0] = "syndaemon";
-        args[1] = "-i";
-        args[2] = "0.5";
-        args[3] = "-K";
-        args[4] = "-R";
-        args[5] = NULL;
-
-        if (!have_program_in_path (args[0]))
-                return;
-
-        g_spawn_async (g_get_home_dir (), args, NULL,
-                        G_SPAWN_SEARCH_PATH, NULL, NULL,
-                        &manager->syndaemon_pid, &error);
-
-        manager->syndaemon_spawned = (error == NULL);
-
+        if (g_shell_parse_argv (cmd.toLatin1().data(), &argc, &args, NULL)) {
+            g_spawn_async (g_get_home_dir (),
+                           args,
+                           NULL,
+                           G_SPAWN_SEARCH_PATH,
+                           NULL,
+                           NULL,
+                           &manager->syndaemon_pid,
+                           &error);
+            manager->syndaemon_spawned = (error == NULL);
+        }
         if (error) {
                 manager->settings_touchpad->set(KEY_TOUCHPAD_DISABLE_W_TYPING,false);
                 g_error_free (error);
         }
+        g_strfreev (args);
 
     } else if (manager->syndaemon_spawned)
     {

@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QIcon>
+#include <QMessageBox>
 #include "keyboard-xkb.h"
 #include "clib-syslog.h"
 
@@ -158,32 +159,28 @@ static void activation_error (void)
     Display *dpy = QX11Info::display();
     char const *vendor = ServerVendor (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
     int release = VendorRelease (dpy);//GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()));
-    GtkWidget *dialog;
+    QMessageBox *dialog;
 
     /* VNC viewers will not work, do not barrage them with warnings */
     if (NULL != vendor && NULL != strstr (vendor, "VNC"))
         return;
+    QString message = QObject::tr("Error activating XKB configuration.\n"
+                      "It can happen under various circumstances:\n"
+                      " • a bug in libxklavier library\n"
+                      " • a bug in X server (xkbcomp, xmodmap utilities)\n"
+                      " • X server with incompatible libxkbfile implementation\n\n"
+                      "X server version data:\n %1 \n %2 \n"
+                      "If you report this situation as a bug, please include:\n"
+                      " • The result of <b> xprop -root | grep XKB </b>\n"
+                      " • The result of <b> gsettings list-keys org.mate.peripherals-keyboard-xkb.kbd </b>").arg(vendor).arg(release);
+    dialog = new QMessageBox();
+    dialog->setButtonText(QMessageBox::Close,QObject::tr("Close"));
+    dialog->setButtonText(QMessageBox::Warning,QObject::tr("Error"));
+    dialog->setText(message);
+    dialog->show();
+    dialog->close();
+    delete dialog;
 
-    dialog = gtk_message_dialog_new_with_markup (NULL,
-                             (GtkDialogFlags)0,
-                             GTK_MESSAGE_ERROR,
-                             GTK_BUTTONS_CLOSE,
-                             _("Error activating XKB configuration.\n"
-                              "It can happen under various circumstances:\n"
-                              " • a bug in libxklavier library\n"
-                              " • a bug in X server (xkbcomp, xmodmap utilities)\n"
-                              " • X server with incompatible libxkbfile implementation\n\n"
-                              "X server version data:\n%s\n%d\n"
-                              "If you report this situation as a bug, please include:\n"
-                              " • The result of <b>%s</b>\n"
-                              " • The result of <b>%s</b>"),
-                             vendor,
-                             release,
-                             "xprop -root | grep XKB",
-                             "gsettings list-keys org.mate.peripherals-keyboard-xkb.kbd");
-    g_signal_connect (dialog, "response",
-              G_CALLBACK (gtk_widget_destroy), NULL);
-    //usd_delayed_show_dialog (dialog);//缺少函数,后期填加
 }
 
 
@@ -206,11 +203,11 @@ void KeyboardXkb::apply_xkb_settings (void)
         if (filter_xkb_config ()) {
             if (!try_activating_xkb_config_if_new(&current_sys_kbd_config)) {
                 qWarning ("Could not activate the filtered XKB configuration");
-                //activation_error (); // 缺少弹窗,后期填加
+                activation_error (); 
             }
         } else {
             qWarning("Could not activate the XKB configuration");
-            //activation_error ();
+            activation_error ();
         }
     } else
         xkl_debug (100, "Actual KBD configuration was not changed: redundant notification\n");

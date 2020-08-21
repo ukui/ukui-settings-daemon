@@ -5,6 +5,8 @@
 #-------------------------------------------------
 TEMPLATE = subdirs
 
+TRANSLATIONS += $$PWD/daemon/res/i18n/zh_CN.ts
+
 CONFIG += ordered
 
 SUBDIRS += \
