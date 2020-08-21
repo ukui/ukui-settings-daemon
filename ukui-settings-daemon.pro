@@ -7,6 +7,7 @@ TEMPLATE = subdirs
 
 TRANSLATIONS += $$PWD/daemon/res/i18n/zh_CN.ts
 
+
 CONFIG += ordered
 
 SUBDIRS += \
@@ -33,3 +34,8 @@ include($$PWD/data/data.pri)
 OTHER_FILES += \
     $$PWD/LICENSE \
     $$PWD/README.md 
+
+# Automating generation .qm files from .ts files
+CONFIG(release, debug|release) {
+    !system($$PWD/translate_generation.sh): error("Failed to generate translation")
+}
