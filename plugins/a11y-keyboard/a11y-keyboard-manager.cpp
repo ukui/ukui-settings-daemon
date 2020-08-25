@@ -140,7 +140,7 @@ void A11yKeyboardManager::RestoreServerXkbConfig (A11yKeyboardManager *manager)
 
 XkbDescRec * A11yKeyboardManager::GetXkbDescRec()
 {
-        XkbDescRec *desc;
+        XkbDescRec *desc = NULL;
         Status      status = Success;
 
         gdk_x11_display_error_trap_push (gdk_display_get_default());
@@ -148,6 +148,10 @@ XkbDescRec * A11yKeyboardManager::GetXkbDescRec()
         if (desc != NULL) {
                 desc->ctrls = NULL;
                 status = XkbGetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), XkbAllControlsMask, desc);
+        } else {
+            desc = NULL;
+            gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
+            return NULL;
         }
         gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 

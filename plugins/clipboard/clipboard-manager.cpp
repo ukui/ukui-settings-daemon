@@ -317,15 +317,19 @@ void convert_clipboard (ClipboardManager* manager, XEvent* xev)
     List*                               list;
     List*                               conversions;
     Atom                                type;
-    Atom*                               multiple;
+    Atom*                               multiple = nullptr;
     IncrConversion*                     rdata;
 
     conversions = NULL;
     type = None;
 
     if (xev->xselectionrequest.target == XA_MULTIPLE) {
-        XGetWindowProperty (xev->xselectionrequest.display, xev->xselectionrequest.requestor, xev->xselectionrequest.property, 0, 0x1FFFFFFF, False, XA_ATOM_PAIR,
-                            &type, &format, &nitems, &remaining, (unsigned char **) &multiple);
+        XGetWindowProperty (xev->xselectionrequest.display, 
+                            xev->xselectionrequest.requestor, 
+                            xev->xselectionrequest.property, 
+                            0, 0x1FFFFFFF, False, XA_ATOM_PAIR,
+                            &type, &format, &nitems, &remaining, 
+                            (unsigned char **) &multiple);
         if (type != XA_ATOM_PAIR || nitems == 0) {
             if (multiple) free (multiple);
             return;

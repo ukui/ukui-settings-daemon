@@ -573,11 +573,15 @@ void set_left_handed_all (MouseManager *manager,
                          bool         mouse_left_handed,
                          bool        touchpad_left_handed)
 {
-    XDeviceInfo *device_info;
+    XDeviceInfo *device_info = nullptr;
     int n_devices;
     int i;
     Display * dpy = QX11Info::display();
     device_info = XListInputDevices (dpy, &n_devices);
+    if(!device_info){
+        qWarning("set_left_handed_all: device_info is null");
+        return;
+    }
     for (i = 0; i < n_devices; i++) {
         set_left_handed (manager, &device_info[i], mouse_left_handed, touchpad_left_handed);
     }
@@ -765,11 +769,15 @@ void set_motion (MouseManager *manager,
 
 void set_motion_all (MouseManager *manager)
 {
-    XDeviceInfo *device_info;
+    XDeviceInfo *device_info = nullptr;
     int n_devices;
     int i;
 
     device_info = XListInputDevices (gdk_x11_get_default_xdisplay (), &n_devices);
+    if(!device_info){
+        qWarning("set_motion_all: device_info is null");
+        return;
+    }
     for (i = 0; i < n_devices; i++) {
         set_motion (manager, &device_info[i]);
     }
@@ -853,11 +861,15 @@ void set_middle_button (XDeviceInfo *device_info,
 
 void set_middle_button_all (bool middle_button)
 {
-    XDeviceInfo *device_info;
+    XDeviceInfo *device_info = nullptr;
     int n_devices;
     int i;
     Display * display = QX11Info::display();
     device_info = XListInputDevices (display, &n_devices);
+    if(!device_info){
+        qWarning("set_middle_button_al: device_info is null");
+        return;
+    }
     for (i = 0; i < n_devices; i++) {
         set_middle_button (&device_info[i], middle_button);
     }
@@ -988,7 +1000,7 @@ void touchpad_set_bool (XDeviceInfo *device_info,
 void set_disable_w_typing_libinput (MouseManager *manager,
                                     bool         state)
 {
-    XDeviceInfo *device_info;
+    XDeviceInfo *device_info = nullptr;
     int n_devices;
     int i;
 
@@ -996,7 +1008,10 @@ void set_disable_w_typing_libinput (MouseManager *manager,
      * we need to loop through the list of devices
      */
     device_info = XListInputDevices (QX11Info::display(), &n_devices);
-
+    if(!device_info){
+        qWarning("set_disable_w_typing_libinput: device_info is null");
+        return;
+    }
     for (i = 0; i < n_devices; i++) {
         touchpad_set_bool (&device_info[i], "libinput Disable While Typing Enabled", 0, state);
     }

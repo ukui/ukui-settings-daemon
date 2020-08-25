@@ -145,11 +145,11 @@ bool XrandrManager::SetScreenSize(Display  *dpy, Window root, int width, int hei
     Rotation        current_rotation;
     XRRScreenSize   *sizes;
     XRRScreenConfiguration *sc;
-    int     nsize;
-    int     size = -1;
-    int     rot  = -1;
+    int     nsize = 0;
+    int     size  = -1;
+    int     rot   = -1;
     short   current_rate;
-    double  rate = -1;
+    double  rate  = -1;
     int     reflection = 0;
 
     sc = XRRGetScreenInfo (dpy, root);
@@ -168,16 +168,12 @@ bool XrandrManager::SetScreenSize(Display  *dpy, Window root, int width, int hei
     }
 
     if (size >= nsize) {
-        syslog(LOG_ERR,"Size %dx%d not found in available modes\n", width, height);
+        qWarning("Size index %d is too large, there are only %d sizes\n", size, nsize);
         return false;
-    }
-    else if (size < 0)
+    } else if (size < 0){
         size = current_size;
-    else if (size >= nsize) {
-        syslog(LOG_ERR,"Size index %d is too large, there are only %d sizes\n", size, nsize);
-        return false;
-    }
-
+    } 
+    
     if (rot < 0) {
         for (rot = 0; rot < 4; rot++)
             if (1 << rot == (current_rotation & 0xf))
