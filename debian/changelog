@@ -1,4 +1,4 @@
-ukui-settings-daemon (0.0.1) experimental; urgency=low
+ukui-settings-daemon (0.0.1-1) unstable; urgency=low
 
   [ Kylin Team ]
   * Initial release.

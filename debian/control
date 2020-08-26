@@ -2,14 +2,17 @@ Source: ukui-settings-daemon
 Section: x11
 Priority: optional
 Maintainer: Kylin Team <team+kylin@tracker.debian.org>
-Build-Depends: debhelper (>=11~),
-	pkg-config,
-	qt5-qmake,
-	qtchooser,
-	qtbase5-dev,
-	qtbase5-dev-tools,
-	qttools5-dev-tools
-Standards-Version: 4.1.4
+Build-Depends: debhelper (>=12),
+	       pkg-config,
+	       qt5-qmake,
+	       qtchooser,
+	       qtbase5-dev,
+	       qtbase5-dev-tools,
+	       libgsettings-qt-dev,
+               libx11-dev,
+               qttools5-dev-tools,
+Rules-requires-root: no
+Standards-Version: 4.5.0
 Homepage: http://www.ukui.org/
 
 Package: ukui-settings-daemon
