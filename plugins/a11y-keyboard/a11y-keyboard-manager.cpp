@@ -38,7 +38,7 @@ bool A11yKeyboardManager::A11yKeyboardManagerStart()
 
 void A11yKeyboardManager::A11yKeyboardManagerStop()
 {
-   CT_SYSLOG(LOG_DEBUG,"Stoping A11y Keyboard manager");
+   CT_SYSLOG(LOG_DEBUG,"Stopping A11y Keyboard manager");
    gdk_window_remove_filter (NULL, DevicepresenceFilter, this);
 
     /*if (status_icon)

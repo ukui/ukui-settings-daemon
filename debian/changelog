@@ -1,6 +1,47 @@
-ukui-settings-daemon (3.0.0) groovy; urgency=medium
+ukui-settings-daemon (3.0.0-1) unstable; urgency=medium
 
-  * [ Kylin Team ]
-  * Initial release. 
+  * New upstream release.
 
- -- shangxiaoyang <shangxiaoyang@kylinos.cn>  Wed, 05 Aug 2020 17:01:33 +0800
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 26 Aug 2020 20:53:16 +0800
+
+ukui-settings-daemon (1.2.1-1) unstable; urgency=medium
+
+  * New upstream bugfix release.
+    - Fix the wrong command when do action of shutdown and logout.
+    - Fix the numlock issue.
+    - Fix that the settings of cursor theme didn't work.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 26 Mar 2020 12:00:00 +0800
+
+ukui-settings-daemon (1.2.0-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control:
+    - Bump standards-version to 4.5.0.
+    - Use debhelper-compat.
+  * debian/copyright:
+    - Remove COPYING from copyright.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 24 Feb 2020 11:47:45 +0800
+
+ukui-settings-daemon (1.1.7-2) unstable; urgency=medium
+
+  * Don't set click actions since ukwm take over that.
+  * debian/control:
+    - Bump standards-version to 4.4.0.
+    - Bump compat level to 12.
+    - mate-polkit -> ukui-polkit.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 07 Aug 2019 15:22:43 +0800
+
+ukui-settings-daemon (1.1.6-1fakesync1) disco-proposed; urgency=medium
+
+  * Fake sync due to mismatching orig tarball.
+
+ -- Logan Rosen <logan@ubuntu.com>  Thu, 17 Jan 2019 22:21:48 -0500
+
+ukui-settings-daemon (1.1.6-1) unstable; urgency=medium
+
+  * Initial release. (Closes: #903944)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Tue, 17 Jul 2018 11:43:08 +0800

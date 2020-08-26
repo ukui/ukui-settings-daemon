@@ -2,8 +2,8 @@ Source: ukui-settings-daemon
 Section: x11
 Priority: optional
 Maintainer: Kylin Team <team+kylin@tracker.debian.org>
-Uploaders: Shang Xiaoyang <shangxiaoyang@kylinos.cn>
-Build-Depends: debhelper (>=11~),
+Uploaders: handsome_feng <jianfengli@ubuntukylin.com>
+Build-Depends: debhelper-compat (=12),
         pkg-config,
         intltool,
         qt5-qmake,
@@ -21,23 +21,25 @@ Build-Depends: debhelper (>=11~),
         libdbus-glib-1-dev,
         libmatekbd-dev,
         libpulse-dev,
-        libnotify-dev
-Standards-Version: 4.1.4
+        libnotify-dev,
+        libwnck-3-dev,
+Standards-Version: 4.5.0
+Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
+Vcs-Git: https://github.com/ukui/ukui-settings-daemon.git
+Vcs-Browser: https://github.com/ukui/ukui-settings-daemon
+
 
 Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
-        ukui-settings-daemon-common (= ${source:Version}),
-        mate-utils,
-        ukui-polkit,
-        x11-xserver-utils,
-        libqt5gui5,
-        libqt5dbus5,
-        libqt5widgets5,
-        libqt5x11extras5,
-        ${misc:Depends},
-        ${shlibs:Depends},
+         ukui-settings-daemon-common (= ${source:Version}),
+         mate-utils,
+         ukui-polkit,
+         x11-xserver-utils,
+         libglib2.0-bin,
+         ${misc:Depends},
+         ${shlibs:Depends},
 Description: daemon handling the UKUI session settings
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run
@@ -57,6 +59,7 @@ Description: daemon handling the UKUI session settings
 Package: ukui-settings-daemon-common
 Architecture: all
 Depends: ${misc:Depends},
+         ${shlibs:Depends},
 Description: daemon handling the UKUI session settings (common files)
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run

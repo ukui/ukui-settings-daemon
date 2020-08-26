@@ -24,7 +24,7 @@ KeybindingsManager *KeybindingsPlugin::mKeyManager=nullptr;
 
 KeybindingsPlugin::KeybindingsPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"KeybindingsPlugin initalizing");
+    CT_SYSLOG(LOG_DEBUG,"KeybindingsPlugin initializing");
     if(nullptr == mKeyManager)
         mKeyManager = KeybindingsManager::KeybindingsManagerNew();
 }

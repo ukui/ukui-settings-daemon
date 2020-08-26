@@ -100,7 +100,7 @@ bool MouseManager::MouseManagerStart()
 void MouseManager::MouseManagerStop()
 {
 
-    syslog(LOG_DEBUG,"-- Stoping Mouse Manager --");
+    syslog(LOG_DEBUG,"-- Stopping Mouse Manager --");
 
     set_locate_pointer (this, FALSE);
 
