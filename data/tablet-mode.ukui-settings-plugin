@@ -1,0 +1,9 @@
+[UKUI Settings Plugin]
+Module=tablet-mode
+IAge=0
+Name=Tablet-mode
+Name[zh_CN]=平板模式
+Description=Tablet-mode plugin
+Authors=Shang Xiaoyang
+Copyright=Copyright (C) 2020 KylinSoft Co., Ltd.
+Website=

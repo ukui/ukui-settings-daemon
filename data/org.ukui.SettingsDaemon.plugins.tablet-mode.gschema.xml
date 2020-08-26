@@ -1,0 +1,24 @@
+<schemalist>
+  <schema gettext-domain="ukui-settings-daemon" id="org.ukui.SettingsDaemon.plugins.tablet-mode" path="/org/ukui/settings-daemon/plugins/tablet-mode/">
+    <key name="active" type="b">
+      <default>true</default>
+      <summary>Activation of this plugin</summary>
+      <description>Whether this plugin would be activated by ukui-settings-daemon or not</description>
+    </key>
+    <key name="priority" type="i">
+      <default>9</default>
+      <summary>Priority to use for this plugin</summary>
+      <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
+    </key>
+    <key name="tablet-mode" type="b">
+      <default>false</default>
+      <summary>Whether to turn on tablet mode</summary>
+      <description>Use the switch to control whether to turn on the tablet mode</description>
+    </key>
+    <key name="auto-rotation" type="b">
+      <default>false</default>
+      <summary>Whether to turn on automatic rotation mode</summary>
+      <description>Use the switch to control whether the auto-rotating screen is turned on in tablet mode</description>
+    </key>
+  </schema>
+</schemalist>

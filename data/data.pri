@@ -20,6 +20,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml \
 \#    $$PWD/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.tablet-mode.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml  \
@@ -65,6 +66,7 @@ DISTFILES += \
     $$PWD/sound.ukui-settings-plugin         \
     $$PWD/xrdb.ukui-settings-plugin          \
     $$PWD/xrandr.ukui-settings-plugin       \
-    $$PWD/xsettings.ukui-settings-plugin 
+    $$PWD/xsettings.ukui-settings-plugin    \
+    $$PWD/tablet-mode.ukui-settings-plugin
 #    $$PWD/smartcard.ukui-settings-plugin    \
 
