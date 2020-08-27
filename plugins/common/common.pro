@@ -35,9 +35,7 @@ HEADERS += \
         ukui-input-helper.h \
         ukui-keygrab.h
 
-DESTDIR = $$PWD/
-
 common_lib.path = $${PLUGIN_INSTALL_DIRS}
-common_lib.files = $$PWD/libcommon.so
+common_lib.files = $$OUT_PWD/libcommon.so
 
 INSTALLS += common_lib

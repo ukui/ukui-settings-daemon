@@ -31,9 +31,7 @@ HEADERS += \
     $$PWD/clipboard-plugin.h \
     $$PWD/clipboard-manager.h
 
-DESTDIR = $$PWD/
-
 clipboard_lib.path = $${PLUGIN_INSTALL_DIRS}
-clipboard_lib.files = $$PWD/libclipboard.so
+clipboard_lib.files = $$OUT_PWD/libclipboard.so
 
 INSTALLS += clipboard_lib

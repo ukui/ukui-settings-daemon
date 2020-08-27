@@ -35,9 +35,7 @@ HEADERS += \
     soundmanager.h \
     soundplugin.h
 
-DESTDIR = $$PWD/
-
 sound_lib.path = $${PLUGIN_INSTALL_DIRS}
-sound_lib.files = $$PWD/libsound.so
+sound_lib.files = $$OUT_PWD/libsound.so
 
 INSTALLS += sound_lib

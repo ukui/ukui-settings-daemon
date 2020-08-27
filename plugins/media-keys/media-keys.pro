@@ -20,7 +20,7 @@ INCLUDEPATH += \
 
 LIBS += \
     -lX11 -lXi \
-    $$PWD/../common/libcommon.so
+    -L$$OUT_PWD/../common/ -lcommon
 
 include($$PWD/../../common/common.pri)
 
@@ -46,9 +46,7 @@ FORMS += \
 DISTFILES += \
     media-keys.ukui-settings-plugin.in
 
-DESTDIR = $$PWD/
-
 media_keys_lib.path = $${PLUGIN_INSTALL_DIRS}
-media_keys_lib.files = $$PWD/libmedia-keys.so
+media_keys_lib.files = $$OUT_PWD/libmedia-keys.so
 
 INSTALLS += media_keys_lib

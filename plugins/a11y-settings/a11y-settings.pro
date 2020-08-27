@@ -34,9 +34,7 @@ HEADERS += \
     $$PWD/a11ysettingsmanager.h \
     $$PWD/a11ysettingsplugin.h
 
-DESTDIR = $$PWD/
-
 a11_settings_lib.path = $${PLUGIN_INSTALL_DIRS}
-a11_settings_lib.files = $$PWD/liba11y-settings.so
+a11_settings_lib.files = $$OUT_PWD/liba11y-settings.so
 
 INSTALLS += a11_settings_lib

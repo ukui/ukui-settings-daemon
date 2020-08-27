@@ -4,6 +4,3 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 %:
 	dh $@
-
-override_dh_shlibdeps:
---dpkg-shlibdeps-params=--ignore-missing-info

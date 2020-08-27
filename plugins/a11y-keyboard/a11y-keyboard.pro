@@ -38,10 +38,8 @@ HEADERS += \
     a11y-keyboard-plugin.h \
     a11y-preferences-dialog.h
 
-DESTDIR = $$PWD/
-
 a11y_keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}
-a11y_keyboard_lib.files = $$PWD/liba11y-keyboard.so
+a11y_keyboard_lib.files = $$OUT_PWD/liba11y-keyboard.so
 
 INSTALLS += a11y_keyboard_lib
 

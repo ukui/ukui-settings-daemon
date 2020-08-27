@@ -37,10 +37,7 @@ HEADERS += \
     mouse-manager.h \
     mouse-plugin.h \
 
-
-DESTDIR = $$PWD/
-
 mouse_lib.path = $${PLUGIN_INSTALL_DIRS}
-mouse_lib.files = $$PWD/libmouse.so
+mouse_lib.files = $$OUT_PWD/libmouse.so
 
 INSTALLS += mouse_lib

@@ -30,9 +30,7 @@ HEADERS += \
         $$PWD/backgroundplugin.h \
         background-manager.h
 
-DESTDIR = $$PWD
-
 background_lib.path = $${PLUGIN_INSTALL_DIRS}
-background_lib.files += $$PWD/libbackground.so
+background_lib.files += $$OUT_PWD/libbackground.so
 
 INSTALLS += background_lib

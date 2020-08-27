@@ -28,8 +28,7 @@ INCLUDEPATH += \
         -I $$PWD/../common/      \
         -I ukui-settings-daemon/
 
-LIBS += \
-        $$PWD/../common/libcommon.so
+LIBS +=-L$$OUT_PWD/../common/ -lcommon
 
 SOURCES += \
     dconf-util.c \
@@ -43,10 +42,8 @@ HEADERS += \
     keybindings-plugin.h
 
 
-DESTDIR = $$PWD/
-
 keybindings_lib.path = $${PLUGIN_INSTALL_DIRS}
-keybindings_lib.files = $$PWD/libkeybindings.so
+keybindings_lib.files = $$OUT_PWD/libkeybindings.so
 
 INSTALLS += keybindings_lib
 

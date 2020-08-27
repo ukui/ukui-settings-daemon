@@ -25,6 +25,6 @@ HEADERS += \
     tablet-mode-plugin.h
 
 tablet_mode_lib.path = $${PLUGIN_INSTALL_DIRS}
-tablet_mode_lib.files = $$PWD/libtablet-mode.so
+tablet_mode_lib.files = $$OUT_PWD/libtablet-mode.so
 
 INSTALLS += tablet_mode_lib

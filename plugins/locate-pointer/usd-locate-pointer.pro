@@ -23,8 +23,7 @@ HEADERS += \
     usd-timeline.h
 
 
-DESTDIR = $$PWD/
 locate_pointer.path = /usr/bin/
-locate_pointer.files = $$PWD/usd-locate-pointer
+locate_pointer.files = $$OUT_PWD/usd-locate-pointer
 INSTALLS += locate_pointer
 

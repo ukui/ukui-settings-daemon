@@ -41,10 +41,8 @@ HEADERS += \
     usd-disk-space.h \
     usd-ldsm-dialog.h
 
-DESTDIR = $$PWD/
-
 housekeeping_lib.path = $${PLUGIN_INSTALL_DIRS}
-housekeeping_lib.files = $$PWD/libhousekeeping.so
+housekeeping_lib.files = $$OUT_PWD/libhousekeeping.so
 
 INSTALLS += housekeeping_lib
 

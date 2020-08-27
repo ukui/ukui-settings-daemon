@@ -40,13 +40,8 @@ HEADERS += \
         $$PWD/manager-interface.h \
         $$PWD/global.h
 
-OTHER_FILES += \
-        $$PWD/.gitignore
-
-DESTDIR = $$PWD/
-
 ukui_daemon.path = /usr/bin/
-ukui_daemon.files = $$PWD/ukui-settings-daemon
+ukui_daemon.files = $$OUT_PWD/ukui-settings-daemon
 
 zh_CN.path  = /usr/share/ukui-settings-daemon/daemon/res/i18n/
 zh_CN.files = $$PWD/res/i18n/zh_CN.qm

@@ -42,8 +42,7 @@ HEADERS += \
     fontconfig-monitor.h
 
 
-DESTDIR = $$PWD
 xsettings_lib.path = $${PLUGIN_INSTALL_DIRS}
-xsettings_lib.files += $$PWD/libxsettings.so
+xsettings_lib.files += $$OUT_PWD/libxsettings.so
 
 INSTALLS += xsettings_lib

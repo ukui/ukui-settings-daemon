@@ -45,9 +45,7 @@ HEADERS += \
     keyboard_global.h \
     keyboard-plugin.h
 
-DESTDIR = $$PWD/
-
 keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}
-keyboard_lib.files = $$PWD/libkeyboard.so
+keyboard_lib.files = $$OUT_PWD/libkeyboard.so
 
 INSTALLS += keyboard_lib
