@@ -1,4 +1,4 @@
-QT += gui widgets x11extras dbus
+QT += gui widgets x11extras dbus sensors KConfigCore KConfigGui
 
 TEMPLATE = lib
 
@@ -15,14 +15,16 @@ INCLUDEPATH += \
         -I ukui-settings-daemon/        \
 
 PKGCONFIG += \
-            xrandr x11 gtk+-3.0 \
-            glib-2.0 mate-desktop-2.0
+            xrandr x11 \
+            glib-2.0
 
 SOURCES += \
-    tablet-mode-plugin.cpp
+    tabletMode-manager.cpp \
+    tabletMode-plugin.cpp
 
 HEADERS += \
-    tablet-mode-plugin.h
+    tabletMode-manager.h \
+    tabletMode-plugin.h
 
 tablet_mode_lib.path = $${PLUGIN_INSTALL_DIRS}
 tablet_mode_lib.files = $$OUT_PWD/libtablet-mode.so

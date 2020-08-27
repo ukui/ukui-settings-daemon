@@ -59,7 +59,6 @@ public:
     void usdLdsmGetConfig ();
     static bool ldsm_mount_is_user_ignore (const char *path);
     static void ldsm_mounts_changed (GObject  *monitor,gpointer  data);
-    static bool        ldsm_check_all_mounts ();
     static bool ldsm_mount_should_ignore (GUnixMountEntry *mount);
     static bool ldsm_mount_has_space (LdsmMountInfo *mount);
     static void ldsm_maybe_warn_mounts (GList *mounts,
@@ -71,6 +70,7 @@ public:
 
 public Q_SLOTS:
     void usdLdsmUpdateConfig(QString);
+    static bool ldsm_check_all_mounts();
 
 private:
     void cleanNotifyHash();

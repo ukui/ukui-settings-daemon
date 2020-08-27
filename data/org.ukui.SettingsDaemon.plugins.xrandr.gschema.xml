@@ -5,6 +5,12 @@
     <value nick="certain" value="2"/>
     <value nick="cancel" value="3"/>
   </enum>
+  <enum id="org.ukui.SettingsDaemon.xrandr-rotations-enum">
+    <value nick="normal" value="0"/>
+    <value nick="left"   value="1"/>
+    <value nick="upside-down" value="2"/>
+    <value nick="right"  value="3"/>
+  </enum>
   <schema gettext-domain="ukui-settings-daemon" id="org.ukui.SettingsDaemon.plugins.xrandr" path="/org/ukui/settings-daemon/plugins/xrandr/">
     <key name="active" type="b">
       <default>true</default>
@@ -45,6 +51,11 @@
       <default>'noshow'</default>
       <summary>The xrandr apply window status</summary>
       <description>the xrandr apply window show/notshow when true/false.</description>
+    </key>
+    <key name="xrandr-rotations" enum = "org.ukui.SettingsDaemon.xrandr-rotations-enum">
+      <default>'normal'</default>
+      <summary>Modify the screen rotation angle</summary>
+      <description>Modify the screen rotation angle by value, only 0, 90, 180 and 270 degree rotation</description>
     </key>
   </schema>
 </schemalist>

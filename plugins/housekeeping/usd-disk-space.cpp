@@ -59,7 +59,7 @@ DIskSpace::DIskSpace()
 
     ldsm_timeout_cb = new QTimer();
     connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
-
+    ldsm_timeout_cb->start();
     ldsm_monitor = NULL;
     free_percent_notify = 0.05;
     free_percent_notify_again = 0.01;
@@ -136,16 +136,11 @@ void DIskSpace::usdLdsmGetConfig()
     // 取得清理忽略的目录
     //settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
     QVariantList ignoreList = settings->choices(SETTINGS_IGNORE_PATHS);
-    if (ignoreList.first().data() != nullptr) {
-        //unsigned int i;
-        // 清理m_notified_hash中ignoreList存在的。
-
-        QVariantList::const_iterator it;
-
-        for (it = ignoreList.constBegin(); it != ignoreList.constEnd(); ++it) {
-            m_notified_hash.remove((*it).toString().toLatin1().data());
-        }
+    QVariantList::const_iterator it;
+    for (it = ignoreList.constBegin(); it != ignoreList.constEnd(); ++it) {
+        m_notified_hash.remove((*it).toString().toLatin1().data());
     }
+
 }
 
 static void
@@ -535,6 +530,7 @@ bool DIskSpace::ldsm_check_all_mounts ()
      * they're mounted by checking if the GUnixMountPoint has a corresponding GUnixMountEntry.
      * Iterating through the static mounts means we automatically ignore dynamically mounted media.
      */
+    ldsm_timeout_cb->stop();
     mounts = g_unix_mount_points_get (time_read);
 
     for (l = mounts; l != NULL; l = l->next) {

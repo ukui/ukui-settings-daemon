@@ -18,14 +18,19 @@
  */
 #include <QCoreApplication>
 #include <QApplication>
+#include <QMessageBox>
+
 #include "xrandr-manager.h"
-#include <syslog.h>
+
+#define SETTINGS_XRANDR_SCHEMAS "org.ukui.SettingsDaemon.plugins.xrandr"
+#define XRANDR_ROTATION_KEY     "xrandr-rotations"
 
 XrandrManager *XrandrManager::mXrandrManager = nullptr;
 
 XrandrManager::XrandrManager()
 {
     time = new QTimer(this);
+    mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 }
 
 XrandrManager::~XrandrManager()
@@ -34,10 +39,11 @@ XrandrManager::~XrandrManager()
         delete mXrandrManager;
         mXrandrManager = nullptr;
     }
-    if(time){
+    if(time)
         delete time;
-        time = nullptr;
-    }
+
+    if(mXrandrSetting)
+        delete mXrandrSetting;
 }
 
 XrandrManager* XrandrManager::XrandrManagerNew()
@@ -59,7 +65,7 @@ bool XrandrManager::XrandrManagerStart()
 
 void XrandrManager::XrandrManagerStop()
 {
-    syslog(LOG_ERR,"Xrandr Manager Stop");
+    qDebug("Xrandr Manager Stop");
 }
 
 
@@ -146,15 +152,15 @@ bool XrandrManager::SetScreenSize(Display  *dpy, Window root, int width, int hei
     XRRScreenSize   *sizes;
     XRRScreenConfiguration *sc;
     int     nsize = 0;
-    int     size  = -1;
-    int     rot   = -1;
+    int     size = -1;
+    int     rot  = -1;
     short   current_rate;
-    double  rate  = -1;
+    double  rate = -1;
     int     reflection = 0;
 
     sc = XRRGetScreenInfo (dpy, root);
     if (sc == NULL){
-        syslog(LOG_ERR,"Screen configuration is Null");
+        qDebug("Screen configuration is Null");
         return false;
     }
     /* 配置当前配置 */
@@ -168,12 +174,11 @@ bool XrandrManager::SetScreenSize(Display  *dpy, Window root, int width, int hei
     }
 
     if (size >= nsize) {
-        qWarning("Size index %d is too large, there are only %d sizes\n", size, nsize);
+        qWarning("Size %dx%d not found in available modes\n", width, height);
         return false;
-    } else if (size < 0){
+    } else if (size < 0)
         size = current_size;
-    } 
-    
+
     if (rot < 0) {
         for (rot = 0; rot < 4; rot++)
             if (1 << rot == (current_rotation & 0xf))
@@ -359,7 +364,7 @@ bool XrandrManager::ApplyStoredConfigurationAtStartup(XrandrManager *manager,
     return success;
 }
 
-void SetTouchscreenCursorRotation(MateRRScreen *screen)
+void SetTouchscreenCursorRotation(MateRRScreen *screen, QGSettings *settngs)
 {
     /* 添加触摸屏鼠标设置 */
     MateRRConfig *result;
@@ -405,6 +410,7 @@ void SetTouchscreenCursorRotation(MateRRScreen *screen)
             }
         }
     }
+    g_object_unref (result);
 }
 
 /**
@@ -437,7 +443,47 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
             manager->AutoConfigureOutputs (manager, config_timestamp);
     }
     /* 添加触摸屏鼠标设置 */
-    SetTouchscreenCursorRotation(screen);
+    SetTouchscreenCursorRotation(screen, manager->mXrandrSetting);
+}
+
+/*监听旋转键值回调 并设置旋转角度*/
+void XrandrManager::RotationChangedEvent(QString key)
+{
+    int angle, i;
+    MateRRConfig        *result;
+    MateRROutputInfo    **outputs;
+    MateRRRotation      rotation;
+    unsigned int config_timestamp;
+    if(key != XRANDR_ROTATION_KEY)
+        return;
+
+    angle = mXrandrSetting->getEnum(XRANDR_ROTATION_KEY);
+    qDebug()<<"angle = "<<angle;
+    switch (angle) {
+        case 0:
+            rotation = MATE_RR_ROTATION_0;
+        break;
+        case 1:
+            rotation = MATE_RR_ROTATION_90;
+        break;
+        case 2:
+            rotation = MATE_RR_ROTATION_180;
+        break;
+        case 3:
+            rotation = MATE_RR_ROTATION_270;
+        break;
+    }
+    mate_rr_screen_get_timestamps (mScreen, nullptr, &config_timestamp);
+    result = mate_rr_config_new_current (mScreen, NULL);
+    outputs = mate_rr_config_get_outputs (result);
+    for (i = 0; outputs[i] != NULL; ++i) {
+        MateRROutputInfo *info = outputs[i];
+        if (mate_rr_output_info_is_connected (info)) {
+            mate_rr_output_info_set_rotation (info, rotation);
+        }
+    }
+    mate_rr_config_apply_with_time (result, mScreen, config_timestamp, NULL);
+    g_object_unref (result);
 }
 
 /**
@@ -459,6 +505,8 @@ void XrandrManager::StartXrandrIdleCb()
         return;
     }
     g_signal_connect (mScreen, "changed", G_CALLBACK (OnRandrEvent), this);
+
+    connect(mXrandrSetting,SIGNAL(changed(QString)),this,SLOT(RotationChangedEvent(QString)));
 
     /*设置虚拟机分辨率*/
     ScreenNum  = QApplication::screens().length();
@@ -484,5 +532,5 @@ void XrandrManager::StartXrandrIdleCb()
     ApplyStoredConfigurationAtStartup(this,GDK_CURRENT_TIME);
 
     /* 添加触摸屏鼠标设置 */
-    SetTouchscreenCursorRotation(mScreen);
+    SetTouchscreenCursorRotation(mScreen, mXrandrSetting);
 }

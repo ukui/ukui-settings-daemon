@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 QT -= gui
-QT += core widgets
+QT += core widgets dbus
 
 TEMPLATE = lib
 TARGET = background

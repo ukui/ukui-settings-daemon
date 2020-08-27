@@ -26,13 +26,12 @@
 #include <QDomDocument>
 #include <QtXml>
 #include <QX11Info>
-#include <QProcess>
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QWidget>
-#include <QDesktopWidget>
 #include <QMultiMap>
 #include <QScreen>
+#include <QGSettings/qgsettings.h>
 
 #include <X11/Xlib.h>
 #include <X11/extensions/Xrandr.h>
@@ -61,6 +60,7 @@ public:
 
 public Q_SLOTS:
     void StartXrandrIdleCb ();
+    void RotationChangedEvent(QString);
 
 public:
     bool ReadMonitorsXml();
@@ -69,7 +69,6 @@ public:
                                     const char    *backup_filename,
                                     const char    *intended_filename,
                                     unsigned int   timestamp);
-
     static void OnRandrEvent (MateRRScreen *screen, gpointer data);
     static void AutoConfigureOutputs (XrandrManager *manager,
                                       unsigned int  timestamp);
@@ -80,9 +79,11 @@ public:
                                                   unsigned int timestamp);
 
 private:
-    QTimer *time;
+    QTimer                *time;
+    QGSettings            *mXrandrSetting;
     static XrandrManager  *mXrandrManager;
-    MateRRScreen *mScreen;
+    MateRRScreen          *mScreen;
+
 protected:
     QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
     QMultiMap<QString, int>     mIntDate;
