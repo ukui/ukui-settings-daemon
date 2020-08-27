@@ -59,7 +59,6 @@ Description: daemon handling the UKUI session settings
 Package: ukui-settings-daemon-common
 Architecture: all
 Depends: ${misc:Depends},
-         ${shlibs:Depends},
 Description: daemon handling the UKUI session settings (common files)
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run
