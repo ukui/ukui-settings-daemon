@@ -36,7 +36,7 @@
 #define SETTINGS_IGNORE_PATHS             "ignore-paths"
 
 //DIskSpace *DIskSpace::mDisk = nullptr;
-static unsigned long       *time_read;
+static guint64 *time_read;
 QTimer* DIskSpace::ldsm_timeout_cb = NULL;
 
 

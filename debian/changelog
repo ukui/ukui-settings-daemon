@@ -1,3 +1,9 @@
+ukui-settings-daemon (3.0.1-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 27 Aug 2020 13:38:20 +0800
+
 ukui-settings-daemon (3.0.0-1) experimental; urgency=medium
 
   * New upstream release.
