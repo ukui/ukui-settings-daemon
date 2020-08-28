@@ -3,450 +3,35 @@ Upstream-Name: ukui-settings-daemon
 Upstream-Contact: Shang Xiaoyang <shangxiaoyang@kylinos.cn>
 Source: http://github.com/ukui/ukui-settings-daemon
 
-Files: ukui-settings-daemon/main.c
-       ukui-settings-daemon/ukui-settings-manager.c
-       ukui-settings-daemon/ukui-settings-manager.h
-       ukui-settings-daemon/ukui-settings-plugin-info.c
-       ukui-settings-daemon/ukui-settings-profile.c
-       ukui-settings-daemon/ukui-settings-profile.h
-       plugins/a11y-keyboard/usd-a11y-keyboard-manager.h
-       plugins/a11y-keyboard/usd-a11y-keyboard-plugin.c
-       plugins/a11y-keyboard/usd-a11y-keyboard-plugin.h
-       plugins/a11y-keyboard/test-a11y-preferences-dialog.c
-       plugins/a11y-settings/usd-a11y-settings-manager.c
-       plugins/a11y-settings/usd-a11y-settings-manager.h
-       plugins/a11y-settings/usd-a11y-settings-plugin.c
-       plugins/a11y-settings/usd-a11y-settings-plugin.h
-       plugins/background/usd-background-manager.h
-       plugins/background/usd-background-plugin.c
-       plugins/background/usd-background-plugin.h
-       plugins/background/test-background.c
-       plugins/clipboard/usd-clipboard-manager.h
-       plugins/clipboard/usd-clipboard-plugin.c
-       plugins/clipboard/usd-clipboard-plugin.h
-       plugins/dummy/usd-dummy-manager.c
-       plugins/dummy/usd-dummy-manager.h
-       plugins/dummy/usd-dummy-plugin.c
-       plugins/dummy/usd-dummy-plugin.h
-       plugins/keybindings/usd-keybindings-manager.c
-       plugins/keybindings/usd-keybindings-manager.h
-       plugins/keybindings/usd-keybindings-plugin.c
-       plugins/keybindings/usd-keybindings-plugin.h
-       plugins/keyboard/usd-keyboard-manager.h
-       plugins/keyboard/usd-keyboard-plugin.c
-       plugins/keyboard/usd-keyboard-plugin.h
-       plugins/media-keys/usd-media-keys-manager.h
-       plugins/media-keys/usd-media-keys-plugin.c
-       plugins/media-keys/usd-media-keys-plugin.h
-       plugins/media-keys/test-media-keys.c
-       plugins/media-keys/test-media-window.c
-       plugins/mouse/usd-mouse-manager.c
-       plugins/mouse/usd-mouse-manager.h
-       plugins/mouse/usd-mouse-plugin.c
-       plugins/mouse/usd-mouse-plugin.h
-       plugins/mpris/usd-mpris-plugin.c
-       plugins/mpris/usd-mpris-plugin.h
-       plugins/typing-break/usd-typing-break-manager.c
-       plugins/typing-break/usd-typing-break-manager.h
-       plugins/typing-break/usd-typing-break-plugin.c
-       plugins/typing-break/usd-typing-break-plugin.h
-       plugins/xrandr/usd-xrandr-manager.h
-       plugins/xrandr/usd-xrandr-plugin.c
-       plugins/xrandr/usd-xrandr-plugin.h
-       plugins/xrdb/usd-xrdb-manager.h
-       plugins/xrdb/usd-xrdb-plugin.c
-       plugins/xrdb/usd-xrdb-plugin.h
-       plugins/xsettings/usd-xsettings-manager.h
-       plugins/xsettings/usd-xsettings-plugin.c
-       plugins/xsettings/usd-xsettings-plugin.h
-Copyright: 2005, 2007 William Jon McCann <mccann@jhu.edu>
-           2007, William Jon McCann <mccann@jhu.edu>
-License: GPL-2+
+Files: *
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
 
-Files: ukui-settings-daemon/ukui-settings-plugin-info.h
-       plugins/smartcard/usd-smartcard-manager.c
-       plugins/smartcard/usd-smartcard-manager.h
-       plugins/smartcard/usd-smartcard-plugin.c
-       plugins/smartcard/usd-smartcard-plugin.h
-       plugins/xsettings/fontconfig-monitor.c
-       plugins/xsettings/fontconfig-monitor.h
-Copyright: 2006-2010 Red Hat, Inc
-License: GPL-2+
+Files: common/*
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
+
+Files: daemon/*
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
+
+Files: daemon/manager-interface.cpp
+Copyright: 2019, The Qt Company Ltd.
+License: GPL-3.0+
+
+Files: plugins/*
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
+
+Files: plugins/a11y-settings/*
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
 
 Files: plugins/clipboard/list.c
-       plugins/clipboard/list.h
-       plugins/clipboard/xutils.c
-       plugins/clipboard/xutils.h
-       plugins/xsettings/xsettings-common.c
-       plugins/xsettings/xsettings-common.h
-       plugins/xsettings/xsettings-manager.c
-       plugins/xsettings/xsettings-manager.h
-Copyright: 2001, 2004 Red Hat, Inc
-License: MIT~OldStyleWithDisclaimer+RedHat
-
-Files: plugins/datetime/system-timezone.h
-       plugins/housekeeping/usd-disk-space.c
-       plugins/housekeeping/usd-disk-space.h
-       plugins/keyboard/delayed-dialog.c
-       plugins/keyboard/delayed-dialog.h
-Copyright: 2006, 2008 Novell, Inc
-License: GPL-2+
-
-Files: plugins/sound/usd-sound-manager.c
-       plugins/sound/usd-sound-manager.h
-       plugins/sound/usd-sound-plugin.c
-       plugins/sound/usd-sound-plugin.h
-Copyright: 2008, Lennart Poettering <lennart@poettering.net>
-License: GPL-2+
-
-Files: plugins/mouse/usd-locate-pointer.c
-       plugins/mouse/usd-timeline.c
-       plugins/mouse/usd-timeline.h
-Copyright: 2008, Carlos Garnacho <carlos@imendio.com>
-License: GPL-2+
-
-Files: plugins/datetime/usd-datetime-mechanism-main.c
-       plugins/datetime/usd-datetime-mechanism.c
-       plugins/datetime/usd-datetime-mechanism.h
-Copyright: 2007, David Zeuthen <david@fubar.dk>
-License: GPL-2+
-
-Files: plugins/housekeeping/usd-housekeeping-manager.h
-       plugins/housekeeping/usd-housekeeping-plugin.c
-       plugins/housekeeping/usd-housekeeping-plugin.h
-Copyright: 2008, Michael J. Chudobiak <mjc@avtechpulse.com>
-License: GPL-2+
-
-Files: plugins/housekeeping/usd-ldsm-dialog.c
-       plugins/housekeeping/usd-ldsm-dialog.h
-       plugins/housekeeping/usd-ldsm-trash-empty.h
-Copyright: Chris Coulson 2009, <chrisccoulson@googlemail.com>
-License: GPL-3+
-
-Files: ukui-settings-daemon/ukui-settings-module.c
-       ukui-settings-daemon/ukui-settings-module.h
-Copyright: 2005, Paolo Maggi
-License: GPL-2+
-
-Files: ukui-settings-daemon/ukui-settings-plugin.c
-       ukui-settings-daemon/ukui-settings-plugin.h
-Copyright: 2002-2005, Paolo Maggi
-           2007, William Jon McCann <mccann@jhu.edu>
-License: GPL-2+
-
-Files: plugins/keybindings/dconf-util.c
-       plugins/keybindings/dconf-util.h
-Copyright: 2012, Stefano Karapetsas
-License: GPL-2+
-
-Files: plugins/mpris/usd-mpris-manager.c
-       plugins/mpris/usd-mpris-manager.h
-Copyright: 2013, Stefano Karapetsas <stefano@karapetsas.com>
-License: GPL-2+
-
-Files: plugins/keyboard/usd-keyboard-xkb.c
-       plugins/keyboard/usd-keyboard-xkb.h
-Copyright: 2001, Udaltsoft
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-Files: plugins/a11y-keyboard/usd-a11y-preferences-dialog.c
-       plugins/a11y-keyboard/usd-a11y-preferences-dialog.h
-Copyright: 2008, William Jon McCann <jmccann@redhat.com>
-License: GPL-2+
-
-Files: plugins/a11y-keyboard/usd-a11y-keyboard-manager.c
-       plugins/keyboard/usd-keyboard-manager.c
-Copyright: 2001, Ximian, Inc
-           2007, William Jon McCann <mccann@jhu.edu>
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-Files: plugins/common/usd-osd-window.c
-       plugins/common/usd-osd-window.h
-Copyright: 2006-2007 William Jon McCann <mccann@jhu.edu>
-           2009, Novell, Inc
-License: LGPL-2+
-
-Files: plugins/media-keys/usd-media-keys-window.c
-       plugins/media-keys/usd-media-keys-window.h
-Copyright: 2006, William Jon McCann <mccann@jhu.edu>
-           2006-2007, William Jon McCann <mccann@jhu.edu>
-License: LGPL-2+
-
-Files: plugins/clipboard/usd-clipboard-manager.c
-Copyright: 2007, Anders Carlsson
-           2007, Matthias Clasen
-           2007, Rodrigo Moya
-           2007, William Jon McCann <mccann@jhu.edu>
-License: GPL-2+
-
-Files: plugins/media-keys/acme.h
-Copyright: 2001, Bastien Nocera <hadess@hadess.net>
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-Files: plugins/common/usd-input-helper.c
-       plugins/common/usd-input-helper.h
-Copyright: 2010, Bastien Nocera <hadess@hadess.net>
-License: GPL-2+
-
-Files: plugins/common/usd-keygrab.c
-Copyright: 2001-2003, Bastien Nocera <hadess@hadess.net>
-           2006-2007, William Jon McCann <mccann@jhu.edu>
-           2008, Jens Granseuer <jensgr@gmx.net>
-License: GPL-2+
-
-Files: plugins/media-keys/usd-media-keys-manager.c
-Copyright: 2001-2003, Bastien Nocera <hadess@hadess.net>
-           2006-2007, William Jon McCann <mccann@jhu.edu>
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-Files: plugins/housekeeping/usd-housekeeping-manager.c
-Copyright: 2008, Michael J. Chudobiak <mjc@avtechpulse.com>
-           2012, Jasmine Hassan <jasmine.aura@gmail.com>
-License: GPL-2+
-
-Files: plugins/background/usd-background-manager.c
-Copyright: 2001, Ximian, Inc
-           2007, Red Hat, Inc
-           2007, William Jon McCann <mccann@jhu.edu>
-           2012, Jasmine Hassan <jasmine.aura@gmail.com>
-License: GPL-2+
-
-Files: plugins/common/usd-keygrab.h
-Copyright: 2008, Jens Granseuer <jensgr@gmx.net>
-License: GPL-2+
-
-Files: plugins/datetime/system-timezone.c
-Copyright: 2000-2001, Ximian, Inc
-           2004, Sun Microsystems, Inc
-           2008, Novell, Inc
-License: GPL-2+
-
-Files: plugins/smartcard/usd-smartcard.h
-Copyright: 2006, Ray Strode
-License: GPL-2+
-
-Files: plugins/smartcard/usd-smartcard.c
-Copyright: 2006, Ray Strode <rstrode@redhat.com>
-License: GPL-2+
-
-Files: plugins/xrandr/usd-xrandr-manager.c
-Copyright: 2007, William Jon McCann <mccann@jhu.edu>
-           2007-2008, Red Hat, Inc
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+
-
-Files: plugins/xsettings/usd-xsettings-manager.c
-Copyright: 2007, Rodrigo Moya
-           2007, William Jon McCann <mccann@jhu.edu>
-License: GPL-2+
-
-Files: plugins/xrdb/usd-xrdb-manager.c
-Copyright: 2003, Ross Burton <ross@burtonini.com>
-           2007, William Jon McCann <mccann@jhu.edu>
-License: GPL-2+
-
-Files: plugins/housekeeping/usd-ldsm-trash-empty.c
-Copyright: Chris Coulson 2009, <chrisccoulson@googlemail.com>
-           Ryan Lortie 2008
-License: GPL-3+
-
-Files: plugins/common/eggaccelerators.c
-Copyright: 2002, Red Hat, Inc.
-           1998, 2001, Tim Janik
-License: LGPL-2+
-
-Files: plugins/common/eggaccelerators.h
-Copyright: 2002, Red Hat, Inc.
-License: LGPL-2+
-
-Files: plugins/mouse/usd-locate-pointer.h
-Copyright: 2001, Jonathan Blandford <jrb@gnome.org>
-License: MIT~OldStyle+RedHat
-
-Files: plugins/a11y-settings/a11y-settings.ukui-settings-plugin.in
-Copyright: 2011, Red Hat, Inc.
-License: GPL-2+
-Comment:
- License assumed from COPYING file.
-
-Files: data/Makefile.am
-       data/*.in
-       data/usd-datetime-mechanism.1
-       data/usd-locate-pointer.1
-       data/ukui-settings-daemon.1
-       Makefile.am
-       ukui-settings-daemon/Makefile.am
-       ukui-settings-daemon/ukui-settings-manager.xml
-       plugins/a11y-keyboard/Makefile.am
-       plugins/a11y-keyboard/*.ukui-settings-plugin.in
-       plugins/a11y-keyboard/*.ui
-       plugins/a11y-settings/Makefile.am
-       plugins/background/Makefile.am
-       plugins/background/*.ukui-settings-plugin.in
-       plugins/clipboard/Makefile.am
-       plugins/clipboard/*.ukui-settings-plugin.in
-       plugins/common/Makefile.am
-       plugins/datetime/Makefile.am
-       plugins/datetime/*.conf
-       plugins/datetime/org.ukui.settingsdaemon.*.in
-       plugins/datetime/org.ukui.SettingsDaemon.*.in
-       plugins/datetime/*.xml
-       plugins/dummy/Makefile.am
-       plugins/dummy/*.ukui-settings-plugin.in
-       plugins/housekeeping/Makefile.am
-       plugins/housekeeping/*.ukui-settings-plugin.in
-       plugins/keybindings/Makefile.am
-       plugins/keybindings/*.ukui-settings-plugin.in
-       plugins/keyboard/Makefile.am
-       plugins/keyboard/*.ukui-settings-plugin.in
-       plugins/keyboard/*.png
-       plugins/Makefile.am
-       plugins/media-keys/Makefile.am
-       plugins/media-keys/usd-marshal.list
-       plugins/media-keys/*.ukui-settings-plugin.in
-       plugins/media-keys/*.png
-       plugins/media-keys/*.svg
-       plugins/media-keys/*.ui
-       plugins/media-keys/*.xml
-       plugins/mouse/Makefile.am
-       plugins/mouse/*.ukui-settings-plugin.in
-       plugins/mpris/Makefile.am
-       plugins/mpris/*.ukui-settings-plugin.in
-       plugins/smartcard/Makefile.am
-       plugins/smartcard/*.ukui-settings-plugin.in
-       plugins/sound/Makefile.am
-       plugins/sound/*.ukui-settings-plugin.in
-       plugins/typing-break/Makefile.am
-       plugins/typing-break/*.ukui-settings-plugin.in
-       plugins/xrandr/Makefile.am
-       plugins/xrandr/*.ukui-settings-plugin.in
-       plugins/xrandr/*.png
-       plugins/xrandr/*.xml
-       plugins/xrandr/*.svg
-       plugins/xrdb/data/Makefile.am
-       plugins/xrdb/Makefile.am
-       plugins/xrdb/data/*.ad
-       plugins/xrdb/*.ukui-settings-plugin.in
-       plugins/xsettings/Makefile.am
-       plugins/xsettings/*.ukui-settings-plugin.in
-       po/ChangeLog
-       po/LINGUAS
-       po/POTFILES.in
-       po/POTFILES.skip
-       acinclude.m4
-       autogen.sh
-       configure.ac
-       AUTHORS
-       ChangeLog
-       NEWS
-       README
-Copyright: 2018, zhang heng <zhangheng@kylinos.cn>
-License: GPL-2+ or LGPL-2.1+
-Comment:
- License(s) assumed from COPYING and COPYING.LIB files.
-
-Files: po/*.po
-       po/gnome-copyrights.txt
-Copyright:
- 2003-2006, Miloslav Trmac <mitr@volny.cz>
- 2003-2005, Sharif FarsiWeb, Inc.
- 2004-2006, Adam Weinberger and the GNOME Foundation
- 2004, Zuza Software Foundation
- 2005, Canonical Ltd.
- 2006, Lukas Novotny <lukasnov@cvs.gnome.org>.
- 2007-2010, The Gnome Project.
- 2007, Aleś Navicki
- 2009, The Gnome Foundation.
- 2010, Damyan Ivanov.
- 1998-2010 Free Software Foundation, Inc.
- 2005-2008, Rosetta Contributors and Canonical Ltd
- Croatiann team
- 2001, Roy-Magne Mo <rmo@sunnmore.net>
- THE PACKAGE'S COPYRIGHT HOLDER
-License: GPL-2+ or LGPL-2.1+
-Comment:
- License(s) assumed from COPYING and COPYING.LIB files.
-
-Files: debian/*
-Copyright: 2011-2014 Stefano Karapetsas <stefano@karapetsas.com>
-           2014 Mike Gabriel <sunweaver@debian.org>
-           2017, Tianjin KYLIN Information Technology Co., Ltd.
-License: GPL-2+ or GPL-3+ or LGPL-2+ or LGPL-2.1+ or MIT~OldStyle+RedHat or MIT~OldStyleWithDisclaimer+RedHat
-
-License: GPL-2+
- This package is free software; you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation; either version 2 of the License, or
- (at your option) any later version.
- .
- This package is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- GNU Genaral Public License for more details.
- .
- On Debian systems, the complete text of the GNU General
- Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".
-
-License: GPL-3+
- This program is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
- .
- This program is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
- .
- On Debian systems, the complete text of the GNU General
- Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
-
-License: LGPL-2+
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Library General Public
- License as published by the Free Software Foundation; either
- version 2 of the License, or (at your option) any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Library General Public License for more details.
- .
- On Debian systems, the complete text of the GNU General
- Public License version LGPL-2 can be found in
- "/usr/share/common-licenses/LGPL-2".
-
-License: LGPL-2.1+
- This library is free software; you can redistribute it and/or
- modify it under the terms of the GNU Lesser General Public
- License as published by the Free Software Foundation; either
- version 2.1 of the License, or (at your option) any later version.
- .
- This library is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- Lesser General Public License for more details.
- .
- On Debian systems, the complete text of the GNU General
- Public License version LGPL-2.1 can be found in
- "/usr/share/common-licenses/LGPL-2.1".
-
-License: MIT~OldStyle+RedHat
- Permission to use, copy, modify, distribute, and sell this software and its
- documentation for any purpose is hereby granted without fee, provided that
- the above copyright notice appear in all copies and that both that
- copyright notice and this permission notice appear in supporting
- documentation, and that the name of Red Hat not be used in advertising or
- publicity pertaining to distribution of the software without specific,
- written prior permission.  Red Hat makes no representations about the
- suitability of this software for any purpose.  It is provided "as is"
- without express or implied warranty.
-
-License: MIT~OldStyleWithDisclaimer+RedHat
+  plugins/clipboard/list.h
+  plugins/clipboard/xutils.c
+Copyright: 2001, 2004, Red Hat, Inc.
+License: NTP~disclaimer
  Permission to use, copy, modify, distribute, and sell this software and its
  documentation for any purpose is hereby granted without fee, provided that
  the above copyright notice appear in all copies and that both that
@@ -463,3 +48,88 @@ License: MIT~OldStyleWithDisclaimer+RedHat
  WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
  OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
  CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+Files: plugins/clipboard/main.cpp
+  plugins/clipboard/xutils.h
+Copyright: 2020, KylinSoft Co., Ltd.
+License: GPL-3.0+
+
+Files: plugins/keybindings/dconf-util.c
+  plugins/keybindings/dconf-util.h
+Copyright: 2012, Stefano Karapetsas
+License: GPL-2+
+
+Files: plugins/locate-pointer/*
+Copyright: 2008, Carlos Garnacho <carlos@imendio.com>
+License: GPL-2+
+
+Files: plugins/locate-pointer/usd-locate-pointer.h
+Copyright: 2001, Jonathan Blandford <jrb@gnome.org>
+License: NTP
+ Permission to use, copy, modify, distribute, and sell this software and its
+ documentation for any purpose is hereby granted without fee, provided that
+ the above copyright notice appear in all copies and that both that
+ copyright notice and this permission notice appear in supporting
+ documentation, and that the name of Red Hat not be used in advertising or
+ publicity pertaining to distribution of the software without specific,
+ written prior permission.  Red Hat makes no representations about the
+ suitability of this software for any purpose.  It is provided "as is"
+ without express or implied warranty.
+
+Files: plugins/mpris/mpris.ukui-settings-plugin.in
+Copyright: 2013, Stefano Karapetsas
+License: GPL-3.0+
+
+Files: plugins/xsettings/fontconfig-monitor.c
+  plugins/xsettings/fontconfig-monitor.h
+Copyright: 2008, Red Hat, Inc.
+License: GPL-2+
+
+Files: plugins/xsettings/xsettings-common.c
+  plugins/xsettings/xsettings-common.h
+Copyright: 2001, 2004, Red Hat, Inc.
+License: NTP~disclaimer
+ Permission to use, copy, modify, distribute, and sell this software and its
+ documentation for any purpose is hereby granted without fee, provided that
+ the above copyright notice appear in all copies and that both that
+ copyright notice and this permission notice appear in supporting
+ documentation, and that the name of Red Hat not be used in advertising or
+ publicity pertaining to distribution of the software without specific,
+ written prior permission.  Red Hat makes no representations about the
+ suitability of this software for any purpose.  It is provided "as is"
+ without express or implied warranty.
+ .
+ RED HAT DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING ALL
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS, IN NO EVENT SHALL RED HAT
+ BE LIABLE FOR ANY SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+ WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+ OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+ CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+License: GPL-3.0+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+ .
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 3 can be found in "/usr/share/common-licenses/GPL-3".
+
+License: GPL-2+
+ This package is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; either version 2 of the License, or
+ (at your option) any later version.
+ .
+ This package is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Genaral Public License for more details.
+ .
+ On Debian systems, the complete text of the GNU General
+ Public License version 2 can be found in "/usr/share/common-licenses/GPL-2".

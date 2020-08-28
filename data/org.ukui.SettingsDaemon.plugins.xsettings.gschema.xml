@@ -1,0 +1,25 @@
+<schemalist>
+  <schema gettext-domain="ukui-settings-daemon" id="org.ukui.SettingsDaemon.plugins.xsettings" path="/org/ukui/settings-daemon/plugins/xsettings/">
+    <key name="active" type="b">
+      <default>true</default>
+      <summary>Activation of this plugin</summary>
+      <description>Whether this plugin would be activated by ukui-settings-daemon or not</description>
+    </key>
+    <key name="priority" type="i">
+      <default>2</default>
+      <summary>Priority to use for this plugin</summary>
+      <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
+    </key>
+    <key type="a{sv}" name="overrides">
+      <default>{}</default>
+      <summary>A dictionary of XSETTINGS to override</summary>
+      <description>This dictionary maps XSETTINGS names to overrides values. The values must be either strings, signed int32s or (in the case of colors), 4-tuples of uint16 (red, green, blue, alpha; 65535 is fully opaque).</description>
+    </key>
+    <key name="scaling-factor" type="i">
+      <default>0</default>
+      <range min="0" max="3"/>
+      <summary>Window Scaling Factor</summary>
+      <description>This controls the GTK scale factor that maps from window coordinates to the actual device pixels. On traditional systems this is 1, but on very high density displays (e.g. HiDPI, Retina) this can be a higher value (often 2). Set to 0 to auto-detect.</description>
+    </key>
+  </schema>
+</schemalist>

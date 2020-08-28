@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+glib-compile-schemas /usr/share/glib-2.0/schemas/
+
+xmodmap -e "add mod3 = Scroll_Lock"
+
+#DEBHELPER#

@@ -1,12 +1,18 @@
-ukui-settings-daemon (3.0.0-1) unstable; urgency=medium
+ukui-settings-daemon (3.0.1-1) experimental; urgency=medium
 
   * New upstream release.
 
- -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 10 Aug 2020 07:24:01 +0000
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 27 Aug 2020 13:38:20 +0800
+
+ukui-settings-daemon (3.0.0-1) experimental; urgency=medium
+
+  * New upstream release.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Wed, 26 Aug 2020 20:53:16 +0800
 
 ukui-settings-daemon (1.2.1-1) unstable; urgency=medium
 
-  * New upstream bugfix release sync from v10 mate-settings-daemon
+  * New upstream bugfix release.
     - Fix the wrong command when do action of shutdown and logout.
     - Fix the numlock issue.
     - Fix that the settings of cursor theme didn't work.

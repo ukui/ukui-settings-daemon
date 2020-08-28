@@ -1,12 +1,12 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*-
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
  *
- * Copyright (C) 2001 Bastien Nocera <hadess@hadess.net>
- * Copyright (C) 2017 Tianjin KYLIN Information Technology Co., Ltd.
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
- * This program is free software; you can redistribute it and/or modify
+ * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -14,15 +14,12 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301,
- * USA.
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #ifndef __ACME_H__
 #define __ACME_H__
 
-#include "usd-keygrab.h"
+#include "ukui-keygrab.h"
 
 #define BINDING_SCHEMA "org.ukui.SettingsDaemon.plugins.media-keys"
 
@@ -56,8 +53,6 @@ enum {
         FILE_MANAGER_KEY,
         ON_SCREEN_KEYBOARD_KEY,
         LOGOUT_KEY,
-        LOGOUT1_KEY,
-        LOGOUT2_KEY,
         TERMINAL_KEY,
         SCREENSHOT_KEY,
         WINDOW_SCREENSHOT_KEY,
@@ -101,8 +96,6 @@ static struct {
         { SCREENREADER_KEY, "screenreader", NULL, NULL },
         { ON_SCREEN_KEYBOARD_KEY, "on-screen-keyboard", NULL, NULL },
         { LOGOUT_KEY, "logout", NULL, NULL },
-        { LOGOUT1_KEY, "logout1", NULL, NULL },
-        { LOGOUT2_KEY, "logout2", NULL, NULL },
         { TERMINAL_KEY, "terminal", NULL, NULL },
         { SCREENSHOT_KEY, "screenshot", NULL, NULL },
         { WINDOW_SCREENSHOT_KEY, "window-screenshot", NULL, NULL },

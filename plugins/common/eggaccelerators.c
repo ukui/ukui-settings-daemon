@@ -1,23 +1,21 @@
-/* eggaccelerators.c
- * Copyright (C) 2002  Red Hat, Inc.; Copyright 1998, 2001 Tim Janik
- * Developed by Havoc Pennington, Tim Janik
+/* -*- Mode: C; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
  *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
- * This library is distributed in the hope that it will be useful,
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU Library General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
- * Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 #include "eggaccelerators.h"
 
 #include <stdlib.h>
@@ -227,7 +225,7 @@ is_keycode (const gchar *string)
 gboolean
 egg_accelerator_parse_virtual (const gchar            *accelerator,
                                guint                  *accelerator_key,
-			       guint                 **accelerator_codes,
+                               guint                 **accelerator_codes,
                                EggVirtualModifierType *accelerator_mods)
 {
   guint keyval;
