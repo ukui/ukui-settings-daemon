@@ -472,7 +472,6 @@ event_filter (GdkXEvent *gdkxevent,
       guint keyval;
       gint group;
 
-      syslog(LOG_ERR, "111keyval=%u, state=%d", keyval, xevent->xkey.state);
       /* get the keysym */
       group = (xevent->xkey.state & KEYBOARD_GROUP_MASK) >> KEYBOARD_GROUP_SHIFT;
       gdk_keymap_translate_keyboard_state (gdk_keymap_get_for_display (display),
