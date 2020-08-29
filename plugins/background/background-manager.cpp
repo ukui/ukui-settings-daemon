@@ -169,7 +169,7 @@ bool BackgroundManager::settings_change_event_cb (GSettings* settings, gpointer 
 
 void BackgroundManager::setup_background (BackgroundManager *manager)
 {
-    if(manager->mMateBG == NULL)
+    if(manager->mMateBG != NULL)
         return;
 
     manager->mMateBG = mate_bg_new();
