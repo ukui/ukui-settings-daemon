@@ -19,14 +19,12 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml \
-\#    $$PWD/org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.tablet-mode.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml  \
     $$PWD/org.ukui.peripherals-keyboard.gschema.xml	\
     $$PWD/org.ukui.peripherals-mouse.gschema.xml    \
-    $$PWD/org.ukui.peripherals-smartcard.gschema.xml     \
     $$PWD/org.ukui.peripherals-touchpad.gschema.xml.in \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml.in \
 
@@ -68,5 +66,4 @@ DISTFILES += \
     $$PWD/xrandr.ukui-settings-plugin       \
     $$PWD/xsettings.ukui-settings-plugin    \
     $$PWD/tablet-mode.ukui-settings-plugin
-#    $$PWD/smartcard.ukui-settings-plugin    \
 

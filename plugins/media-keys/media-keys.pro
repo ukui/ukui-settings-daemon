@@ -19,9 +19,9 @@ INCLUDEPATH += \
     $$PWD/../common
 
 LIBS += \
-    -lX11 -lXi \
-    -L$$OUT_PWD/../common/ -lcommon
+    -lX11 -lXi
 
+include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H

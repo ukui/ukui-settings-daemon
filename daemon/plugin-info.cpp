@@ -280,19 +280,19 @@ bool loadPluginModule(PluginInfo& pinfo)
     l.pop_back();
     path = l.join("/") + "/lib" + pinfo.mLocation + ".so";
 
-    if (path.isEmpty() || path.isNull()) {CT_SYSLOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
+    if (path.isEmpty() || path.isNull()) {syslog(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
     pinfo.mModule = new QLibrary(path);
     pinfo.mModule->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
     if (!(pinfo.mModule->load())) {
-        CT_SYSLOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
+        syslog(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
         pinfo.mAvailable = false;
         return false;
     }
     typedef PluginInterface* (*createPlugin) ();
     createPlugin p = (createPlugin)pinfo.mModule->resolve("createSettingsPlugin");
     if (!p) {
-        CT_SYSLOG(LOG_ERR, "create module class failed, error: '%s'", pinfo.mModule->errorString().toUtf8().data());
+        syslog(LOG_ERR, "create module class failed, error: '%s'", pinfo.mModule->errorString().toUtf8().data());
         return false;
     }
     pinfo.mPlugin = (PluginInterface*)p();

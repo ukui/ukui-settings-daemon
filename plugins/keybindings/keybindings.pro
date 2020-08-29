@@ -13,6 +13,7 @@ CONFIG += c++11 no_keywords link_pkgconfig plugin
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
@@ -25,10 +26,7 @@ PKGCONFIG += \
 INCLUDEPATH += \
         -I $$PWD/../../common   \
         -I $$PWD/../../         \
-        -I $$PWD/../common/      \
-        -I ukui-settings-daemon/
-
-LIBS +=-L$$OUT_PWD/../common/ -lcommon
+        -I $$PWD/../common/
 
 SOURCES += \
     dconf-util.c \

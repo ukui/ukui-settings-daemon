@@ -760,7 +760,6 @@ void set_motion_legacy_driver (MouseManager *manager,
 void set_motion (MouseManager *manager,
                  XDeviceInfo     *device_info)
 {
-    qDebug()<<property_exists_on_device (device_info, "libinput Accel Speed");
     if (property_exists_on_device (device_info, "libinput Accel Speed"))
         set_motion_libinput (manager, device_info);
     else

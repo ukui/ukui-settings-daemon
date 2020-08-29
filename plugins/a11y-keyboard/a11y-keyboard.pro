@@ -13,19 +13,20 @@ CONFIG += app_bunale
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
-        gtk+-3.0 \
+        gtk+-3.0  \
         glib-2.0  \
+        libnotify \
         gsettings-qt
 
 
 INCLUDEPATH += \
         -I $$PWD/../../common       \
-        -I $$PWD/../common          \
-        -I $$PWD/../../         \
-        -I ukui-settings-daemon/
+        -I $$PWD/../common/          \
+        -I $$PWD/../../
 
 SOURCES += \
     a11y-keyboard-manager.cpp \
