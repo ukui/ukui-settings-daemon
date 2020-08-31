@@ -11,7 +11,7 @@
       <description>Whether an OSD notification is shown to notify about changes</description>
     </key>
     <key name="priority" type="i">
-      <default>98</default>
+      <default>7</default>
       <summary>Priority to use for this plugin</summary>
       <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
     </key>

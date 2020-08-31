@@ -41,6 +41,7 @@ PluginManager* PluginManager::mPluginManager = nullptr;
 
 static bool is_schema (QString& schema);
 static bool register_manager(PluginManager& pm);
+bool sortPluginByPriority(PluginInfo* a,PluginInfo* b);
 
 PluginManager::PluginManager()
 {
@@ -122,7 +123,8 @@ bool PluginManager::managerStart()
     }
     g_dir_close(dir);
 
-    // FIXME:// sort plugin
+    //sort plugin
+	qSort(mPlugin->begin(),mPlugin->end(),sortPluginByPriority);
 
     CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
     for (int i = 0; i < mPlugin->size(); ++i) {
@@ -189,4 +191,9 @@ static bool register_manager(PluginManager& pm)
     CT_SYSLOG(LOG_DEBUG, "regist settings manager successful!");
 
     return true;
+}
+
+bool sortPluginByPriority(PluginInfo* a,PluginInfo* b)
+{
+    return a->getPluginPriority() < b->getPluginPriority();
 }
