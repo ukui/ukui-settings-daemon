@@ -44,6 +44,7 @@ BackgroundManager::BackgroundManager(QObject *parent) : QObject(parent)
     mScrSizes= nullptr;
     mDbusInterface = nullptr;
     mTime   = new QTimer(this);
+    mCallCount = 0;
 }
 
 BackgroundManager::~BackgroundManager()
@@ -131,9 +132,24 @@ void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager)
 void connect_screen_signals (BackgroundManager* manager)
 {
     GdkScreen *screen = gdk_screen_get_default();
-    g_signal_connect (screen, "size-changed", G_CALLBACK (on_screen_size_changed), manager);
+//    g_signal_connect (screen, "size-changed", G_CALLBACK (on_screen_size_changed), manager);
+    QDBusConnection::sessionBus().connect(QString(),
+                                          QString("/backend"),
+                                          "org.kde.kscreen.Backend","configChanged",
+                                          manager,
+                                          SLOT(callBackDrow()));
 }
-
+void BackgroundManager::callBackDrow(){
+    mCallCount++;
+    if(mCallCount == 2){
+        GdkScreen *qscreen = gdk_screen_get_default();
+        QScreen *screenx = QApplication::primaryScreen();
+        QRect rect =screenx->availableGeometry() ;
+        qDebug()<<"width:"<<rect.width()<<"height:"<<rect.height();
+        on_screen_size_changed(qscreen,this);
+        mCallCount = 0;
+    }
+}
 
 void on_bg_changed (MateBG*, BackgroundManager* manager)
 {
@@ -169,7 +185,7 @@ bool BackgroundManager::settings_change_event_cb (GSettings* settings, gpointer 
 
 void BackgroundManager::setup_background (BackgroundManager *manager)
 {
-    if(manager->mMateBG == NULL)
+    if(!manager->mMateBG == NULL)
         return;
 
     manager->mMateBG = mate_bg_new();

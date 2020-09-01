@@ -36,6 +36,7 @@ public:
     ~BackgroundManager();
     bool managerStart();
     void managerStop();
+    int mCallCount;
 
 public:
     void draw_bg_after_session_loads ();
@@ -48,6 +49,7 @@ public:
 private Q_SLOTS:
     void onSessionManagerSignal(QString, bool);
     void SettingsChangeEventIdleCb ();
+    void callBackDrow();
 
 private:
     BackgroundManager()=delete;
