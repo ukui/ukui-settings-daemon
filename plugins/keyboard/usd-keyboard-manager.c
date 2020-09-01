@@ -31,13 +31,14 @@
 #include <errno.h>
 
 #include <locale.h>
-
+#include <gio/gio.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
+#include <libusb-1.0/libusb.h>
 #ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
 #include <X11/extensions/xf86misc.h>
 #endif
@@ -412,90 +413,23 @@ usd_keyboard_manager_apply_settings (UsdKeyboardManager *manager)
         apply_settings (manager->priv->settings, NULL, manager);
 }
 
-
-/* Set ScrollLock state*/
-#define KEYBOARD_GROUP_SHIFT 13
-#define KEYBOARD_GROUP_MASK ((1 << 13) | (1 << 14))
-static GdkFilterReturn
-scroll_event_filter (GdkXEvent *xevent,
-        GdkEvent  *event,
-        gpointer   data)
-{
-  	XEvent *xev = (XEvent *) xevent;
-  	guint keyval;
-  	gint group;
-        static gboolean scroll_state = FALSE; 
-  	GdkScreen *screen = (GdkScreen *)data;
-
-  	if (xev->type == KeyPress || xev->type == KeyRelease)
-    	{
-      		/* get the keysym */
-      	    group = (xev->xkey.state & KEYBOARD_GROUP_MASK) >> KEYBOARD_GROUP_SHIFT;
-      	    gdk_keymap_translate_keyboard_state (gdk_keymap_get_default (),
-              	                                 xev->xkey.keycode,
-                                                 xev->xkey.state,
-                                	          group,
-                                        	  &keyval,
-                                          	  NULL, NULL, NULL);
-           if (keyval == GDK_KEY_Scroll_Lock)
-           {
-            	if (xev->type == KeyRelease)
-            	{
-			XAllowEvents (xev->xkey.display,
-                             	        SyncKeyboard,
-                         	        xev->xkey.time);
-			if(!scroll_state){
-			        scroll_state = !scroll_state;
-				system("xset led  named 'Scroll Lock'");
-			}else{
-                                scroll_state = !scroll_state;
-                                system("xset -led  named 'Scroll Lock'");
-                       }
-	    	}else{
-		        XAllowEvents (xev->xkey.display,
-                                     AsyncKeyboard,
-                                     xev->xkey.time);
-
-	    	}
-            }else {
-		XAllowEvents (xev->xkey.display,
-                ReplayKeyboard,
-                xev->xkey.time);
-          	XUngrabKeyboard (gdk_x11_get_default_xdisplay (),
-                      		 xev->xkey.time);
-	     }
-   	}
-}
-static void 
+static void
 scroll_lock_install()
 {
-
         /* Add Scroll_Lock key monitoring*/
         system("xmodmap -e 'add mod3 = Scroll_Lock'");
-#if 0
-        GdkKeymapKey *keys;
-        GdkDisplay *display;
-        int n_keys;
-        display = gdk_display_get_default ();
-        gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (),
-                                                       GDK_KEY_Scroll_Lock,
-                                                       &keys,
-                                                       &n_keys);
-        Window xroot;
-        GdkScreen *screen = gdk_screen_get_default();
-        xroot = gdk_x11_window_get_xid (gdk_screen_get_root_window (screen));
-        XGrabKey (GDK_DISPLAY_XDISPLAY (display),
-                            keys[0].keycode,
-                            AnyModifier,
-                            xroot,
-                            False,
-                            GrabModeAsync,
-                            GrabModeSync);
-	    gdk_window_add_filter (gdk_screen_get_root_window (screen),
-                                     scroll_event_filter,  screen);
-#endif
+        char *args[2];
+        args[0] = "/usr/bin/usd-usb-monitor";
+        args[1] = NULL;
+        g_spawn_async(g_get_home_dir (),
+                      args,
+                      NULL,
+                      G_SPAWN_SEARCH_PATH,
+                      NULL,
+                      NULL,
+                      NULL,
+                      NULL);
 }
-
 static gboolean
 start_keyboard_idle_cb (UsdKeyboardManager *manager)
 {

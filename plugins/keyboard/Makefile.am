@@ -51,6 +51,22 @@ plugin_in_files = 		\
 
 plugin_DATA = $(plugin_in_files:.ukui-settings-plugin.in=.ukui-settings-plugin)
 
+libexec_PROGRAMS = usd-usb-monitor
+
+usd_usb_monitor_SOURCES =    \
+	usd-usb-monitor.c
+
+usd_usb_monitor_CFLAGS = \
+    $(SETTINGS_PLUGIN_CFLAGS)   \
+	$(LIBMATEKBDUI_CFLAGS)      \
+    $(AM_CFLAGS)
+
+usd_usb_monitor_LDADD  =    \
+    $(SETTINGS_PLUGIN_LIBS) \
+	$(XF86MISC_LIBS)    \
+    $(LIBMATEKBDUI_LIBS)    \
+    $(NULL)
+
 EXTRA_DIST = 			\
 	$(icons_DATA)		\
 	$(plugin_in_files)	\
