@@ -40,6 +40,7 @@ public:
 public:
     void draw_bg_after_session_loads ();
     void disconnect_session_manager_listener ();
+    void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager);
     static void setup_background (BackgroundManager *manager);
     static bool settings_change_event_cb (GSettings* settings, gpointer keys, gint nKeys, BackgroundManager* manager);
     static void onBgHandingChangedSlot (GSettings* settings, const char* key, BackgroundManager* manager);
@@ -48,6 +49,7 @@ public:
 private Q_SLOTS:
     void onSessionManagerSignal(QString, bool);
     void SettingsChangeEventIdleCb ();
+    void callBackDrow();
 
 private:
     BackgroundManager()=delete;
@@ -63,7 +65,7 @@ private:
     friend bool peony_is_drawing_bg (BackgroundManager* manager);
     friend bool peony_can_draw_bg (BackgroundManager* manager);
     friend bool usd_can_draw_bg (BackgroundManager* manager);
-    friend void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager);
+//    friend void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager);
     friend void draw_background (BackgroundManager* manager, bool mayFade);
     friend void queue_timeout (BackgroundManager* manager);
     friend bool queue_setup_background (BackgroundManager* manager);
@@ -81,6 +83,7 @@ private:
     bool                    mDoFade;
     bool                    mDrawInProgress;
     QDBusInterface         *mDbusInterface;
+    int                     mCallCount;
 
     static BackgroundManager*   mBackgroundManager;
 };
