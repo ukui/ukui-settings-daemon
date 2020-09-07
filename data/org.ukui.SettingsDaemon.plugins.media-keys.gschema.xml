@@ -81,17 +81,17 @@
       <description>Binding to launch the email client.</description>
     </key>
     <key name="screensaver" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;l'</default>
+      <default>'&lt;mod4&gt;l'</default>
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
     <key name="ukui-control-center" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;i'</default>
+      <default>'&lt;mod4&gt;i'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
     <key name="peony-qt" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;e'</default>
+      <default>'&lt;mod4&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
