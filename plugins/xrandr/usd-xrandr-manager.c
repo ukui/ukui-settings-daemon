@@ -32,7 +32,6 @@
 #include <errno.h>
 
 #include <locale.h>
-
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
@@ -66,6 +65,9 @@
 #define CONF_KEY_TURN_ON_LAPTOP_MONITOR_AT_STARTUP     "turn-on-laptop-monitor-at-startup"
 #define CONF_KEY_DEFAULT_CONFIGURATION_FILE            "default-configuration-file"
 #define CONF_KEY_XRANDR_WIN_SHOW                       "xrandr-apply"
+
+#define XSETTINGS_SCHEMA                               "org.ukui.SettingsDaemon.plugins.xsettings"
+#define XSETTINGS_KEY_SCALING                          "scaling-factor"
 
 #define VIDEO_KEYSYM    "XF86Display"
 #define ROTATE_KEYSYM   "XF86RotateWindows"
@@ -1423,7 +1425,7 @@ void show_question(GSettings *scale)
     if (result){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 36);
-        g_settings_set_double (scale,"dpi",192);
+        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 2);
         g_object_unref (mouse);
         system("ukui-session-tools --logout");
     }
@@ -1437,11 +1439,6 @@ void show_question_one(GSettings *scale)
 {
     GtkWidget *dialog;
     GtkResponseType result;
-    GdkWindow   *window;
-    GdkScreen *screen = gdk_screen_get_default();
-    gint screen_w = gdk_screen_get_width(screen);
-    gint screen_h = gdk_screen_get_height(screen);
-    
     dialog = gtk_message_dialog_new(NULL,
                         GTK_DIALOG_MODAL,
                         GTK_MESSAGE_QUESTION,
@@ -1454,15 +1451,13 @@ void show_question_one(GSettings *scale)
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
     
-    gtk_window_move(GTK_WINDOW(dialog), screen_w/4, screen_h/3);
     result = gtk_dialog_run(GTK_DIALOG(dialog));
-
     gtk_widget_destroy(dialog);
 
     if (result){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 24);
-        g_settings_set_double (scale,"dpi",0);
+        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 1);
         g_object_unref (mouse);
         system("ukui-session-tools --logout");
     }
@@ -1490,6 +1485,83 @@ two_scale_logout_dialog(GSettings *scale)
     show_question(scale);
 }
 
+static void
+monitor_settings_screen_zoom(MateRRScreen *screen)
+{
+    MateRRConfig *config;
+    MateRROutputInfo **outputs;
+    int i;
+    GList *just_turned_on;
+    GList *l;
+
+    gboolean OneZoom    = FALSE;
+    gboolean DoubleZoom = FALSE;
+    GSettings *settings = g_settings_new(XSETTINGS_SCHEMA);
+
+    config = mate_rr_config_new_current (screen, NULL);
+    just_turned_on = NULL;
+    outputs = mate_rr_config_get_outputs (config);
+
+    for (i = 0; outputs[i] != NULL; i++) {
+        MateRROutputInfo *output = outputs[i];
+        if (mate_rr_output_info_is_connected (output) && !mate_rr_output_info_is_active (output)) {
+                just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
+        }
+    }
+
+    for (i = 0; outputs[i] != NULL; i++) {
+        MateRROutputInfo *output = outputs[i];
+
+        if (g_list_find (just_turned_on, GINT_TO_POINTER (i)))
+            continue;
+
+        if (mate_rr_output_info_is_active (output)) {
+            int width, height;
+            mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
+            /* Detect 4K screen switching and prompt whether to zoom.
+             * 检测4K屏切换，并提示是否缩放
+             */
+            int scaling = g_settings_get_int (settings, XSETTINGS_KEY_SCALING);
+
+            if(height > 2000 && scaling < 2){
+                DoubleZoom = TRUE;//设置缩放为2倍
+            }else if(height <= 2000 && scaling >= 2){
+                OneZoom = TRUE;
+            }
+        }
+    }
+    for (l = just_turned_on; l; l = l->next) {
+        MateRROutputInfo *output;
+        int width,height;
+
+        i = GPOINTER_TO_INT (l->data);
+        output = outputs[i];
+
+        /* since the output was off, use its preferred width/height (it doesn't have a real width/height yet) */
+        width = mate_rr_output_info_get_preferred_width (output);
+        height = mate_rr_output_info_get_preferred_height (output);
+
+        /* Detect 4K screen switching and prompt whether to zoom.
+         * 检测4K屏切换，并提示是否缩放
+         */
+        int scaling = g_settings_get_int (settings, XSETTINGS_KEY_SCALING);
+        if(height > 2000 && scaling < 2 && !DoubleZoom){
+            DoubleZoom = TRUE; //设置缩放为2倍
+        }else if(height <= 2000 && scaling >= 2 && !OneZoom){
+            OneZoom = TRUE;
+        }else if (height > 2000 && scaling >= 2 && OneZoom)
+            OneZoom = FALSE;
+    }
+    if(OneZoom)
+        one_scale_logout_dialog(settings);
+    else if(DoubleZoom)
+        two_scale_logout_dialog(settings);
+
+    g_object_unref (settings);
+    g_list_free (just_turned_on);
+    g_object_unref (config);
+
+}
 
 static void
 auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
@@ -1504,12 +1576,6 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         GError *error;
         gboolean applicable;
         
-        int screen1_height;
-        int screen2_height;
-        gboolean once_scale;
-        GSettings *settings = g_settings_new("org.ukui.font-rendering");
-
-
         config = mate_rr_config_new_current (priv->rw_screen, NULL);
 
         /* For outputs that are connected and on (i.e. they have a CRTC assigned
@@ -1558,25 +1624,6 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
                         mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
                         mate_rr_output_info_set_geometry (output, x, 0, width, height);
-		       /* Detect 4K screen switching and prompt whether to zoom.
-                        * 检测4K屏切换，并提示是否缩放 
-                        */
-                        if(height > 2000){
-                            double dpi = g_settings_get_double (settings,"dpi");
-                            g_settings_set_int(settings,"screen-height1",height);
-                            once_scale = FALSE;
-                            if(dpi <= 96){
-                                two_scale_logout_dialog(settings);//设置缩放为2倍
-                            }
-                        }
-                        screen1_height = g_settings_get_int(settings,"screen-height1");
-                        screen2_height = g_settings_get_int(settings,"screen-height2");
-
-                        if((height <= 2000 && screen1_height >2000) || (height <=2000 && screen2_height > 2000)) {
-                            g_settings_set_int(settings,"screen-height1",height);
-                            g_settings_set_int(settings,"screen-height2",height);
-                            once_scale = TRUE;
-                        } 
                         
                         x += width;
                 }
@@ -1586,7 +1633,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         for (l = just_turned_on; l; l = l->next) {
                 MateRROutputInfo *output;
-		int width,height;
+		        int width,height;
 
                 i = GPOINTER_TO_INT (l->data);
                 output = outputs[i];
@@ -1597,28 +1644,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                 width = mate_rr_output_info_get_preferred_width (output);
                 height = mate_rr_output_info_get_preferred_height (output);
                 mate_rr_output_info_set_geometry (output, x, 0, width, height);
-                
-                 /* Detect 4K screen switching and prompt whether to zoom.
-                  * 检测4K屏切换，并提示是否缩放 
-                  */
-                if(height > 2000){
-                        double dpi = g_settings_get_double (settings,"dpi");
-                        g_settings_set_int(settings,"screen-height2",height);
-                        once_scale = FALSE;
-                        if (dpi <= 96){
-                                two_scale_logout_dialog(settings);//设置缩放为2倍
-                        }
-                }
-                screen1_height = g_settings_get_int(settings,"screen-height1");
-                screen2_height = g_settings_get_int(settings,"screen-height2");
-                
-                if( height<=2000 && screen2_height>2000){
-                    g_settings_set_int(settings,"screen-height2",height);
-                    double dpi = g_settings_get_double (settings,"dpi");
-                    if (dpi > 96)
-                        one_scale_logout_dialog(settings);//设置缩放为1倍
-                } 
-                
+
                 x += width;
         }
 
@@ -1659,12 +1685,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         if (applicable)
                 apply_configuration_and_display_error (manager, config, timestamp);
-        if(once_scale){
-            double dpi = g_settings_get_double (settings,"dpi");
-            if(dpi>96)
-                one_scale_logout_dialog(settings);
-        }
-        g_object_unref (settings);
+
         g_list_free (just_turned_on);
         g_object_unref (config);
 
@@ -1806,7 +1827,6 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                  * server is just notifying us, and we need to configure the
                  * outputs in a sane way.
                  */
-
                 char *intended_filename;
                 GError *error;
                 gboolean success;
@@ -1846,17 +1866,17 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                                 log_msg ("  Ignored event as old and new config timestamps are the same\n");
                 } else
                         log_msg ("Applied stored configuration to deal with event\n");
+                /*监听HDMI插拔设置缩放*/
+                monitor_settings_screen_zoom(screen);
         }
         
         /* 添加触摸屏鼠标设置 */
         set_touchscreen_cursor_rotation(screen);
 
-
         /* poke mate-color-manager */
         apply_color_profiles ();
 
         refresh_tray_icon_menu_if_active (manager, MAX (change_timestamp, config_timestamp));
-
         log_close ();
 }
 
@@ -2552,6 +2572,7 @@ gboolean
 usd_xrandr_manager_start (UsdXrandrManager *manager,
                           GError          **error)
 {
+        GdkDisplay      *display;
         g_debug ("Starting xrandr manager");
         ukui_settings_profile_start (NULL);
 
@@ -2581,28 +2602,29 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                           G_CALLBACK (on_config_changed),
                           manager);
 
+        display = gdk_display_get_default ();
         if (manager->priv->switch_video_mode_keycode) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (display);
 
                 XGrabKey (gdk_x11_get_default_xdisplay(),
                           manager->priv->switch_video_mode_keycode, AnyModifier,
                           gdk_x11_get_default_root_xwindow(),
                           True, GrabModeAsync, GrabModeAsync);
 
-                gdk_flush ();
-                gdk_error_trap_pop_ignored ();
+                gdk_display_flush (display);
+                gdk_x11_display_error_trap_pop_ignored (display);
         }
 
         if (manager->priv->rotate_windows_keycode) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (display);
 
                 XGrabKey (gdk_x11_get_default_xdisplay(),
                           manager->priv->rotate_windows_keycode, AnyModifier,
                           gdk_x11_get_default_root_xwindow(),
                           True, GrabModeAsync, GrabModeAsync);
 
-                gdk_flush ();
-                gdk_error_trap_pop_ignored ();
+                gdk_display_flush (display);
+                gdk_x11_display_error_trap_pop_ignored (display);
         }
 
         show_timestamps_dialog (manager, "Startup");
@@ -2634,28 +2656,31 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
 void
 usd_xrandr_manager_stop (UsdXrandrManager *manager)
 {
+        GdkDisplay      *display;
         g_debug ("Stopping xrandr manager");
 
         manager->priv->running = FALSE;
 
+        display = gdk_display_get_default ();
+
         if (manager->priv->switch_video_mode_keycode) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (display);
 
                 XUngrabKey (gdk_x11_get_default_xdisplay(),
                             manager->priv->switch_video_mode_keycode, AnyModifier,
                             gdk_x11_get_default_root_xwindow());
 
-                gdk_error_trap_pop_ignored ();
+                gdk_x11_display_error_trap_pop_ignored (display);
         }
 
         if (manager->priv->rotate_windows_keycode) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (display);
 
                 XUngrabKey (gdk_x11_get_default_xdisplay(),
                             manager->priv->rotate_windows_keycode, AnyModifier,
                             gdk_x11_get_default_root_xwindow());
 
-                gdk_error_trap_pop_ignored ();
+                gdk_x11_display_error_trap_pop_ignored (display);
         }
 
         gdk_window_remove_filter (gdk_get_default_root_window (),
@@ -2703,7 +2728,6 @@ get_keycode_for_keysym_name (const char *name)
         guint keyval;
 
         dpy = gdk_x11_get_default_xdisplay ();
-
         keyval = gdk_keyval_from_name (name);
         return XKeysymToKeycode (dpy, keyval);
 }
