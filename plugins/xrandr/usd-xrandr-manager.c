@@ -1730,18 +1730,84 @@ apply_color_profiles (void)
         }
 }
 
-/*检测到旋转，更改触摸屏鼠标光标位置*/
-void set_touchscreen_cursor(void *date)
+/*查找触摸屏设备ID*/
+static gboolean
+find_touchscreen_device(Display* display, XIDeviceInfo *dev)
 {
-        Display *xdisplay = XOpenDisplay(NULL);
-        Atom property_atom;
-        property_atom = XInternAtom (xdisplay, "Coordinate Transformation Matrix", True);
-        if (!property_atom)
+        int i, j;
+        if (dev->use != XISlavePointer)
+            return FALSE;
+        if (!dev->enabled)
+        {
+            printf("\tThis device is disabled\n");
+            return FALSE;
+        }
+
+        for (i = 0; i < dev->num_classes; i++)
+        {
+            if (dev->classes[i]->type == XITouchClass)
+            {
+                XITouchClassInfo *t = (XITouchClassInfo*)dev->classes[i];
+
+                if (t->mode == XIDirectTouch)
+                return TRUE;
+            }
+        }
+        return FALSE;
+}
+
+/*检测到旋转，更改触摸屏鼠标光标位置*/
+void set_touchscreen_cursor(float matrix[])
+{
+        int ts_device_id = 0;
+        Atom prop_float, prop_matrix;
+
+        union {
+            unsigned char *c;
+            float *f;
+        } data;
+
+        int format_return;
+        Atom type_return;
+
+        unsigned long nitems;
+        unsigned long bytes_after;
+
+        int rc;
+        int i, ndevices;
+        XIDeviceInfo *info;
+        Display *dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+        info = XIQueryDevice(dpy, XIAllDevices, &ndevices);
+
+        for (i = 0; i < ndevices; i++)
+        {
+            if (find_touchscreen_device(dpy, &info[i]))
+            ts_device_id = info[i].deviceid;
+        }
+
+        if (ts_device_id == 0)
             return;
-        Atom type = XInternAtom (xdisplay, "FLOAT", False);
-        XIChangeProperty (xdisplay, XITouchClass, property_atom, type,
-                          32, XIPropModeReplace, date, 9);
-        XCloseDisplay(xdisplay);
+
+        prop_float = XInternAtom(dpy, "FLOAT", False);
+        prop_matrix = XInternAtom(dpy, "Coordinate Transformation Matrix", False);
+
+        if (!prop_float)
+            return;
+
+        if (!prop_matrix)
+            return;
+        rc = XIGetProperty (dpy, XITouchClass, prop_matrix, 0, 9, False,
+                            prop_float, &type_return, &format_return, &nitems, &bytes_after, &data.c);
+
+        if (rc != Success || prop_float != type_return || format_return != 32 ||
+            nitems != 9 || bytes_after != 0)
+            return;
+
+        memcpy(data.f, matrix, 9*sizeof(float));
+        XIChangeProperty (dpy, ts_device_id, prop_matrix, prop_float,
+                          format_return, PropModeReplace, data.c, nitems);
+
+        XIFreeDeviceInfo(info);
 }
 
 /* 设置触摸屏触点的角度 */

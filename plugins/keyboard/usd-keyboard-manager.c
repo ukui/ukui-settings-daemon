@@ -142,7 +142,7 @@ numlock_xkb_init (UsdKeyboardManager *manager)
         Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         gboolean have_xkb;
         int opcode, error_base, major, minor;
-
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         have_xkb = XkbQueryExtension (dpy,
                                       &opcode,
                                       &manager->priv->xkb_event_base,
@@ -160,7 +160,7 @@ numlock_xkb_init (UsdKeyboardManager *manager)
         } else {
                 g_warning ("XKB extension not available");
         }
-
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
         manager->priv->have_xkb = have_xkb;
 }
 
@@ -172,10 +172,12 @@ static void
 capslock_set_xkb_state(gboolean lock_state)
 {
         unsigned int caps_mask;
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
         caps_mask = XkbKeysymToModifiers (dpy, XK_Caps_Lock);
         XkbLockModifiers (dpy, XkbUseCoreKbd, caps_mask, lock_state ? caps_mask : 0);
         XSync (dpy, FALSE);
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
 static unsigned
@@ -226,7 +228,11 @@ xkb_events_filter (GdkXEvent *xev_,
                 return GDK_FILTER_CONTINUE;
 
         if (xkbev->state.changed & XkbModifierLockMask) {
+
+                gdk_x11_display_error_trap_push(gdk_display_get_default());
                 unsigned num_mask = numlock_NumLock_modifier_mask ();
+                gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
+
                 unsigned locked_mods = xkbev->state.locked_mods;
                 int numlock_state;
 
@@ -299,13 +305,14 @@ apply_bell (UsdKeyboardManager *manager)
         kbdcontrol.bell_percent = bell_volume;
         kbdcontrol.bell_pitch = bell_pitch;
         kbdcontrol.bell_duration = bell_duration;
-        gdk_error_trap_push ();
+
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         XChangeKeyboardControl (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                 KBKeyClickPercent | KBBellPercent | KBBellPitch | KBBellDuration,
                                 &kbdcontrol);
 
         XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
-        //gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
 static void
@@ -319,13 +326,13 @@ apply_numlock (UsdKeyboardManager *manager)
         rnumlock = g_settings_get_boolean  (settings, KEY_NUMLOCK_REMEMBER);
         manager->priv->old_state = g_settings_get_enum (manager->priv->settings, KEY_NUMLOCK_STATE);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         if (rnumlock) {
                 numlock_set_xkb_state (manager->priv->old_state);
         }
 
         XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
-        //gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
 static void
@@ -342,7 +349,7 @@ apply_repeat (UsdKeyboardManager *manager)
         rate	      = g_settings_get_int  (settings, KEY_RATE);
         delay         = g_settings_get_int  (settings, KEY_DELAY);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         if (repeat) {
                 gboolean rate_set = FALSE;
 
@@ -358,7 +365,7 @@ apply_repeat (UsdKeyboardManager *manager)
         }
 
         XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
-        //gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
 static void
@@ -380,8 +387,11 @@ apply_settings (GSettings          *settings,
             /* Fix numlock and capslock indicator problem,
              * Negate is reset the status of the lamp.
              */
+            gdk_x11_display_error_trap_push(gdk_display_get_default());
             numlock_set_xkb_state (numlock_get_settings_state (settings));
             capslock_set_xkb_state(g_settings_get_boolean(settings, KET_CAPSLOCK_STATE));
+            XSync (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), FALSE);
+            gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
         }
     }
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
@@ -531,11 +541,12 @@ usd_keyboard_manager_finalize (GObject *object)
          * and it needs to be pressed to enter the small keyboard number
         */
 	    keyboard_manager->priv->old_state = 0;
+        gdk_x11_display_error_trap_push(gdk_display_get_default());
         numlock_set_xkb_state(keyboard_manager->priv->old_state);
         
         /* Fix after logout the problem of CapsLock light */
         capslock_set_xkb_state(FALSE);
-
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
         g_return_if_fail (keyboard_manager->priv != NULL);
 
         G_OBJECT_CLASS (usd_keyboard_manager_parent_class)->finalize (object);
