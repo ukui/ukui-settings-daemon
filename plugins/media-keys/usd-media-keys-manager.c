@@ -1033,8 +1033,6 @@ do_action (UsdMediaKeysManager *manager,
                 do_shutdown_action (manager);
                 break;
 	case LOGOUT_KEY:
-	case LOGOUT1_KEY:
-	case LOGOUT2_KEY:
 		do_logout_action (manager);
 		break;
         case EJECT_KEY:
@@ -1062,6 +1060,7 @@ do_action (UsdMediaKeysManager *manager,
                 do_url_action (manager, "mailto");
                 break;
         case SCREENSAVER_KEY:
+        case SCREENSAVER_KEY_2:
                 if ((cmd = g_find_program_in_path ("ukui-screensaver-command"))) {
                         execute (manager, "ukui-screensaver-command --lock", FALSE, FALSE);
                 } else if ((cmd = g_find_program_in_path ("ukui-screensaver-command"))) {
@@ -1069,15 +1068,14 @@ do_action (UsdMediaKeysManager *manager,
                 } else {
                         execute (manager, "xscreensaver-command -lock", FALSE, FALSE);
                 }
-
                 g_free (cmd);
                 break;
         case SETTINGS_KEY:
                 execute(manager, "ukui-control-center", FALSE, FALSE);
                 break;
         case FILE_MANAGER_KEY:
-                //execute(manager, "peony", FALSE, FALSE);
-		system("peony");
+        case FILE_MANAGER_KEY_2:
+                execute(manager, "peony", FALSE, FALSE);
                 break;
         case HELP_KEY:
                 do_url_action (manager, "help");
@@ -1127,6 +1125,7 @@ do_action (UsdMediaKeysManager *manager,
                 do_on_screen_keyboard_action (manager);
                 break;
         case TERMINAL_KEY:
+        case TERMINAL_KEY_2:
                 do_terminal_action (manager);
                 break;
         case SCREENSHOT_KEY:

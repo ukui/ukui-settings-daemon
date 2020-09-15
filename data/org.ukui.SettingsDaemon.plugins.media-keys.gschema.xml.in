@@ -50,16 +50,6 @@
       <summary>Log out</summary>
       <description>Binding to log out.</description>
     </key>
-    <key name="logout1" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;KP_Delete'</default>
-      <summary>Log out</summary>
-      <description>Binding to log out.</description>
-    </key>
-    <key name="logout2" type="s">
-      <default>'&lt;Primary&gt;&lt;Alt&gt;KP_Decimal'</default>
-      <summary>Log out</summary>
-      <description>Binding to log out.</description>
-    </key>
     <key name="eject" type="s">
       <default>'XF86Eject'</default>
       <summary>Eject</summary>
@@ -85,13 +75,23 @@
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
+    <key name="screensaver2" type="s">
+      <default>'&lt;Win&gt;l'</default>
+      <summary>Lock screen</summary>
+      <description>Binding to lock the screen.</description>
+    </key>
     <key name="ukui-control-center" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;i'</default>
+      <default>'&lt;Win&gt;i'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
     <key name="peony-qt" type="s">
-      <default>'&lt;mod4&gt;e'</default>
+      <default>'&lt;Win&gt;e'</default>
+      <summary>Open File Manager</summary>
+      <description>Binding to open file manager.</description>
+    </key>
+    <key name="peony-qt2" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
@@ -157,6 +157,11 @@
     </key>
     <key name="terminal" type="s">
       <default>'&lt;Control&gt;&lt;Alt&gt;t'</default>
+      <summary>Terminal</summary>
+      <description>Open mate terminal.</description>
+    </key>
+    <key name="terminal2" type="s">
+      <default>'&lt;Win&gt;t'</default>
       <summary>Terminal</summary>
       <description>Open mate terminal.</description>
     </key>
