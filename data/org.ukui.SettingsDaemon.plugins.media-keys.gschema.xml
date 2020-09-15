@@ -81,17 +81,47 @@
       <description>Binding to launch the email client.</description>
     </key>
     <key name="screensaver" type="s">
-      <default>'&lt;mod4&gt;l'</default>
+      <default>'&lt;Control&gt;&lt;Alt&gt;l'</default>
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
+    <key name="screensaver2" type="s">
+      <default>'&lt;Win&gt;l'</default>
+      <summary>Lock screen</summary>
+      <description>Binding to lock the screen.</description>
+    </key>
+    <key name="ukui-sidebar" type="s">
+      <default>'&lt;Win&gt;a'</default>
+      <summary>Unflod Ukui Sidebar</summary>
+      <description>Binding to unflod the sidebar.</description>
+    </key>
+    <key name="ukui-sidebar2" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;a'</default>
+      <summary>Unflod Ukui Sidebar</summary>
+      <description>Binding to unflod the sidebar.</description>
+    </key>
+    <key name="ukui-window-switch" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
+    <key name="ukui-window-switch2" type="s">
+      <default>'&lt;Win&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
     <key name="ukui-control-center" type="s">
-      <default>'&lt;mod4&gt;i'</default>
+      <default>'&lt;Win&gt;i'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
     <key name="peony-qt" type="s">
-      <default>'&lt;mod4&gt;e'</default>
+      <default>'&lt;Control&gt;&lt;Alt&gt;e'</default>
+      <summary>Open File Manager</summary>
+      <description>Binding to open file manager.</description>
+    </key>
+    <key name="peony-qt2" type="s">
+      <default>'&lt;Win&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
@@ -160,6 +190,11 @@
       <summary>Terminal</summary>
       <description>Open mate terminal.</description>
     </key>
+    <key name="terminal2" type="s">
+      <default>'&lt;Win&gt;t'</default>
+      <summary>Terminal</summary>
+      <description>Open mate terminal.</description>
+    </key>
     <key name="screenshot" type="s">
       <default>'Print'</default>
       <summary>Take a screenshot</summary>
@@ -174,6 +209,16 @@
       <default>'&lt;Shift&gt;Print'</default>
       <summary>Take a screenshot of an area</summary>
       <description>Binding to take a screenshot of an area.</description>
+    </key>
+    <key name="ukui-system-monitor" type="s">
+      <default>'&lt;Control&gt;&lt;Alt&gt;.'</default>
+      <summary>Open the system monitor</summary>
+      <description>Binding open the ukui-system-monitor.</description>
+    </key>
+    <key name="nm-connection-editor" type="s">
+      <default>'&lt;Win&gt;k'</default>
+      <summary>Open the internet connectionr</summary>
+      <description>Binding open the unm-connection-edito.</description>
     </key>
   </schema>
 </schemalist>

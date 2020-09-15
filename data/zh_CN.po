@@ -519,6 +519,10 @@ msgstr "锁住屏幕的键绑定。"
 msgid "Open System Settings"
 msgstr "打开控制面板"
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:108
+msgid "Open Window Switch"
+msgstr "打开工作区"
+
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:32
 #, fuzzy
 msgid "Binding to open system settings."
@@ -718,3 +722,14 @@ msgstr ""
 msgid "UKUI Settings Daemon"
 msgstr "UKUI 设置守护程序"
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:93
+msgid "Unflod Ukui Sidebar"
+msgstr "展开侧边栏"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:183
+msgid "Open the system monitor"
+msgstr "打开系统监视器"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:188
+msgid "Open the internet connectionr"
+msgstr "打开网络连接"

@@ -298,12 +298,18 @@ bool MediaKeysManager::doAction(int type)
         doUrlAction("mailto");
         break;
     case SCREENSAVER_KEY:
+    case SCREENSAVER_KEY_2:
         doScreensaverAction();
         break;
     case SETTINGS_KEY:
         doSettingsAction();
         break;
+    case WINDOWSWITCH_KEY:
+    case WINDOWSWITCH_KEY_2:
+        doWindowSwitchAction();
+        break;
     case FILE_MANAGER_KEY:
+    case FILE_MANAGER_KEY_2:
         doOpenFileManagerAction();
         break;
     case HELP_KEY:
@@ -355,6 +361,7 @@ bool MediaKeysManager::doAction(int type)
         doOnScreenKeyboardAction();
         break;
     case TERMINAL_KEY:
+    case TERMINAL_KEY_2:
         doOpenTerminalAction();
         break;
     case SCREENSHOT_KEY:
@@ -365,6 +372,16 @@ bool MediaKeysManager::doAction(int type)
         break;
     case WINDOW_SCREENSHOT_KEY:
         doScreenshotAction(" -w");
+        break;
+    case SIDEBAR_KEY:
+    case SIDEBAR_KEY_2:
+        doSidebarAction();
+        break;
+    case SYSTEM_MONITOR_KEY:
+        doOpenMonitor();
+        break;
+    case CONNECTION_EDITOR_KEY:
+        doOpenConnectionEditor();
         break;
     default:
         break;
@@ -689,6 +706,11 @@ void MediaKeysManager::doSettingsAction()
     executeCommand("ukui-control-center","");
 }
 
+void MediaKeysManager::doWindowSwitchAction()
+{
+    executeCommand("ukui-window-switch"," --show-workspace");
+}
+
 void MediaKeysManager::doOpenFileManagerAction()
 {
     executeCommand("peony","");
@@ -751,6 +773,19 @@ void MediaKeysManager::doScreenshotAction(const QString pramater)
     executeCommand("mate-screenshot",pramater);
 }
 
+void MediaKeysManager::doSidebarAction()
+{
+    executeCommand("ukui-sidebar"," -show");
+}
+
+void MediaKeysManager::doOpenMonitor()
+{
+    executeCommand("ukui-system-monitor","");
+}
+void MediaKeysManager::doOpenConnectionEditor()
+{
+    executeCommand("nm-connection-editor","");
+}
 void MediaKeysManager::doUrlAction(const QString scheme)
 {
     GError *error = NULL;

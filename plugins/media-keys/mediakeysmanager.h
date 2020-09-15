@@ -99,9 +99,13 @@ private:
     void doScreenreaderAction();
     void doOnScreenKeyboardAction();
     void doOpenTerminalAction();
+    void doOpenMonitor();
+    void doOpenConnectionEditor();
     void doScreenshotAction(const QString);
     void doUrlAction(const QString);
     void doMultiMediaPlayerAction(const QString);
+    void doSidebarAction();
+    void doWindowSwitchAction();
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);

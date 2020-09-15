@@ -68,6 +68,16 @@ is_ctl (const gchar *string)
 }
 
 static inline gboolean
+is_win (const gchar *string)
+{
+  return ((string[0] == '<') &&
+      (string[1] == 'w' || string[1] == 'W') &&
+      (string[2] == 'i' || string[2] == 'I') &&
+      (string[3] == 'n' || string[3] == 'N') &&
+      (string[4] == '>'));
+}
+
+static inline gboolean
 is_modx (const gchar *string)
 {
   return ((string[0] == '<') &&
@@ -329,6 +339,12 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
 	      len -= 7;
 	      mods |= EGG_VIRTUAL_SUPER_MASK;
 	    }
+        else if (len >= 5 && is_win (accelerator))
+        {
+            accelerator += 5;
+            len -= 5;
+            mods |= EGG_VIRTUAL_MOD4_MASK;
+        }
 	  else
 	    {
 	      gchar last_ch;
@@ -344,7 +360,10 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
 	}
       else
 	{
-          keyval = gdk_keyval_from_name (accelerator);
+          if (*accelerator == '.')
+              keyval = gdk_keyval_from_name ("period");
+          else
+              keyval = gdk_keyval_from_name (accelerator);
 
           if (keyval == 0)
 	    {
