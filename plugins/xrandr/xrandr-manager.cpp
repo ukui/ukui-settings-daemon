@@ -19,8 +19,9 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QMessageBox>
-
+#include <QProcess>
 #include "xrandr-manager.h"
+
 
 #define SETTINGS_XRANDR_SCHEMAS "org.ukui.SettingsDaemon.plugins.xrandr"
 #define XRANDR_ROTATION_KEY     "xrandr-rotations"
@@ -307,18 +308,60 @@ void XrandrManager::AutoConfigureOutputs (XrandrManager *manager,
     g_object_unref (config);
 }
 
-/*检测到旋转，更改触摸屏鼠标光标位置*/
-void SetTouchscreenCursor(void *date)
+/*查找触摸屏设备ID*/
+static gboolean find_touchscreen_device(Display* display, XIDeviceInfo *dev)
 {
-        Display *xdisplay = XOpenDisplay(NULL);
-        Atom property_atom;
-        property_atom = XInternAtom (xdisplay, "Coordinate Transformation Matrix", True);
-        if (!property_atom)
-            return;
-        Atom type = XInternAtom (xdisplay, "FLOAT", False);
-        XIChangeProperty (xdisplay, XITouchClass, property_atom, type,
-                          32, XIPropModeReplace, (unsigned char *)date, 9);
-        XCloseDisplay(xdisplay);
+    int i, j;
+    if (dev->use != XISlavePointer)
+        return FALSE;
+    if (!dev->enabled)
+    {
+        qDebug("This device is disabled.");
+        return FALSE;
+    }
+
+    for (i = 0; i < dev->num_classes; i++)
+    {
+        if (dev->classes[i]->type == XITouchClass)
+        {
+            XITouchClassInfo *t = (XITouchClassInfo*)dev->classes[i];
+
+            if (t->mode == XIDirectTouch)
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+/*检测到旋转，更改触摸屏鼠标光标位置*/
+void SetTouchscreenCursor(float (&matrix)[9])
+{
+    Display *xdisplay = XOpenDisplay(NULL);
+    Atom property_atom;
+    XIDeviceInfo *info;
+    int i, ndevices;
+    int ts_device_id = 0;
+
+    info = XIQueryDevice(xdisplay, XIAllDevices, &ndevices);
+
+    for (i = 0; i < ndevices; i++)
+    {
+        if (find_touchscreen_device(xdisplay, &info[i])) {
+            ts_device_id = info[i].deviceid;
+        } 
+    }
+    if (ts_device_id == 0) {
+        qDebug("device id is 0.");
+        return;
+    }
+    
+    property_atom = XInternAtom (xdisplay, "Coordinate Transformation Matrix", True);
+    if (!property_atom)
+        return;
+    Atom type = XInternAtom (xdisplay, "FLOAT", False);
+    XIChangeProperty (xdisplay, ts_device_id, property_atom, type,
+                        32, XIPropModeReplace, (unsigned char *)(&matrix[0]), 9);
+    XCloseDisplay(xdisplay);
 }
 
 bool XrandrManager::ApplyConfigurationFromFilename (XrandrManager *manager,
@@ -358,7 +401,6 @@ bool XrandrManager::ApplyStoredConfigurationAtStartup(XrandrManager *manager,
         manager->RestoreBackupConfiguration (manager, backup_filename, intended_filename, timestamp);
 
     success = ApplyConfigurationFromFilename (manager, intended_filename, timestamp);
-
     free (backup_filename);
     free (intended_filename);
     return success;
@@ -377,35 +419,36 @@ void SetTouchscreenCursorRotation(MateRRScreen *screen, QGSettings *settngs)
         MateRROutputInfo *info = outputs[i];
         if(mate_rr_output_info_is_connected (info)){
             int rotation = mate_rr_output_info_get_rotation(info);
+            qDebug("rotation is %d.", rotation);
             switch(rotation){
                 case MATE_RR_ROTATION_0:
                 {
                     float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
+                    SetTouchscreenCursor(full_matrix);
                     break;
                 }
                 case MATE_RR_ROTATION_90:
                 {
                     float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
+                    SetTouchscreenCursor(full_matrix);
                     break;
                 }
                 case MATE_RR_ROTATION_180:
                 {
                     float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
+                    SetTouchscreenCursor(full_matrix);
                     break;
                 }
                 case MATE_RR_ROTATION_270:
                 {
                     float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
+                    SetTouchscreenCursor(full_matrix);
                     break;
                 }
                 default:
                 {
                     float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                    SetTouchscreenCursor(&full_matrix);
+                    SetTouchscreenCursor(full_matrix);
                 }
             }
         }
@@ -459,7 +502,7 @@ void XrandrManager::RotationChangedEvent(QString key)
 
     angle = mXrandrSetting->getEnum(XRANDR_ROTATION_KEY);
     qDebug()<<"angle = "<<angle;
-    switch (angle) {
+    /*switch (angle) {
         case 0:
             rotation = MATE_RR_ROTATION_0;
         break;
@@ -472,17 +515,33 @@ void XrandrManager::RotationChangedEvent(QString key)
         case 3:
             rotation = MATE_RR_ROTATION_270;
         break;
-    }
-    mate_rr_screen_get_timestamps (mScreen, nullptr, &config_timestamp);
+    }*/
+    //mate_rr_screen_get_timestamps (mScreen, nullptr, &config_timestamp);
     result = mate_rr_config_new_current (mScreen, NULL);
     outputs = mate_rr_config_get_outputs (result);
     for (i = 0; outputs[i] != NULL; ++i) {
         MateRROutputInfo *info = outputs[i];
         if (mate_rr_output_info_is_connected (info)) {
-            mate_rr_output_info_set_rotation (info, rotation);
+            QString name = mate_rr_output_info_get_name(info);
+            qDebug()<<"name = " << name;
+            switch(angle) {
+                case 0:
+                    QProcess::execute("xrandr --output "+ name + " --rotate normal");
+                break;
+                case 1:
+                    QProcess::execute("xrandr --output "+ name + " --rotate left");
+                break;
+                case 2:
+                    QProcess::execute("xrandr --output "+ name + " --rotate inverted");
+                break;
+                case 3:
+                    QProcess::execute("xrandr --output "+ name + " --rotate right");
+                break;
+            }
+            //mate_rr_output_info_set_rotation (info, rotation);
         }
     }
-    mate_rr_config_apply_with_time (result, mScreen, config_timestamp, NULL);
+    //mate_rr_config_apply_with_time (result, mScreen, config_timestamp, NULL);
     g_object_unref (result);
 }
 
