@@ -19,6 +19,8 @@
 #include <QApplication>
 #include <QDebug>
 #include <QDBusConnection>
+#include <QDBusMessage>
+
 #include <KConfigGroup>
 #include "tabletMode-manager.h"
 
@@ -131,6 +133,25 @@ void TabletModeManager::TabletSettingsChanged(QString key)
     table     = mTableSettings->get(TABLET_MODE_KEY).toBool();
     if(table)
         SetEnabled(rotations);
+
+    if(key == TABLET_MODE_KEY)
+    {
+        if(table){
+            QDBusMessage message =
+                    QDBusMessage::createSignal("/KGlobalSettings",
+                                               "org.kde.KGlobalSettings",
+                                               "send_to_client");
+                message << bool(1);
+                QDBusConnection::sessionBus().send(message);
+        }else{
+            QDBusMessage message =
+                    QDBusMessage::createSignal("/KGlobalSettings",
+                                               "org.kde.KGlobalSettings",
+                                               "send_to_client");
+                message << bool(0);
+                QDBusConnection::sessionBus().send(message);
+        }
+    }
     qDebug()<<"key = "<<key<<";auto rotations = "<<rotations<<"; table mode = "<<table;
 }
 
