@@ -64,6 +64,7 @@ MouseManager * MouseManager::mMouseManager =nullptr;
 MouseManager::MouseManager(QObject *parent) : QObject (parent)
 {
     gdk_init(NULL,NULL);
+    locate_pointer_spawned = 0;
     settings_mouse =    new QGSettings(UKUI_MOUSE_SCHEMA);
     settings_touchpad = new QGSettings(UKUI_TOUCHPAD_SCHEMA);
 }
@@ -903,8 +904,7 @@ void set_locate_pointer (MouseManager *manager, bool     state)
             g_error_free (error);
         }
         g_strfreev (args);
-    }
-    else if (manager->locate_pointer_spawned) {
+    } else if (manager->locate_pointer_spawned) {
             kill (manager->locate_pointer_pid, SIGHUP);
             g_spawn_close_pid (manager->locate_pointer_pid);
             manager->locate_pointer_spawned = FALSE;
