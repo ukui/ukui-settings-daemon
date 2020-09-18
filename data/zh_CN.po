@@ -733,3 +733,27 @@ msgstr "打开系统监视器"
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:188
 msgid "Open the internet connectionr"
 msgstr "打开网络连接"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:16
+msgid "If the night light mode is enabled"
+msgstr "启用夜灯模式"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:21
+msgid "Temperature of the display when enabled"
+msgstr "启用时显示器的温度"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:26
+msgid "Use the sunrise and sunset"
+msgstr "使用日出和日落"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:31
+msgid "The start time"
+msgstr "开始时间"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:36
+msgid "The end time"
+msgstr "结束时间"
+
+#: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:41
+msgid "The last detected position"
+msgstr "最后检测到的位置坐标"
