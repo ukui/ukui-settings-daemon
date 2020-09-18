@@ -1,4 +1,4 @@
-## ukui-setting-daemon 重构
+## ukui-setting-daemon 平板模式
 
 ### 项目安装依赖
 
@@ -24,29 +24,24 @@ debuild -D
 
 `ukui-settings-daemon --replace`
 
-### 插件进度
+### 插件功能介绍
 
-> 选中表示确定可正常运行
-- [x] a11y-settings
-- [x] background
-- [x] clipboard
-- [x] common
-- [x] housekepping
-- [x] keybindings
-- [x] keyboard
-- [x] media-keys
-- [x] mouse
-- [x] mpris
-- [x] sound
-- [x] xrandr
-- [x] xrdb
-- [x] xsettings
-
-### 有问题的插件
-
-| 插件 | 问题 | 负责人 |
-| --- | --- | --- |
-| a11y-keyboard | 待完善 |  |
-| smartcard | 搁置 |  |
-| media-key | 功能不完善 | 闫焕章 |
-| xrandr | 功能不完善 | 商晓阳 |
+| 插件 | 功能 |
+| --- | --- |
+| a11y-keyboard | 辅助功能      |
+| a11y-settings | 辅助功能      |
+| background    | 设置背景      |
+| clipboard     | 剪贴板        |
+| common        | 抓取键盘按键  |
+| color         | 色温设置      |
+| housekepping  | 实时监听磁盘空间|
+| keybindings   | 自定义绑定快捷键|
+| keyboard      | 键盘设置      |
+| media-keys    | 系统快捷键    |
+| mouse         | 鼠标设置      |
+| mpris         | 特殊媒体快捷按键|
+| sound         | 提示音设置    |
+| tablet-mode   | 平板模式      |
+| xrandr        | 记住注销分辨率设置 |
+| xrdb          | 设置主题      |
+| xsettings     | 设置底层系统主题变量 |
