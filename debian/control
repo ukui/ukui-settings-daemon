@@ -23,8 +23,15 @@ Build-Depends: debhelper-compat (=12),
         libmatemixer-dev,
         libmatekbd-dev,
         libpulse-dev,
-        libnotify-dev,
         libwnck-3-dev,
+        libcanberra-gtk3-dev,
+        libcanberra-gtk-common-dev,
+        libcanberra-dev,
+        libwayland-client0,
+        libnotify-dev,
+        libgeoclue-2-dev,
+        libcolord-dev,
+        liblcms2-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/

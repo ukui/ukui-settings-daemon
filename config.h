@@ -112,7 +112,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "1.1.1"
+#define PACKAGE_VERSION "3.0.0"
 
 /* Define if smartcard support should be enabled */
 #define SMARTCARD_SUPPORT 1
@@ -121,7 +121,7 @@
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "1.1.1"
+#define VERSION "3.0.0"
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */

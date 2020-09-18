@@ -1,0 +1,9 @@
+[UKUI Settings Plugin]
+Module=color
+IAge=0
+Name=Color
+Name[zh_CN]=色温调整
+Description=Color plugin
+Authors=Shang Xiaoyang
+Copyright=Copyright (C) 2020 KylinSoft Co., Ltd.
+Website=
