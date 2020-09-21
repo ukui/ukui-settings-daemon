@@ -46,7 +46,7 @@
       <description>Highlights the current location of the pointer when the Control key is pressed and released.</description>
     </key>
     <key name="cursor-theme" type="s">
-      <default>''</default>
+      <default>'dark-sense'</default>
       <summary>Cursor theme</summary>
       <description>Cursor theme name.</description>
     </key>
