@@ -100,7 +100,7 @@ can_fade_bg (UsdBackgroundManager *manager)
 static gboolean
 peony_can_draw_bg (UsdBackgroundManager *manager)
 {
-	return g_settings_get_boolean (manager->priv->settings, MATE_BG_KEY_SHOW_DESKTOP);
+	return FALSE;//g_settings_get_boolean (manager->priv->settings, MATE_BG_KEY_SHOW_DESKTOP);
 }
 
 static gboolean
@@ -264,7 +264,7 @@ on_screen_size_changed (GdkScreen            *screen,
 			UsdBackgroundManager *manager)
 {
 	UsdBackgroundManagerPrivate *p = manager->priv;
-
+    usleep(1000);
 	if (!p->usd_can_draw || p->draw_in_progress || peony_is_drawing_bg (manager))
 		return;
 
@@ -308,8 +308,8 @@ connect_screen_signals (UsdBackgroundManager *manager)
 	{
 		GdkScreen *screen = gdk_display_get_screen (display, i);
 
-		g_signal_connect (screen, "monitors-changed",
-				  G_CALLBACK (on_screen_size_changed), manager);
+		//g_signal_connect (screen, "monitors-changed",
+		//		  G_CALLBACK (on_screen_size_changed), manager);
 		g_signal_connect (screen, "size-changed",
 				  G_CALLBACK (on_screen_size_changed), manager);
 	}
