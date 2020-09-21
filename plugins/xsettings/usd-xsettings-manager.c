@@ -462,7 +462,7 @@ xft_settings_get (UkuiXSettingsManager *manager,
         settings->scaled_dpi = dpi * scale * 1024;
 
         settings->cursor_theme = g_settings_get_string (mouse_gsettings, CURSOR_THEME_KEY);
-        settings->cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY) * scale;
+        settings->cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY);
         settings->rgba = "rgb";
 
         if (rgba_order) {
