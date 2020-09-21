@@ -225,7 +225,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     this->scaled_dpi = dpi * scale * 1024;
 
     cursor_theme = g_settings_get_string (mouse_gsettings, CURSOR_THEME_KEY);
-    cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY) * scale;
+    cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY);
     rgba = "rgb";
 
     if (rgba_order) {
