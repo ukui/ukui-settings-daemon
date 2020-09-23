@@ -28,6 +28,7 @@
 #define UKUI_MOUSE_SCHEMA                "org.ukui.peripherals-mouse"
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
+#define KEY_MOUSE_WHEEL_SPEED            "wheel-speed"
 
 /* Touchpad settings */
 #define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
@@ -64,8 +65,12 @@ MouseManager * MouseManager::mMouseManager =nullptr;
 MouseManager::MouseManager(QObject *parent) : QObject (parent)
 {
     gdk_init(NULL,NULL);
-    locate_pointer_spawned = 0;
-    settings_mouse =    new QGSettings(UKUI_MOUSE_SCHEMA);
+    syndaemon_spawned = false;
+    syndaemon_pid   = 0;
+    locate_pointer_spawned = false;
+    locate_pointer_pid  = 0;
+    imwheelSpawned  = false;
+    settings_mouse  = new QGSettings(UKUI_MOUSE_SCHEMA);
     settings_touchpad = new QGSettings(UKUI_TOUCHPAD_SCHEMA);
 }
 MouseManager::~MouseManager()
@@ -911,6 +916,58 @@ void set_locate_pointer (MouseManager *manager, bool     state)
     }
 }
 
+void set_mouse_wheel_speed (MouseManager *manager, int speed)
+{
+    GPid pid;
+    QDir dir;
+    QString FilePath = dir.homePath() + "/.imwheelrc";
+    QFile file;
+    int delay = 240000 / speed;
+    QString date = QString("\".*\"\n"
+                   "Control_L, Up,   Control_L|Button4\n"
+                   "Control_R, Up,   Control_R|Button4\n"
+                   "Control_L, Down, Control_L|Button5\n"
+                   "Control_R, Down, Control_R|Button5\n"
+                   "Shift_L,   Up,   Shift_L|Button4\n"
+                   "Shift_R,   Up,   Shift_R|Button4\n"
+                   "Shift_L,   Down, Shift_L|Button5\n"
+                   "Shift_R,   Down, Shift_R|Button5\n"
+                   "None,      Up,   Button4, %1, 0, %2\n"
+                   "None,      Down, Button5, %3, 0, %4\n")
+                .arg(speed).arg(delay).arg(speed).arg(delay);
+
+    file.setFileName(FilePath);
+
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        file.write(date.toLatin1().data());
+    }
+
+    GError *error = NULL;
+    char **args;
+    int    argc;
+
+    if (manager->imwheelSpawned){
+        QProcess::execute("killall imwheel");
+        manager->imwheelSpawned = false;
+    }
+
+    QString str = "/usr/bin/imwheel";
+    if( g_shell_parse_argv (str.toLatin1().data(), &argc, &args, NULL)){
+        g_spawn_async (g_get_home_dir (),
+                       args,
+                       NULL,
+                       G_SPAWN_SEARCH_PATH,
+                       NULL,
+                       NULL,
+                       &pid,
+                       &error);
+        manager->imwheelSpawned = (error == NULL);
+    }
+
+    file.close();
+    g_strfreev (args);
+}
+
 void MouseManager::MouseCallback (QString keys)
 {
     if (keys.compare(QString::fromLocal8Bit(KEY_LEFT_HANDED))==0){
@@ -927,6 +984,8 @@ void MouseManager::MouseCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_MOUSE_LOCATE_POINTER))==0){
         set_locate_pointer (this, settings_mouse->get(keys).toBool());
+    } else if(keys.compare(QString::fromLocal8Bit(KEY_MOUSE_WHEEL_SPEED)) == 0 ) {
+        set_mouse_wheel_speed (this, settings_mouse->get(keys).toInt());
     }
 }
 

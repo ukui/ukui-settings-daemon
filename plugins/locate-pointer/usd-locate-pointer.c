@@ -615,7 +615,9 @@ int main (int argc, char *argv[])
 
   set_locate_pointer ();
 
+  gdk_x11_display_error_trap_push(gdk_display_get_default());
   gtk_main ();
+  gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 
   return 0;
 }

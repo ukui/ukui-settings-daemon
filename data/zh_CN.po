@@ -757,3 +757,7 @@ msgstr "结束时间"
 #: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:41
 msgid "The last detected position"
 msgstr "最后检测到的位置坐标"
+
+#: ./org.ukui.peripherals-mouse.gschema.xml:61
+msgid "Mouse wheel speed"
+msgstr "鼠标滚轮速度"

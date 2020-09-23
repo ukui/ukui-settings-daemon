@@ -22,6 +22,8 @@
 #include <QDebug>
 #include <QObject>
 #include <QTimer>
+#include <QDir>
+#include <QProcess>
 #include <QtX11Extras/QX11Info>
 #include <QGSettings/qgsettings.h>
 
@@ -97,7 +99,7 @@ private:
                                                   GdkEvent  *event,
                                                   gpointer   data);
     friend void set_mouse_settings (MouseManager *manager);
-
+    friend void set_mouse_wheel_speed (MouseManager *manager, int speed);
 
 private:
     QTimer * time;
@@ -112,6 +114,7 @@ private:
     GPid     syndaemon_pid;
     gboolean locate_pointer_spawned;
     GPid     locate_pointer_pid;
+    bool     imwheelSpawned;
 
 };
 
