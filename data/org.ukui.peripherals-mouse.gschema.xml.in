@@ -55,5 +55,10 @@
       <summary>Cursor size</summary>
       <description>Size of the cursor referenced by cursor_theme.</description>
     </key>
+    <key name="wheel-speed" type="i">
+      <default>4</default>
+      <summary>Mouse wheel speed</summary>
+      <description>Set the mouse wheel speed by running imwheel.</description>
+    </key>
   </schema>
 </schemalist>

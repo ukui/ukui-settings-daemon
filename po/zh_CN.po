@@ -279,6 +279,8 @@ msgid ""
 "is activated. A value of -1 is the system default."
 msgstr "启动触摸板运动加速前鼠标必须移动的像素点数。系统默认的值是 -1。"
 
+msgid "Mouse wheel speed"
+msgstr "鼠标滚轮速度"
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:1

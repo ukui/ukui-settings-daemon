@@ -41,7 +41,6 @@
 #include <X11/Xatom.h>
 #include <X11/extensions/XInput.h>
 #include <X11/extensions/XIproto.h>
-
 #include <gio/gio.h>
 
 #include "ukui-settings-profile.h"
@@ -59,6 +58,7 @@
 #define UKUI_MOUSE_SCHEMA                "org.ukui.peripherals-mouse"
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
+#define KEY_MOUSE_WHEEL_SPEED            "wheel-speed"
 
 /* Touchpad settings */
 #define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
@@ -75,7 +75,6 @@
 #define KEY_VERT_TWO_FINGER_SCROLL       "vertical-two-finger-scrolling"
 #define KEY_HORIZ_TWO_FINGER_SCROLL      "horizontal-two-finger-scrolling"
 #define KEY_TOUCHPAD_ENABLED             "touchpad-enabled"
-
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
 #define UKUI_MOUSE_A11Y_SCHEMA           "org.ukui.accessibility-mouse"
@@ -95,6 +94,7 @@ struct UsdMouseManagerPrivate
         GPid syndaemon_pid;
         gboolean locate_pointer_spawned;
         GPid locate_pointer_pid;
+        gboolean imwheel_spawned;
 };
 
 typedef enum {
@@ -1399,6 +1399,51 @@ set_locate_pointer (UsdMouseManager *manager,
         }
 }
 
+static void
+set_mouse_wheel_speed (UsdMouseManager *manager,
+                       int              speed)
+{
+    gchar    *WheelFilePath;
+    gchar    *date;
+    gboolean  res;
+    int delay = 240000 / speed;
+
+    WheelFilePath = g_build_filename (g_get_home_dir (), ".imwheelrc", NULL);
+    date = g_malloc (1024);
+    g_sprintf(date,"\".*\"\n"\
+                    "Control_L, Up,   Control_L|Button4\n"\
+                    "Control_R, Up,   Control_R|Button4\n"\
+                    "Control_L, Down, Control_L|Button5\n"\
+                    "Control_R, Down, Control_R|Button5\n"\
+                    "Shift_L,   Up,   Shift_L|Button4\n"\
+                    "Shift_R,   Up,   Shift_R|Button4\n"\
+                    "Shift_L,   Down, Shift_L|Button5\n"\
+                    "Shift_R,   Down, Shift_R|Button5\n"\
+                    "None,      Up,   Button4, %d, 0, %d\n"\
+                    "None,      Down, Button5, %d, 0, %d\n",
+                     speed,     delay,   speed,    delay);
+
+    res = g_file_set_contents(WheelFilePath, date, strlen(date), NULL);
+    if(!res)
+        g_debug("imwheelrc File write failed ");
+
+    GError *error = NULL;
+    char *args[2];
+
+    if (manager->priv->imwheel_spawned){
+        system("killall imwheel");
+        manager->priv->imwheel_spawned = FALSE;
+    }
+    args[0] = LIBEXECDIR "/imwheel";
+    args[1] = NULL;
+
+    g_spawn_async (NULL, args, NULL,
+                   0, NULL, NULL,
+                   NULL, &error);
+    manager->priv->imwheel_spawned = (error == NULL);
+    g_free(date);
+
+}
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
 static void
 set_mousetweaks_daemon (UsdMouseManager *manager,
@@ -1494,6 +1539,8 @@ mouse_callback (GSettings          *settings,
                 set_middle_button_all (g_settings_get_boolean (settings, key));
         } else if (g_strcmp0 (key, KEY_MOUSE_LOCATE_POINTER) == 0) {
                 set_locate_pointer (manager, g_settings_get_boolean (settings, key));
+        } else if (g_strcmp0 (key, KEY_MOUSE_WHEEL_SPEED) == 0 ) {
+                set_mouse_wheel_speed (manager, g_settings_get_int (settings, key));
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
         } else if (g_strcmp0 (key, KEY_MOUSE_A11Y_DWELL_ENABLE) == 0) {
                 set_mousetweaks_daemon (manager,
