@@ -24,7 +24,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gdk/gdkx.h>
 #include <X11/keysym.h>
-#include <syslog.h>
 
 #define ANIMATION_LENGTH 750
 #define WINDOW_SIZE 101
@@ -554,7 +553,6 @@ set_locate_pointer (void)
   int n_keys;
   gboolean has_entries = FALSE;
   static const guint keyvals[] = { GDK_KEY_m, GDK_KEY_M};
-  // static const guint keyvals[] = { GDK_KEY_Control_L, GDK_KEY_Control_R };
   unsigned int i, j;
 
   display = gdk_display_get_default ();
@@ -578,28 +576,28 @@ set_locate_pointer (void)
                         keys[j].keycode,
                         ControlMask|ShiftMask|Mod2Mask|LockMask,
                         xroot,
-                        False,
+                        True, //False,
                         GrabModeAsync,
                         GrabModeSync);
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
                         ControlMask|ShiftMask|LockMask,
                         xroot,
-                        False,
+                        True, //False,
                         GrabModeAsync,
                         GrabModeSync);
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
                         ControlMask|ShiftMask|Mod2Mask,
                         xroot,
-                        False,
+                        True, //False,
                         GrabModeAsync,
                         GrabModeSync);
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
                         ControlMask|ShiftMask,
                         xroot,
-                        False,
+                        True, //False,
                         GrabModeAsync,
                         GrabModeSync);
               /*
