@@ -272,10 +272,6 @@ update_kbd_cb (GSettings           *settings,
         g_return_if_fail (settings_key != NULL);
 
         gdk_error_trap_push ();
-<<<<<<< HEAD
-
-=======
->>>>>>> 534b3f9... clear up code.
         /* Find the key that was modified */
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (g_strcmp0 (settings_key, keys[i].settings_key) == 0) {
@@ -430,13 +426,6 @@ dialog_show (UsdMediaKeysManager *manager)
         if (win_req.height > orig_h) {
                 orig_h = win_req.height;
         }
-<<<<<<< HEAD
-
-=======
-        orig_w = 64;
-        orig_h = 300;
-        gtk_window_set_default_size(GTK_WINDOW (manager->priv->dialog), orig_w ,orig_h);
->>>>>>> 534b3f9... clear up code.
         pointer_screen = NULL;
         display = gdk_screen_get_display (manager->priv->current_screen);
         device_manager = gdk_display_get_device_manager (display);
@@ -1112,27 +1101,14 @@ acme_filter_events (GdkXEvent           *xevent,
                     GdkEvent            *event,
                     UsdMediaKeysManager *manager)
 {
-<<<<<<< HEAD
-        XEvent    *xev = (XEvent *) xevent;
-        XAnyEvent *xany = (XAnyEvent *) xevent;
-=======
         XEvent     *xev    = (XEvent *) xevent;
         XAnyEvent  *xany   = (XAnyEvent *) xevent;
->>>>>>> 534b3f9... clear up code.
         int        i;
 
         /* verify we have a key event */
         if (xev->type != KeyPress && xev->type != KeyRelease) {
                 return GDK_FILTER_CONTINUE;
         }
-<<<<<<< HEAD
-
-=======
-        /*if (xev->type == KeyRelease &&xev->xkey.keycode == 133) {
-		    system("ukui-menu");
-		}
-        */
->>>>>>> 534b3f9... clear up code.
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (match_key (keys[i].key, xev)) {
                         switch (keys[i].key_type) {
