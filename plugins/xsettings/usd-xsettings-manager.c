@@ -59,6 +59,9 @@
 #define FONT_RGBA_ORDER_KEY   "rgba-order"
 #define FONT_DPI_KEY          "dpi"
 
+#define XSETTINGS_PLUGIN_SCHEMA "org.ukui.SettingsDaemon.plugins.xsettings"
+#define XSETTINGS_SCALING_KEY   "scaling-factor"
+
 /* X servers sometimes lie about the screen's physical dimensions, so we cannot
  * compute an accurate DPI value.  When this happens, the user gets fonts that
  * are too huge or too tiny.  So, we see what the server returns:  if it reports
@@ -72,6 +75,14 @@
 #define DPI_FALLBACK 96
 #define DPI_LOW_REASONABLE_VALUE 50
 #define DPI_HIGH_REASONABLE_VALUE 500
+
+/* The minimum resolution at which we turn on a window-scale of 2 */
+#define HIDPI_LIMIT (DPI_FALLBACK * 2)
+
+/* The minimum screen height at which we turn on a window-scale of 2;
+ * below this there just isn't enough vertical real estate for GNOME
+ * apps to work, and it's better to just be tiny */
+#define HIDPI_MIN_HEIGHT 1500
 
 typedef struct _TranslationEntry TranslationEntry;
 typedef void (* TranslationFunc) (UkuiXSettingsManager  *manager,
@@ -89,8 +100,8 @@ struct _TranslationEntry {
 struct UkuiXSettingsManagerPrivate
 {
         XSettingsManager **managers;
-        GHashTable *gsettings;
-        GSettings *gsettings_font;
+        GHashTable       *gsettings;
+        GSettings        *gsettings_font;
         fontconfig_monitor_handle_t *fontconfig_handle;
 };
 
@@ -213,6 +224,74 @@ static TranslationEntry translations [] = {
         { SOUND_SCHEMA, "input-feedback-sounds",      "Net/EnableInputFeedbackSounds", translate_bool_int }
 };
 
+/* Auto-detect the most appropriate scale factor for the primary monitor.
+ * A lot of this code is copied and adapted from Linux Mint/Cinnamon.
+ * 如果设置缩放为0，通过获取物理显示器的分辨率大小进行设置合适的DPI缩放
+ */
+static int
+get_window_scale_auto ()
+{
+        GdkDisplay   *display;
+        GdkMonitor   *monitor;
+        GdkRectangle  rect;
+        int width_mm, height_mm;
+        int monitor_scale, window_scale;
+
+        display = gdk_display_get_default ();
+        monitor = gdk_display_get_primary_monitor (display);
+
+        /* Use current value as the default */
+        window_scale = 1;
+
+        gdk_monitor_get_geometry (monitor, &rect);
+        width_mm = gdk_monitor_get_width_mm (monitor);
+        height_mm = gdk_monitor_get_height_mm (monitor);
+        monitor_scale = gdk_monitor_get_scale_factor (monitor);
+
+        if (rect.height * monitor_scale < HIDPI_MIN_HEIGHT)
+                return 1;
+
+        /* Some monitors/TV encode the aspect ratio (16/9 or 16/10) instead of the physical size */
+        if ((width_mm == 160 && height_mm == 90) ||
+            (width_mm == 160 && height_mm == 100) ||
+            (width_mm == 16 && height_mm == 9) ||
+            (width_mm == 16 && height_mm == 10))
+                return 1;
+
+        if (width_mm > 0 && height_mm > 0) {
+                double dpi_x, dpi_y;
+
+                dpi_x = (double)rect.width * monitor_scale / (width_mm / 25.4);
+                dpi_y = (double)rect.height * monitor_scale / (height_mm / 25.4);
+                /* We don't completely trust these values so both must be high, and never pick
+                 * higher ratio than 2 automatically */
+                if (dpi_x > HIDPI_LIMIT && dpi_y > HIDPI_LIMIT)
+                        window_scale = 2;
+        }
+
+        return window_scale;
+}
+
+/* Get the key value to set the zoom
+ * 获取要设置缩放的键值
+ */
+static int
+get_window_scale (UkuiXSettingsManager *manager)
+{
+        GSettings   *gsettings;
+        gint         scale;
+
+        /* Get scale factor from gsettings */
+        gsettings = g_hash_table_lookup (manager->priv->gsettings, XSETTINGS_PLUGIN_SCHEMA);
+        scale = g_settings_get_int (gsettings, XSETTINGS_SCALING_KEY);
+
+        /* Auto-detect */
+        if (scale == 0)
+                scale = get_window_scale_auto ();
+
+        return scale;
+}
+
 static double
 dpi_from_pixels_and_mm (int pixels,
                         int mm)
@@ -283,6 +362,9 @@ typedef struct
         gboolean    antialias;
         gboolean    hinting;
         int         dpi;
+        int         scaled_dpi;
+        int         window_scale;
+
         char       *cursor_theme;
         int         cursor_size;
         const char *rgba;
@@ -303,6 +385,7 @@ xft_settings_get (UkuiXSettingsManager *manager,
         char      *hinting;
         char      *rgba_order;
         double     dpi;
+        int        scale;
 
         mouse_gsettings = g_hash_table_lookup (manager->priv->gsettings, MOUSE_SCHEMA);
 
@@ -310,11 +393,16 @@ xft_settings_get (UkuiXSettingsManager *manager,
         hinting = g_settings_get_string (manager->priv->gsettings_font, FONT_HINTING_KEY);
         rgba_order = g_settings_get_string (manager->priv->gsettings_font, FONT_RGBA_ORDER_KEY);
         dpi = get_dpi_from_gsettings_or_x_server (manager->priv->gsettings_font);
+        scale = get_window_scale (manager);
 
         settings->antialias = TRUE;
         settings->hinting = TRUE;
         settings->hintstyle = "hintslight";
+
+        settings->window_scale = scale;
         settings->dpi = dpi * 1024; /* Xft wants 1/1024ths of an inch */
+        settings->scaled_dpi = dpi * scale * 1024;
+
         settings->cursor_theme = g_settings_get_string (mouse_gsettings, CURSOR_THEME_KEY);
         settings->cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY);
         settings->rgba = "rgb";
@@ -391,7 +479,9 @@ xft_settings_set_xsettings (UkuiXSettingsManager *manager,
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/Antialias", settings->antialias);
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/Hinting", settings->hinting);
                 xsettings_manager_set_string (manager->priv->managers [i], "Xft/HintStyle", settings->hintstyle);
-                xsettings_manager_set_int (manager->priv->managers [i], "Xft/DPI", settings->dpi);
+                xsettings_manager_set_int (manager->priv->managers [i], "Gdk/WindowScalingFactor", settings->window_scale);
+                xsettings_manager_set_int (manager->priv->managers [i], "Gdk/UnscaledDPI", settings->dpi);
+                xsettings_manager_set_int (manager->priv->managers [i], "Xft/DPI", settings->scaled_dpi);
                 xsettings_manager_set_string (manager->priv->managers [i], "Xft/RGBA", settings->rgba);
                 xsettings_manager_set_string (manager->priv->managers [i], "Xft/lcdfilter",
                                               g_str_equal (settings->rgba, "rgb") ? "lcddefault" : "none");
@@ -464,7 +554,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 	// end add by liutong
 
         update_property (add_string, "Xft.dpi",
-                                g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->dpi / 1024.0));
+                                g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->scaled_dpi / 1024.0));
         update_property (add_string, "Xft.antialias",
                                 settings->antialias ? "1" : "0");
         update_property (add_string, "Xft.hinting",
@@ -559,6 +649,19 @@ xft_callback (GSettings            *gsettings,
         }
 }
 
+/* 屏幕分辨率变化回调函数 */
+static void
+size_changed_callback (GdkScreen *screen, UkuiXSettingsManager *manager)
+{
+    int i;
+
+    update_xft_settings (manager);
+
+    for (i = 0; manager->priv->managers [i]; i++) {
+            xsettings_manager_notify (manager->priv->managers [i]);
+    }
+}
+
 static void
 fontconfig_callback (fontconfig_monitor_handle_t *handle,
                      UkuiXSettingsManager       *manager)
@@ -646,7 +749,8 @@ xsettings_callback (GSettings             *gsettings,
         int               i;
         GVariant         *value;
 
-        if (g_str_equal (key, CURSOR_THEME_KEY) ||
+        if (g_str_equal (key, XSETTINGS_SCALING_KEY )||
+            g_str_equal (key, CURSOR_THEME_KEY) ||
             g_str_equal (key, CURSOR_SIZE_KEY)) {
                 xft_callback (NULL, key, manager);
                 return;
@@ -723,6 +827,7 @@ setup_xsettings_managers (UkuiXSettingsManager *manager)
                         g_warning ("Could not create xsettings manager for screen %d!", i);
                         return FALSE;
                 }
+                g_signal_connect (screen, "size-changed", G_CALLBACK (size_changed_callback), manager);
         }
 
         return TRUE;
@@ -754,6 +859,8 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
                              INTERFACE_SCHEMA, g_settings_new (INTERFACE_SCHEMA));
         g_hash_table_insert (manager->priv->gsettings,
                              SOUND_SCHEMA, g_settings_new (SOUND_SCHEMA));
+        g_hash_table_insert (manager->priv->gsettings,
+                             XSETTINGS_PLUGIN_SCHEMA, g_settings_new (XSETTINGS_PLUGIN_SCHEMA));
 
         list = g_hash_table_get_values (manager->priv->gsettings);
         for (l = list; l != NULL; l = l->next) {
@@ -782,6 +889,7 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
 
         manager->priv->gsettings_font = g_settings_new (FONT_RENDER_SCHEMA);
         g_signal_connect (manager->priv->gsettings_font, "changed", G_CALLBACK (xft_callback), manager);
+
         update_xft_settings (manager);
 
         start_fontconfig_monitor (manager);
