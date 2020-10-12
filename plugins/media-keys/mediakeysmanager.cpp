@@ -661,7 +661,7 @@ void MediaKeysManager::doShutdownAction()
 
 void MediaKeysManager::doLogoutAction()
 {
-    executeCommand("ukui-session-tools"," --logout");
+    executeCommand("ukui-session-tools","");
 }
 
 void MediaKeysManager::doOpenHomeDirAction()
