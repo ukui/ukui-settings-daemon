@@ -45,6 +45,7 @@ Depends: mate-desktop-common,
          imwheel,
          ukui-settings-daemon-common (= ${source:Version}),
          x11-xserver-utils,
+         xserver-xorg-input-synaptics,
          ${misc:Depends},
          ${shlibs:Depends},
 Description: daemon handling the UKUI session settings
