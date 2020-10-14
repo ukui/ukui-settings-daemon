@@ -64,8 +64,8 @@ void VolumeWindow::initWindowInfo()
     screenHeight = currentScreen->size().height();
 
     //窗口性质
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint);
-    setWindowOpacity(0.95);          //设置透明度
+    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
+    setWindowOpacity(0.8);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
     move(screenWidth*0.01,screenHeight*0.04);
