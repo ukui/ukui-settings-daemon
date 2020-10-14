@@ -1,10 +1,13 @@
-## ukui-setting-daemon 平板模式
+## ukui-setting-daemon
+
+ `ukui-settings-daemon` 是`UKUI`桌面环境下的底层守护程序；
+ 负责设置`UKUI`会话的各种参数以及运行的应用程序。
 
 ### 项目安装依赖
 
-1. git clone ...
-2. 修改 /etc/apt/sources.list, 把 deb-src 之前的注释去掉，并执行 apt-get update
-2. 执行 apt build-dep ukui-settings-daemon 会安装项目所有依赖
+1. 执行：`git clone https://github.com/ukui/ukui-settings-daemon.git` 下载代码
+2. 执行：`git checkout dev_qt` 切换为`dev_qt`分支
+3. 执行: `sudo mk-build-deps -ir debian/control` 会安装项目所有依赖
 
 ### 项目运行
 
@@ -18,11 +21,11 @@ debuild -D
 
 2. 项目安装
 
-在生成 `deb` 前提下，先卸载系统上的项目再执行 `sudo apt install ./ukui-settings-daemon_xxxx.deb`
+上层目录生成 `deb` 二进制文件后，进入上层目录，执行 `sudo dpkg -i ./ukui-settings-daemon_xxxx.deb`
 
 3. 项目运行
 
-`ukui-settings-daemon --replace`
+安装后运行：`ukui-settings-daemon --replace`
 
 ### 插件功能介绍
 
