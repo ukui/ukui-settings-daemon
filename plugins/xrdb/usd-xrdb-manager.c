@@ -513,7 +513,7 @@ gtk_theme_changed (GSettings      *settings,
     dbus_message_iter_init_append(msg, &args);
     if (g_strcmp0 (theme_name,"ukui-white") == 0){
         sigvalue = 0;
-        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT64, &sigvalue)) {
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &sigvalue)) {
             fprintf(stderr, "Out Of Memory!\n");
             return;
         }
@@ -525,7 +525,7 @@ gtk_theme_changed (GSettings      *settings,
     }else if (g_strcmp0 (theme_name, "ukui-black") == 0){
         
         sigvalue = 1;
-        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT64, &sigvalue)) {
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &sigvalue)) {
             fprintf(stderr, "Out Of Memory!\n");
             return;
         }
