@@ -128,6 +128,7 @@ void ColorManager::NightLightSetTemperatureInternal (double temperature)
         if (ABS (cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA)
                 return;
         cached_temperature = temperature;
+        mColorState->ColorStateSetTemperature (cached_temperature);
 }
 
 void ColorManager::NightLightSetTemperature(double temperature)
@@ -560,9 +561,9 @@ void ColorManager::SettingsChangedCb(QString key)
 {
     qDebug ("settings changed");
     NightLightRecheck(this);
-    if(key == COLOR_KEY_TEMPERATURE){
-        mColorState->ColorStateSetTemperature (cached_temperature);
-    }
+    //if(key == COLOR_KEY_TEMPERATURE){
+    mColorState->ColorStateSetTemperature (cached_temperature);
+    //}
 }
 
 bool ColorManager::ColorManagerStart()
