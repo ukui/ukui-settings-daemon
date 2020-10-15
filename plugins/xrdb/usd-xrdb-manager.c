@@ -36,6 +36,8 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
+#include <gio/gio.h>
+#include <dbus/dbus.h>
 
 #include "ukui-settings-profile.h"
 #include "usd-xrdb-manager.h"
@@ -48,9 +50,12 @@
 #define USER_X_RESOURCES ".Xresources"
 #define USER_X_DEFAULTS  ".Xdefaults"
 
+#define UKUI_INTERFACE_SCHEMA   "org.mate.interface"
+#define KEY_GTK_THEME           "gtk-theme"
 
 struct UsdXrdbManagerPrivate {
-	GtkWidget* widget;
+	GtkWidget *widget;
+    GSettings *settings;
 };
 
 static void     usd_xrdb_manager_class_init  (UsdXrdbManagerClass *klass);
@@ -484,6 +489,55 @@ theme_changed (GtkSettings    *settings,
         apply_settings (manager, gtk_widget_get_style (manager->priv->widget));
 }
 
+static void
+gtk_theme_changed (GSettings      *settings,
+                   const char     *key,
+                   UsdXrdbManager *manager)
+{
+    dbus_uint32_t serial = 0;
+    gchar *theme_name = g_settings_get_string(settings, key);
+    DBusMessage* msg;
+    DBusMessageIter args;
+    DBusConnection* conn;
+    int sigvalue = 0;;
+    conn = dbus_bus_get(DBUS_BUS_SESSION, NULL);
+    if (NULL == conn) {
+        return;
+    }
+    msg = dbus_message_new_signal("/KGlobalSettings",
+                                  "org.kde.KGlobalSettings",
+                                  "slotThemeChange");
+    if(msg == NULL)
+          return;
+    
+    dbus_message_iter_init_append(msg, &args);
+    if (g_strcmp0 (theme_name,"ukui-white") == 0){
+        sigvalue = 0;
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT64, &sigvalue)) {
+            fprintf(stderr, "Out Of Memory!\n");
+            return;
+        }
+        if (!dbus_connection_send(conn, msg, &serial)) {
+            fprintf(stderr, "Out Of Memory!\n");
+            return;
+        }
+        dbus_connection_flush(conn);
+    }else if (g_strcmp0 (theme_name, "ukui-black") == 0){
+        
+        sigvalue = 1;
+        if (!dbus_message_iter_append_basic(&args, DBUS_TYPE_INT64, &sigvalue)) {
+            fprintf(stderr, "Out Of Memory!\n");
+            return;
+        }
+        if (!dbus_connection_send(conn, msg, &serial)) {
+            fprintf(stderr, "Out Of Memory!\n");
+            return;
+        }
+        dbus_connection_flush(conn);
+    }
+    dbus_message_unref(msg);
+}
+
 gboolean
 usd_xrdb_manager_start (UsdXrdbManager *manager,
                         GError        **error)
@@ -499,6 +553,9 @@ usd_xrdb_manager_start (UsdXrdbManager *manager,
                           G_CALLBACK (theme_changed),
                           manager);
 
+        manager->priv->settings = g_settings_new (UKUI_INTERFACE_SCHEMA);
+        g_signal_connect (manager->priv->settings, "changed::"KEY_GTK_THEME,
+                          G_CALLBACK (gtk_theme_changed), manager);
         manager->priv->widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
         gtk_widget_ensure_style (manager->priv->widget);
 
@@ -517,7 +574,10 @@ usd_xrdb_manager_stop (UsdXrdbManager *manager)
         g_signal_handlers_disconnect_by_func (gtk_settings_get_default (),
                                               theme_changed,
                                               manager);
-
+        if (p->settings!= NULL) {
+                g_object_unref(p->settings);
+                p->settings = NULL;
+        }
         if (p->widget != NULL) {
                 gtk_widget_destroy (p->widget);
                 p->widget = NULL;
