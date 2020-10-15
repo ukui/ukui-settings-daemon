@@ -21,6 +21,9 @@
 #include <QList>
 #include <QDir>
 #include <QVariant>
+#include <QDBusMessage>
+#include <QDBusConnection>
+#include <QDebug>
 #include "ukui-xrdb-manager.h"
 #include <syslog.h>
 
@@ -386,6 +389,25 @@ void ukuiXrdbManager::applySettings(){
  */
 void ukuiXrdbManager::themeChanged (const QString& key)
 {
+    /* 监听主题更改，发送dbus信号 */
+    if(key.compare("gtk-theme")==0){
+        QString keys = settings->get(key).toString();
+        if (keys.compare("ukui-white")==0){
+            QDBusMessage message = 
+		    QDBusMessage::createSignal("/KGlobalSettings",
+                                               "org.kde.KGlobalSettings",
+                                               "slotThemeChange");
+            message << int(0);
+            QDBusConnection::sessionBus().send(message);
+        } else if (keys.compare("ukui-black")==0){
+            QDBusMessage message = 
+		    QDBusMessage::createSignal("/KGlobalSettings",
+                                               "org.kde.KGlobalSettings",
+                                               "slotThemeChange");
+            message << int(1);
+            QDBusConnection::sessionBus().send(message);
+        }
+    }
     getColorConfigFromGtkWindow();
     applySettings();
 }
