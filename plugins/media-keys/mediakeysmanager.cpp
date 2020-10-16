@@ -373,7 +373,7 @@ bool MediaKeysManager::doAction(int type)
     case WINDOW_SCREENSHOT_KEY:
         doScreenshotAction(" -w");
         break;
-    case SIDEBAR_KEY:
+    //case SIDEBAR_KEY:
     case SIDEBAR_KEY_2:
         doSidebarAction();
         break;
