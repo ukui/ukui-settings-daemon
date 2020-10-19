@@ -59,6 +59,7 @@
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
 #define KEY_MOUSE_WHEEL_SPEED            "wheel-speed"
+#define KEY_MOUSE_ACCEL                  "mouse-accel"
 
 /* Touchpad settings */
 #define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
@@ -676,6 +677,55 @@ set_motion_libinput (UsdMouseManager *manager,
 }
 
 static void
+set_mouse_accel (UsdMouseManager *manager,
+                 XDeviceInfo     *device_info)
+{
+    XDevice *device;
+    Atom prop;
+    Atom type;
+    int format, rc;
+    unsigned long nitems, bytes_after;
+    GSettings *settings;
+
+    Display * dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default ());
+    unsigned char *data;
+    gboolean mouse_accel;
+
+    prop = property_from_name ("libinput Accel Profile Enabled");
+    if (!prop) {
+        return;
+    }
+    gdk_error_trap_push ();
+    device = XOpenDevice (dpy, device_info->id);
+    if ((gdk_error_trap_pop () != 0) || (device == NULL))
+        return;
+
+    gdk_error_trap_push ();
+    rc = XGetDeviceProperty (dpy,device, prop, 0, 2, False, XA_INTEGER, &type,
+                            &format, &nitems, &bytes_after, &data);
+    if (rc == Success && type == XA_INTEGER && format == 8 && nitems >= 1) {
+        settings = manager->priv->settings_mouse;
+        mouse_accel = g_settings_get_boolean (settings, KEY_MOUSE_ACCEL);
+        if(mouse_accel){
+                data[0] = 1;
+                data[1] = 0;
+        }else{
+                data[0] = 0;
+                data[1] = 1;
+        }
+        XChangeDeviceProperty (dpy, device, prop, XA_INTEGER, 8,
+                               PropModeReplace, data, nitems);
+    }
+    if (rc == Success) {
+        XFree (data);
+    }
+    XCloseDevice (dpy, device);
+    if (gdk_error_trap_pop ()) {
+        g_warning ("Error while setting mouse accel on \"%s\"", device_info->name);
+    }
+}
+
+static void
 set_motion (UsdMouseManager *manager,
             XDeviceInfo     *device_info)
 {
@@ -683,6 +733,8 @@ set_motion (UsdMouseManager *manager,
                 set_motion_libinput (manager, device_info);
         else
                 set_motion_legacy_driver (manager, device_info);
+        if(property_exists_on_device (device_info, "libinput Accel Profile Enabled"))
+              set_mouse_accel(manager, device_info);
 }
 
 static void
@@ -1533,7 +1585,8 @@ mouse_callback (GSettings          *settings,
                 gboolean touchpad_left_handed = get_touchpad_handedness (manager, mouse_left_handed);
                 set_left_handed_all (manager, mouse_left_handed, touchpad_left_handed);
         } else if ((g_strcmp0 (key, KEY_MOTION_ACCELERATION) == 0)
-                || (g_strcmp0 (key, KEY_MOTION_THRESHOLD) == 0)) {
+                || (g_strcmp0 (key, KEY_MOTION_THRESHOLD) == 0)
+                || (g_strcmp0 (key, KEY_MOUSE_ACCEL) == 0)) {
                 set_motion_all (manager);
         } else if (g_strcmp0 (key, KEY_MIDDLE_BUTTON_EMULATION) == 0) {
                 set_middle_button_all (g_settings_get_boolean (settings, key));
