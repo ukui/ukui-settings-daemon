@@ -29,6 +29,7 @@
 #define KEY_MOUSE_LOCATE_POINTER         "locate-pointer"
 #define KEY_MIDDLE_BUTTON_EMULATION      "middle-button-enabled"
 #define KEY_MOUSE_WHEEL_SPEED            "wheel-speed"
+#define KEY_MOUSE_ACCEL                  "mouse-accel"
 
 /* Touchpad settings */
 #define UKUI_TOUCHPAD_SCHEMA             "org.ukui.peripherals-touchpad"
@@ -623,7 +624,6 @@ void set_motion_libinput (MouseManager *manager,
     if (!prop) {
         return;
     }
-
     try {
         device = device_is_touchpad (device_info);
         if (device != NULL) {
@@ -653,7 +653,7 @@ void set_motion_libinput (MouseManager *manager,
 
         rc = XGetDeviceProperty (dpy,device, prop, 0, 1, False, float_type, &type,
                                  &format, &nitems, &bytes_after, &data.c);
-
+        
         if (rc == Success && type == float_type && format == 32 && nitems >= 1) {
                 *(float *) data.l = accel;
                 XChangeDeviceProperty (dpy, device, prop, float_type, 32,
@@ -762,14 +762,64 @@ void set_motion_legacy_driver (MouseManager *manager,
     XFreeFeedbackList (states);
     XCloseDevice (dpy, device);
 }
+void MouseManager::SetMouseAccel(XDeviceInfo *device_info)
+{
+    XDevice *device;
+    Atom prop;
+    Atom type;
+    int format, rc;
+    unsigned long nitems, bytes_after;
 
-void set_motion (MouseManager *manager,
-                 XDeviceInfo     *device_info)
+    Display * dpy = QX11Info::display();
+    unsigned char *data;
+    bool MouseAccel;
+
+    prop = property_from_name ("libinput Accel Profile Enabled");
+    if (!prop) {
+        return;
+    }
+
+    try {
+        device = XOpenDevice (dpy, device_info->id);
+        if (device == NULL)
+            throw 1;
+        rc = XGetDeviceProperty (dpy,device, prop, 0, 2, False, XA_INTEGER, &type,
+                                 &format, &nitems, &bytes_after, &data);
+
+        if (rc == Success && type == XA_INTEGER && format == 8 && nitems >= 1) {
+            MouseAccel = settings_mouse->get(KEY_MOUSE_ACCEL).toBool();
+            if(MouseAccel){
+                data[0] = 1;
+                data[1] = 0;
+            }else{
+                data[0] = 0;
+                data[1] = 1;
+            }
+            XChangeDeviceProperty (dpy, device, prop, XA_INTEGER, 8,
+                                   PropModeReplace, data, nitems);
+        }
+        if (rc == Success) {
+                XFree (data);
+        }
+        XCloseDevice (dpy, device);
+
+    } catch (int x) {
+        CT_SYSLOG(LOG_ERR,"%s Error while setting accel speed on \"%s\"", device_info->name);
+        return;
+    }
+}
+
+void set_motion (MouseManager   *manager,
+                 XDeviceInfo    *device_info)
 {
     if (property_exists_on_device (device_info, "libinput Accel Speed"))
         set_motion_libinput (manager, device_info);
     else
         set_motion_legacy_driver (manager, device_info);
+
+    if(property_exists_on_device (device_info, "libinput Accel Profile Enabled")) {
+        manager->SetMouseAccel(device_info);
+    }
 }
 
 void set_motion_all (MouseManager *manager)
@@ -814,11 +864,11 @@ void set_middle_button_evdev (XDeviceInfo *device_info,
                                  &nitems, &bytes_after, &data);
 
         if (rc == Success && format == 8 && type == XA_INTEGER && nitems == 1) {
-                data[0] = middle_button ? 1 : 0;
-                XChangeDeviceProperty (display, device, prop, type, format, PropModeReplace, data, nitems);
+            data[0] = middle_button ? 1 : 0;
+            XChangeDeviceProperty (display, device, prop, type, format, PropModeReplace, data, nitems);
         }
         if (rc == Success)
-                        XFree (data);
+            XFree (data);
         XCloseDevice (display, device);
     } catch (int x) {
         CT_SYSLOG(LOG_ERR,"Error in setting middle button emulation on \"%s\"", device_info->name);
@@ -975,10 +1025,10 @@ void MouseManager::MouseCallback (QString keys)
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
         set_left_handed_all (this, mouse_left_handed, touchpad_left_handed);
 
-    } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION))==0)
-               || (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0)){
+    } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION))==0) ||
+               (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0) ||
+               (keys.compare(QString::fromLocal8Bit(KEY_MOUSE_ACCEL)) == 0)){
         set_motion_all (this);
-
     } else if (keys.compare(QString::fromLocal8Bit(KEY_MIDDLE_BUTTON_EMULATION))==0){
         set_middle_button_all (settings_mouse->get(keys).toBool());
 

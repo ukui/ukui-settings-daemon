@@ -60,7 +60,7 @@ public Q_SLOTS:
 
 public:
     bool GetTouchpadHandedness (bool mouse_left_handed);
-
+    void SetMouseAccel(XDeviceInfo  *device_info);
 private:
     friend void set_left_handed_all     (MouseManager *manager,
                                          bool mouse_left_handed,
