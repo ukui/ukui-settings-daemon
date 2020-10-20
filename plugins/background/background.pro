@@ -3,8 +3,7 @@
 # Project created by QtCreator 2020-04-16T09:30:00
 #
 #-------------------------------------------------
-QT -= gui
-QT += core widgets dbus
+QT += core widgets dbus x11extras gui
 
 TEMPLATE = lib
 TARGET = background

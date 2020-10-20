@@ -18,73 +18,84 @@
  */
 #ifndef BACKGROUND_MANAGER_H
 #define BACKGROUND_MANAGER_H
+#include <QWidget>
 #include <QObject>
-#include <QDBusServiceWatcher>
-#include <QDBusInterface>
-#include <QDBusConnection>
-#include <QTimer>
-
+#include <QVariantAnimation>
+#include <QGSettings/QGSettings>
+#include <QPixmap>
+#include <QRect>
+#include <QPainter>
+#include <QWindow>
+#include <QDebug>
+#include <QDesktopWidget>
+#include <QScreen>
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-bg.h>
 
-class BackgroundManager : public QObject
+class BackgroundManager : public QWidget
 {
     Q_OBJECT
 public:
+    BackgroundManager(QScreen *screen, bool is_primary,QWidget *parent = nullptr);
     static BackgroundManager* getInstance();
     ~BackgroundManager();
-    bool managerStart();
-    void managerStop();
 
 public:
-    void draw_bg_after_session_loads ();
-    void disconnect_session_manager_listener ();
-    void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager);
-    static void setup_background (BackgroundManager *manager);
-    static bool settings_change_event_cb (GSettings* settings, gpointer keys, gint nKeys, BackgroundManager* manager);
-    static void onBgHandingChangedSlot (GSettings* settings, const char* key, BackgroundManager* manager);
     void remove_background ();
+    void paintEvent(QPaintEvent *e);
 
-private Q_SLOTS:
-    void onSessionManagerSignal(QString, bool);
-    void SettingsChangeEventIdleCb ();
-    void callBackDrow();
+    void setIsPrimary(bool is_primary);
+    QScreen *getScreen() {
+        return m_screen;
+    }
+    void setScreen(QScreen *screen);
+private:
+    QList<BackgroundManager*> m_window_list;
+protected:
+    void initGSettings();
+private:
+    void scaleBg(const QRect &geometry);
+    void geometryChangedProcess(const QRect &geometry);
 
+protected Q_SLOTS:
+    bool isPrimaryScreen(QScreen *screen);
+public Q_SLOTS:
+    void updateWinGeometry();
+    void updateView();
+    void checkWindowProcess();
+    void setup_Background(const QString &key);
+
+    void screenAddedProcess(QScreen *screen);
+    void addWindow(QScreen *screen, bool checkPrimay = true);
+Q_SIGNALS:
+    void checkWindow();
 private:
     BackgroundManager()=delete;
     BackgroundManager(BackgroundManager&) = delete;
     BackgroundManager& operator= (const BackgroundManager&) = delete;
-    BackgroundManager(QObject *parent = nullptr);
-
-    friend void free_fade (BackgroundManager* manager);
-    friend void free_bg_surface (BackgroundManager* manager);
-    friend void real_draw_bg (BackgroundManager* manager, GdkScreen* screen);
-    friend void free_scr_sizes (BackgroundManager* manager);
-    friend bool can_fade_bg (BackgroundManager* manager);
-    friend bool peony_is_drawing_bg (BackgroundManager* manager);
-    friend bool peony_can_draw_bg (BackgroundManager* manager);
-    friend bool usd_can_draw_bg (BackgroundManager* manager);
-//    friend void on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager);
-    friend void draw_background (BackgroundManager* manager, bool mayFade);
-    friend void queue_timeout (BackgroundManager* manager);
-    friend bool queue_setup_background (BackgroundManager* manager);
 
 private:
-    GSettings              *mSetting;
-    QTimer                 *mTime;
-    MateBG                 *mMateBG;
-    cairo_surface_t        *mSurface;
-    MateBGCrossfade        *mFade;
-    GList                  *mScrSizes;
+    QGSettings *bSettingOld;
+    QGSettings *bSettingNew;
 
-    bool                    mUsdCanDraw;
-    bool                    mPeonyCanDraw;
-    bool                    mDoFade;
-    bool                    mDrawInProgress;
-    QDBusInterface         *mDbusInterface;
-    int                     mCallCount;
+    QString pFilename;
+    QString qFilename;
 
+    QPixmap m_bg_font_pixmap;
+    QPixmap m_bg_back_pixmap;
+    QPixmap m_bg_back_cache_pixmap;
+    QPixmap m_bg_font_cache_pixmap;
+    QColor m_last_pure_color = Qt::transparent;
+    QColor m_color_to_be_set = Qt::transparent;
+
+    bool settingsOldCreate;
+    bool settingsNewCreate;
+    bool m_is_primary;
+    bool canDraw;
+    QScreen *m_screen;
+
+    QVariantAnimation *m_opacity = nullptr;
     static BackgroundManager*   mBackgroundManager;
 };
 

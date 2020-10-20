@@ -16,375 +16,253 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QApplication>
-#include <QScreen>
-#include <QDebug>
-#include <QStringList>
-#include <QDBusReply>
-#include <QDBusMessage>
-
 #include "background-manager.h"
-#include "clib-syslog.h"
-#include <glib.h>
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
+#include <QApplication>
+#include <X11/Xlib.h>
+#include <QX11Info>
 #include <X11/Xatom.h>
-
-#define UKUI_SESSION_MANAGER_DBUS_NAME "org.gnome.SessionManager"
-#define UKUI_SESSION_MANAGER_DBUS_PATH "/org/gnome/SessionManager"
-
+#include <X11/Xproto.h>
+#define BACKGROUND "org.mate.background"
+#define PICTURE_FILE_NAME  "picture-filename"
+#define COLOR_FILE_NAME    "primary-color"
+#define CAN_DRAW_BACKGROUND "draw-background"
 BackgroundManager* BackgroundManager::mBackgroundManager = nullptr;
 
-BackgroundManager::BackgroundManager(QObject *parent) : QObject(parent)
+BackgroundManager::BackgroundManager(QScreen *screen, bool is_primary,QWidget *parent)
+    : QWidget(parent)
 {
-    mSetting = nullptr;
-    mMateBG  = nullptr;
-    mSurface = nullptr;
-    mFade    = nullptr;
-    mScrSizes= nullptr;
-    mDbusInterface = nullptr;
-    mTime   = new QTimer(this);
-    mCallCount = 0;
+    setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
+    resize(QApplication::desktop()->size());
+    m_screen = screen;
+
+    initGSettings();
+    m_opacity = new QVariantAnimation(this);
+    m_opacity->setDuration(50);
+    m_opacity->setStartValue(double(0));
+    m_opacity->setEndValue(double(1));
+
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
+        this->update();
+    });
+    connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
+        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
+        m_last_pure_color = m_color_to_be_set;
+    });
+    m_is_primary = is_primary;
+    //监听屏幕改变
+    connect(m_screen, &QScreen::geometryChanged, this,
+            &BackgroundManager::geometryChangedProcess);
+    //监听HDMI热插拔
+    connect(qApp,SIGNAL(screenAdded(QScreen *)),this,SLOT(screenAddedProcess(QScreen*)));
 }
 
 BackgroundManager::~BackgroundManager()
 {
-    if(mTime)
-        delete mTime;
+    if(settingsNewCreate)
+        delete bSettingNew;
+    if(settingsOldCreate)
+        delete bSettingOld;
 }
 
 BackgroundManager* BackgroundManager::getInstance()
 {
     if (nullptr == mBackgroundManager) {
-        mBackgroundManager = new BackgroundManager(nullptr);
+        QScreen *screen = QGuiApplication::primaryScreen();
+        mBackgroundManager = new BackgroundManager(screen,true);
+        mBackgroundManager->show();
     }
     return mBackgroundManager;
 }
+void BackgroundManager::initGSettings(){
+    const QByteArray id(BACKGROUND);
+    bSettingOld = new QGSettings(BACKGROUND);
+    pFilename = bSettingOld->get(PICTURE_FILE_NAME).toString();
+    qFilename = bSettingOld->get(COLOR_FILE_NAME).toString();
 
-void BackgroundManager::onSessionManagerSignal(QString signalName,bool res)
-{
-    if (signalName == "SessionRunning") {
-        queue_timeout (this);
-        disconnect_session_manager_listener ();
-    }
+    QColor color = qFilename;
+    m_last_pure_color = color;
+    // 获取更换壁纸前的路径
+    m_bg_back_cache_pixmap = QPixmap(pFilename);
+    m_bg_font_cache_pixmap = QPixmap(pFilename);
+    m_bg_font_pixmap = QPixmap(pFilename);
+    m_bg_back_pixmap = m_bg_font_pixmap;
+    connect(bSettingOld, SIGNAL(changed(QString)),
+            this, SLOT(setup_Background(QString)));
+
 }
-
-void BackgroundManager::draw_bg_after_session_loads ()
-{
-    GDBusProxyFlags flags;
-    QDBusConnection conn = QDBusConnection::sessionBus();
-
-
-    flags = (GDBusProxyFlags)(G_DBUS_PROXY_FLAGS_DO_NOT_LOAD_PROPERTIES | G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START);
-
-    mDbusInterface = new QDBusInterface(UKUI_SESSION_MANAGER_DBUS_NAME,
-                                        UKUI_SESSION_MANAGER_DBUS_PATH,
-                                        UKUI_SESSION_MANAGER_DBUS_NAME,
-                                        conn);
-    if (!mDbusInterface->isValid()) {
-        qDebug ("Could not listen to session manager");
+void BackgroundManager::setup_Background(const QString &key){
+    canDraw = bSettingOld->get(CAN_DRAW_BACKGROUND).toBool();
+    if(!canDraw)
         return;
-    }
+    // 获取更换壁纸后的路径
+    pFilename = bSettingOld->get(PICTURE_FILE_NAME).toString();
+    qFilename = bSettingOld->get(COLOR_FILE_NAME).toString();
+    m_bg_font_pixmap = QPixmap(pFilename);
+    m_bg_back_pixmap = m_bg_font_pixmap;
+    m_bg_font_cache_pixmap = QPixmap(pFilename);
+    m_color_to_be_set = qFilename;
 
-    connect(mDbusInterface,SIGNAL(moduleStateChanged(QString,bool)),this,SLOT(onSessionManagerSignal(QString,bool)));
-}
-
-void BackgroundManager::disconnect_session_manager_listener ()
-{
-    if (mDbusInterface) {
-        delete mDbusInterface;
-    }
-}
-
-void queue_timeout (BackgroundManager* manager)
-{
-    manager->setup_background (manager);
-}
-
-void BackgroundManager::on_screen_size_changed (GdkScreen* screen, BackgroundManager* manager)
-{
-    if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
-        return;
-
-    GdkWindow   *window;
-    Screen      *xscreen;
-    gchar       *oldSize;
-    gchar       *newSize;
-    int   scale, scr_num;
-
-    window = gdk_screen_get_root_window (screen);
-    scale = gdk_window_get_scale_factor (window);
-    xscreen = gdk_x11_screen_get_xscreen (screen);
-    scr_num = gdk_x11_screen_get_screen_number (screen);
-    oldSize = (gchar*)g_list_nth_data (manager->mScrSizes, scr_num);
-    newSize = g_strdup_printf ("%dx%d", WidthOfScreen (xscreen) / scale, HeightOfScreen (xscreen) / scale);
-    //qDebug("oldSize = %s, newSize=%s, scale=%d",oldSize, newSize, scale);
-    if (g_strcmp0 (oldSize, newSize) != 0)
-    {
-        qDebug("Screen size changed: %s -> %s", oldSize, newSize);
-        draw_background (manager, false);
+    if (m_opacity->state() == QVariantAnimation::Running) {
+        m_opacity->setCurrentTime(20);
     } else {
-        qDebug("Screen size unchanged (%s). Ignoring.", oldSize);
-    }
-    g_free (newSize);
-}
-
-void BackgroundManager::callBackDrow(){
-    mCallCount++;
-    if(mCallCount == 2){
-        GdkScreen *screen = gdk_screen_get_default();
-        on_screen_size_changed(screen,this);
-        mCallCount = 0;
+        m_opacity->stop();
+        m_opacity->start();
     }
 }
 
-void connect_screen_signals (BackgroundManager* manager)
+void BackgroundManager::screenAddedProcess(QScreen *screen)
 {
-    QDBusConnection::sessionBus().connect(QString(),
-                                          QString("/backend"),
-                                          "org.kde.kscreen.Backend","configChanged",
-                                          manager,
-                                          SLOT(callBackDrow()));
-}
-
-void on_bg_changed (MateBG*, BackgroundManager* manager)
-{
-    draw_background (manager, true);
-}
-
-void on_bg_transitioned (MateBG*, BackgroundManager* manager)
-{
-    draw_background (manager, true);
-}
-
-void BackgroundManager::SettingsChangeEventIdleCb ()
-{
-    mTime->stop();
-    mate_bg_load_from_gsettings (mMateBG, mSetting);
-}
-
-bool BackgroundManager::settings_change_event_cb (GSettings* settings, gpointer keys, gint nKeys, BackgroundManager* manager)
-{
-    /* Complements on_bg_handling_changed() */
-    manager->mUsdCanDraw = usd_can_draw_bg (manager);
-    manager->mPeonyCanDraw = peony_can_draw_bg (manager);
-
-    if (manager->mUsdCanDraw && manager->mMateBG != NULL && !peony_is_drawing_bg (manager))
-    {
-        /* Defer signal processing to avoid making the dconf backend deadlock */
-        connect(manager->mTime,SIGNAL(timeout()),manager,SLOT(SettingsChangeEventIdleCb()));
-        manager->mTime->start();
-    }
-
-    return false;   /* let the event propagate further */
-}
-
-void BackgroundManager::setup_background (BackgroundManager *manager)
-{
-    if(manager->mMateBG != NULL)
+    if (screen != nullptr)
+        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
+    else {
         return;
-
-    manager->mMateBG = mate_bg_new();
-
-    manager->mDrawInProgress = false;
-
-    g_signal_connect(manager->mMateBG, "changed", G_CALLBACK (on_bg_changed), manager);
-
-    g_signal_connect(manager->mMateBG, "transitioned", G_CALLBACK (on_bg_transitioned), manager);
-
-    mate_bg_load_from_gsettings (manager->mMateBG, manager->mSetting);
-
-    connect_screen_signals (manager);
-
-    g_signal_connect (manager->mSetting, "change-event",
-                      G_CALLBACK (settings_change_event_cb), manager);
-}
-
-void draw_background (BackgroundManager* manager, bool mayFade)
-{
-    if (!manager->mUsdCanDraw || manager->mDrawInProgress || peony_is_drawing_bg (manager))
-        return;
-    manager->mDrawInProgress = true;
-    manager->mDoFade = mayFade && can_fade_bg (manager);
-    free_scr_sizes (manager);
-
-    real_draw_bg (manager, gdk_screen_get_default());
-    manager->mScrSizes = g_list_reverse (manager->mScrSizes);
-
-    manager->mDrawInProgress = false;
-}
-
-bool usd_can_draw_bg (BackgroundManager* manager)
-{
-    return g_settings_get_boolean (manager->mSetting, MATE_BG_KEY_DRAW_BACKGROUND) == TRUE?true:false;
-}
-
-bool peony_can_draw_bg (BackgroundManager* manager)
-{
-    return g_settings_get_boolean (manager->mSetting, MATE_BG_KEY_SHOW_DESKTOP) == TRUE?true:false;
-}
-
-bool peony_is_drawing_bg (BackgroundManager* manager)
-{
-    int                 format;
-    bool                running = false;
-    unsigned long       nitems, after;
-    unsigned char*      data;
-    Window              peonyWindow;
-    Atom                peonyProp, wmclassProp, type;
-    Display*            display = gdk_x11_get_default_xdisplay ();
-    Window              window = gdk_x11_get_default_root_xwindow ();
-
-
-    if (!manager->mPeonyCanDraw)
-        return false;
-
-    peonyProp = XInternAtom (display, "PEONY_DESKTOP_WINDOW_ID", True);
-    if (peonyProp == None)
-        return false;
-
-    XGetWindowProperty (display, window, peonyProp, 0, 1, False, XA_WINDOW, &type, &format, &nitems, &after, &data);
-    if (data == NULL)
-        return false;
-
-    peonyWindow = *(Window *) data;
-    XFree (data);
-
-    if (type != XA_WINDOW || format != 32)
-        return false;
-
-    wmclassProp = XInternAtom (display, "WM_CLASS", true);
-    if (wmclassProp == None)
-        return false;
-
-    gdk_x11_display_error_trap_push(gdk_display_get_default());
-    XGetWindowProperty (display, peonyWindow, wmclassProp, 0, 20, False,
-                        XA_STRING, &type, &format, &nitems, &after, &data);
-
-    XSync (display, False);
-
-    if (gdk_x11_display_error_trap_pop(gdk_display_get_default()) == BadWindow || data == NULL)
-        return false;
-
-    /* See: peony_desktop_window_new(), in src/peony-desktop-window.c */
-    if (nitems == 21 && after == 0 && format == 8 &&
-            !strcmp((char*) data, "desktop_window") &&
-            !strcmp((char*) data + strlen((char*) data) + 1, "Peony")) {
-        running = true;
-    }
-    XFree (data);
-
-    return running;
-}
-
-bool can_fade_bg (BackgroundManager* manager)
-{
-    return g_settings_get_boolean (manager->mSetting, MATE_BG_KEY_BACKGROUND_FADE);
-}
-
-void free_scr_sizes (BackgroundManager* manager)
-{
-    if (manager->mScrSizes != NULL) {
-        g_list_foreach (manager->mScrSizes, (GFunc)g_free, NULL);
-        g_list_free (manager->mScrSizes);
-        manager->mScrSizes = nullptr;
-    }
-}
-
-void free_fade (BackgroundManager* manager)
-{
-    if (nullptr != manager->mFade) {
-        g_object_unref (manager->mFade);
-        manager->mFade = nullptr;
-    }
-}
-
-void real_draw_bg (BackgroundManager* manager, GdkScreen* screen)
-{
-    GdkWindow *window = gdk_screen_get_root_window (screen);
-	int scale   = gdk_window_get_scale_factor (window);
-	int width   = WidthOfScreen (gdk_x11_screen_get_xscreen (screen)) / scale;
-	int height  = HeightOfScreen (gdk_x11_screen_get_xscreen (screen)) / scale;
-    free_bg_surface (manager);
-    //qDebug("width = %d, height=%d, scale=%d",width, height, scale);
-    manager->mSurface = mate_bg_create_surface_scale (manager->mMateBG, window, width,
-                                                      height, scale, TRUE);
-
-    if (manager->mDoFade) {
-        free_fade (manager);
-        manager->mFade = mate_bg_set_surface_as_root_with_crossfade (screen, manager->mSurface);
-        g_signal_connect_swapped (manager->mFade, "finished", G_CALLBACK (free_fade), manager);
-    } else {
-        mate_bg_set_surface_as_root (screen, manager->mSurface);
-    }
-    manager->mScrSizes = g_list_prepend (manager->mScrSizes, g_strdup_printf ("%dx%d", width, height));
-}
-
-void free_bg_surface (BackgroundManager* manager)
-{
-    if (nullptr != manager->mSurface) {
-        cairo_surface_destroy (manager->mSurface);
-        manager->mSurface = nullptr;
-    }
-}
-
-void BackgroundManager::remove_background ()
-{
-
-    g_signal_handlers_disconnect_by_func (mSetting, (gpointer)settings_change_event_cb, this);
-
-    if (nullptr != mSetting) {
-        g_object_unref (G_OBJECT (mSetting));
-        mSetting = nullptr;
     }
 
-    if (nullptr != mMateBG) {
-        g_object_unref (G_OBJECT (mMateBG));
-        mMateBG = nullptr;
-    }
-
-    free_scr_sizes (this);
-    free_bg_surface (this);
-    free_fade (this);
+    addWindow(screen, false);
 }
-
-void BackgroundManager::onBgHandingChangedSlot (GSettings* settings, const char* key, BackgroundManager* manager)
+void BackgroundManager::addWindow(QScreen *screen, bool checkPrimay)
 {
-    if (peony_is_drawing_bg (manager)) {
-        if (nullptr != manager->mMateBG)
-            manager->remove_background();
-    } else if (manager->mUsdCanDraw && nullptr == manager->mMateBG) {
-        setup_background (manager);
-    }
-}
-
-
-bool BackgroundManager::managerStart()
-{
-    mSetting = g_settings_new(MATE_BG_SCHEMA);
-
-    mUsdCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_DRAW_BACKGROUND);
-    mPeonyCanDraw = g_settings_get_boolean (mSetting, MATE_BG_KEY_SHOW_DESKTOP);
-
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
-                  G_CALLBACK (onBgHandingChangedSlot), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
-                  G_CALLBACK (onBgHandingChangedSlot), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PRIMARY_COLOR,
-                  G_CALLBACK (onBgHandingChangedSlot), this);
-    g_signal_connect (mSetting, "changed::" MATE_BG_KEY_PICTURE_FILENAME,
-                  G_CALLBACK (onBgHandingChangedSlot), this);
-
-    if (mUsdCanDraw) {
-        if (mPeonyCanDraw) {
-            draw_bg_after_session_loads ();
+    BackgroundManager *window;
+    if (checkPrimay) {
+        qDebug()<<"checkPrimay";
+        bool is_primary = isPrimaryScreen(screen);
+        window = new BackgroundManager(screen, is_primary);
+        if (is_primary)
+        {
+            window->updateView();
         }
-        setup_background (this);
+    } else {
+        window = new BackgroundManager(screen, false);
     }
-    return true;
+
+    m_window_list<<window;
+    qDebug()<<"m_window_list"<<m_window_list;
+    for (auto window : m_window_list) {
+        qDebug()<<"window"<<window;
+        window->updateWinGeometry();
+    }
+}
+void BackgroundManager::checkWindowProcess()
+{
+    //do not check windows, primary window should be handled to exchange in
+    //primaryScreenChanged signal emitted.
+    return;
+    for(auto win : m_window_list)
+    {
+        //fix duplicate screen cover main screen view problem
+        if (win->getScreen() != qApp->primaryScreen())
+        {
+            if (win->getScreen()->geometry() == qApp->primaryScreen()->geometry())
+            {
+                win->setVisible(false);
+            }
+            else {
+                win->setVisible(true);
+            }
+        }
+    }
+}
+bool BackgroundManager::isPrimaryScreen(QScreen *screen)
+{
+    if (screen == qApp->primaryScreen() && screen)
+        return true;
+
+    return false;
+}
+void BackgroundManager::setScreen(QScreen *screen) {
+    m_screen = screen;
+}
+void BackgroundManager::setIsPrimary(bool is_primary) {
+    m_is_primary = is_primary;
 }
 
-void BackgroundManager::managerStop()
-{
-    remove_background ();
+void BackgroundManager::geometryChangedProcess(const QRect &geometry){
+    updateWinGeometry();
+}
+
+void BackgroundManager::updateView() {
+    auto avaliableGeometry = m_screen->availableGeometry();
+    auto geomerty = m_screen->geometry();
+    int top = qAbs(avaliableGeometry.top() - geomerty.top());
+    int left = qAbs(avaliableGeometry.left() - geomerty.left());
+    int bottom = qAbs(avaliableGeometry.bottom() - geomerty.bottom());
+    int right = qAbs(avaliableGeometry.right() - geomerty.right());
+    //skip unexpected avaliable geometry, it might lead by ukui-panel.
+    if (top > 200 | left > 200 | bottom > 200 | right > 200) {
+        setContentsMargins(0, 0, 0, 0);
+        return;
+    }
+    setContentsMargins(left, top, right, bottom);
+}
+void BackgroundManager::scaleBg(const QRect &geometry) {
+    if (this->geometry() == geometry)
+        return;
+
+    setGeometry(geometry);
+    /*!
+     * \note
+     * There is a bug in kwin, if we directly set window
+     * geometry or showFullScreen, window will not be resized
+     * correctly.
+     *
+     * reset the window flags will resovle the problem,
+     * but screen will be black a while.
+     * this is not user's expected.
+     */
+    //setWindowFlag(Qt::FramelessWindowHint, false);
+//    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
+//    setWindowFlags(flags |Qt::FramelessWindowHint);
+
+    show();
+
+    m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    this->update();
+}
+void BackgroundManager::updateWinGeometry() {
+    auto g = getScreen()->geometry();
+    //    m_screen = QApplication::primaryScreen();
+
+    scaleBg(g);
+    if (m_screen == qApp->primaryScreen()) {
+        this->show();
+    } else {
+        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
+            this->hide();
+        else
+            this->show();
+    }
+}
+
+void BackgroundManager::paintEvent(QPaintEvent *e){
+    QPainter p(this);
+    p.setRenderHint(QPainter::Antialiasing);
+    if (m_opacity->state() == QVariantAnimation::Running) {
+        if (pFilename == QString::fromLocal8Bit("")) {
+            auto opacity = m_opacity->currentValue().toDouble();
+            p.fillRect(this->rect(), m_last_pure_color);
+            p.save();
+            p.setOpacity(opacity);
+            p.fillRect(this->rect(), m_color_to_be_set);
+            p.restore();
+        } else {
+            auto opacity = m_opacity->currentValue().toDouble();
+            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap, m_bg_back_cache_pixmap.rect());
+            p.save();
+            p.setOpacity(opacity);
+            p.drawPixmap(this->rect(), m_bg_font_cache_pixmap, m_bg_font_cache_pixmap.rect());
+            p.restore();
+        }
+    } else {
+        if (pFilename == QString::fromLocal8Bit("")) {
+            p.fillRect(this->rect(), m_last_pure_color);
+            p.save();
+            p.restore();
+        } else {
+            p.drawPixmap(this->rect(), m_bg_back_cache_pixmap,m_bg_back_cache_pixmap.rect());
+            p.save();
+            p.restore();
+        }
+    }
+    QWidget::paintEvent(e);
 }

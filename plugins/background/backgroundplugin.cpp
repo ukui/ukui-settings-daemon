@@ -48,17 +48,11 @@ PluginInterface *BackgroundPlugin::getInstance()
 void BackgroundPlugin::activate()
 {
     CT_SYSLOG (LOG_DEBUG, "Activating background plugin");
-    if (!mManager->managerStart()) {
-        CT_SYSLOG(LOG_ERR, "Unable to start background manager!");
-    }
 }
 
 void BackgroundPlugin::deactivate()
 {
     CT_SYSLOG (LOG_DEBUG, "Deactivating background plugin");
-    if (nullptr != mManager) {
-        mManager->managerStop();
-    }
 }
 
 PluginInterface* createSettingsPlugin()
