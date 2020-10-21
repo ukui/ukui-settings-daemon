@@ -30,50 +30,35 @@
 #include <QDesktopWidget>
 #include <QScreen>
 
-#define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-bg.h>
-
 class BackgroundManager : public QWidget
 {
     Q_OBJECT
 public:
-    BackgroundManager(QScreen *screen, bool is_primary,QWidget *parent = nullptr);
-    static BackgroundManager* getInstance();
+    BackgroundManager(QScreen *screen, QWidget *parent = nullptr);
     ~BackgroundManager();
 
 public:
     void remove_background ();
     void paintEvent(QPaintEvent *e);
+    void BackgroundManagerStart();
 
-    void setIsPrimary(bool is_primary);
-    QScreen *getScreen() {
-        return m_screen;
-    }
-    void setScreen(QScreen *screen);
-private:
+public:
     QList<BackgroundManager*> m_window_list;
+
 protected:
     void initGSettings();
 private:
     void scaleBg(const QRect &geometry);
     void geometryChangedProcess(const QRect &geometry);
+    void virtualGeometryChangedProcess(const QRect &geometry);
 
-protected Q_SLOTS:
-    bool isPrimaryScreen(QScreen *screen);
 public Q_SLOTS:
     void updateWinGeometry();
     void updateView();
-    void checkWindowProcess();
     void setup_Background(const QString &key);
 
     void screenAddedProcess(QScreen *screen);
-    void addWindow(QScreen *screen, bool checkPrimay = true);
-Q_SIGNALS:
-    void checkWindow();
-private:
-    BackgroundManager()=delete;
-    BackgroundManager(BackgroundManager&) = delete;
-    BackgroundManager& operator= (const BackgroundManager&) = delete;
+    void addWindow(QScreen *screen);
 
 private:
     QGSettings *bSettingOld;
@@ -91,12 +76,10 @@ private:
 
     bool settingsOldCreate;
     bool settingsNewCreate;
-    bool m_is_primary;
     bool canDraw;
     QScreen *m_screen;
 
     QVariantAnimation *m_opacity = nullptr;
-    static BackgroundManager*   mBackgroundManager;
 };
 
 #endif // BACKGROUND_MANAGER_H

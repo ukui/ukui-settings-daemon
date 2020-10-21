@@ -22,38 +22,23 @@
 #include <QX11Info>
 #include <X11/Xatom.h>
 #include <X11/Xproto.h>
+
 #define BACKGROUND "org.mate.background"
 #define PICTURE_FILE_NAME  "picture-filename"
 #define COLOR_FILE_NAME    "primary-color"
 #define CAN_DRAW_BACKGROUND "draw-background"
-BackgroundManager* BackgroundManager::mBackgroundManager = nullptr;
 
-BackgroundManager::BackgroundManager(QScreen *screen, bool is_primary,QWidget *parent)
+BackgroundManager::BackgroundManager(QScreen *screen, QWidget *parent)
     : QWidget(parent)
 {
     setAttribute(Qt::WA_X11NetWmWindowTypeDesktop);
-    resize(QApplication::desktop()->size());
     m_screen = screen;
-
+    resize(QApplication::desktop()->size());
     initGSettings();
     m_opacity = new QVariantAnimation(this);
-    m_opacity->setDuration(50);
+    m_opacity->setDuration(20);
     m_opacity->setStartValue(double(0));
     m_opacity->setEndValue(double(1));
-
-    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
-        this->update();
-    });
-    connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
-        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
-        m_last_pure_color = m_color_to_be_set;
-    });
-    m_is_primary = is_primary;
-    //监听屏幕改变
-    connect(m_screen, &QScreen::geometryChanged, this,
-            &BackgroundManager::geometryChangedProcess);
-    //监听HDMI热插拔
-    connect(qApp,SIGNAL(screenAdded(QScreen *)),this,SLOT(screenAddedProcess(QScreen*)));
 }
 
 BackgroundManager::~BackgroundManager()
@@ -64,15 +49,24 @@ BackgroundManager::~BackgroundManager()
         delete bSettingOld;
 }
 
-BackgroundManager* BackgroundManager::getInstance()
+void BackgroundManager::BackgroundManagerStart()
 {
-    if (nullptr == mBackgroundManager) {
-        QScreen *screen = QGuiApplication::primaryScreen();
-        mBackgroundManager = new BackgroundManager(screen,true);
-        mBackgroundManager->show();
-    }
-    return mBackgroundManager;
+    connect(m_opacity, &QVariantAnimation::valueChanged, this, [=]() {
+        this->update();
+    });
+    connect(m_opacity, &QVariantAnimation::finished, this, [=]() {
+        m_bg_back_cache_pixmap = m_bg_font_cache_pixmap;
+        m_last_pure_color = m_color_to_be_set;
+    });
+    //监听屏幕改变
+    connect(m_screen, &QScreen::geometryChanged, this,
+            &BackgroundManager::geometryChangedProcess);
+    connect(m_screen, &QScreen::virtualGeometryChanged, this,
+                &BackgroundManager::virtualGeometryChangedProcess);
+    //监听HDMI热插拔
+    connect(qApp,SIGNAL(screenAdded(QScreen *)),this,SLOT(screenAddedProcess(QScreen*)));
 }
+
 void BackgroundManager::initGSettings(){
     const QByteArray id(BACKGROUND);
     bSettingOld = new QGSettings(BACKGROUND);
@@ -103,7 +97,7 @@ void BackgroundManager::setup_Background(const QString &key){
     m_color_to_be_set = qFilename;
 
     if (m_opacity->state() == QVariantAnimation::Running) {
-        m_opacity->setCurrentTime(20);
+        m_opacity->setCurrentTime(5);
     } else {
         m_opacity->stop();
         m_opacity->start();
@@ -113,70 +107,28 @@ void BackgroundManager::setup_Background(const QString &key){
 void BackgroundManager::screenAddedProcess(QScreen *screen)
 {
     if (screen != nullptr)
-        qDebug()<<"screenAdded"<<screen->name()<<screen<<m_window_list.size()<<screen->availableSize();
-    else {
-        return;
-    }
-
-    addWindow(screen, false);
+    	addWindow(screen);
 }
-void BackgroundManager::addWindow(QScreen *screen, bool checkPrimay)
+void BackgroundManager::addWindow(QScreen *screen)
 {
     BackgroundManager *window;
-    if (checkPrimay) {
-        qDebug()<<"checkPrimay";
-        bool is_primary = isPrimaryScreen(screen);
-        window = new BackgroundManager(screen, is_primary);
-        if (is_primary)
-        {
-            window->updateView();
-        }
-    } else {
-        window = new BackgroundManager(screen, false);
-    }
-
+    window = new BackgroundManager(screen);
+    window->updateView();
     m_window_list<<window;
-    qDebug()<<"m_window_list"<<m_window_list;
+
     for (auto window : m_window_list) {
-        qDebug()<<"window"<<window;
         window->updateWinGeometry();
     }
-}
-void BackgroundManager::checkWindowProcess()
-{
-    //do not check windows, primary window should be handled to exchange in
-    //primaryScreenChanged signal emitted.
-    return;
-    for(auto win : m_window_list)
-    {
-        //fix duplicate screen cover main screen view problem
-        if (win->getScreen() != qApp->primaryScreen())
-        {
-            if (win->getScreen()->geometry() == qApp->primaryScreen()->geometry())
-            {
-                win->setVisible(false);
-            }
-            else {
-                win->setVisible(true);
-            }
-        }
-    }
-}
-bool BackgroundManager::isPrimaryScreen(QScreen *screen)
-{
-    if (screen == qApp->primaryScreen() && screen)
-        return true;
-
-    return false;
-}
-void BackgroundManager::setScreen(QScreen *screen) {
-    m_screen = screen;
-}
-void BackgroundManager::setIsPrimary(bool is_primary) {
-    m_is_primary = is_primary;
+    m_window_list.clear();
+    delete window;
 }
 
 void BackgroundManager::geometryChangedProcess(const QRect &geometry){
+    updateWinGeometry();
+}
+
+void BackgroundManager::virtualGeometryChangedProcess(const QRect &geometry)
+{
     updateWinGeometry();
 }
 
@@ -209,29 +161,17 @@ void BackgroundManager::scaleBg(const QRect &geometry) {
      * but screen will be black a while.
      * this is not user's expected.
      */
-    //setWindowFlag(Qt::FramelessWindowHint, false);
-//    auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
-//    setWindowFlags(flags |Qt::FramelessWindowHint);
-
+    setWindowFlag(Qt::FramelessWindowHint, false);
+    //auto flags = windowFlags() &~Qt::WindowMinMaxButtonsHint;
+    //setWindowFlags(flags |Qt::FramelessWindowHint);
     show();
-
     m_bg_back_cache_pixmap = m_bg_back_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     m_bg_font_cache_pixmap = m_bg_font_pixmap.scaled(geometry.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
     this->update();
 }
 void BackgroundManager::updateWinGeometry() {
-    auto g = getScreen()->geometry();
-    //    m_screen = QApplication::primaryScreen();
-
+    auto g = m_screen->geometry();
     scaleBg(g);
-    if (m_screen == qApp->primaryScreen()) {
-        this->show();
-    } else {
-        if (m_screen->geometry() == qApp->primaryScreen()->geometry())
-            this->hide();
-        else
-            this->show();
-    }
 }
 
 void BackgroundManager::paintEvent(QPaintEvent *e){

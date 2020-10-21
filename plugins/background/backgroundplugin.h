@@ -36,7 +36,7 @@ private:
     BackgroundPlugin(BackgroundPlugin&)=delete;
 
 private:
-    static BackgroundManager*       mManager;
+    BackgroundManager               *manager;
     static PluginInterface*         mInstance;
 };
 
