@@ -398,14 +398,15 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
             /* Run failed popup
              * 运行失败弹窗 */
             if (!retval) {
-                QString strs;
-                strs.sprintf("\nError while trying to run (%s)\n\n which is linked to the key (%s)\n",binding->action,binding->binding_str);
+                QString strs = QObject::tr("Error while trying to run \"%1\";\n which is linked to the key \"%2\"").
+                                        arg(binding->action).arg(binding->binding_str);
                 QMessageBox *msgbox = new QMessageBox();
                 msgbox->setWindowTitle(QObject::tr("Shortcut message box"));
-                msgbox->setText(QObject::tr(strs.toLatin1().data()));
+                msgbox->setText(strs);
                 msgbox->setStandardButtons(QMessageBox::Yes);
                 msgbox->setButtonText(QMessageBox::Yes,QObject::tr("Yes"));
                 msgbox->exec();
+                delete msgbox;
             }
             return GDK_FILTER_REMOVE;
         }
