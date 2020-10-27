@@ -968,6 +968,8 @@ void set_locate_pointer (MouseManager *manager, bool     state)
 
 void set_mouse_wheel_speed (MouseManager *manager, int speed)
 {
+    if(speed <= 0 )
+          return;
     GPid pid;
     QDir dir;
     QString FilePath = dir.homePath() + "/.imwheelrc";
