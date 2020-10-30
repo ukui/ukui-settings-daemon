@@ -25,10 +25,7 @@ PluginInterface* BackgroundPlugin::mInstance = nullptr;
 
 BackgroundPlugin::BackgroundPlugin()
 {
-    syslog(LOG_ERR,"----------BackgroundPlugin::BackgroundPlugin --------------");
-    QScreen *screen = QGuiApplication::screens().at(0);
-    manager = new BackgroundManager(screen);
-
+    manager = new BackgroundManager();
 }
 
 BackgroundPlugin::~BackgroundPlugin()
@@ -53,17 +50,6 @@ void BackgroundPlugin::activate()
 {
     syslog (LOG_ERR, "Activating background plugin");
     manager->BackgroundManagerStart();
-    manager->show();
-    int screens = QGuiApplication::screens().length();
-    if(screens > 1)
-        for(int i = 1; i<screens; i++){
-            BackgroundManager *manager2;
-            QScreen *screen = QGuiApplication::screens().at(i);
-            manager2 = new BackgroundManager(screen);
-            manager2->BackgroundManagerStart();
-            manager2->updateView();
-            manager2->updateWinGeometry();
-    }
 }
 
 void BackgroundPlugin::deactivate()

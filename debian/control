@@ -33,6 +33,7 @@ Build-Depends: debhelper-compat (=12),
         libgeoclue-2-dev,
         libcolord-dev,
         liblcms2-dev,
+        libimlib2-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/

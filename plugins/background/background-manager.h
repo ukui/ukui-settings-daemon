@@ -18,68 +18,37 @@
  */
 #ifndef BACKGROUND_MANAGER_H
 #define BACKGROUND_MANAGER_H
-#include <QWidget>
 #include <QObject>
-#include <QVariantAnimation>
 #include <QGSettings/QGSettings>
-#include <QPixmap>
-#include <QRect>
-#include <QPainter>
-#include <QWindow>
 #include <QDebug>
-#include <QDesktopWidget>
 #include <QScreen>
+#include <X11/Xlib.h>
 
-class BackgroundManager : public QWidget
+class BackgroundManager : public QObject
 {
     Q_OBJECT
 public:
-    BackgroundManager(QScreen *screen, QWidget *parent = nullptr);
+    BackgroundManager();
     ~BackgroundManager();
 
 public:
-    void remove_background ();
-    void paintEvent(QPaintEvent *e);
     void BackgroundManagerStart();
-
-public:
-    QList<BackgroundManager*> m_window_list;
-
-protected:
+    void SetBackground();
     void initGSettings();
+
 private:
     void scaleBg(const QRect &geometry);
-    void geometryChangedProcess(const QRect &geometry);
     void virtualGeometryChangedProcess(const QRect &geometry);
 
 public Q_SLOTS:
-    void updateWinGeometry();
-    void updateView();
     void setup_Background(const QString &key);
-
     void screenAddedProcess(QScreen *screen);
-    void addWindow(QScreen *screen);
-
+    void screenRemovedProcess(QScreen *screen);
 private:
-    QGSettings *bSettingOld;
-    QGSettings *bSettingNew;
-
-    QString pFilename;
-    QString qFilename;
-
-    QPixmap m_bg_font_pixmap;
-    QPixmap m_bg_back_pixmap;
-    QPixmap m_bg_back_cache_pixmap;
-    QPixmap m_bg_font_cache_pixmap;
-    QColor m_last_pure_color = Qt::transparent;
-    QColor m_color_to_be_set = Qt::transparent;
-
-    bool settingsOldCreate;
-    bool settingsNewCreate;
-    bool canDraw;
-    QScreen *m_screen;
-
-    QVariantAnimation *m_opacity = nullptr;
+    QGSettings  *bSettingOld;
+    QScreen     *m_screen;
+    QString      Filename;
+    Display     *dpy;
 };
 
 #endif // BACKGROUND_MANAGER_H
