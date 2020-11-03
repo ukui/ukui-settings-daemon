@@ -480,15 +480,14 @@ event_filter (GdkXEvent *gdkxevent,
                                            &keyval,
                                            NULL, NULL, NULL);
 
-      if ((keyval == GDK_KEY_m || keyval == GDK_KEY_M) )
+      if (keyval == GDK_KEY_Control_L || keyval == GDK_KEY_Control_R)
         {
           if (xevent->xany.type == KeyRelease)
             { 
-              /*XUngrabButton (xevent->xany.display,
+              XUngrabButton (xevent->xany.display,
                              AnyButton,
                              AnyModifier,
                              xevent->xany.window);
-              */
               XAllowEvents (xevent->xany.display,
                             AsyncKeyboard,
                             xevent->xkey.time);
@@ -499,7 +498,7 @@ event_filter (GdkXEvent *gdkxevent,
               XAllowEvents (xevent->xany.display,
                             SyncKeyboard,
                             xevent->xkey.time);
-              /*XGrabButton (xevent->xany.display,
+              XGrabButton (xevent->xany.display,
                            AnyButton,
                            AnyModifier,
                            xevent->xany.window,
@@ -509,8 +508,6 @@ event_filter (GdkXEvent *gdkxevent,
                            GrabModeAsync,
                            None,
                            None);
-              */
-
             }
         }
       else
@@ -518,11 +515,10 @@ event_filter (GdkXEvent *gdkxevent,
           XAllowEvents (xevent->xany.display,
                         ReplayKeyboard,
                         xevent->xkey.time);
-          /*XUngrabButton (xevent->xany.display,
+          XUngrabButton (xevent->xany.display,
                          AnyButton,
                          AnyModifier,
                          xevent->xany.window);
-          */
           XUngrabKeyboard (xevent->xany.display,
                            xevent->xkey.time);
         }
@@ -532,11 +528,10 @@ event_filter (GdkXEvent *gdkxevent,
       XAllowEvents (xevent->xany.display,
                     ReplayPointer,
                     xevent->xbutton.time);
-      /*XUngrabButton (xevent->xany.display,
+      XUngrabButton (xevent->xany.display,
                      AnyButton,
                      AnyModifier,
                      xevent->xany.window);
-      */
       XUngrabKeyboard (xevent->xany.display,
                        xevent->xbutton.time);
     }
@@ -552,7 +547,7 @@ set_locate_pointer (void)
   GdkScreen *screen;
   int n_keys;
   gboolean has_entries = FALSE;
-  static const guint keyvals[] = { GDK_KEY_m, GDK_KEY_M};
+  static const guint keyvals[] = { GDK_KEY_Control_L, GDK_KEY_Control_R };
   unsigned int i, j;
 
   display = gdk_display_get_default ();
@@ -571,46 +566,17 @@ set_locate_pointer (void)
               Window xroot;
 
               xroot = GDK_WINDOW_XID (gdk_screen_get_root_window (screen));
-              // xroot = DefaultRootWindow(GDK_DISPLAY_XDISPLAY (display));
+
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
-                        ControlMask|ShiftMask|Mod2Mask|LockMask,
-                        xroot,
-                        True, //False,
-                        GrabModeAsync,
-                        GrabModeSync);
-              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
-                        keys[j].keycode,
-                        ControlMask|ShiftMask|LockMask,
-                        xroot,
-                        True, //False,
-                        GrabModeAsync,
-                        GrabModeSync);
-              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
-                        keys[j].keycode,
-                        ControlMask|ShiftMask|Mod2Mask,
-                        xroot,
-                        True, //False,
-                        GrabModeAsync,
-                        GrabModeSync);
-              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
-                        keys[j].keycode,
-                        ControlMask|ShiftMask,
-                        xroot,
-                        True, //False,
-                        GrabModeAsync,
-                        GrabModeSync);
-              /*
-              XGrabKey (GDK_DISPLAY_XDISPLAY (display),
-                        keys[j].keycode,
-                        AnyModifier,
+                        0,
                         xroot,
                         False,
                         GrabModeAsync,
                         GrabModeSync);
               XGrabKey (GDK_DISPLAY_XDISPLAY (display),
                         keys[j].keycode,
-                        ControlMask|ShiftMask,
+                        LockMask,
                         xroot,
                         False,
                         GrabModeAsync,
@@ -629,8 +595,6 @@ set_locate_pointer (void)
                         False,
                         GrabModeAsync,
                         GrabModeSync);
-              */
-
             }
           g_free (keys);
         }
@@ -645,8 +609,7 @@ set_locate_pointer (void)
 }
 
 
-int
-main (int argc, char *argv[])
+int main (int argc, char *argv[])
 {
   gtk_init (&argc, &argv);
 
