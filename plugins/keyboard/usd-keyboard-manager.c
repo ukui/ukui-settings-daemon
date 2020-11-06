@@ -423,23 +423,6 @@ usd_keyboard_manager_apply_settings (UsdKeyboardManager *manager)
         apply_settings (manager->priv->settings, NULL, manager);
 }
 
-static void
-scroll_lock_install()
-{
-        /* Add Scroll_Lock key monitoring*/
-        system("xmodmap -e 'add mod3 = Scroll_Lock'");
-        char *args[2];
-        args[0] = "/usr/bin/usd-usb-monitor";
-        args[1] = NULL;
-        g_spawn_async(g_get_home_dir (),
-                      args,
-                      NULL,
-                      G_SPAWN_SEARCH_PATH,
-                      NULL,
-                      NULL,
-                      NULL,
-                      NULL);
-}
 static gboolean
 start_keyboard_idle_cb (UsdKeyboardManager *manager)
 {
@@ -461,9 +444,6 @@ start_keyboard_idle_cb (UsdKeyboardManager *manager)
 
         /* apply current settings before we install the callback */
         usd_keyboard_manager_apply_settings (manager);
-        
-        /* set ScrollLock led state*/
-        scroll_lock_install();
         
         g_signal_connect (manager->priv->settings, "changed", G_CALLBACK (apply_settings), manager);
 
