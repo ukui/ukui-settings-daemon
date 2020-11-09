@@ -995,19 +995,19 @@ do_terminal_action (UsdMediaKeysManager *manager)
 static void
 do_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "mate-screenshot",FALSE,FALSE);
+        execute (manager, "kylin-screenshot full",FALSE,FALSE);
 }
 
 static void
 do_area_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "mate-screenshot -a",FALSE,FALSE);
+        execute (manager, "kylin-screenshot gui",FALSE,FALSE);
 }
 
 static void
 do_window_screenshot_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "mate-screenshot -w",FALSE,FALSE);
+        execute (manager, "kylin-screenshot screen",FALSE,FALSE);
 }
 
 
