@@ -387,10 +387,7 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
                     return GDK_FILTER_CONTINUE;
             }
 
-            char execPathName[255] ;
-
-            sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
-            GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(execPathName);
+            GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(binding->action);
             retval = g_app_info_launch_uris((GAppInfo *)info, NULL, NULL, NULL);
 
             g_strfreev (argv);
