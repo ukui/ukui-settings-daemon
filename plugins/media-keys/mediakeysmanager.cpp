@@ -365,13 +365,13 @@ bool MediaKeysManager::doAction(int type)
         doOpenTerminalAction();
         break;
     case SCREENSHOT_KEY:
-        doScreenshotAction("");
+        doScreenshotAction(" full");
         break;
     case AREA_SCREENSHOT_KEY:
-        doScreenshotAction(" -a");
+        doScreenshotAction(" gui");
         break;
     case WINDOW_SCREENSHOT_KEY:
-        doScreenshotAction(" -w");
+        doScreenshotAction(" screen");
         break;
     //case SIDEBAR_KEY:
     case SIDEBAR_KEY_2:
@@ -770,7 +770,7 @@ void MediaKeysManager::doOpenTerminalAction()
 
 void MediaKeysManager::doScreenshotAction(const QString pramater)
 {
-    executeCommand("mate-screenshot",pramater);
+    executeCommand("kylin-screenshot",pramater);
 }
 
 void MediaKeysManager::doSidebarAction()

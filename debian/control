@@ -45,7 +45,6 @@ Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
          ukui-settings-daemon-common (= ${source:Version}),
-         mate-utils,
          imwheel,
          ukui-polkit,
          x11-xserver-utils,
