@@ -497,10 +497,10 @@ keybindings_filter (GdkXEvent             *gdk_xevent,
                                                 NULL,
                                                 &error);
                         */
-						char execPathName[255];
-						sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
+						//char execPathName[255];
+						//sprintf(execPathName, "%s%s", DESKTOP_APP_DIR, binding->action);
 						//syslog(LOG_ERR, "==shutcut==========%s========",execPathName);
-                        GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(execPathName);
+                        GDesktopAppInfo *info = g_desktop_app_info_new_from_filename(binding->action);
 						retval = g_app_info_launch_uris(info, NULL, NULL, NULL);
                         g_strfreev (argv);
                         g_strfreev (envp);
