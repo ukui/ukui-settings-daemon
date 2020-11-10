@@ -30,7 +30,6 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include <syslog.h>
 #include <locale.h>
 
 #include <glib.h>
@@ -194,11 +193,16 @@ real_draw_bg (UsdBackgroundManager *manager,
 {
 	UsdBackgroundManagerPrivate *p = manager->priv;
 	GdkWindow *window = gdk_screen_get_root_window (screen);
-	gint width   = gdk_screen_get_width (screen);
-	gint height  = gdk_screen_get_height (screen);
+    Display  *dpy = XOpenDisplay(NULL);
+    if(!dpy)
+        return;
+    int scale = gdk_window_get_scale_factor(window);
+	gint width  = DisplayWidth(dpy, 0);
+	gint height = DisplayHeight(dpy, 0);
 
+    XCloseDisplay(dpy);
 	free_bg_surface (manager);
-	p->surface = mate_bg_create_surface (p->bg, window, width, height, TRUE);
+	p->surface = mate_bg_create_surface_scale (p->bg, window, width, height, scale, TRUE);
 	if (p->do_fade)
 	{
 		free_fade (manager);
@@ -225,18 +229,14 @@ draw_background (UsdBackgroundManager *manager,
 	ukui_settings_profile_start (NULL);
 
 	GdkDisplay *display   = gdk_display_get_default ();
-	int         n_screens = gdk_display_get_n_screens (display);
-	int         scr;
 
 	p->draw_in_progress = TRUE;
 	p->do_fade = may_fade && can_fade_bg (manager);
 	free_scr_sizes (manager);
 
-	for (scr = 0; scr < n_screens; scr++)
-	{
-		g_debug ("Drawing background on Screen%d", scr);
-		real_draw_bg (manager, gdk_display_get_screen (display, scr));
-	}
+    g_debug ("Drawing background on Screen");
+	real_draw_bg (manager, gdk_display_get_default_screen (display));
+	
 	p->scr_sizes = g_list_reverse (p->scr_sizes);
 
 	p->draw_in_progress = FALSE;
@@ -267,11 +267,17 @@ on_screen_size_changed (GdkScreen            *screen,
     usleep(1000);
 	if (!p->usd_can_draw || p->draw_in_progress || peony_is_drawing_bg (manager))
 		return;
+    Display  *dpy = XOpenDisplay(NULL);
+    if(!dpy)
+        return;
+
+    gint width   = DisplayWidth(dpy, 0);
+    gint height  = DisplayHeight(dpy, 0);
 
 	gint scr_num = gdk_screen_get_number (screen);
+
 	gchar *old_size = g_list_nth_data (manager->priv->scr_sizes, scr_num);
-	gchar *new_size = g_strdup_printf ("%dx%d", gdk_screen_get_width (screen),
-						    gdk_screen_get_height (screen));
+	gchar *new_size = g_strdup_printf ("%dx%d", width, height);
 	if (g_strcmp0 (old_size, new_size) != 0)
 	{
 		g_debug ("Screen%d size changed: %s -> %s", scr_num, old_size, new_size);
@@ -279,6 +285,8 @@ on_screen_size_changed (GdkScreen            *screen,
 	} else {
 		g_debug ("Screen%d size unchanged (%s). Ignoring.", scr_num, old_size);
 	}
+
+    XCloseDisplay(dpy);
 	g_free (new_size);
 }
 
@@ -286,33 +294,24 @@ static void
 disconnect_screen_signals (UsdBackgroundManager *manager)
 {
 	GdkDisplay *display   = gdk_display_get_default();
-	int         n_screens = gdk_display_get_n_screens (display);
-	int         i;
 
-	for (i = 0; i < n_screens; i++)
-	{
-		g_signal_handlers_disconnect_by_func
-			(gdk_display_get_screen (display, i),
-			 G_CALLBACK (on_screen_size_changed), manager);
-	}
+	g_signal_handlers_disconnect_by_func
+		(gdk_display_get_default_screen (display),
+		 G_CALLBACK (on_screen_size_changed), manager);
 }
 
 static void
 connect_screen_signals (UsdBackgroundManager *manager)
 {
 	GdkDisplay *display   = gdk_display_get_default();
-	int         n_screens = gdk_display_get_n_screens (display);
-	int         i;
 
-	for (i = 0; i < n_screens; i++)
-	{
-		GdkScreen *screen = gdk_display_get_screen (display, i);
+    GdkScreen *screen = gdk_display_get_default_screen (display);
 
-		//g_signal_connect (screen, "monitors-changed",
-		//		  G_CALLBACK (on_screen_size_changed), manager);
-		g_signal_connect (screen, "size-changed",
-				  G_CALLBACK (on_screen_size_changed), manager);
-	}
+	//g_signal_connect (screen, "monitors-changed",
+	//		  G_CALLBACK (on_screen_size_changed), manager);
+	g_signal_connect (screen, "size-changed",
+			  G_CALLBACK (on_screen_size_changed), manager);
+
 }
 
 static gboolean
@@ -339,8 +338,8 @@ settings_change_event_cb (GSettings            *settings,
 	/* Complements on_bg_handling_changed() */
 	p->usd_can_draw = usd_can_draw_bg (manager);
 	p->peony_can_draw = peony_can_draw_bg (manager);
-	syslog(LOG_ERR," --------------------    %s -----------------------",__func__);
-	if (p->usd_can_draw && p->bg != NULL && !peony_is_drawing_bg (manager))
+	
+    if (p->usd_can_draw && p->bg != NULL && !peony_is_drawing_bg (manager))
 	{
 		/* Defer signal processing to avoid making the dconf backend deadlock */
 		g_idle_add ((GSourceFunc) settings_change_event_idle_cb, manager);
@@ -511,7 +510,6 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 
 	p->usd_can_draw = usd_can_draw_bg (manager);
 	p->peony_can_draw = peony_can_draw_bg (manager);
-	syslog(LOG_ERR,"--------- START -------------------");
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_DRAW_BACKGROUND,
 			  G_CALLBACK (on_bg_handling_changed), manager);
 	g_signal_connect (p->settings, "changed::" MATE_BG_KEY_SHOW_DESKTOP,
