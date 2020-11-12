@@ -652,20 +652,30 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                 XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
 
 	// begin add:for qt adjust cursor size&theme. add by liutong
-	const char *qtCursorsNames[] = {
-              "left_ptr"       , "up_arrow"      , "cross"      , "wait"
-            , "left_ptr_watch" , "ibeam"         , "size_ver"   , "size_hor"
-            , "size_bdiag"     , "size_fdiag"    , "size_all"   , "split_v"
-            , "split_h"        , "pointing_hand" , "openhand"
-            , "closedhand"     , "forbidden"     , "whats_this" , "copy"
-	    , "move" , "link"
-	    , NULL};
-
+	const char *CursorsNames[] = {
+                "X_cursor"       , "arrow"             , "bottom_side"        , "bottom_tee"  ,
+                "bd_double_arrow", "bottom_left_corner", "bottom_right_corner", "color-picker",
+                "cross"         , "cross_reverse"    , "copy"            , "circle"     ,
+                "crossed_circle", "dnd-ask"          , "dnd-copy"        , "dnd-link"   ,
+                "dnd-move"      , "dnd-none"         , "dot_box_mask"    , "fd_double_arrow",
+                "crosshair"     , "diamond_cross"    , "dotbox"          , "draped_box" ,
+                "double_arrow"  , "draft_large"      , "draft_small"     , "fleur"      ,
+                "grabbing"      , "help"             , "hand",  "hand1"  , "hand2"      ,
+                "icon"          , "left_ptr"         , "left_side"       , "left_tee"   ,
+                "left_ptr_watch", "ll_angle"         , "lr_angle"        , "link"       ,
+                "move"          , "pencil"           , "pirate"          , "plus"       ,
+                "question_arrow", "right_ptr"        , "right_side"      , "right_tee"  ,
+                "sb_down_arrow" , "sb_h_double_arrow", "sb_left_arrow"   , "sb_right_arrow" ,
+                "sb_up_arrow"   , "sb_v_double_arrow", "target"          , "tcross"     ,
+                "top_left_arrow", "top_left_corner"  , "top_right_corner", "top_side"   ,
+                "top_tee"       , "ul_angle"         , "ur_angle"        , "watch"     ,
+                "xterm"         , "h_double_arrow"   , "v_double_arrow"  , "left_ptr_help",
+                NULL};
 
 	if (strlen (tmpCursorTheme) > 0 ) {
-	    int len = sizeof(qtCursorsNames)/sizeof(*qtCursorsNames);
+	    int len = sizeof(CursorsNames)/sizeof(*CursorsNames);
 	    for (int i = 0; i < len-1; i++) {
-                XcursorImages *images = XcursorLibraryLoadImages(qtCursorsNames[i], tmpCursorTheme, tmpCursorSize);
+                XcursorImages *images = XcursorLibraryLoadImages(CursorsNames[i], tmpCursorTheme, tmpCursorSize);
 	        if (!images) {
                      g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
 		     continue;
@@ -677,11 +687,11 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 			int major, minor;
 			XFixesQueryVersion(dpy, &major, &minor);
 			if (major >= 2) {
-                            g_debug("set CursorNmae=%s", qtCursorsNames[i]);
-			    XFixesSetCursorName(dpy, handle, qtCursorsNames[i]);
+                            g_debug("set CursorNmae=%s", CursorsNames[i]);
+			    XFixesSetCursorName(dpy, handle, CursorsNames[i]);
 			}
 		}
-		XFixesChangeCursorByName(dpy, handle, qtCursorsNames[i]);
+		XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
                 XcursorImagesDestroy(images);
             }
 	}
