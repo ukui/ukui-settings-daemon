@@ -472,7 +472,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
             /* We can't have a change in a hard-coded key */
             if(NULL != keys[i].settings_key){
                 syslog(LOG_DEBUG,"settings key value is NULL,exit!");
-                exit(1);
+                //return;
             }
 
             tmp = mSettings->get(keys[i].settings_key).toString();
