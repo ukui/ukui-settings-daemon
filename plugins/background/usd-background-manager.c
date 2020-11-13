@@ -270,9 +270,9 @@ on_screen_size_changed (GdkScreen            *screen,
     Display  *dpy = XOpenDisplay(NULL);
     if(!dpy)
         return;
-
     gint width   = DisplayWidth(dpy, 0);
     gint height  = DisplayHeight(dpy, 0);
+    XCloseDisplay(dpy);
 
 	gint scr_num = gdk_screen_get_number (screen);
 
@@ -286,7 +286,6 @@ on_screen_size_changed (GdkScreen            *screen,
 		g_debug ("Screen%d size unchanged (%s). Ignoring.", scr_num, old_size);
 	}
 
-    XCloseDisplay(dpy);
 	g_free (new_size);
 }
 
