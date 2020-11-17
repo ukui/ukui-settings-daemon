@@ -46,7 +46,7 @@
       <description>Binding to shut down.</description>
     </key>
     <key name="logout" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;Delete'</default>
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;Delete'</default>
       <summary>Log out</summary>
       <description>Binding to log out.</description>
     </key>
@@ -71,7 +71,7 @@
       <description>Binding to launch the email client.</description>
     </key>
     <key name="screensaver" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;l'</default>
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;l'</default>
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
@@ -91,7 +91,7 @@
       <description>Binding to open file manager.</description>
     </key>
     <key name="peony-qt2" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;e'</default>
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
@@ -156,7 +156,7 @@
       <description>Binding to show the on-screen keyboard</description>
     </key>
     <key name="terminal" type="s">
-      <default>'&lt;Control&gt;&lt;Alt&gt;t'</default>
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;t'</default>
       <summary>Terminal</summary>
       <description>Open mate terminal.</description>
     </key>
