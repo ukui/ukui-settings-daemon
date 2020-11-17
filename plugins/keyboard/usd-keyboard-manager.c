@@ -38,7 +38,6 @@
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 
-#include <libusb-1.0/libusb.h>
 #ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
 #include <X11/extensions/xf86misc.h>
 #endif
