@@ -136,7 +136,7 @@ set_devicepresence_handler (UsdA11yKeyboardManager *manager)
 
         display = gdk_x11_get_default_xdisplay ();
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         DevicePresence (display, xi_presence, class_presence);
         /* FIXME:
          * Note that this might overwrite other events, see:
@@ -147,7 +147,7 @@ set_devicepresence_handler (UsdA11yKeyboardManager *manager)
                                &class_presence, 1);
 
         gdk_flush ();
-        if (!gdk_error_trap_pop ())
+        if (!gdk_x11_display_error_trap_pop (gdk_display_get_default ()))
                 gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }
 
@@ -174,13 +174,13 @@ get_xkb_desc_rec (UsdA11yKeyboardManager *manager)
         XkbDescRec *desc;
         Status      status = Success;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         desc = XkbGetMap (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), XkbAllMapComponentsMask, XkbUseCoreKbd);
         if (desc != NULL) {
                 desc->ctrls = NULL;
                 status = XkbGetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), XkbAllControlsMask, desc);
         }
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         g_return_val_if_fail (desc != NULL, NULL);
         g_return_val_if_fail (desc->ctrls != NULL, NULL);
@@ -371,7 +371,7 @@ set_server_from_settings (UsdA11yKeyboardManager *manager)
         g_debug ("CHANGE to : 0x%x (2)", desc->ctrls->ax_options);
         */
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XkbSetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
                         XkbSlowKeysMask         |
                         XkbBounceKeysMask       |
@@ -387,7 +387,7 @@ set_server_from_settings (UsdA11yKeyboardManager *manager)
         XkbFreeKeyboard (desc, XkbAllComponentsMask, True);
 
         XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), FALSE);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         ukui_settings_profile_end (NULL);
 }
@@ -1049,7 +1049,7 @@ usd_a11y_keyboard_manager_start (UsdA11yKeyboardManager *manager,
 static void
 restore_server_xkb_config (UsdA11yKeyboardManager *manager)
 {
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XkbSetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
                         XkbSlowKeysMask         |
                         XkbBounceKeysMask       |
@@ -1066,7 +1066,7 @@ restore_server_xkb_config (UsdA11yKeyboardManager *manager)
                          XkbAllComponentsMask, True);
 
         XSync (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()), FALSE);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         manager->priv->original_xkb_desc = NULL;
 }

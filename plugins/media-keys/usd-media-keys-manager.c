@@ -275,7 +275,7 @@ update_kbd_cb (GSettings           *settings,
 
         g_return_if_fail (settings_key != NULL);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         /* Find the key that was modified */
         for (i = 0; i < HANDLED_KEYS; i++) {
                 if (g_strcmp0 (settings_key, keys[i].settings_key) == 0) {
@@ -320,7 +320,7 @@ update_kbd_cb (GSettings           *settings,
 
         if (need_flush)
                 gdk_flush ();
-        if (gdk_error_trap_pop ())
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ()))
                 g_warning ("Grab failed for some keys, another application may already have access the them.");
 }
 
@@ -331,7 +331,7 @@ static void init_kbd(UsdMediaKeysManager* manager)
 
 	ukui_settings_profile_start(NULL);
 
-	gdk_error_trap_push();
+	gdk_x11_display_error_trap_push (gdk_display_get_default ());
 	for (i = 0; i < HANDLED_KEYS; i++)
 	{
 		char* tmp;
@@ -381,7 +381,7 @@ static void init_kbd(UsdMediaKeysManager* manager)
 		gdk_flush();
 	}
 
-	if (gdk_error_trap_pop ())
+	if (gdk_x11_display_error_trap_pop (gdk_display_get_default ()))
 	{
 		g_warning("Grab failed for some keys, another application may already have access the them.");
 	}
@@ -1311,7 +1311,7 @@ usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
         }
 
         need_flush = FALSE;
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
 
         for (i = 0; i < HANDLED_KEYS; ++i) {
                 if (keys[i].key) {
@@ -1327,7 +1327,7 @@ usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
         if (need_flush)
                 gdk_flush ();
 
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         g_slist_free (priv->screens);
         priv->screens = NULL;

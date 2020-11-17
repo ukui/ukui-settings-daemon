@@ -137,14 +137,14 @@ peony_is_drawing_bg (UsdBackgroundManager *manager)
 	if (wmclass_prop == None)
 		return FALSE;
 
-	gdk_error_trap_push();
+	gdk_x11_display_error_trap_push (gdk_display_get_default ());
 
 	XGetWindowProperty (display, peony_window, wmclass_prop, 0, 20, False,
 			    XA_STRING, &type, &format, &nitems, &after, &data);
 
 	XSync (display, False);
 
-	if (gdk_error_trap_pop() == BadWindow || data == NULL)
+	if (gdk_x11_display_error_trap_pop (gdk_display_get_default ()) == BadWindow || data == NULL)
 		return FALSE;
 
 	/* See: peony_desktop_window_new(), in src/peony-desktop-window.c */

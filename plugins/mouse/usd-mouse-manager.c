@@ -229,7 +229,7 @@ touchpad_has_single_button (XDevice *device)
         if (!prop)
                 return FALSE;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 1, False,
                                  XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -239,7 +239,7 @@ touchpad_has_single_button (XDevice *device)
         if (rc == Success)
                 XFree (data);
 
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         return is_single_button;
 }
@@ -259,12 +259,12 @@ property_exists_on_device (XDeviceInfo *device_info,
         if (!prop)
                 return FALSE;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-        if ((gdk_error_trap_pop () != 0) || (device == NULL))
+        if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
                 return FALSE;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                  device, prop, 0, 1, False, XA_INTEGER, &type, &format,
                                  &nitems, &bytes_after, &data);
@@ -273,7 +273,7 @@ property_exists_on_device (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 
         return rc == Success;
 }
@@ -295,7 +295,7 @@ property_set_bool (XDeviceInfo *device_info,
         if (!property)
                 return;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device,
                                  property, 0, 1, False,
                                  XA_INTEGER, &act_type, &act_format, &nitems,
@@ -311,7 +311,7 @@ property_set_bool (XDeviceInfo *device_info,
         if (rc == Success)
                 XFree (data);
 
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error while setting %s on \"%s\"", property_name, device_info->name);
         }
 }
@@ -330,9 +330,9 @@ touchpad_set_bool (XDeviceInfo *device_info,
         }
         property_set_bool (device_info, device, property_name, property_index, enabled);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 }
 
 static void
@@ -377,10 +377,10 @@ set_left_handed_legacy_driver (UsdMouseManager *manager,
                 left_handed = mouse_left_handed;
         }
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
 
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-        if ((gdk_error_trap_pop () != 0) ||
+        if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) ||
             (device == NULL))
                 return;
 
@@ -418,9 +418,9 @@ set_left_handed_libinput (XDeviceInfo *device_info,
 
         device = device_is_touchpad (device_info);
         if (device == NULL) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (gdk_display_get_default ());
                 device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-                if ((gdk_error_trap_pop () != 0) || (device == NULL))
+                if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
                         return;
 
                 want_lefthanded = mouse_left_handed;
@@ -433,9 +433,9 @@ set_left_handed_libinput (XDeviceInfo *device_info,
 
         property_set_bool (device_info, device, "libinput Left Handed Enabled", 0, want_lefthanded);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 }
 
 static void
@@ -499,14 +499,14 @@ set_devicepresence_handler (UsdMouseManager *manager)
 
         display = gdk_x11_get_default_xdisplay ();
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         DevicePresence (display, xi_presence, class_presence);
         XSelectExtensionEvent (display,
                                RootWindow (display, DefaultScreen (display)),
                                &class_presence, 1);
 
         gdk_flush ();
-        if (!gdk_error_trap_pop ())
+        if (!gdk_x11_display_error_trap_pop (gdk_display_get_default ()))
                 gdk_window_add_filter (NULL, devicepresence_filter, manager);
 }
 
@@ -527,9 +527,9 @@ set_motion_legacy_driver (UsdMouseManager *manager,
         if (device != NULL) {
                 settings = manager->priv->settings_touchpad;
         } else {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (gdk_display_get_default ());
                 device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-                if ((gdk_error_trap_pop () != 0) || (device == NULL))
+                if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
                         return;
 
                 settings = manager->priv->settings_mouse;
@@ -631,9 +631,9 @@ set_motion_libinput (UsdMouseManager *manager,
         if (device != NULL) {
                 settings = manager->priv->settings_touchpad;
         } else {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (gdk_display_get_default ());
                 device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-                if ((gdk_error_trap_pop () != 0) || (device == NULL))
+                if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
                         return;
 
                 settings = manager->priv->settings_mouse;
@@ -655,7 +655,7 @@ set_motion_libinput (UsdMouseManager *manager,
         else
                 accel = (motion_acceleration - 1.0) * 2.0 / 9.0 - 1;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                  device, prop, 0, 1, False, float_type, &type, &format,
                                  &nitems, &bytes_after, &data.c);
@@ -671,7 +671,7 @@ set_motion_libinput (UsdMouseManager *manager,
         }
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error while setting accel speed on \"%s\"", device_info->name);
         }
 }
@@ -695,12 +695,12 @@ set_mouse_accel (UsdMouseManager *manager,
     if (!prop) {
         return;
     }
-    gdk_error_trap_push ();
+    gdk_x11_display_error_trap_push (gdk_display_get_default ());
     device = XOpenDevice (dpy, device_info->id);
-    if ((gdk_error_trap_pop () != 0) || (device == NULL))
+    if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
         return;
 
-    gdk_error_trap_push ();
+    gdk_x11_display_error_trap_push (gdk_display_get_default ());
     rc = XGetDeviceProperty (dpy,device, prop, 0, 2, False, XA_INTEGER, &type,
                             &format, &nitems, &bytes_after, &data);
     if (rc == Success && type == XA_INTEGER && format == 8 && nitems >= 1) {
@@ -720,7 +720,7 @@ set_mouse_accel (UsdMouseManager *manager,
         XFree (data);
     }
     XCloseDevice (dpy, device);
-    if (gdk_error_trap_pop ()) {
+    if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
         g_warning ("Error while setting mouse accel on \"%s\"", device_info->name);
     }
 }
@@ -770,14 +770,14 @@ set_middle_button_evdev (XDeviceInfo *device_info,
         if (!prop) /* no evdev devices */
                 return;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
 
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-        if ((gdk_error_trap_pop () != 0) ||
+        if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) ||
             (device == NULL))
                 return;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                  device, prop, 0, 1, False, XA_INTEGER, &type, &format,
                                  &nitems, &bytes_after, &data);
@@ -792,7 +792,7 @@ set_middle_button_evdev (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting middle button emulation on \"%s\"", device_info->name);
         }
 }
@@ -808,22 +808,22 @@ set_middle_button_libinput (XDeviceInfo *device_info,
          */
         device = device_is_touchpad (device_info);
         if (device != NULL) {
-                gdk_error_trap_push ();
+                gdk_x11_display_error_trap_push (gdk_display_get_default ());
                 XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-                gdk_error_trap_pop_ignored ();
+                gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
                 return;
         }
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         device = XOpenDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device_info->id);
-        if ((gdk_error_trap_pop () != 0) || (device == NULL))
+        if ((gdk_x11_display_error_trap_pop (gdk_display_get_default ()) != 0) || (device == NULL))
                 return;
 
         property_set_bool (device_info, device, "libinput Middle Emulation Enabled", 0, middle_button);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        gdk_error_trap_pop_ignored ();
+        gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default ());
 }
 
 static void
@@ -978,7 +978,7 @@ set_tap_to_click_synaptics (XDeviceInfo *device_info,
                 return;
         }
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -1004,7 +1004,7 @@ set_tap_to_click_synaptics (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting tap to click on \"%s\"", device_info->name);
         }
 }
@@ -1076,7 +1076,7 @@ set_click_actions_synaptics (XDeviceInfo *device_info,
 
         g_debug ("setting click action to click on %s", device_info->name);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -1093,7 +1093,7 @@ set_click_actions_synaptics (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting click actions on \"%s\"", device_info->name);
         }
 }
@@ -1125,7 +1125,7 @@ set_click_actions_libinput (XDeviceInfo *device_info,
         want_clickfinger = enable_two_finger_click || enable_three_finger_click;
         want_softwarebuttons = !want_clickfinger;
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -1141,7 +1141,7 @@ set_click_actions_libinput (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting click actions on \"%s\"", device_info->name);
         }
 }
@@ -1199,7 +1199,7 @@ set_natural_scroll_synaptics (XDeviceInfo *device_info,
 
         g_debug ("Trying to set %s for \"%s\"", natural_scroll ? "natural (reverse) scroll" : "normal scroll", device_info->name);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -1222,7 +1222,7 @@ set_natural_scroll_synaptics (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting natural scroll on \"%s\"", device_info->name);
         }
 }
@@ -1308,7 +1308,7 @@ set_scrolling_libinput (XDeviceInfo *device_info,
 
         g_debug ("setting scroll method on %s", device_info->name);
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         rc = XGetDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
                                  &bytes_after, &data);
@@ -1324,7 +1324,7 @@ set_scrolling_libinput (XDeviceInfo *device_info,
                 XFree (data);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error in setting scroll method on \"%s\"", device_info->name);
         }
 
@@ -1388,14 +1388,14 @@ set_touchpad_enabled (XDeviceInfo *device_info,
                 return;
         }
 
-        gdk_error_trap_push ();
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
         XChangeDeviceProperty (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device,
                                prop_enabled, XA_INTEGER, 8,
                                PropModeReplace, &data, 1);
 
         XCloseDevice (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), device);
         gdk_flush ();
-        if (gdk_error_trap_pop ()) {
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
                 g_warning ("Error %s device \"%s\"",
                            (state) ? "enabling" : "disabling",
                            device_info->name);
