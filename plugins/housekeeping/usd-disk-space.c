@@ -45,7 +45,7 @@
 
 #define CHECK_EVERY_X_SECONDS      60
 
-#define DISK_SPACE_ANALYZER        "mate-disk-usage-analyzer"
+#define DISK_SPACE_ANALYZER        "ukui-disk-usage-analyzer"
 
 #define SETTINGS_HOUSEKEEPING_SCHEMA      "org.ukui.SettingsDaemon.plugins.housekeeping"
 #define SETTINGS_FREE_PC_NOTIFY_KEY       "free-percent-notify"
@@ -216,7 +216,7 @@ ldsm_notify_for_mount (LdsmMountInfo *mount,
                 break;
         case USD_LDSM_DIALOG_RESPONSE_ANALYZE:
                 retval = FALSE;
-                ldsm_analyze_path (path);
+                //ldsm_analyze_path (path);
                 break;
         case USD_LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
                 retval = TRUE;
