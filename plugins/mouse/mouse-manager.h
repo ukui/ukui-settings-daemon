@@ -59,54 +59,51 @@ public Q_SLOTS:
     void TouchpadCallback(QString);
 
 public:
+    void SetLeftHandedAll (bool mouse_left_handed,
+                           bool touchpad_left_handed);
+    void SetLeftHanded  (XDeviceInfo  *device_info,
+                         bool         mouse_left_handed,
+                         bool         touchpad_left_handed);
+    void SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
+                                    bool         mouse_left_handed,
+                                    bool         touchpad_left_handed);
+
+    void SetMotionAll ();
+    void SetMotion   (XDeviceInfo  *device_info);
+    void SetMotionLibinput (XDeviceInfo  *device_info);
+    void SetMotionLegacyDriver(XDeviceInfo     *device_info);
     bool GetTouchpadHandedness (bool mouse_left_handed);
     void SetMouseAccel(XDeviceInfo  *device_info);
-private:
-    friend void set_left_handed_all     (MouseManager *manager,
-                                         bool mouse_left_handed,
-                                         bool touchpad_left_handed);
-    friend void set_left_handed         (MouseManager *manager,
-                                         XDeviceInfo     *device_info,
-                                         bool         mouse_left_handed,
-                                         bool         touchpad_left_handed);
+    void SetTouchpadStateAll(int num, bool state);
+    void SetTouchpadMotionAccel(XDeviceInfo *device_info);
+    void SetBottomRightClickMenu (XDeviceInfo *device_info, bool state);
+    void SetBottomRightConrnerClickMenu(bool state);
 
-    friend void set_left_handed_legacy_driver (MouseManager *manager,
-                                               XDeviceInfo     *device_info,
-                                               bool         mouse_left_handed,
-                                               bool         touchpad_left_handed);
+    void SetDisableWTyping  (bool state);
+    void SetDisableWTypingSynaptics (bool state);
+    void SetDisableWTypingLibinput  (bool state);
 
-    friend void set_motion_all          (MouseManager *manager);
-    friend void set_motion              (MouseManager *manager,
-                                         XDeviceInfo  *device_info);
-    friend void set_motion_libinput     (MouseManager *manager,
-                                         XDeviceInfo  *device_info);
-    friend void set_motion_legacy_driver(MouseManager *manager,
-                                         XDeviceInfo     *device_info);
-    friend void set_middle_button_all   (bool middle_button);
-    friend void set_middle_button       (XDeviceInfo *device_info,
-                                         bool     middle_button);
-    friend void set_locate_pointer      (MouseManager *manager, bool     state);
-    friend void set_disable_w_typing    (MouseManager *manager,
-                                         bool         state);
-    friend void set_disable_w_typing_synaptics (MouseManager *manager,
-                                                bool         state);
-    friend void set_disable_w_typing_libinput  (MouseManager *manager,
-                                                bool         state);
-    friend void set_tap_to_click_all        (MouseManager *manager);
-    friend void set_natural_scroll_all      (MouseManager *manager);
-    friend void set_devicepresence_handler  (MouseManager *manager);
+    void SetMiddleButtonAll   (bool middle_button);
+    void SetMiddleButton      (XDeviceInfo *device_info,
+                               bool     middle_button);
+    void SetLocatePointer     (bool     state);
+    void SetTapToClickAll ();
+    void SetNaturalScrollAll ();
+    void SetDevicepresenceHandler ();
+    void SetMouseWheelSpeed (int speed);
+    void SetMouseSettings();
+
+private: 
     friend GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
                                                   GdkEvent  *event,
                                                   gpointer   data);
-    friend void set_mouse_settings (MouseManager *manager);
-    friend void set_mouse_wheel_speed (MouseManager *manager, int speed);
 
 private:
+    unsigned long mAreaLeft;
+    unsigned long mAreaTop;
     QTimer * time;
     QGSettings *settings_mouse;
     QGSettings *settings_touchpad;
-    static MouseManager *mMouseManager;
-
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
     gboolean mousetweaks_daemon_running;
 #endif
@@ -116,6 +113,7 @@ private:
     GPid     locate_pointer_pid;
     bool     imwheelSpawned;
 
+    static MouseManager *mMouseManager;
 };
 
 #endif // MOUSEMANAGER_H
