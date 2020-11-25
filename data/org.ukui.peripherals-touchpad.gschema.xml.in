@@ -85,5 +85,26 @@
       <summary>Motion Threshold</summary>
       <description>Distance in pixels the pointer must move before accelerated touchpad motion is activated.  A value of -1 is the system default.</description>
     </key>
+    <key type="b" name="disable-on-external-mouse">
+      <default>false</default>
+      <summary>Mouse plug closes the touchpad.</summary>
+      <description>Whether to open or close the trackpad when the mouse is inserted or pulled out.</description>
+    </key>
+    <key type="b" name="double-click-drag">
+      <default>true</default>
+      <summary>Click twice and then drag to make multiple selections.</summary>
+      <description>Open or close, click twice and then drag or select multiple.</description>
+    </key>
+    <key type="b" name="bottom-right-corner-click-menu">
+      <default>true</default>
+      <summary>Close the bottom right corner click menu.</summary>
+      <description>Open or close the bottom right corner click pop-up menu event.</description>
+    </key>
+    <key type="i" name="mouse-sensitivity">
+      <default>2</default>
+      <range min="0" max="4"/>
+      <summary>Set mouse sensitivity.</summary>
+      <description>1-4 represents low sensitivity, medium sensitivity, high sensitivity and highest sensitivity.</description>
+    </key>
   </schema>
 </schemalist>

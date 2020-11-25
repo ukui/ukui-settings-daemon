@@ -1,0 +1,3 @@
+# Set touchpad state dependent on mouse availability.
+SUBSYSTEM=="input", KERNEL=="mouse[0-9]*", ACTION=="add", RUN+="/usr/bin/touchpad-state --off"
+SUBSYSTEM=="input", KERNEL=="mouse[0-9]*", ACTION=="remove", RUN+="/usr/bin/touchpad-state --on"

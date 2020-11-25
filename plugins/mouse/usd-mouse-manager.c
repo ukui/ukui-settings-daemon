@@ -77,6 +77,10 @@
 #define KEY_HORIZ_TWO_FINGER_SCROLL      "horizontal-two-finger-scrolling"
 #define KEY_TOUCHPAD_ENABLED             "touchpad-enabled"
 
+#define KEY_TOUCHPAD_DISBLE_O_E_MOUSE    "disable-on-external-mouse"        //插入鼠标，禁用触摸板  true/false
+#define KEY_TOUCHPAD_DOUBLE_CLICK_DRAG   "double-click-drag"                //点击两次拖动     true/false
+#define KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M  "bottom-right-corner-click-menu"   //右下角点击菜单   true/false
+
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
 #define UKUI_MOUSE_A11Y_SCHEMA           "org.ukui.accessibility-mouse"
 #define KEY_MOUSE_A11Y_DWELL_ENABLE      "dwell-enable"
@@ -87,6 +91,8 @@ struct UsdMouseManagerPrivate
 {
         GSettings *settings_mouse;
         GSettings *settings_touchpad;
+        unsigned long mAreaLeft;
+        unsigned long mAreaTop;
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
         gboolean mousetweaks_daemon_running;
@@ -725,6 +731,60 @@ set_mouse_accel (UsdMouseManager *manager,
     }
 }
 
+static void 
+set_touchpad_motion_accel(XDeviceInfo *device_info, GSettings *settings)
+{
+        XDevice *device;
+        Atom prop;
+        Atom type;
+        Atom float_type;
+        int format, rc;
+        unsigned long nitems, bytes_after;
+
+        Display * dpy = gdk_x11_get_default_xdisplay ();
+        union {
+            unsigned char *c;
+            long *l;
+        } data;
+        float accel;
+        float motion_acceleration;
+
+        float_type = property_from_name ("FLOAT");
+        if (!float_type)
+            return;
+
+        prop = property_from_name ("Device Accel Constant Deceleration");
+        if (!prop) {
+            return;
+        }
+        device = device_is_touchpad (device_info);
+        if (device == NULL)
+            return;
+        /* Calculate acceleration */
+        motion_acceleration = g_settings_get_double (settings, KEY_MOTION_ACCELERATION);
+        if (motion_acceleration == -1.0) /* unset */
+                accel = 0.0;
+        else
+                accel = motion_acceleration;
+        
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
+        rc = XGetDeviceProperty (dpy,device, prop, 0, 1, False, float_type, &type,
+                                 &format, &nitems, &bytes_after, &data.c);
+        
+        if (rc == Success && type == float_type && format == 32 && nitems >= 1) {
+                *(float *) data.l = accel;
+                XChangeDeviceProperty (dpy, device, prop, float_type, 32,
+                                       PropModeReplace, data.c, nitems);
+        }
+        if (rc == Success) {
+                XFree (data.c);
+        }
+        XCloseDevice (dpy, device);
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
+            g_warning ("Error while setting touchpad accel on \"%s\"", device_info->name);
+        }
+}
+
 static void
 set_motion (UsdMouseManager *manager,
             XDeviceInfo     *device_info)
@@ -733,6 +793,10 @@ set_motion (UsdMouseManager *manager,
                 set_motion_libinput (manager, device_info);
         else
                 set_motion_legacy_driver (manager, device_info);
+        
+        if(property_exists_on_device (device_info, "Device Accel Constant Deceleration"))
+                set_touchpad_motion_accel(device_info, manager->priv->settings_touchpad);
+
         if(property_exists_on_device (device_info, "libinput Accel Profile Enabled"))
               set_mouse_accel(manager, device_info);
 }
@@ -1419,6 +1483,159 @@ set_touchpad_enabled_all (gboolean state)
 }
 
 static void
+set_disble_touchpad (XDeviceInfo *device_info, GSettings *settings)
+{
+        gboolean  state;
+        if(strstr(device_info->name, "Mouse") != NULL && strstr(device_info->name, "USB") != NULL){
+            state = g_settings_get_boolean (settings, KEY_TOUCHPAD_DISBLE_O_E_MOUSE);
+            if(state){
+                g_settings_set_boolean (settings, KEY_TOUCHPAD_ENABLED, FALSE);
+            }else {
+                g_settings_set_boolean (settings, KEY_TOUCHPAD_ENABLED, TRUE);
+            }
+        }
+}
+
+static void
+set_plug_mouse_disble_touchpad (GSettings *settings)
+{
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
+
+        if (devicelist == NULL)
+                return;
+
+        for (i = 0; i < numdevices; i++) {
+                 set_disble_touchpad (&devicelist[i], settings);
+        }
+
+        XFreeDeviceList (devicelist);
+}
+
+static void
+set_touchpad_double_click_drag (XDeviceInfo *device_info, gboolean state)
+{
+        XDevice *device;
+        int format, rc;
+        unsigned long nitems, bytes_after;
+        unsigned char* data;
+        Atom prop, type;
+        Display *display = gdk_x11_get_default_xdisplay ();
+        prop = property_from_name ("Synaptics Gestures");
+        if (!prop)
+            return;
+
+        device = device_is_touchpad (device_info);
+        if (device == NULL) {
+            return;
+        }
+
+        gdk_x11_display_error_trap_push (gdk_display_get_default ());
+        rc = XGetDeviceProperty (display , device, prop, 0, 1,
+                                 False, XA_INTEGER, &type, &format, &nitems,
+                                 &bytes_after, &data);
+        
+        if (rc == Success && type == XA_INTEGER && format == 8 && nitems >= 1) {
+            if(state)
+                data[0]=1;
+            else
+                data[0]=0;
+
+            XChangeDeviceProperty (display, device, prop,
+                                   XA_INTEGER, 8, PropModeReplace, data, nitems);
+        }
+        if (rc == Success)
+            XFree (data);
+        XCloseDevice (display, device);
+        if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
+                g_warning ("Error in setting double click drag  on \"%s\"", device_info->name);
+        }
+}
+
+static void
+set_touchpad_double_click_drag_all (gboolean state)
+{
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
+
+        if (devicelist == NULL)
+                return;
+
+        for (i = 0; i < numdevices; i++) {
+                 set_touchpad_double_click_drag (&devicelist[i], state);
+        }
+
+        XFreeDeviceList (devicelist);
+}
+
+static void
+set_bottom_right_click_menu(UsdMouseManager *manager,
+                            XDeviceInfo     *device_info,
+                            gboolean state)
+{
+    XDevice *device;
+    int format, rc;
+    unsigned long nitems, bytes_after;
+    unsigned char* data;
+    long *ptr;
+    Atom prop, type;
+    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+    prop = property_from_name ("Synaptics Soft Button Areas");
+    if (!prop)
+            return;
+
+    device = device_is_touchpad (device_info);
+    if (device == NULL) {
+        return;
+    }
+    gdk_x11_display_error_trap_push (gdk_display_get_default ());
+    rc = XGetDeviceProperty (display , device, prop, 0, 8,
+                         False, XA_INTEGER, &type, &format, &nitems,
+                         &bytes_after, &data);
+
+    if (rc == Success && type == XA_INTEGER && format == 32 && nitems >= 3) {
+        ptr = (long *)data;
+        if(ptr[0] != 0){
+            manager->priv->mAreaLeft = ptr[0];
+            manager->priv->mAreaTop  = ptr[2];
+        }
+        if (state) {
+            ptr[0] = manager->priv->mAreaLeft;
+            ptr[2] = manager->priv->mAreaTop;
+        } else {
+            ptr[0] = 0;
+            ptr[2] = 0;
+        }
+
+        XChangeDeviceProperty (display, device, prop,
+                               XA_INTEGER, 32, PropModeReplace, data, nitems);
+    }
+    if (rc == Success)
+        XFree (data);
+    XCloseDevice (display, device);
+    if (gdk_x11_display_error_trap_pop (gdk_display_get_default ())) {
+        g_warning ("Error in setting bottom right click menu  on \"%s\"", device_info->name);
+    }
+
+}
+
+static void 
+set_bottom_right_conrner_click_menu(UsdMouseManager *manager, gboolean state)
+{
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()), &numdevices);
+
+        if (devicelist == NULL)
+                return;
+
+        for (i = 0; i < numdevices; i++) {
+                set_bottom_right_click_menu(manager, &devicelist[i], state);
+        }
+
+        XFreeDeviceList (devicelist);
+}
+
+static void
 set_locate_pointer (UsdMouseManager *manager,
                     gboolean         state)
 {
@@ -1573,6 +1790,13 @@ set_mouse_settings (UsdMouseManager *manager)
         set_scrolling_all (manager->priv->settings_touchpad);
         set_natural_scroll_all (manager);
         set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
+
+        set_plug_mouse_disble_touchpad (manager->priv->settings_touchpad);
+        
+        set_touchpad_double_click_drag_all (g_settings_get_boolean (manager->priv->settings_touchpad, 
+                                                                    KEY_TOUCHPAD_DOUBLE_CLICK_DRAG));
+        set_bottom_right_conrner_click_menu (manager, g_settings_get_boolean (manager->priv->settings_touchpad,
+                                                                              KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M));
 }
 
 static void
@@ -1641,6 +1865,12 @@ touchpad_callback (GSettings          *settings,
         } else if ((g_strcmp0 (key, KEY_MOTION_ACCELERATION) == 0)
                 || (g_strcmp0 (key, KEY_MOTION_THRESHOLD) == 0)) {
                 set_motion_all (manager);
+        } else if (g_strcmp0 (key, KEY_TOUCHPAD_DISBLE_O_E_MOUSE) == 0) {
+                set_plug_mouse_disble_touchpad (manager->priv->settings_touchpad);//设置插入鼠标时禁用触摸板
+        } else if (g_strcmp0 (key, KEY_TOUCHPAD_DOUBLE_CLICK_DRAG) == 0) {
+                set_touchpad_double_click_drag_all (g_settings_get_boolean (settings, key));//设置轻点击两次拖动打开关闭
+        }else if (g_strcmp0 (key, KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M) == 0) {
+                set_bottom_right_conrner_click_menu (manager, g_settings_get_boolean (settings, key));//打开关闭右下角点击弹出菜单
         }
 }
 
@@ -1654,7 +1884,8 @@ static gboolean
 usd_mouse_manager_idle_cb (UsdMouseManager *manager)
 {
         ukui_settings_profile_start (NULL);
-
+        manager->priv->mAreaLeft = 0;
+        manager->priv->mAreaTop  = 0;
         manager->priv->settings_mouse = g_settings_new (UKUI_MOUSE_SCHEMA);
         manager->priv->settings_touchpad = g_settings_new (UKUI_TOUCHPAD_SCHEMA);
 
