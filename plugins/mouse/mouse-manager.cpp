@@ -42,7 +42,7 @@
 #define KEY_TOUCHPAD_TWO_FINGER_TAP      "tap-button-two-finger"
 #define KEY_TOUCHPAD_THREE_FINGER_TAP    "tap-button-three-finger"
 #define KEY_VERT_EDGE_SCROLL             "vertical-edge-scrolling"
-#define KEY_HORIZ_EDGE_SCROLL            "vertical-edge-scrolling"
+#define KEY_HORIZ_EDGE_SCROLL            "horizontal-edge-scrolling"
 #define KEY_VERT_TWO_FINGER_SCROLL       "vertical-two-finger-scrolling"
 #define KEY_HORIZ_TWO_FINGER_SCROLL      "horizontal-two-finger-scrolling"
 #define KEY_TOUCHPAD_ENABLED             "touchpad-enabled"
