@@ -20,7 +20,9 @@ PKGCONFIG += \
         gtk+-3.0  \
         glib-2.0  \
         libnotify \
-        gsettings-qt
+        gsettings-qt \
+        xi \
+        xcb-proto
 
 
 INCLUDEPATH += \

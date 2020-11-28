@@ -19,7 +19,10 @@ PKGCONFIG +=\
     glib-2.0 \
     gio-2.0 \
     gdk-3.0 \
-    atk
+    atk \
+    fontconfig \
+    xcursor \
+    xfixes
 
 INCLUDEPATH += \
     -I $$PWD/../../common
