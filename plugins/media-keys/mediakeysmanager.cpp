@@ -526,7 +526,7 @@ void MediaKeysManager::doTouchpadAction()
 void MediaKeysManager::doSoundAction(int keyType)
 {
     bool muted,mutedLast,soundChanged;  //是否静音，上一次值记录，是否改变
-    uint volume,volumeMin,volumeMax;    //当前音量值，最小音量值，最大音量值
+    int volume,volumeMin,volumeMax;    //当前音量值，最小音量值，最大音量值
     uint volumeStep,volumeLast;         //音量步长，上一次音量值
 
     if(NULL == mControl)
@@ -543,7 +543,10 @@ void MediaKeysManager::doSoundAction(int keyType)
 
     switch(keyType){
     case MUTE_KEY:
-        muted = !muted;
+        if(volume == volumeMin)
+            muted = true;
+        else
+            muted = !muted;
         break;
     case VOLUME_DOWN_KEY:
         if(volume <= (volumeMin + volumeStep)){
@@ -552,6 +555,10 @@ void MediaKeysManager::doSoundAction(int keyType)
         }else{
             volume -= volumeStep * 400;
             muted = false;
+        }
+        if(volume < 300){
+            volume = volumeMin;
+            muted = true;
         }
         break;
     case VOLUME_UP_KEY:
@@ -565,7 +572,7 @@ void MediaKeysManager::doSoundAction(int keyType)
     }
 
     if(muted != mutedLast){
-        if(mate_mixer_stream_control_set_mute(mControl,muted))
+        if(mate_mixer_stream_control_set_mute(mControl, muted))
             soundChanged = true;
         else
             muted = mutedLast;

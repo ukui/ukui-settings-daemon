@@ -25,13 +25,11 @@
 #include <QX11Info>
 #include <QDebug>
 
-const QString ICONDIR = "/usr/share/icons/ukui-icon-theme-default/scalable";
-
 const QString allIconName[] = {
-    ICONDIR + "/status/audio-volume-muted.svg",         //0
-    ICONDIR + "/status/audio-volume-low.svg",
-    ICONDIR + "/status/audio-volume-medium.svg",
-    ICONDIR + "/status/audio-volume-high.svg",
+    "audio-volume-muted",
+    "audio-volume-low",
+    "audio-volume-medium",
+    "audio-volume-high",
     nullptr
 };
 
@@ -48,7 +46,7 @@ VolumeWindow::~VolumeWindow()
     delete mVLayout;
     delete mBarLayout;
     delete mSvgLayout;
-    delete mSvg;
+    delete mBut;
     delete mBar;
     delete mTimer;
 }
@@ -68,14 +66,19 @@ void VolumeWindow::initWindowInfo()
     setWindowOpacity(0.8);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
+
     move(screenWidth*0.01,screenHeight*0.04);
 
     //new memery
     mVLayout = new QVBoxLayout(this);
     mBarLayout = new QHBoxLayout();
     mSvgLayout = new QHBoxLayout();
+    mLabLayout = new QHBoxLayout();
+
+    mLabel = new QLabel();
     mBar = new QProgressBar();
-    mSvg = new QSvgWidget();
+    mBut = new QPushButton(this);
+
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
 
@@ -90,12 +93,17 @@ void VolumeWindow::setWidgetLayout()
     //窗口性质
     setFixedSize(QSize(64,300));
 
-    //svg图片操作
-    mSvg->setFixedSize(QSize(32,32));
+    //lable 音量键值
+    mLabel->setFixedSize(QSize(25, 25));
+    mLabel->setAlignment(Qt::AlignHCenter);
+    mLabLayout->addWidget(mLabel);
 
+    //button图片操作
+    mBut->setFixedSize(QSize(48,48));
+    mBut->setIconSize(QSize(32,32));
     //音量条操作
     mBar->setOrientation(Qt::Vertical);
-    mBar->setFixedSize(QSize(10,230));
+    mBar->setFixedSize(QSize(10,200));
     mBar->setTextVisible(false);
 //  mBar->setValue(volumeLevel/100);
     mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#708069}"
@@ -106,17 +114,30 @@ void VolumeWindow::setWidgetLayout()
     mBarLayout->setContentsMargins(0,0,0,15);
 
     //svg图片加到横向布局
-    mSvgLayout->addWidget(mSvg);
+    mSvgLayout->addWidget(mBut);
 
-    //横向布局和svg图片加入垂直布局
+    //音量大小、横向布局和svg图片加入垂直布局
+    mVLayout->addLayout(mLabLayout);
     mVLayout->addLayout(mBarLayout);
     mVLayout->addLayout(mSvgLayout);
     mVLayout->setGeometry(QRect(0,0,width(),height()));
 }
 
+int doubleToInt(double d)
+{
+    int I = d;
+    if(d - I >= 0.5)
+        return I+1;
+    else
+        return I;
+}
+
 void VolumeWindow::dialogShow()
 {
-    mSvg->load(mIconName);
+    mLabel->clear();
+    mLabel->setNum(doubleToInt(mVolumeLevel/655.35));
+
+    mBut->setIcon(QIcon::fromTheme(mIconName));
     show();
     mTimer->start(2000);
 }
@@ -132,6 +153,7 @@ void VolumeWindow::setVolumeLevel(int level)
     double percentage;
 
     this->mVolumeLevel = level;
+    mBar->reset();
     mBar->setValue((mVolumeLevel-mMinVolume)/100);
     mIconName.clear();
 

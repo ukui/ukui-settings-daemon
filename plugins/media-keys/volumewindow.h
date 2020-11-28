@@ -27,6 +27,8 @@
 #include <QSvgWidget>
 #include <QTimer>
 #include <QString>
+#include <QPushButton>
+#include <QLabel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class VolumeWindow;}
@@ -54,9 +56,11 @@ private:
     QVBoxLayout *mVLayout;
     QHBoxLayout *mBarLayout;
     QHBoxLayout *mSvgLayout;
+    QHBoxLayout *mLabLayout;
     QSpacerItem *mSpace;
+    QLabel      *mLabel;
     QProgressBar *mBar;
-    QSvgWidget   *mSvg;
+    QPushButton  *mBut;
     QTimer       *mTimer;
     QString      mIconName;
 

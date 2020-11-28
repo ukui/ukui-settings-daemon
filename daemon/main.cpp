@@ -38,11 +38,16 @@ static bool replace         = false;
 
 int main (int argc, char* argv[])
 {
-    PluginManager*          manager = NULL;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
+#endif
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 
-    syslog_init("ukui-settings-daemon", LOG_LOCAL6);
+    PluginManager*  manager = NULL;
     qDebug( "ukui-settings-daemon starting ...");
-
     QApplication app(argc, argv);
     QTranslator translator;
     translator.load("/usr/share/ukui-settings-daemon/daemon/res/i18n/zh_CN.qm");
