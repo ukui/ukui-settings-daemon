@@ -51,7 +51,8 @@ pkgconfig_DATA = ukui-settings-daemon.pc
 man_MANS = \
 	ukui-settings-daemon.1 \
 	usd-datetime-mechanism.1 \
-	usd-locate-pointer.1    
+	usd-locate-pointer.1    \
+	touchpad-state.1
 
 @INTLTOOL_XML_NOMERGE_RULE@
 

@@ -3,5 +3,5 @@ usr/bin/
 usr/lib/*/ukui-settings-daemon/
 usr/share/dbus-1/
 usr/share/polkit-1/
-./plugins/mouse/01-touchpad-state-onmouse.rules etc/udev/rules.d/
+./plugins/mouse/01-touchpad-state-onmouse.rules lib/udev/rules.d/
 ./plugins/mouse/touchpad-state usr/bin/
