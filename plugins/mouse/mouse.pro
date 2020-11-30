@@ -21,7 +21,8 @@ include($$PWD/../../common/common.pri)
 PKGCONFIG += \
         gtk+-3.0 \
         glib-2.0  \
-        gsettings-qt
+        gsettings-qt \
+        xi
 
 
 INCLUDEPATH += \

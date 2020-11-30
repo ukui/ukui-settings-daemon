@@ -11,22 +11,22 @@
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="637"/>
         <source>Do you want to activate Slow Keys?</source>
-        <translation>您想激活慢键吗?</translation>
+        <translation>您想激活慢速键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="638"/>
         <source>Do you want to deactivate Slow Keys?</source>
-        <translation>您想要停用慢键吗?</translation>
+        <translation>您想要停用慢速键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="639"/>
         <source>You just held down the Shift key for 8 seconds.  This is the shortcut for the Slow Keys feature, which affects the way your keyboard works.</source>
-        <translation>您只是按下Shift键8秒。这是慢键功能的快捷方式，它会影响键盘的工作方式。</translation>
+        <translation>您只是按下 Shift 键8秒。这是慢速键功能的快捷方式，它会影响键盘的工作方式。</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="648"/>
         <source>Slow Keys Alert</source>
-        <translation>慢键警告</translation>
+        <translation>慢速键警告</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="652"/>
@@ -61,22 +61,22 @@
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="766"/>
         <source>Do you want to activate Sticky Keys?</source>
-        <translation>您想激活粘键吗?</translation>
+        <translation>您想激活粘滞键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="767"/>
         <source>Do you want to deactivate Sticky Keys?</source>
-        <translation>您想关闭粘键吗?</translation>
+        <translation>您想关闭粘滞键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="769"/>
         <source>You just pressed the Shift key 5 times in a row.  This is the shortcut for the Sticky Keys feature, which affects the way your keyboard works.</source>
-        <translation>您只是连续按了5次Shift键。这是粘滞键特性的快捷方式，它会影响键盘的工作方式。</translation>
+        <translation>您只是连续按了5次 Shift 键。这是慢速键特性的快捷方式，它会影响键盘的工作方式。</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="771"/>
         <source>You just pressed two keys at once, or pressed the Shift key 5 times in a row.  This turns off the Sticky Keys feature, which affects the way your keyboard works.</source>
-        <translation>您只需同时按两个键，或者连续按5次Shift键。这将关闭影响键盘工作方式的粘键功能。</translation>
+        <translation>您只需同时按两个键，或者连续按5次 Shift 键。这将关闭影响键盘工作方式的粘滞键功能。</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="780"/>
@@ -120,17 +120,17 @@
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-preferences-dialog.ui" line="76"/>
         <source>Press keyboard shortcuts one key at a time (Sticky Keys)</source>
-        <translation>一次按下键盘快速键（Sticky键）</translation>
+        <translation>一次按下键盘快速键（Sticky 键）</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-preferences-dialog.ui" line="83"/>
         <source>Ignore duplicate keypresses (Bounce Keys)</source>
-        <translation>忽略重复的按键(Bounce键)</translation>
+        <translation>忽略重复的按键 (Bounce 键)</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-preferences-dialog.ui" line="90"/>
         <source>Press and _hold keys to accept them (Slow Keys)</source>
-        <translation>按住键以接受它们（Slow键）</translation>
+        <translation>按住键以接受它们 (Slow 键）</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-preferences-dialog.ui" line="106"/>
@@ -215,13 +215,6 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../../../plugins/keybindings/keybindings-manager.cpp" line="401"/>
-        <source>Error while trying to run &quot;%1&quot;;
- which is linked to the key &quot;%2&quot;</source>
-        <translation type="unfinished">试图运行&quot;%1&quot;时出错;
-链接到键&quot;%2&quot;</translation>
-    </message>
-    <message>
         <location filename="../plugins/keybindings/keybindings-manager.cpp" line="404"/>
         <source>Shortcut message box</source>
         <translation>快捷键消息弹框</translation>
@@ -245,17 +238,17 @@ X server version data:
 If you report this situation as a bug, please include:
  • The result of &lt;b&gt; xprop -root | grep XKB &lt;/b&gt;
  • The result of &lt;b&gt; gsettings list-keys org.mate.peripherals-keyboard-xkb.kbd &lt;/b&gt;</source>
-        <translation>激活XKB配置时出错。
+        <translation>激活 XKB 配置时出错。
 它可能在各种情况下发生:
-libxklavier库中的错误
-X服务器中的错误（xkbcomp，xmodmap实用程序）
-具有不兼容的libxkbfile实现的X服务器
+libxklavier 库中的错误
+X服务器中的错误 (xkbcomp, xmodmap 实用程序)
+具有不兼容的 libxkbfile 实现的 X 服务器
 X服务器版本数据：
 %1
 %2
 如果您将此情况报告为错误，请包括：
 •&lt;b&gt; xprop -root | grep XKB &lt;/ b&gt; 的结果
-•&lt;b&gt; gsettings列表键org.mate.peripherals-keyboard-xkb.kbd的结果&lt;/ b&gt;</translation>
+•&lt;b&gt; gsettings 列表键 org.mate.peripherals-keyboard-xkb.kbd 的结果 &lt;/ b&gt;</translation>
     </message>
     <message>
         <location filename="../plugins/keyboard/keyboard-xkb.cpp" line="177"/>
@@ -270,37 +263,37 @@ X服务器版本数据：
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="558"/>
         <source>Do you want to activate Slow Keys?</source>
-        <translation type="unfinished">您想激活慢键吗?</translation>
+        <translation type="unfinished">您想激活慢速键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="559"/>
         <source>Do you want to deactivate Slow Keys?</source>
-        <translation type="unfinished">您想要停用慢键吗?</translation>
+        <translation type="unfinished">您想要停用慢速键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="561"/>
         <source>You just held down the Shift key for 8 seconds.  This is the shortcut for the Slow Keys feature, which affects the way your keyboard works.</source>
-        <translation type="unfinished">您只是按下Shift键8秒。这是慢键功能的快捷方式，它会影响键盘的工作方式。</translation>
+        <translation type="unfinished">您只是按下 Shift 键8秒。这是慢速键功能的快捷方式，它会影响键盘的工作方式。</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="692"/>
         <source>Do you want to activate Sticky Keys?</source>
-        <translation type="unfinished">您想激活粘键吗?</translation>
+        <translation type="unfinished">您想激活粘滞键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="693"/>
         <source>Do you want to deactivate Sticky Keys?</source>
-        <translation type="unfinished">您想关闭粘键吗?</translation>
+        <translation type="unfinished">您想关闭粘滞键吗？</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="695"/>
         <source>You just pressed the Shift key 5 times in a row.  This is the shortcut for the Sticky Keys feature, which affects the way your keyboard works.</source>
-        <translation type="unfinished">您只是连续按了5次Shift键。这是粘滞键特性的快捷方式，它会影响键盘的工作方式。</translation>
+        <translation type="unfinished">您只是连续按了5次 Shift 键。这是粘滞键特性的快捷方式，它会影响键盘的工作方式。</translation>
     </message>
     <message>
         <location filename="../plugins/a11y-keyboard/a11y-keyboard-manager.cpp" line="697"/>
         <source>You just pressed two keys at once, or pressed the Shift key 5 times in a row.  This turns off the Sticky Keys feature, which affects the way your keyboard works.</source>
-        <translation type="unfinished">您只需同时按两个键，或者连续按5次Shift键。这将关闭影响键盘工作方式的粘键功能。</translation>
+        <translation type="unfinished">您只需同时按两个键，或者连续按5次 Shift 键。这将关闭影响键盘工作方式的粘滞键功能。</translation>
     </message>
 </context>
 <context>

@@ -6,7 +6,7 @@
 QT       += gui
 CONFIG += c++11 no_keywords link_pkgconfig plugin
 
-PKGCONFIG += glib-2.0 atk gio-2.0 gdk-3.0
+PKGCONFIG += glib-2.0 atk gio-2.0 gdk-3.0 gtk+-3.0 xi
 
 INCLUDEPATH += \
         -I $$PWD \
