@@ -214,6 +214,12 @@
 </context>
 <context>
     <name>QObject</name>
+    <message>  
+        <location filename="../../../plugins/keybindings/keybindings-manager.cpp" line="401"/>  
+        <source>Error while trying to run &quot;%1&quot;;  
+ which is linked to the key &quot;%2&quot;</source>  
+        <translation>试图运行&quot;%1&quot;时出错; 链接到键&quot;%2&quot;</translation>  
+    </message>
     <message>
         <location filename="../plugins/keybindings/keybindings-manager.cpp" line="404"/>
         <source>Shortcut message box</source>
