@@ -622,6 +622,8 @@ usd_keyboard_xkb_init (UsdKeyboardManager * kbd_manager)
 		ukui_settings_profile_start ("apply_xkb_settings");
 		apply_xkb_settings ();
 		ukui_settings_profile_end ("apply_xkb_settings");
+		xkl_engine_get_prev_group(xkl_engine);
+		xkl_engine_lock_group(xkl_engine, 0);
 	}
 	preview_dialogs = g_hash_table_new (g_direct_hash, g_direct_equal);
 
