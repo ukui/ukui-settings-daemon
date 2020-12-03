@@ -21,9 +21,7 @@ PKGCONFIG += \
         glib-2.0  \
         libnotify \
         gsettings-qt \
-        xi \
-        xcb-proto
-
+        xi 
 
 INCLUDEPATH += \
         -I $$PWD/../../common       \
