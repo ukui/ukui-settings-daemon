@@ -33,6 +33,8 @@ Build-Depends: debhelper-compat (=12),
                libcolord-dev,
                liblcms2-dev,
                libimlib2-dev,
+               xserver-xorg-dev,
+               libgudev-1.0-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/

@@ -34,8 +34,11 @@
 #include <QGSettings/qgsettings.h>
 
 #include <X11/Xlib.h>
-#include <X11/extensions/Xrandr.h>
 #include <X11/extensions/XInput2.h>
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/Xrandr.h>
+#include <xorg/xserver-properties.h>
+#include <gudev/gudev.h>
 
 extern "C" {
 #define MATE_DESKTOP_USE_UNSTABLE_API
