@@ -40,8 +40,12 @@
 #include <gio/gio.h>
 #include <dbus/dbus-glib.h>
 
-#include <X11/extensions/XInput2.h>
 #include <X11/Xlib.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/Xrandr.h>
+#include <xorg/xserver-properties.h>
+#include <gudev/gudev.h>
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr-config.h>
@@ -87,6 +91,15 @@
 #define USD_DBUS_NAME "org.ukui.SettingsDaemon"
 #define USD_XRANDR_DBUS_PATH USD_DBUS_PATH "/XRANDR"
 #define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
+
+#define MAX_SIZE_MATCH_DIFF 0.05
+
+typedef struct
+{
+    unsigned char *input_node;
+    XIDeviceInfo dev_info;
+
+}TsInfo;
 
 enum{
     noshow,
@@ -1756,107 +1769,186 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
         return FALSE;
 }
 
-/*检测到旋转，更改触摸屏鼠标光标位置*/
-void set_touchscreen_cursor(float matrix[])
+/* Get device node for gudev
+   node like "/dev/input/event6"
+ */
+unsigned char *
+get_device_node (XIDeviceInfo devinfo)
 {
-        int ts_device_id = 0;
-        Atom prop_float, prop_matrix;
+    char *device_node;
+    Atom  prop;
+    int   nprops;
+    char *name;
 
-        union {
-            unsigned char *c;
-            float *f;
-        } data;
+    Atom act_type;
+    int  act_format;
+    unsigned long nitems, bytes_after;
+    unsigned char *data;
 
-        int format_return;
-        Atom type_return;
 
-        unsigned long nitems;
-        unsigned long bytes_after;
+    prop = XInternAtom(GDK_DISPLAY_XDISPLAY (gdk_display_get_default()), XI_PROP_DEVICE_NODE, False);
+    if (!prop)
+        return NULL;
 
-        int rc;
-        int i, ndevices;
-        XIDeviceInfo *info;
-        Display *dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
-        info = XIQueryDevice(dpy, XIAllDevices, &ndevices);
 
-        for (i = 0; i < ndevices; i++)
+    if (XIGetProperty(GDK_DISPLAY_XDISPLAY (gdk_display_get_default()), devinfo.deviceid, prop, 0, 1000, False,
+                      AnyPropertyType, &act_type, &act_format, &nitems, &bytes_after, &data) == Success)
+    {
+        return data;
+    }
+
+    XFree(data);
+    return NULL;
+}
+
+/* Get touchscreen info */
+GList *
+get_touchscreen(Display* display)
+{
+    gint n_devices;
+    XIDeviceInfo *devs_info;
+    int i;
+    GList *ts_devs = NULL;
+    Display *dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+    devs_info = XIQueryDevice(dpy, XIAllDevices, &n_devices);
+
+    for (i = 0; i < n_devices; i ++)
+    {
+        if (find_touchscreen_device(dpy, &devs_info[i]))
         {
-            if (find_touchscreen_device(dpy, &info[i]))
-            ts_device_id = info[i].deviceid;
+           unsigned char *node;
+           TsInfo *ts_info = g_new(TsInfo, 1);
+           node = get_device_node (devs_info[i]);
+
+           if (node)
+           {
+               ts_info->input_node = node;
+               ts_info->dev_info = devs_info[i];
+               ts_devs = g_list_append (ts_devs, ts_info);
+           }
         }
+    }
+    return ts_devs;
+}
 
-        if (ts_device_id == 0)
-            return;
+/* Code fork from mutter 3.36.4 */
+gboolean
+check_match(int output_width, int output_height, double input_width, double input_height)
+{
+    double w_diff, h_diff;
 
-        prop_float = XInternAtom(dpy, "FLOAT", False);
-        prop_matrix = XInternAtom(dpy, "Coordinate Transformation Matrix", False);
+    w_diff = ABS (1 - ((double) output_width / input_width));
+    h_diff = ABS (1 - ((double) output_height / input_height));
 
-        if (!prop_float)
-            return;
+    printf("w_diff is %f, h_diff is %f\n", w_diff, h_diff);
 
-        if (!prop_matrix)
-            return;
-        rc = XIGetProperty (dpy, XITouchClass, prop_matrix, 0, 9, False,
-                            prop_float, &type_return, &format_return, &nitems, &bytes_after, &data.c);
+    if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF)
+        return TRUE;
+    else
+        return FALSE;
+}
 
-        if (rc != Success || prop_float != type_return || format_return != 32 ||
-            nitems != 9 || bytes_after != 0)
-            return;
+/* Here to run command xinput */
+void
+do_action (char *input_name, char *output_name)
+{
+    char buff[100];
+    sprintf(buff, "xinput --map-to-output \"%s\" \"%s\"", input_name, output_name);
 
-        memcpy(data.f, matrix, 9*sizeof(float));
-        XIChangeProperty (dpy, ts_device_id, prop_matrix, prop_float,
-                          format_return, PropModeReplace, data.c, nitems);
+    printf("buff is %s\n", buff);
 
-        XIFreeDeviceInfo(info);
+    system(buff);
 }
 
 /* 设置触摸屏触点的角度 */
 void set_touchscreen_cursor_rotation(MateRRScreen *screen)
 {
-        /* 添加触摸屏鼠标设置 */
-        MateRRConfig *result;
-        MateRROutputInfo **outputs;
-        int i;
-        result = mate_rr_config_new_current (screen, NULL);
-        outputs = mate_rr_config_get_outputs (result);
-        for(i=0; outputs[i] != NULL;++i)
+    int     event_base, error_base, major, minor;
+    int     o;
+    Window  root;
+    int     xscreen;
+    XRRScreenResources *res;
+    Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default());
+
+    GList *ts_devs = NULL;
+
+    ts_devs = get_touchscreen (dpy);
+
+    if (!g_list_length (ts_devs))
+    {
+        fprintf(stdin, "No touchscreen find...\n");
+        return;
+    }
+
+    GList *l = NULL;
+
+    if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
+        !XRRQueryVersion (dpy, &major, &minor))
+    {
+        fprintf (stderr, "RandR extension missing\n");
+        return;
+    }
+
+    xscreen = DefaultScreen (dpy);
+    root = RootWindow (dpy, xscreen);
+
+    if ( major >= 1 && minor >= 5)
+    {
+        res = XRRGetScreenResources (dpy, root);
+        if (!res)
+          return;
+
+        for (o = 0; o < res->noutput; o++)
         {
-            MateRROutputInfo *info = outputs[i];
-            if(mate_rr_output_info_is_connected (info)){
-                int rotation = mate_rr_output_info_get_rotation(info);
-                switch(rotation){
-                    case MATE_RR_ROTATION_0:
+            XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
+
+            if (!output_info)
+            {
+                fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
+                continue;
+            }
+
+            if (output_info->connection == 0)
+            {
+                int output_mm_width = output_info->mm_width;
+                int output_mm_height = output_info->mm_height;
+
+                for ( l = ts_devs; l; l = l->next)
+                {
+                    TsInfo *info = l -> data;
+                    GUdevDevice *udev_device;
+                    const char *udev_subsystems[] = {"input", NULL};
+
+                    double width, height;
+
+                    GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
+                    udev_device = g_udev_client_query_by_device_file (udev_client, info->input_node);
+
+                    if (udev_device &&
+                        g_udev_device_has_property (udev_device, "ID_INPUT_WIDTH_MM"))
                     {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
+                        width = g_udev_device_get_property_as_double (udev_device,
+                                                                    "ID_INPUT_WIDTH_MM");
+                        height = g_udev_device_get_property_as_double (udev_device,
+                                                                     "ID_INPUT_HEIGHT_MM");
+
+                        if (check_match(output_mm_width, output_mm_height, width, height))
+                        {
+                            do_action(info->dev_info.name, output_info->name);
+                        }
                     }
-                    case MATE_RR_ROTATION_90:
-                    {
-                        float full_matrix[9] = {0, -1, 1, 1, 0, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_180:
-                    {
-                        float full_matrix[9] = {-1,  0, 1, 0, -1, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    case MATE_RR_ROTATION_270:
-                    {
-                        float full_matrix[9] = {0, 1, 0, -1, 0, 1, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                        break;
-                    }
-                    default:
-                    {
-                        float full_matrix[9] = {1, 0, 0, 0, 1, 0, 0, 0, 1};
-                        set_touchscreen_cursor(&full_matrix);
-                    }
+                    g_clear_object (&udev_client);
                 }
             }
         }
+    }
+    else {
+        g_list_free(ts_devs);
+        fprintf(stderr, "xrandr extension too low\n");
+        return;
+    }
+
+    g_list_free(ts_devs);
 }
 
 static void
