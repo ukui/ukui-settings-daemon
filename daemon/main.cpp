@@ -49,6 +49,9 @@ int main (int argc, char* argv[])
     PluginManager*  manager = NULL;
     qDebug( "ukui-settings-daemon starting ...");
     QApplication app(argc, argv);
+
+    QApplication::setQuitOnLastWindowClosed(false);
+
     QTranslator translator;
     translator.load("/usr/share/ukui-settings-daemon/daemon/res/i18n/zh_CN.qm");
     app.installTranslator(&translator);

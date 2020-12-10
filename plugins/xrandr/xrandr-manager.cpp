@@ -22,9 +22,13 @@
 #include <QProcess>
 #include "xrandr-manager.h"
 
-#define SETTINGS_XRANDR_SCHEMAS "org.ukui.SettingsDaemon.plugins.xrandr"
-#define XRANDR_ROTATION_KEY     "xrandr-rotations"
-#define MAX_SIZE_MATCH_DIFF     0.05
+#define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
+#define XRANDR_ROTATION_KEY         "xrandr-rotations"
+
+#define XSETTINGS_SCHEMA            "org.ukui.SettingsDaemon.plugins.xsettings"
+#define XSETTINGS_KEY_SCALING       "scaling-factor"
+
+#define MAX_SIZE_MATCH_DIFF         0.05
 
 typedef struct
 {
@@ -557,10 +561,135 @@ void SetTouchscreenCursorRotation()
         fprintf(stderr, "xrandr extension too low\n");
         return;
     }
-
-g_list_free(ts_devs);
+    g_list_free(ts_devs);
 }
 
+void XrandrManager::oneScaleLogoutDialog(QGSettings *settings)
+{
+    QMessageBox *box = new QMessageBox();
+    QString str = QObject::tr ("The system detects that the HD device has been replaced."
+                              "Do you need to switch to the recommended zoom (100%)? "
+                              "Click on the confirmation logout.");
+
+    box->setIcon(QMessageBox::Question);
+    box->setWindowTitle(QObject::tr("Scale tips"));
+    box->setText(str);
+    box->setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    box->setButtonText(QMessageBox::Yes, QObject::tr("Confirmation"));
+    box->setButtonText(QMessageBox::Cancel, QObject::tr("Cancel"));
+    int ret = box->exec();
+
+    switch (ret) {
+        case QMessageBox::Yes:
+            QGSettings *mouseSettings = new QGSettings("org.ukui.peripherals-mouse");
+            mouseSettings->set("cursor-size", 24);
+            settings->set(XSETTINGS_KEY_SCALING, 1);
+            QProcess::execute("ukui-session-tools --logout");
+        break;
+    }
+}
+
+void XrandrManager::twoScaleLogoutDialog(QGSettings *settings)
+{
+    QMessageBox *box = new QMessageBox();
+    QString str = QObject::tr("Does the system detect high clear equipment "
+                              "and whether to switch to recommended scaling (200%)? "
+                              "Click on the confirmation logout.");
+
+    box->setIcon(QMessageBox::Question);
+    box->setWindowTitle(QObject::tr("Scale tips"));
+    box->setText(str);
+    box->setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    box->setButtonText(QMessageBox::Yes, QObject::tr("Confirmation"));
+    box->setButtonText(QMessageBox::Cancel, QObject::tr("Cancel"));
+    int ret = box->exec();
+    switch (ret) {
+        case QMessageBox::Yes:
+            QGSettings *mouseSettings = new QGSettings("org.ukui.peripherals-mouse");
+            mouseSettings->set("cursor-size", 48);
+            settings->set(XSETTINGS_KEY_SCALING, 2);
+            QProcess::execute("ukui-session-tools --logout");
+        break;
+    }
+}
+
+void XrandrManager::monitorSettingsScreenScale(MateRRScreen *screen)
+{
+    MateRRConfig *config;
+    MateRROutputInfo **outputs;
+    int i;
+    GList *just_turned_on;
+    GList *l;
+
+    bool OneZoom    = false;
+    bool DoubleZoom = false;
+    QGSettings *settings = new QGSettings(XSETTINGS_SCHEMA);
+
+    config = mate_rr_config_new_current (screen, NULL);
+    just_turned_on = NULL;
+    outputs = mate_rr_config_get_outputs (config);
+
+    for (i = 0; outputs[i] != NULL; i++) {
+        MateRROutputInfo *output = outputs[i];
+        if (mate_rr_output_info_is_connected (output) && !mate_rr_output_info_is_active (output)) {
+                just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
+        }
+    }
+
+    for (i = 0; outputs[i] != NULL; i++) {
+        MateRROutputInfo *output = outputs[i];
+
+        if (g_list_find (just_turned_on, GINT_TO_POINTER (i)))
+            continue;
+
+        if (mate_rr_output_info_is_active (output)) {
+            int width, height;
+            mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
+            /* Detect 4K screen switching and prompt whether to zoom.
+             * 检测4K屏切换，并提示是否缩放
+             */
+            int scaling = settings->get(XSETTINGS_KEY_SCALING).toInt();
+
+            if(height > 2000 && scaling < 2){
+                DoubleZoom = true;//设置缩放为2倍
+            }else if(height <= 2000 && scaling >= 2){
+                OneZoom = true;
+            }
+        }
+    }
+    for (l = just_turned_on; l; l = l->next) {
+            MateRROutputInfo *output;
+            int width,height;
+
+            i = GPOINTER_TO_INT (l->data);
+            output = outputs[i];
+
+            /* since the output was off, use its preferred width/height (it doesn't have a real width/height yet) */
+            width = mate_rr_output_info_get_preferred_width (output);
+            height = mate_rr_output_info_get_preferred_height (output);
+
+            /* Detect 4K screen switching and prompt whether to zoom.
+             * 检测4K屏切换，并提示是否缩放
+             */
+            int scaling = settings->get(XSETTINGS_KEY_SCALING).toInt();;
+            if(height > 2000 && scaling < 2 && !DoubleZoom){
+                DoubleZoom = TRUE; //设置缩放为2倍
+            }else if(height <= 2000 && scaling >= 2 && !OneZoom){
+                OneZoom = true;
+            }else if (height > 2000 && scaling >= 2 && OneZoom)
+                OneZoom = false;
+        }
+        if(OneZoom)
+            oneScaleLogoutDialog(settings);
+        else if(DoubleZoom)
+            twoScaleLogoutDialog(settings);
+
+        if(settings)
+            delete settings;
+        g_list_free (just_turned_on);
+        g_object_unref (config);
+
+}
 /**
  * @brief XrandrManager::OnRandrEvent : 屏幕事件回调函数
  * @param screen
@@ -589,6 +718,7 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
         free (intended_filename);
         if(!success)
             manager->AutoConfigureOutputs (manager, config_timestamp);
+        monitorSettingsScreenScale (screen);
     }
     /* 添加触摸屏鼠标设置 */
     SetTouchscreenCursorRotation();

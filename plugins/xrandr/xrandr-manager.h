@@ -80,6 +80,9 @@ public:
                                                   unsigned int   timestamp);
     static bool ApplyStoredConfigurationAtStartup(XrandrManager *manager,
                                                   unsigned int timestamp);
+    static void monitorSettingsScreenScale (MateRRScreen *screen);
+    static void oneScaleLogoutDialog(QGSettings *settings);
+    static void twoScaleLogoutDialog(QGSettings *settings);
 
 private:
     QTimer                *time;
