@@ -14,20 +14,20 @@ CONFIG += app_bundle
 
 include($$PWD/../../common/common.pri)
 
-INCLUDEPATH += \
-
 PKGCONFIG += \
-        gio-2.0 gtk+-3.0 \
+        gio-2.0 \
+        gtk+-3.0 \
         glib-2.0 \
-        mate-desktop-2.0 imlib2
+        mate-desktop-2.0 \
+        imlib2
 
 SOURCES += \
-        $$PWD/backgroundplugin.cpp \
-        background-manager.cpp
+        $$PWD/background-plugin.cpp \
+        $$PWD/background-manager.cpp
 
 HEADERS += \
-        $$PWD/backgroundplugin.h \
-        background-manager.h
+        $$PWD/background-plugin.h \
+        $$PWD/background-manager.h
 
 background_lib.path = $${PLUGIN_INSTALL_DIRS}
 background_lib.files += $$OUT_PWD/libbackground.so

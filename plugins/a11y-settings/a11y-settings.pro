@@ -21,18 +21,13 @@ PKGCONFIG += \
         gio-2.0     \
         gsettings-qt
 
-INCLUDEPATH += \
-    -I $$PWD/../../common       \
-    -I ukui-settings-daemon/
-LIBS +=
-
 SOURCES += \
-    $$PWD/a11ysettingsmanager.cpp \
-    $$PWD/a11ysettingsplugin.cpp
+    $$PWD/a11y-settings-manager.cpp \
+    $$PWD/a11y-settings-plugin.cpp
 
 HEADERS += \
-    $$PWD/a11ysettingsmanager.h \
-    $$PWD/a11ysettingsplugin.h
+    $$PWD/a11y-settings-manager.h \
+    $$PWD/a11y-settings-plugin.h
 
 a11_settings_lib.path = $${PLUGIN_INSTALL_DIRS}
 a11_settings_lib.files = $$OUT_PWD/liba11y-settings.so

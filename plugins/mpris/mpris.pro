@@ -14,20 +14,17 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
-INCLUDEPATH += \
-    -I $$PWD/../../common/
-
 PKGCONFIG += \
     glib-2.0 \
     gio-2.0
 
 SOURCES += \
-    mprismanager.cpp \
-    mprisplugin.cpp
+    mpris-manager.cpp \
+    mpris-plugin.cpp
 
 HEADERS += \
-    mprismanager.h \
-    mprisplugin.h
+    mpris-manager.h \
+    mpris-plugin.h
 
 mpris_lib.path = $${PLUGIN_INSTALL_DIRS}
 mpris_lib.files = $$OUT_PWD/libmpris.so

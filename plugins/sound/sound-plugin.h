@@ -16,27 +16,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef MPRISPLUGIN_H
-#define MPRISPLUGIN_H
+#ifndef SOUNDPLUGIN_H
+#define SOUNDPLUGIN_H
 
-#include "mprismanager.h"
+#include "sound-manager.h"
 #include "plugin-interface.h"
 
-
-class MprisPlugin : public PluginInterface{
+class SoundPlugin : public PluginInterface{
 public:
+    ~SoundPlugin();
     static PluginInterface* getInstance();
+
     virtual void activate();
     virtual void deactivate();
-private:
-    MprisPlugin();
-    MprisPlugin(MprisPlugin&)=delete;
-    ~MprisPlugin();
 
-    MprisManager* mprisManager;
-    static PluginInterface*  mInstance;
+private:
+    SoundPlugin();
+    SoundManager* soundManager;
+    static SoundPlugin* mSoundPlugin;
 };
 
 extern "C" PluginInterface* Q_DECL_EXPORT createSettingsPlugin();
-
-#endif /* MPRISPLUGIN_H */
+#endif /*SOUND_PLUGIN_H */

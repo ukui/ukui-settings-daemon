@@ -16,15 +16,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef HOUSEKEPPING_GLOBAL_H
-#define HOUSEKEPPING_GLOBAL_H
+#ifndef XRDB_H
+#define XRDB_H
 
-#include <QtCore/qglobal.h>
+#include "plugin-interface.h"
+#include "ixrdb-manager.h"
 
-#if defined(HOUSEKEPPING_LIBRARY)
-#  define HOUSEKEPPING_EXPORT Q_DECL_EXPORT
-#else
-#  define HOUSEKEPPING_EXPORT Q_DECL_IMPORT
-#endif
+class XrdbPlugin : public PluginInterface
+{
 
-#endif // HOUSEKEPPING_GLOBAL_H
+public:
+    ~XrdbPlugin();
+    static PluginInterface* getInstance();
+
+    virtual void activate ();
+    virtual void deactivate ();
+
+protected:
+    static XrdbPlugin* mXrdbPlugin;
+    IXrdbManager *m_pIXdbMgr;
+
+private:
+    XrdbPlugin();
+};
+
+extern "C" PluginInterface* Q_DECL_EXPORT createSettingsPlugin();
+#endif // XRDB_H

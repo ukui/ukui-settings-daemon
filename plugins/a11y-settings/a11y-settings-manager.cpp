@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "a11ysettingsmanager.h"
+#include "a11y-settings-manager.h"
 #include "clib-syslog.h"
 
 A11ySettingsManager* A11ySettingsManager::mA11ySettingsManager = nullptr;

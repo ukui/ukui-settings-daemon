@@ -25,7 +25,7 @@ extern "C"{
 #include <syslog.h>
 }
 
-#include "soundmanager.h"
+#include "sound-manager.h"
 
 SoundManager* SoundManager::mSoundManager = nullptr;
 

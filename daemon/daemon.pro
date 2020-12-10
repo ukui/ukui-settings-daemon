@@ -15,7 +15,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include($$PWD/../common/common.pri)
 
 INCLUDEPATH += \
-        -I $$PWD/../common/\
         -I /usr/include/mate-desktop-2.0/
 
 PKGCONFIG += \

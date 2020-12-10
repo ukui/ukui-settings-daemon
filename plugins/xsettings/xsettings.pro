@@ -24,9 +24,6 @@ PKGCONFIG +=\
     xcursor \
     xfixes
 
-INCLUDEPATH += \
-    -I $$PWD/../../common
-
 SOURCES += \
     ukui-xsettings-plugin.cpp \
     xsettings-manager.cpp \

@@ -18,7 +18,7 @@
  */
 #include <QTime>
 #include <QDebug>
-#include "mediakeysmanager.h"
+#include "mediakey-manager.h"
 #include "eggaccelerators.h"
 
 MediaKeysManager* MediaKeysManager::mManager = nullptr;

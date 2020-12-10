@@ -22,8 +22,6 @@ PKGCONFIG += \
         cairo cairo-gobject gsettings-qt
 
 INCLUDEPATH += \
-        -I $$PWD/../../common           \
-        -I $$PWD/../../                 \
         -I ukui-settings-daemon/    \
         -I /usr/include/libmatekbd
 
@@ -42,7 +40,6 @@ SOURCES += \
 HEADERS += \
     keyboard-manager.h \
     keyboard-xkb.h \
-    keyboard_global.h \
     keyboard-plugin.h
 
 keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}

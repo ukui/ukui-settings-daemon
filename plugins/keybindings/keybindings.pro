@@ -13,20 +13,16 @@ CONFIG += c++11 no_keywords link_pkgconfig plugin
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
-        gtk+-3.0 \
-        glib-2.0 \
-        gobject-2.0 gio-2.0 \
-        cairo   gsettings-qt \
+        gtk+-3.0    \
+        glib-2.0    \
+        gobject-2.0 \
+        gio-2.0     \
+        cairo       \
+        gsettings-qt\
         dconf
-
-INCLUDEPATH += \
-        -I $$PWD/../../common   \
-        -I $$PWD/../../         \
-        -I $$PWD/../common/
 
 SOURCES += \
     dconf-util.c \
@@ -36,7 +32,6 @@ SOURCES += \
 HEADERS += \
     dconf-util.h \
     keybindings-manager.h \
-    keybindings_global.h \
     keybindings-plugin.h
 
 

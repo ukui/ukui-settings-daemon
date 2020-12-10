@@ -35,17 +35,13 @@ PKGCONFIG +=\
     atk    \
     mate-desktop-2.0
 
-INCLUDEPATH += \
-    -I $$PWD/../../common
-
-
 SOURCES += \
-    xrdb.cpp \
-    ukui-xrdb-manager.cpp
+    xrdb-plugin.cpp \
+    xrdb-manager.cpp
 
 HEADERS += \
-    xrdb.h \
-    ukui-xrdb-manager.h \
+    xrdb-plugin.h \
+    xrdb-manager.h \
     ixrdb-manager.h
 
 xrdb_lib.path = $${PLUGIN_INSTALL_DIRS}

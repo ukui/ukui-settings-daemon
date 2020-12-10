@@ -16,8 +16,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include "xrdb.h"
-#include "ukui-xrdb-manager.h"
+#include "xrdb-plugin.h"
+#include "xrdb-manager.h"
 #include "clib-syslog.h"
 
 XrdbPlugin* XrdbPlugin::mXrdbPlugin = nullptr;

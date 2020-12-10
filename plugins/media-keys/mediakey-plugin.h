@@ -20,7 +20,7 @@
 #define MEDIAKEYPLUGIN_H
 #include "plugin-interface.h"
 #include <QtCore/QtGlobal>
-#include "mediakeysmanager.h"
+#include "mediakey-manager.h"
 
 class MediakeyPlugin : public PluginInterface
 {

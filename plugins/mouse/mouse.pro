@@ -26,8 +26,6 @@ PKGCONFIG += \
 
 
 INCLUDEPATH += \
-        -I $$PWD/../../common       \
-        -I $$PWD/../common          \
         -I ukui-settings-daemon/
 
 SOURCES += \

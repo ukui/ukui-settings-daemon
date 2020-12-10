@@ -13,7 +13,6 @@ CONFIG += app_bunale
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
@@ -23,11 +22,6 @@ PKGCONFIG += \
         gsettings-qt \
         xi 
 
-INCLUDEPATH += \
-        -I $$PWD/../../common       \
-        -I $$PWD/../common/          \
-        -I $$PWD/../../
-
 SOURCES += \
     a11y-keyboard-manager.cpp \
     a11y-keyboard-plugin.cpp \
@@ -35,7 +29,6 @@ SOURCES += \
 
 HEADERS += \
     a11y-keyboard-manager.h \
-    a11y-keyboard_global.h \
     a11y-keyboard-plugin.h \
     a11y-preferences-dialog.h
 

@@ -14,8 +14,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
-INCLUDEPATH += \
-
 PKGCONFIG += \
         gdk-3.0
 

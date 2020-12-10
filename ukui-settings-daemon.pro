@@ -31,7 +31,6 @@ SUBDIRS += \
     $$PWD/daemon/daemon.pro
 
 include($$PWD/data/data.pri)
-include($$PWD/plugins/common/common.pri)
 
 OTHER_FILES += \
     $$PWD/LICENSE \

@@ -11,7 +11,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include($$PWD/../../common/common.pri)
 
 INCLUDEPATH += \
-        -I $$PWD/../../common/          \
         -I ukui-settings-daemon/        \
 
 PKGCONFIG += \

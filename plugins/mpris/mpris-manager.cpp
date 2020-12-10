@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QDBusReply>
 #include <QDBusMessage>
-#include "mprismanager.h"
+#include "mpris-manager.h"
 #include <syslog.h>
 
 const QString MPRIS_OBJECT_PATH = "/org/mpris/MediaPlayer2";

@@ -16,15 +16,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef KEYBINDINGS_GLOBAL_H
-#define KEYBINDINGS_GLOBAL_H
+#ifndef MPRISPLUGIN_H
+#define MPRISPLUGIN_H
 
-#include <QtCore/qglobal.h>
+#include "mpris-manager.h"
+#include "plugin-interface.h"
 
-#if defined(KEYBINDINGS_LIBRARY)
-#  define KEYBINDINGS_EXPORT Q_DECL_EXPORT
-#else
-#  define KEYBINDINGS_EXPORT Q_DECL_IMPORT
-#endif
 
-#endif // KEYBINDINGS_GLOBAL_H
+class MprisPlugin : public PluginInterface{
+public:
+    static PluginInterface* getInstance();
+    virtual void activate();
+    virtual void deactivate();
+private:
+    MprisPlugin();
+    MprisPlugin(MprisPlugin&)=delete;
+    ~MprisPlugin();
+
+    MprisManager* mprisManager;
+    static PluginInterface*  mInstance;
+};
+
+extern "C" PluginInterface* Q_DECL_EXPORT createSettingsPlugin();
+
+#endif /* MPRISPLUGIN_H */

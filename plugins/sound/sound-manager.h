@@ -24,7 +24,6 @@
 #include <QTimer>
 #include <QFileSystemWatcher>
 #include "QGSettings/qgsettings.h"
-//#include <QGSettings>
 
 #ifdef signals
 #undef signals
