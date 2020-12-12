@@ -29,7 +29,8 @@ PKGCONFIG += \
         libcanberra-gtk3 \
         gio-2.0 \
         mate-desktop-2.0 \
-        gnome-desktop-3.0
+        gnome-desktop-3.0 \
+        lcms2
 
 SOURCES += \
     color-edid.cpp \
