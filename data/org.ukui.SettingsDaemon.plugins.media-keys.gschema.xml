@@ -47,7 +47,7 @@
     </key>
     <key name="logout" type="s">
       <default>'&lt;Ctrl&gt;&lt;Alt&gt;Delete'</default>
-      <summary>Log out</summary>
+      <summary>Open the shutdown management interfac</summary>
       <description>Binding to log out.</description>
     </key>
     <key name="eject" type="s">
