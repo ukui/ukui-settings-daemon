@@ -19,6 +19,7 @@ include($$PWD/../../common/common.pri)
 PKGCONFIG += \
             xrandr   \
             x11      \
+            xi \
             gtk+-3.0 \
             glib-2.0 \
             mate-desktop-2.0 \
