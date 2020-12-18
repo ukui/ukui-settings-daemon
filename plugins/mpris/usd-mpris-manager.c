@@ -69,7 +69,8 @@ static const gchar *BUS_NAMES[] = {"org.mpris.MediaPlayer2.audacious",
                                    "org.mpris.MediaPlayer2.xbmc",
                                    "org.mpris.MediaPlayer2.xnoise",
                                    "org.mpris.MediaPlayer2.gmusicbrowser",
-                                   "org.mpris.MediaPlayer2.spotify"};
+                                   "org.mpris.MediaPlayer2.spotify",
+                                   "org.mpris.MediaPlayer2.KylinVideo"};
 
 #define USD_MPRIS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MPRIS_MANAGER, UsdMprisManagerPrivate))
 
