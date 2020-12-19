@@ -30,7 +30,6 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <stdlib.h>
-
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
@@ -78,6 +77,7 @@ struct _UsdMediaKeysManagerPrivate
         MateMixerStream        *stream;
         MateMixerStreamControl *control;
 #endif
+        GtkWidget        *volume_dialog;
         GtkWidget        *dialog;
         GSettings        *settings;
         GVolumeMonitor   *volume_monitor;
@@ -251,6 +251,19 @@ dialog_init (UsdMediaKeysManager *manager)
                 manager->priv->dialog = usd_media_keys_window_new ();
         }
 }
+static void
+volume_dialog_init (UsdMediaKeysManager *manager)
+{
+        if (manager->priv->volume_dialog != NULL
+            && !usd_osd_window_is_valid (USD_OSD_WINDOW (manager->priv->volume_dialog))) {
+                gtk_widget_destroy (manager->priv->volume_dialog);
+                manager->priv->volume_dialog = NULL;
+        }
+
+        if (manager->priv->volume_dialog == NULL) {
+                manager->priv->volume_dialog = usd_media_keys_window_new ();
+        }
+}
 
 static gboolean
 is_valid_shortcut (const char *string)
@@ -414,6 +427,7 @@ dialog_show (UsdMediaKeysManager *manager)
         int            y;
         GdkDisplay *display;
         GdkDeviceManager *device_manager;
+        GdkSeat       *seat;
         GdkDevice *pointer;
         int            pointer_x;
         int            pointer_y;
@@ -447,9 +461,103 @@ dialog_show (UsdMediaKeysManager *manager)
         if (win_req.height > orig_h) {
                 orig_h = win_req.height;
         }
+
+        pointer_screen = NULL;
+        display = gdk_screen_get_display (manager->priv->current_screen);
+        seat = gdk_display_get_default_seat (display);
+        pointer = gdk_seat_get_pointer (seat);
+
+        gdk_device_get_position (pointer,
+                                 &pointer_screen,
+                                 &pointer_x,
+                                 &pointer_y);
+
+        if (pointer_screen != manager->priv->current_screen) {
+                /* The pointer isn't on the current screen, so just
+                 * assume the default monitor
+                 */
+                monitor = 0;// gdk_display_get_monitor (display, 0);
+        } else {
+                monitor = gdk_display_get_monitor_at_point (manager->priv->current_screen,
+                                                            pointer_x, 
+                                                            pointer_y);
+        }
+        gdk_screen_get_monitor_geometry (manager->priv->current_screen,
+                                         monitor,
+                                         &geometry);
+        //gdk_monitor_get_geometry (monitor, &geometry);
+        orig_w = 150;
+        orig_h = 140;
+        screen_w = geometry.width;
+        screen_h = geometry.height;
+        x = ((screen_w - orig_w) / 2) + geometry.x;
+        y = geometry.y + (screen_h / 2) + (screen_h / 2 - orig_h) / 2;
+
+        g_print(" screen_w = %d, screen_h = %d, x = %d, y = %d", screen_w, screen_h, x, y);
+        gtk_window_set_default_size(GTK_WINDOW (manager->priv->dialog), orig_w ,orig_h);
+        gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
+        
+        GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->dialog);
+        gtk_style_context_save (context);
+        GtkCssProvider *provider = gtk_css_provider_new ();
+        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.5);}", -1, NULL);
+        gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
+        gtk_style_context_add_class (context, "volume-box");
+        g_object_unref (provider);
+
+        gtk_widget_show (manager->priv->dialog);
+
+        gdk_display_sync (gdk_screen_get_display (manager->priv->current_screen));
+
+}
+static void
+volume_dialog_show (UsdMediaKeysManager *manager)
+{
+        int            orig_w;
+        int            orig_h;
+        int            screen_w;
+        int            screen_h;
+        int            x;
+        int            y;
+        GdkDisplay *display;
+        GdkDeviceManager *device_manager;
+        GdkSeat       *seat;
+        GdkDevice *pointer;
+        int            pointer_x;
+        int            pointer_y;
+        GtkRequisition win_req;
+        GdkScreen     *pointer_screen;
+        GdkRectangle   geometry;
+        int            monitor;
+        int ukui_panel_position;
+
+        /*get ukui_panel position*/
+        ukui_panel_position = gDbus_proxy_call_for_panel_posotion(manager);
+
+        gtk_window_set_screen (GTK_WINDOW (manager->priv->volume_dialog),
+                               manager->priv->current_screen);
+
+        /* Return if OSD notifications are disabled */
+        if (!g_settings_get_boolean (manager->priv->settings, "enable-osd"))
+                return;
+
+        /*
+         * get the window size
+         * if the window hasn't been mapped, it doesn't necessarily
+         * know its true size, yet, so we need to jump through hoops
+         */
+        gtk_window_get_default_size (GTK_WINDOW (manager->priv->volume_dialog), &orig_w, &orig_h);
+        gtk_widget_get_preferred_size (manager->priv->volume_dialog, NULL, &win_req);
+
+        if (win_req.width > orig_w) {
+                orig_w = win_req.width;
+        }
+        if (win_req.height > orig_h) {
+                orig_h = win_req.height;
+        }
         orig_w = 64;
         orig_h = 300;
-        gtk_window_set_default_size(GTK_WINDOW (manager->priv->dialog), orig_w ,orig_h);
+        gtk_window_set_default_size(GTK_WINDOW (manager->priv->volume_dialog), orig_w ,orig_h);
         pointer_screen = NULL;
         display = gdk_screen_get_display (manager->priv->current_screen);
         device_manager = gdk_display_get_device_manager (display);
@@ -478,7 +586,7 @@ dialog_show (UsdMediaKeysManager *manager)
         screen_w = geometry.width;
         screen_h = geometry.height;
 
-	if(ukui_panel_position == 1){
+	    if(ukui_panel_position == 1){
                 x = (screen_w * 0.01);
                 y = ((screen_h - 300) - screen_h * 0.04);
         }else if(ukui_panel_position == 2){
@@ -489,9 +597,9 @@ dialog_show (UsdMediaKeysManager *manager)
                 y = (screen_h * 0.04);
         }
 
-        gtk_window_move (GTK_WINDOW (manager->priv->dialog), x, y);
+        gtk_window_move (GTK_WINDOW (manager->priv->volume_dialog), x, y);
 
-        GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->dialog);
+        GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->volume_dialog);
         gtk_style_context_save (context);
         GtkCssProvider *provider = gtk_css_provider_new ();
         gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.9);}", -1, NULL);
@@ -501,7 +609,7 @@ dialog_show (UsdMediaKeysManager *manager)
         //gtk_render_background (context, cr, 20, 40, orig_w, _orig_h);
         //gtk_style_context_restore (context);
 
-        gtk_widget_show (manager->priv->dialog);
+        gtk_widget_show (manager->priv->volume_dialog);
 
         gdk_display_sync (gdk_screen_get_display (manager->priv->current_screen));
         //gtk_style_context_restore (context);
@@ -634,18 +742,22 @@ do_touchpad_action (UsdMediaKeysManager *manager)
 {
         GSettings *settings = g_settings_new (TOUCHPAD_SCHEMA);
         gboolean state = g_settings_get_boolean (settings, TOUCHPAD_ENABLED_KEY);
-
         if (touchpad_is_present () == FALSE) {
                 dialog_init (manager);
+
                 usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
-                                                         "touchpad-disabled", FALSE);
+                                                         "touchpad-disabled-symbolic", FALSE);
+                usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+                                          USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM);
                 return;
         }
 
         dialog_init (manager);
         usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
-                                                 (!state) ? "touchpad-enabled" : "touchpad-disabled",
+                                                 (!state) ? "touchpad-enabled-symbolic" : "touchpad-disabled-symbolic",
                                                  FALSE);
+        usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+                                          USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM);
         dialog_show (manager);
 
         g_settings_set_boolean (settings, TOUCHPAD_ENABLED_KEY, !state);
@@ -659,20 +771,20 @@ update_dialog (UsdMediaKeysManager *manager,
                gboolean             muted,
                gboolean             sound_changed)
 {
-        dialog_init (manager);
+        volume_dialog_init (manager);
 
-        usd_media_keys_window_set_volume_muted (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_volume_muted (USD_MEDIA_KEYS_WINDOW (manager->priv->volume_dialog),
                                                 muted);
-        usd_media_keys_window_set_volume_level (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_volume_level (USD_MEDIA_KEYS_WINDOW (manager->priv->volume_dialog),
                                                 volume);
 
-        usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
+        usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->volume_dialog),
                                           USD_MEDIA_KEYS_WINDOW_ACTION_VOLUME);
-        dialog_show (manager);
+        volume_dialog_show (manager);
 
 #ifdef HAVE_LIBCANBERRA
         if (sound_changed != FALSE && muted == FALSE)
-                ca_gtk_play_for_widget (manager->priv->dialog, 0,
+                ca_gtk_play_for_widget (manager->priv->volume_dialog, 0,
                                         CA_PROP_EVENT_ID, "audio-volume-change",
                                         CA_PROP_EVENT_DESCRIPTION, "Volume changed through key press",
                                         CA_PROP_APPLICATION_NAME, PACKAGE_NAME,
@@ -1342,7 +1454,10 @@ usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
                 gtk_widget_destroy (priv->dialog);
                 priv->dialog = NULL;
         }
-
+        if (priv->volume_dialog != NULL) {
+                gtk_widget_destroy (priv->volume_dialog);
+                priv->volume_dialog = NULL;
+        }
         for (l = priv->media_players; l; l = l->next) {
                 MediaPlayer *mp = l->data;
                 g_free (mp->application);
