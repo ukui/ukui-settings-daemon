@@ -26,6 +26,9 @@
 #include <QX11Info>
 #include <QScreen>
 #include <QTimer>
+#include <QAction>
+#include <QLabel>
+#include <QPushButton>
 
 namespace Ui {
 class DeviceWindow;
@@ -51,7 +54,7 @@ private Q_SLOTS:
 private:
     Ui::DeviceWindow *ui;
     QString          mIconName;
-    QSvgWidget       *mSvg;
+    QPushButton      *mBut;
     QTimer           *mTimer;
 };
 
