@@ -1420,8 +1420,24 @@ refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
  */
 void show_question(GSettings *scale)
 {
-    GtkWidget *dialog;
+    GdkDisplay      *dpy;
+    GdkScreen       *screen;
+    GdkRectangle    geometry;
+    GtkWidget       *dialog;
     GtkResponseType result;
+
+    int        screen_w, screen_h;
+    int         x, y;
+    int         w, h;
+
+    dpy = gdk_display_get_default();
+    screen = gdk_display_get_default_screen(dpy);
+    gdk_screen_get_monitor_geometry(screen, 0, &geometry);
+    screen_w = geometry.width;
+    screen_h = geometry.height;
+    x = ((screen_w) / 2) + geometry.x;
+    y = geometry.y + (screen_h / 2) ;
+
     dialog = gtk_message_dialog_new(NULL,
                 GTK_DIALOG_MODAL,
                 GTK_MESSAGE_QUESTION,
@@ -1432,6 +1448,10 @@ void show_question(GSettings *scale)
     gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+
+    gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+    gtk_window_get_default_size (GTK_WINDOW (dialog), &w, &h);
+    gtk_window_move (GTK_WINDOW (dialog), x-w, y-h);
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -1450,8 +1470,23 @@ void show_question(GSettings *scale)
  */
 void show_question_one(GSettings *scale)
 {
-    GtkWidget *dialog;
+    GdkDisplay      *dpy;
+    GdkScreen       *screen;
+    GdkRectangle    geometry;
+    GtkWidget       *dialog;
     GtkResponseType result;
+    int        screen_w, screen_h;
+    int         x, y;
+    int         w, h;
+
+    dpy = gdk_display_get_default();
+    screen = gdk_display_get_default_screen(dpy);
+    gdk_screen_get_monitor_geometry(screen, 0, &geometry);
+    screen_w = geometry.width;
+    screen_h = geometry.height;
+    x = ((screen_w) / 2) + geometry.x;
+    y = geometry.y + (screen_h / 2) ;
+
     dialog = gtk_message_dialog_new(NULL,
                         GTK_DIALOG_MODAL,
                         GTK_MESSAGE_QUESTION,
@@ -1459,11 +1494,15 @@ void show_question_one(GSettings *scale)
                         _("The system detects that the HD device has been replaced."
                           "Do you need to switch to the recommended zoom (100%%)? "
                           "Click on the confirmation logout."));
-                  
+
     gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
-    
+
+    gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+    gtk_window_get_default_size (GTK_WINDOW (dialog), &w, &h);
+    gtk_window_move (GTK_WINDOW (dialog), x-w, y-h);
+
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 
@@ -1807,6 +1846,7 @@ get_touchscreen(Display* display)
 {
     gint n_devices;
     XIDeviceInfo *devs_info;
+    //XIDeviceInfo *info;
     int i;
     GList *ts_devs = NULL;
     Display *dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
@@ -1858,6 +1898,7 @@ do_action (char *input_name, char *output_name)
     printf("buff is %s\n", buff);
 
     system(buff);
+
 }
 
 /* 设置触摸屏触点的角度 */
@@ -1957,7 +1998,8 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
-	
+	    gboolean pop_flag = FALSE;
+
         if (!priv->running)
                 return;
         
@@ -2025,7 +2067,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                 } else
                         log_msg ("Applied stored configuration to deal with event\n");
                 /*监听HDMI插拔设置缩放*/
-                monitor_settings_screen_zoom(screen);
+                pop_flag = TRUE;
         }
         
         /* 添加触摸屏鼠标设置 */
@@ -2035,6 +2077,12 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         apply_color_profiles ();
 
         refresh_tray_icon_menu_if_active (manager, MAX (change_timestamp, config_timestamp));
+
+        /*监听HDMI插拔设置缩放*/
+        if(pop_flag){
+            pop_flag = FALSE;
+            monitor_settings_screen_zoom(screen);
+        }
         log_close ();
 }
 
