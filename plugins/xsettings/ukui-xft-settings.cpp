@@ -108,7 +108,7 @@ static double get_dpi_from_gsettings_or_x_server (GSettings *gsettings)
     if (value != 0) {
         dpi = value;
     } else {
-        dpi = get_dpi_from_x_server ();
+        dpi = DPI_FALLBACK;//get_dpi_from_x_server ();
     }
 
     return dpi;
