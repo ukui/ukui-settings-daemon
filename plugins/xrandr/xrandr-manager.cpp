@@ -571,6 +571,7 @@ void XrandrManager::oneScaleLogoutDialog(QGSettings *settings)
                               "Do you need to switch to the recommended zoom (100%)? "
                               "Click on the confirmation logout.");
 
+    box->setWindowFlag(Qt::WindowStaysOnTopHint);
     box->setIcon(QMessageBox::Question);
     box->setWindowTitle(QObject::tr("Scale tips"));
     box->setText(str);
@@ -596,6 +597,7 @@ void XrandrManager::twoScaleLogoutDialog(QGSettings *settings)
                               "and whether to switch to recommended scaling (200%)? "
                               "Click on the confirmation logout.");
 
+    box->setWindowFlag(Qt::WindowStaysOnTopHint);
     box->setIcon(QMessageBox::Question);
     box->setWindowTitle(QObject::tr("Scale tips"));
     box->setText(str);
@@ -699,6 +701,7 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
 {
     unsigned int change_timestamp, config_timestamp;
     XrandrManager *manager = (XrandrManager*) data;
+    bool popFlag = false;
 
     /* 获取更改时间 和 配置时间 */
     mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
@@ -718,10 +721,15 @@ void XrandrManager::OnRandrEvent(MateRRScreen *screen, gpointer data)
         free (intended_filename);
         if(!success)
             manager->AutoConfigureOutputs (manager, config_timestamp);
-        monitorSettingsScreenScale (screen);
+        popFlag = true;
     }
     /* 添加触摸屏鼠标设置 */
     SetTouchscreenCursorRotation();
+
+    if(popFlag){
+        monitorSettingsScreenScale (screen);
+        popFlag = false;
+    }
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
