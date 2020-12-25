@@ -204,6 +204,8 @@ ldsm_notify_for_mount (LdsmMountInfo *mount,
 
         g_free (name);
 
+        gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
+
         g_object_ref (G_OBJECT (dialog));
         response = gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -242,14 +244,14 @@ ldsm_mount_has_space (LdsmMountInfo *mount)
 
         free_space = (double) mount->buf.f_bavail / (double) mount->buf.f_blocks;
         /* enough free space, nothing to do */
-        if (free_space > free_percent_notify)
-                return TRUE;
+        if (free_space <= free_percent_notify)
+                return FALSE;//TRUE;
                 
-        if (((gint64) mount->buf.f_frsize * (gint64) mount->buf.f_bavail) > ((gint64) free_size_gb_no_notify * GIGABYTE))
-                return TRUE;
+        if (((gint64) mount->buf.f_frsize * (gint64) mount->buf.f_bavail) <= ((gint64) free_size_gb_no_notify * GIGABYTE))
+                return FALSE;//TRUE;
 
         /* If we got here, then this volume is low on space */
-        return FALSE;
+        return TRUE;//FALSE;
 }
 
 static gboolean
@@ -480,6 +482,9 @@ ldsm_check_all_mounts (gpointer data)
                 mount_info->mount = mount;
 
                 path = g_unix_mount_get_mount_path (mount);
+
+                if (g_strcmp0 (path, "/boot/efi") == 0)
+                      continue;
 
                 if (g_unix_mount_is_readonly (mount)) {
                         ldsm_free_mount_info (mount_info);
