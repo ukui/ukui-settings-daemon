@@ -1420,23 +1420,8 @@ refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
  */
 void show_question(GSettings *scale)
 {
-    GdkDisplay      *dpy;
-    GdkScreen       *screen;
-    GdkRectangle    geometry;
     GtkWidget       *dialog;
     GtkResponseType result;
-
-    int        screen_w, screen_h;
-    int         x, y;
-    int         w, h;
-
-    dpy = gdk_display_get_default();
-    screen = gdk_display_get_default_screen(dpy);
-    gdk_screen_get_monitor_geometry(screen, 0, &geometry);
-    screen_w = geometry.width;
-    screen_h = geometry.height;
-    x = ((screen_w) / 2) + geometry.x;
-    y = geometry.y + (screen_h / 2) ;
 
     dialog = gtk_message_dialog_new(NULL,
                 GTK_DIALOG_MODAL,
@@ -1450,8 +1435,7 @@ void show_question(GSettings *scale)
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
 
     gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
-    gtk_window_get_default_size (GTK_WINDOW (dialog), &w, &h);
-    gtk_window_move (GTK_WINDOW (dialog), x-w, y-h);
+    gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -1470,22 +1454,8 @@ void show_question(GSettings *scale)
  */
 void show_question_one(GSettings *scale)
 {
-    GdkDisplay      *dpy;
-    GdkScreen       *screen;
-    GdkRectangle    geometry;
     GtkWidget       *dialog;
     GtkResponseType result;
-    int        screen_w, screen_h;
-    int         x, y;
-    int         w, h;
-
-    dpy = gdk_display_get_default();
-    screen = gdk_display_get_default_screen(dpy);
-    gdk_screen_get_monitor_geometry(screen, 0, &geometry);
-    screen_w = geometry.width;
-    screen_h = geometry.height;
-    x = ((screen_w) / 2) + geometry.x;
-    y = geometry.y + (screen_h / 2) ;
 
     dialog = gtk_message_dialog_new(NULL,
                         GTK_DIALOG_MODAL,
@@ -1500,8 +1470,7 @@ void show_question_one(GSettings *scale)
     gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
 
     gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
-    gtk_window_get_default_size (GTK_WINDOW (dialog), &w, &h);
-    gtk_window_move (GTK_WINDOW (dialog), x-w, y-h);
+    gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
@@ -1829,12 +1798,14 @@ get_device_node (XIDeviceInfo devinfo)
     if (!prop)
         return NULL;
 
-
+    gdk_x11_display_error_trap_push (gdk_display_get_default ());
     if (XIGetProperty(GDK_DISPLAY_XDISPLAY (gdk_display_get_default()), devinfo.deviceid, prop, 0, 1000, False,
                       AnyPropertyType, &act_type, &act_format, &nitems, &bytes_after, &data) == Success)
     {
+        gdk_x11_display_error_trap_pop (gdk_display_get_default ());
         return data;
     }
+    gdk_x11_display_error_trap_pop (gdk_display_get_default ());
 
     XFree(data);
     return NULL;
