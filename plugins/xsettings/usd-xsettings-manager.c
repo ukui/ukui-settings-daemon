@@ -676,26 +676,29 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 	if (strlen (tmpCursorTheme) > 0 ) {
 	    int len = sizeof(CursorsNames)/sizeof(*CursorsNames);
 	    for (int i = 0; i < len-1; i++) {
-                XcursorImages *images = XcursorLibraryLoadImages(CursorsNames[i], tmpCursorTheme, tmpCursorSize);
+            XcursorImages *images = XcursorLibraryLoadImages(CursorsNames[i], tmpCursorTheme, tmpCursorSize);
 	        if (!images) {
-                     g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
-		     continue;
-	        }
-	        Cursor handle = XcursorImagesLoadCursor(dpy, images);
-		int event_base, error_base;
-		if (XFixesQueryExtension(dpy, &event_base, &error_base))
-		{
-			int major, minor;
-			XFixesQueryVersion(dpy, &major, &minor);
-			if (major >= 2) {
-                            g_debug("set CursorNmae=%s", CursorsNames[i]);
-			    XFixesSetCursorName(dpy, handle, CursorsNames[i]);
-			}
-		}
-		XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
-                XcursorImagesDestroy(images);
+                g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
+                continue;
             }
-	}
+            Cursor handle = XcursorImagesLoadCursor(dpy, images);
+            int event_base, error_base;
+            if (XFixesQueryExtension(dpy, &event_base, &error_base))
+            {
+                int major, minor;
+                XFixesQueryVersion(dpy, &major, &minor);
+                if (major >= 2) {
+                    g_debug("set CursorNmae=%s", CursorsNames[i]);
+                    XFixesSetCursorName(dpy, handle, CursorsNames[i]);
+
+                    GdkCursor *cursor = gdk_cursor_new_from_name(gdk_display_get_default(), CursorsNames[i]);
+                    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+                }
+            }
+            XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
+            XcursorImagesDestroy(images);
+        }
+    }
 	// end add
 
         XCloseDisplay (dpy);
