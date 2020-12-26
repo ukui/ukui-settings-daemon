@@ -691,8 +691,9 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
 
-                    GdkCursor *cursor = gdk_cursor_new_from_name(gdk_display_get_default(), CursorsNames[i]);
-                    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
+                                                     CursorsNames[i],
+                                                     settings->cursor_size);
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
