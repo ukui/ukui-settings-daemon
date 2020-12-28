@@ -104,11 +104,11 @@ typedef struct
 
 typedef struct
 {
-    int touchId;
-    char cMonitorName[64];
-}TouchMapInfo;
+    int touchId;               //触摸屏ID
+    char cMonitorName[64];     //显示器名称
+}TouchMapInfo;                 //触摸屏和显示器映射关系信息
 
-GList *g_TouchMapList = NULL;
+GList *g_TouchMapList = NULL;  //触摸屏和显示器映射关系记录
 
 enum{
     noshow,
@@ -1869,9 +1869,17 @@ check_match(int output_width, int output_height, double input_width, double inpu
 }
 
 //check if pName exit in g_TouchMapList
-Bool check_monitor_map(char *pName)
+
+// IN:pName 
+// OUT:pId
+// RETURN: bMap
+Bool check_monitor_map(char *pName, int *pID)
 {
-    char buff[100];
+    if((NULL == pName)||(NULL == pID))
+    {
+        printf("[%s %d] null\n", __FUNCTION__, __LINE__);
+        return False;
+    }
     Bool bMap = False;
     TouchMapInfo *pTouchMapInfo = NULL;
     GList *pIList = NULL;
@@ -1896,9 +1904,7 @@ Bool check_monitor_map(char *pName)
         {
             printf("[%s %d] bMap\n", __FUNCTION__, __LINE__);
             bMap = True;
-            sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName);
-            printf("buff is %s\n", buff);
-            system(buff);
+            *pID = pTouchMapInfo->touchId;
             return bMap;
         }
     }
@@ -1906,15 +1912,23 @@ Bool check_monitor_map(char *pName)
     return bMap;
 }
 
-Bool check_touch_map(int id)
+// IN:id 
+// OUT:pName
+// RETURN: bMap
+Bool check_touch_map(int id, char *pName)
 {
-    char buff[100];
+    if(NULL == pName)
+    {
+        printf("[%s %d] null\n", __FUNCTION__, __LINE__);
+        return False;
+    }
     Bool bMap = False;
     TouchMapInfo *pTouchMapInfo = NULL;
     GList *pIList = NULL;
 
     if(0 == g_list_length(g_TouchMapList))
     {
+        printf("[%s %d] bMap false\n", __FUNCTION__, __LINE__);
         return bMap;
     }
 
@@ -1933,45 +1947,148 @@ Bool check_touch_map(int id)
         {
             printf("[%s %d] bMap\n", __FUNCTION__, __LINE__);
             bMap = True;
-            sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName);
-            printf("buff is %s\n", buff);
-            system(buff);
+            strcpy(pName, pTouchMapInfo->cMonitorName);
             return bMap;
         }
     }
-
     return bMap;
 }
 
-/* Here to run command xinput */
+//
+Bool check_monitor_exist(char *pName)
+{
+    Bool bExist = False;
+    int i = 0;
+    int iDeviceNum = 0;
+    Display *pDisplay = NULL;
+    XIDeviceInfo *pALLInfo = NULL;
+    XIDeviceInfo *pPreInfo = NULL;
+    XRROutputInfo *pOutInfo = NULL;
+    
+    pDisplay = XOpenDisplay(NULL);
+    if(NULL == pDisplay)
+    {
+        printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
+        return bExist;
+    }
+
+    pALLInfo = XIQueryDevice(pDisplay, XIAllDevices, &iDeviceNum);
+    if(NULL == pALLInfo)
+    {
+        printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
+        return bExist;
+    }
+    
+    int iXScreen = DefaultScreen(pDisplay);
+    Window win = RootWindow(pDisplay, iXScreen);
+    XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
+
+        //查询所有显示器
+        for(i = 0; i < pScreenRes->noutput; i++)
+        {
+                pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
+                if(NULL == pOutInfo)
+                {
+                        printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
+                        return bExist;
+                }
+
+            if(0 == strcmp(pName, pOutInfo->name))
+            {
+                bExist = True;
+                break;
+            }  
+        }
+
+
+    return bExist;
+}
+
+
+//查找主显示器的名称 和是否映射过
+void get_primary_status(char *cName, int *pbMap)
+{
+    int id = 0;
+    Display *pDisplay = NULL;
+    pDisplay = XOpenDisplay(NULL);
+    if(NULL == pDisplay)
+    {
+        printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
+        return NULL;
+    }  
+
+    int iMonitorNum = 0;
+    XRROutputInfo *pOutInfo = NULL;
+    int iXScreen = DefaultScreen(pDisplay);
+    Window win = RootWindow(pDisplay, iXScreen);
+
+    XRRMonitorInfo *pMonitorInfo = XRRGetMonitors(pDisplay, win, 1, &iMonitorNum);;
+    if(NULL == pMonitorInfo)
+    {
+        printf("[%s%d] pMonitorInfo NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
+
+        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pMonitorInfo->outputs[0]);
+        if(NULL != pOutInfo)
+        {
+            printf("[%s%d] name[%s] \n", __FUNCTION__, __LINE__, pOutInfo->name);
+        }
+        else
+        {
+                printf("[%s%d] pOutInfo NULL \n", __FUNCTION__, __LINE__);
+                return NULL;
+        }
+        
+    strcpy(cName, pOutInfo->name);
+
+    *pbMap = check_monitor_map(pOutInfo->name, &id);
+
+    return;
+}
+
+//映射中 touch id 是唯一的
+void remove_touch_map(int id)
+{
+    GList *pIList = NULL;
+    TouchMapInfo *pTMInfo = NULL;
+
+    for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
+    {
+        pTMInfo = pIList->data;
+        if(id == pTMInfo->touchId)
+        {
+            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
+            g_TouchMapList = g_list_remove(g_TouchMapList, pTMInfo);
+            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
+        }
+    }
+    return;
+}
+
+/* Here to run command xinput and record maplist*/
 void
 do_action (int input_id, char *output_name)
 {
     char buff[100];
-
-
-    if(check_monitor_map(output_name))
-    {
-        printf ("[%s%d] monitor[%s] mapped\n",__FUNCTION__, __LINE__, output_name);
-        return;
-    }
-
-    if(check_touch_map(input_id))
-    {
-        printf ("[%s%d] touch[%d] mapped\n", __FUNCTION__, __LINE__, input_id);
-        return;
-    }
+    char cName[64];
 
     sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_id, output_name);
     printf("buff is %s\n", buff);
-
+    system(buff);
+    
     TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
     strcpy(pTMInfo->cMonitorName, output_name);
     pTMInfo->touchId = input_id;
+
+    if(!check_touch_map(input_id, cName))
     g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
 
-    system(buff);
+    return;
 }
+
 
 
 /* 设置触摸屏触点的角度 */
@@ -2046,14 +2163,58 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
 
-
                         if (!check_match(output_mm_width, output_mm_height, width, height))
                         {
-                            //printf("[%s%d] name[%s] deviceid[%d] [%s]\n",__FUNCTION__, __LINE__,
-                            //    info->dev_info.name, info->dev_info.deviceid, output_info->name);
-                            do_action(info->dev_info.deviceid, output_info->name);
+                            char cName[64];
+                            int bMap = False;
+                            //id mapped
+                            if(check_touch_map(info->dev_info.deviceid, cName))
+                            {
+                                //same map    
+                                if(0 == strcmp(cName, output_info->name))
+                                {
+                                    printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                                    do_action(info->dev_info.deviceid, output_info->name);
+                                }
+                                //different map
+                                else
+                                {
+                                    printf("[%s%d] here %s | %s\n\n", __FUNCTION__, __LINE__, 
+                                    cName, output_info->name);
+                                    //exist  : map old
+                                    //unexist: remove old map, and map new
+                                    if(!check_monitor_exist(output_info->name))
+                                    {
+                                        printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                                        remove_touch_map(info->dev_info.deviceid);
+                                        do_action(info->dev_info.deviceid, output_info->name);
+                                    }
+                                    else
+                                    {
+                                        printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                                        do_action(info->dev_info.deviceid, cName);
+                                    }
+                                    
+                                }
+                            }
+                            //id unmapped 
+                            else
+                            {
+                                //check if primary mapped 
+                                get_primary_status(cName, &bMap);
+                                if(bMap)
+                                {
+                                    printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                                    do_action(info->dev_info.deviceid, output_info->name);
+                                }
+                                else
+                                {
+                                    printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                                    do_action(info->dev_info.deviceid, cName);
+                                }
+                                
+                            }
                         }
-
                     }
                     g_clear_object (&udev_client);
                 }
@@ -2851,17 +3012,33 @@ apply_default_configuration_from_file (UsdXrandrManager *manager, guint32 timest
         return result;
 }
 
-void set_touch_map()
+
+//IN: 触摸屏的ID
+void set_touch_map(int touchId)
 {
-    int iDeviceNum = 0;
+    char cName[64];
+    int id = 0;
+    //该ID映射过则不再映射
+    if(check_touch_map(touchId, cName))
+    {
+        printf("[%s%d] touchId mapped\n", __FUNCTION__, __LINE__, touchId);
+        return;
+    }
+
     int i = 0;
     int j = 0;
+    int iDeviceNum = 0;
+    Bool bMapOk = False;  //触摸屏映射成功标志
+    Bool bTouch = False;  //该ID是触摸屏
+    Bool bPrimaryMapped = False; //主屏映射过标志
+    char cPrimaryName[64];
     Display *pDisplay = NULL;
-    XIDeviceInfo *pPreInfo = NULL;
     XIDeviceInfo *pALLInfo = NULL;
-    GList *pIdList = NULL;
-    GList *pIList = NULL;
-    int *pDeviceId = g_new(int, 1);
+    XIDeviceInfo *pPreInfo = NULL;
+    XRROutputInfo *pOutInfo = NULL;
+    
+    get_primary_status(cPrimaryName, &bPrimaryMapped);
+    printf("[%s%d] name[%s] %d \n", __FUNCTION__, __LINE__, cPrimaryName, bPrimaryMapped);
 
     pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
@@ -2876,7 +3053,7 @@ void set_touch_map()
         printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
         return;
     }
-
+    
     //find touchscreen Id
     for(i = 0; i < iDeviceNum; i++)
     {
@@ -2887,119 +3064,84 @@ void set_touch_map()
             continue;
         }
 
-        if(XISlavePointer != pPreInfo->use)
-        {
-            //printf("[%s%d] use[%d]\n", __FUNCTION__, __LINE__, pPreInfo->use);
-            continue;
-        }
-
-        if(!pPreInfo->enabled)
-        {
-            continue;
-        }
-
+        //查询找到触摸屏的ID
         for(j = 0; j < pPreInfo->num_classes; j++)
-        {
-            printf("[%s%d] j[%d] id[%d] name[%s] type[%d]\n", __FUNCTION__, __LINE__, j, pPreInfo->deviceid, pPreInfo->name, pPreInfo->classes[j]->type);
-            if(XITouchClass == pPreInfo->classes[j]->type)
+        {            
+            if((XITouchClass == pPreInfo->classes[j]->type)&&(pPreInfo->classes[j]->sourceid == touchId))
             {
-                *pDeviceId = pPreInfo->deviceid;
-                pIdList = g_list_append(pIdList, pDeviceId);
+                bTouch = True;
             }
         }
     }
 
-    //find primary screen name
-    int iMonitorNum = 0;
-    XRROutputInfo *pOutInfo = NULL;
+    if(False == bTouch)
+    {
+        printf("[%s%d] bTouch false\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
     XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
-    if(NULL == pScreenRes)
-    {
-        printf("[%s%d] pScreenRes NULL\n", __FUNCTION__, __LINE__);
-        return;
-    }
 
-    #if 0
-    for(int n = 0; n < pScreenRes->noutput; n++)
+    //主屏未映射，则映射在主屏
+    //主屏已映射，则继续查找映射在未映射过的屏上
+    if(False == bPrimaryMapped)
     {
-        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[n]);
-        if(NULL != pOutInfo)
-        printf("[%s%d] name[%s]\n", __FUNCTION__, __LINE__, pOutInfo->name);
-    }
-    #endif //test XRRGetOutputInfo
-
-    #if 0
-    XRRMonitorInfo *pMonitorInfo = XRRGetMonitors(pDisplay, win, 1, &iMonitorNum);
-    if(NULL == pMonitorInfo)
-    {
-        printf("[%s%d] pMonitorInfo NULL\n", __FUNCTION__, __LINE__);
-        return;
-    }
-    printf("[%s%d] iMonitorNum[%d] primary[%d] %d %d %d\n", __FUNCTION__, __LINE__,
-        iMonitorNum, pMonitorInfo->primary,pMonitorInfo->width, pMonitorInfo->height,pMonitorInfo->noutput);
-    #endif
-
-    printf("[%s%d] noutput[%d]\n", __FUNCTION__, __LINE__, pScreenRes->noutput);
-    //for(i = 0; i < pMonitorInfo->noutput; i++)
-    for(i = 0; i < pScreenRes->noutput; i++)
-    {
-        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
-        if(NULL == pOutInfo)
+        //查询所有显示器
+        for(i = 0; i < pScreenRes->noutput; i++)
         {
-            printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-            return;
-        }
-
-        #if 0
-        if(TRUE != pMonitorInfo->primary)
-        {
-            continue;
-        }
-        #endif
-
-        for(pIList = pIdList; pIList; pIList = pIList->next)
-        {
-            int *pID = pIList->data;
-
-            if(check_monitor_map(pOutInfo->name))
+            pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
+            if(NULL == pOutInfo)
             {
-                printf ("[%s%d] monitor[%s] mapped\n",__FUNCTION__, __LINE__, pOutInfo->name);
-                // if all mapped then ...
-                continue;
+                printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
+                return;
             }
 
-            do_action(*pID, pOutInfo->name);
+            if(0 == strcmp(cPrimaryName, pOutInfo->name))
+            {
+                printf("[%s%d] ---- \n", __FUNCTION__, __LINE__);
+                do_action(touchId, pOutInfo->name);
+                bMapOk = True;
+                break;
+            }  
         }
+    }
+    else
+    {
+        //查询所有显示器
+        for(i = 0; i < pScreenRes->noutput; i++)
+        {
+            pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
+            if(NULL == pOutInfo)
+            {
+                printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
+                return;
+            }
+
+            if(!check_monitor_map(pOutInfo->name, &id))
+            {
+                printf("[%s%d] ---- \n", __FUNCTION__, __LINE__);
+                do_action(touchId, pOutInfo->name);
+                bMapOk = True;
+                break;
+            }  
+        }
+    }
+    
+    //查找所有显示器都未成功映射，则映射到主显示器上
+    if(False == bMapOk)
+    {
+        do_action(touchId, cPrimaryName);
+        bMapOk = True;
     }
 
     XIFreeDeviceInfo(pALLInfo);
     XCloseDisplay(pDisplay);
 
-    return ;
+    return;    
 }
-
-void remove_touch_map(int id)
-{
-    GList *pIList = NULL;
-    TouchMapInfo *pTMInfo = NULL;
-
-    for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
-    {
-        pTMInfo = pIList->data;
-        if(id == pTMInfo->touchId)
-        {
-            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
-            g_TouchMapList = g_list_remove(g_TouchMapList, pTMInfo);
-            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
-            break;
-        }
-    }
-
-    return;
-}
-
 void listen_to_Xinput_Event()
 {
     Display *pDisplay = NULL;
@@ -3045,12 +3187,8 @@ void listen_to_Xinput_Event()
                 XIHierarchyEvent *pHev = (XIHierarchyEvent *)pCookie->data;
                 if(pHev->flags & XISlaveAdded)
                 {
-                    printf("[%s%d] num_info%d %d \n",__FUNCTION__, __LINE__,
-                    pHev->num_info, pHev->info[pHev->num_info-1].deviceid);
-
-                    //if(XISlavePointer != pHev->info[pHev->num_info-1].use)
-
-                    set_touch_map();
+                    if(XIFloatingSlave == pHev->info[pHev->num_info-1].use)
+                    set_touch_map(pHev->info[pHev->num_info-1].deviceid);
                 }
                 else if(pHev->flags & XISlaveRemoved)
                 {
