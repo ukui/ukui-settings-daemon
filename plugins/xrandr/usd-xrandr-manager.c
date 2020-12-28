@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
+#include <pthread.h>
 
 #include <locale.h>
 #include <glib.h>
@@ -100,6 +101,14 @@ typedef struct
     XIDeviceInfo dev_info;
 
 }TsInfo;
+
+typedef struct
+{
+    int touchId;
+    char cMonitorName[64];
+}TouchMapInfo;
+
+GList *g_TouchMapList = NULL;
 
 enum{
     noshow,
@@ -574,7 +583,7 @@ confirm_with_user_idle_cb (gpointer data)
         struct confirmation *confirmation = data;
         char *backup_filename;
         char *intended_filename;
-	
+
 	static int stat = 0;
 	if (stat)
 		return FALSE;
@@ -1414,9 +1423,9 @@ refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
 
 
 
-/* 
+/*
  * Function: show_question()  显示缩放弹窗
- * urpose :  When the system detects the high clear screen, the pops up change scale window 
+ * urpose :  When the system detects the high clear screen, the pops up change scale window
  */
 void show_question(GSettings *scale)
 {
@@ -1448,9 +1457,9 @@ void show_question(GSettings *scale)
     }
 }
 
-/* 
+/*
  * Function: show_question_one() 显示缩放弹窗
- * urpose :  When the system detects the high clear screen, the pops up change scale window 
+ * urpose :  When the system detects the high clear screen, the pops up change scale window
  */
 void show_question_one(GSettings *scale)
 {
@@ -1484,18 +1493,18 @@ void show_question_one(GSettings *scale)
     }
 }
 
-/* 
+/*
  * Function: one_scale_logout_dialog(int width, int height)
  * urpose :  When the system detects the high clear screen, the pops up change scale window.
  * To determine whether or not to log out and scate take effect
  */
-static void 
+static void
 one_scale_logout_dialog(GSettings *scale)
 {
     show_question_one(scale);
 }
 
-/* 
+/*
  * Function: two_scale_logout_dialog(int width, int height)
  * urpose :  When the system detects the high clear screen, the pops up change scale window.
  * To determine whether or not to log out and scate take effect
@@ -1596,7 +1605,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         int x;
         GError *error;
         gboolean applicable;
-        
+
         config = mate_rr_config_new_current (priv->rw_screen, NULL);
 
         /* For outputs that are connected and on (i.e. they have a CRTC assigned
@@ -1645,7 +1654,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
                         mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
                         mate_rr_output_info_set_geometry (output, x, 0, width, height);
-                        
+
                         x += width;
                 }
         }
@@ -1859,18 +1868,111 @@ check_match(int output_width, int output_height, double input_width, double inpu
         return FALSE;
 }
 
-/* Here to run command xinput */
-void
-do_action (char *input_name, char *output_name)
+//check if pName exit in g_TouchMapList
+Bool check_monitor_map(char *pName)
 {
     char buff[100];
-    sprintf(buff, "xinput --map-to-output \"%s\" \"%s\"", input_name, output_name);
+    Bool bMap = False;
+    TouchMapInfo *pTouchMapInfo = NULL;
+    GList *pIList = NULL;
 
+    if(0 == g_list_length(g_TouchMapList))
+    {
+        return bMap;
+    }
+
+    for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
+    {
+        pTouchMapInfo = pIList->data;
+
+        printf("[%s %d] name[%s -- %d] [%s]\n", __FUNCTION__, __LINE__,
+        pTouchMapInfo->cMonitorName, pTouchMapInfo->touchId, pName);
+
+        if(strcmp(pName, pTouchMapInfo->cMonitorName))
+        {
+            bMap = False;
+        }
+        else
+        {
+            printf("[%s %d] bMap\n", __FUNCTION__, __LINE__);
+            bMap = True;
+            sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName);
+            printf("buff is %s\n", buff);
+            system(buff);
+            return bMap;
+        }
+    }
+
+    return bMap;
+}
+
+Bool check_touch_map(int id)
+{
+    char buff[100];
+    Bool bMap = False;
+    TouchMapInfo *pTouchMapInfo = NULL;
+    GList *pIList = NULL;
+
+    if(0 == g_list_length(g_TouchMapList))
+    {
+        return bMap;
+    }
+
+    for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
+    {
+        pTouchMapInfo = pIList->data;
+
+        printf("[%s %d] name[%s] touchId[%d] %d\n", __FUNCTION__, __LINE__,
+        pTouchMapInfo->cMonitorName, pTouchMapInfo->touchId, id);
+
+        if(id != pTouchMapInfo->touchId)
+        {
+            bMap = False;
+        }
+        else
+        {
+            printf("[%s %d] bMap\n", __FUNCTION__, __LINE__);
+            bMap = True;
+            sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName);
+            printf("buff is %s\n", buff);
+            system(buff);
+            return bMap;
+        }
+    }
+
+    return bMap;
+}
+
+/* Here to run command xinput */
+void
+do_action (int input_id, char *output_name)
+{
+    char buff[100];
+
+
+    if(check_monitor_map(output_name))
+    {
+        printf ("[%s%d] monitor[%s] mapped\n",__FUNCTION__, __LINE__, output_name);
+        return;
+    }
+
+    if(check_touch_map(input_id))
+    {
+        printf ("[%s%d] touch[%d] mapped\n", __FUNCTION__, __LINE__, input_id);
+        return;
+    }
+
+    sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_id, output_name);
     printf("buff is %s\n", buff);
 
-    system(buff);
+    TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
+    strcpy(pTMInfo->cMonitorName, output_name);
+    pTMInfo->touchId = input_id;
+    g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
 
+    system(buff);
 }
+
 
 /* 设置触摸屏触点的角度 */
 void set_touchscreen_cursor_rotation(MateRRScreen *screen)
@@ -1944,10 +2046,14 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
 
-                        if (check_match(output_mm_width, output_mm_height, width, height))
+
+                        if (!check_match(output_mm_width, output_mm_height, width, height))
                         {
-                            do_action(info->dev_info.name, output_info->name);
+                            //printf("[%s%d] name[%s] deviceid[%d] [%s]\n",__FUNCTION__, __LINE__,
+                            //    info->dev_info.name, info->dev_info.deviceid, output_info->name);
+                            do_action(info->dev_info.deviceid, output_info->name);
                         }
+
                     }
                     g_clear_object (&udev_client);
                 }
@@ -1973,7 +2079,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
 
         if (!priv->running)
                 return;
-        
+
         mate_rr_screen_get_timestamps (screen, &change_timestamp, &config_timestamp);
 
         log_open ();
@@ -2040,7 +2146,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                 /*监听HDMI插拔设置缩放*/
                 pop_flag = TRUE;
         }
-        
+
         /* 添加触摸屏鼠标设置 */
         set_touchscreen_cursor_rotation(screen);
 
@@ -2530,7 +2636,7 @@ status_icon_popup_menu (UsdXrandrManager *manager, guint button, guint32 timesta
 
         g_signal_connect (priv->popup_menu, "selection-done",
                           G_CALLBACK (status_icon_popup_menu_selection_done_cb), manager);
-                          
+
         /*Set up custom theming and forced transparency support*/
         GtkWidget *toplevel = gtk_widget_get_toplevel (priv->popup_menu);
         /*Fix any failures of compiz/other wm's to communicate with gtk for transparency */
@@ -2745,6 +2851,228 @@ apply_default_configuration_from_file (UsdXrandrManager *manager, guint32 timest
         return result;
 }
 
+void set_touch_map()
+{
+    int iDeviceNum = 0;
+    int i = 0;
+    int j = 0;
+    Display *pDisplay = NULL;
+    XIDeviceInfo *pPreInfo = NULL;
+    XIDeviceInfo *pALLInfo = NULL;
+    GList *pIdList = NULL;
+    GList *pIList = NULL;
+    int *pDeviceId = g_new(int, 1);
+
+    pDisplay = XOpenDisplay(NULL);
+    if(NULL == pDisplay)
+    {
+        printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    pALLInfo = XIQueryDevice(pDisplay, XIAllDevices, &iDeviceNum);
+    if(NULL == pALLInfo)
+    {
+        printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    //find touchscreen Id
+    for(i = 0; i < iDeviceNum; i++)
+    {
+        pPreInfo = &pALLInfo[i];
+        if(NULL == pPreInfo)
+        {
+            printf("[%s%d] \n", __FUNCTION__, __LINE__);
+            continue;
+        }
+
+        if(XISlavePointer != pPreInfo->use)
+        {
+            //printf("[%s%d] use[%d]\n", __FUNCTION__, __LINE__, pPreInfo->use);
+            continue;
+        }
+
+        if(!pPreInfo->enabled)
+        {
+            continue;
+        }
+
+        for(j = 0; j < pPreInfo->num_classes; j++)
+        {
+            printf("[%s%d] j[%d] id[%d] name[%s] type[%d]\n", __FUNCTION__, __LINE__, j, pPreInfo->deviceid, pPreInfo->name, pPreInfo->classes[j]->type);
+            if(XITouchClass == pPreInfo->classes[j]->type)
+            {
+                *pDeviceId = pPreInfo->deviceid;
+                pIdList = g_list_append(pIdList, pDeviceId);
+            }
+        }
+    }
+
+    //find primary screen name
+    int iMonitorNum = 0;
+    XRROutputInfo *pOutInfo = NULL;
+    int iXScreen = DefaultScreen(pDisplay);
+    Window win = RootWindow(pDisplay, iXScreen);
+    XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
+    if(NULL == pScreenRes)
+    {
+        printf("[%s%d] pScreenRes NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    #if 0
+    for(int n = 0; n < pScreenRes->noutput; n++)
+    {
+        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[n]);
+        if(NULL != pOutInfo)
+        printf("[%s%d] name[%s]\n", __FUNCTION__, __LINE__, pOutInfo->name);
+    }
+    #endif //test XRRGetOutputInfo
+
+    #if 0
+    XRRMonitorInfo *pMonitorInfo = XRRGetMonitors(pDisplay, win, 1, &iMonitorNum);
+    if(NULL == pMonitorInfo)
+    {
+        printf("[%s%d] pMonitorInfo NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+    printf("[%s%d] iMonitorNum[%d] primary[%d] %d %d %d\n", __FUNCTION__, __LINE__,
+        iMonitorNum, pMonitorInfo->primary,pMonitorInfo->width, pMonitorInfo->height,pMonitorInfo->noutput);
+    #endif
+
+    printf("[%s%d] noutput[%d]\n", __FUNCTION__, __LINE__, pScreenRes->noutput);
+    //for(i = 0; i < pMonitorInfo->noutput; i++)
+    for(i = 0; i < pScreenRes->noutput; i++)
+    {
+        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
+        if(NULL == pOutInfo)
+        {
+            printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
+            return;
+        }
+
+        #if 0
+        if(TRUE != pMonitorInfo->primary)
+        {
+            continue;
+        }
+        #endif
+
+        for(pIList = pIdList; pIList; pIList = pIList->next)
+        {
+            int *pID = pIList->data;
+
+            if(check_monitor_map(pOutInfo->name))
+            {
+                printf ("[%s%d] monitor[%s] mapped\n",__FUNCTION__, __LINE__, pOutInfo->name);
+                // if all mapped then ...
+                continue;
+            }
+
+            do_action(*pID, pOutInfo->name);
+        }
+    }
+
+    XIFreeDeviceInfo(pALLInfo);
+    XCloseDisplay(pDisplay);
+
+    return ;
+}
+
+void remove_touch_map(int id)
+{
+    GList *pIList = NULL;
+    TouchMapInfo *pTMInfo = NULL;
+
+    for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
+    {
+        pTMInfo = pIList->data;
+        if(id == pTMInfo->touchId)
+        {
+            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
+            g_TouchMapList = g_list_remove(g_TouchMapList, pTMInfo);
+            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
+            break;
+        }
+    }
+
+    return;
+}
+
+void listen_to_Xinput_Event()
+{
+    Display *pDisplay = NULL;
+    pDisplay = XOpenDisplay(NULL);
+    XEvent stEvent;
+    XGenericEventCookie *pCookie = NULL;
+    if(NULL == pDisplay)
+    {
+        printf("xopendisplay failed\n");
+        return;
+    }
+
+    XIEventMask mask[2];
+    XIEventMask *m;
+    Window win;
+    win = DefaultRootWindow(pDisplay);
+    m = &mask[0];
+    m->deviceid = XIAllDevices;
+    m->mask_len = XIMaskLen(XI_LASTEVENT);
+    m->mask = (unsigned char*)calloc(m->mask_len, sizeof(char));
+    XISetMask(m->mask, XI_HierarchyChanged);
+
+    m = &mask[1];
+    m->deviceid = XIAllMasterDevices;
+    m->mask_len = XIMaskLen(XI_LASTEVENT);
+    m->mask = (unsigned char*)calloc(m->mask_len, sizeof(char));
+
+    XISelectEvents(pDisplay, win, &mask[0], 2);
+    XSync(pDisplay, False);
+
+    free(mask[0].mask);
+    free(mask[1].mask);
+
+    while(1)
+    {
+        pCookie = (XGenericEventCookie*)&stEvent.xcookie;
+        XNextEvent(pDisplay, &stEvent);
+
+        if(XGetEventData(pDisplay, pCookie) && (GenericEvent == pCookie->type))
+        {
+            if(XI_HierarchyChanged == pCookie->evtype)
+            {
+                XIHierarchyEvent *pHev = (XIHierarchyEvent *)pCookie->data;
+                if(pHev->flags & XISlaveAdded)
+                {
+                    printf("[%s%d] num_info%d %d \n",__FUNCTION__, __LINE__,
+                    pHev->num_info, pHev->info[pHev->num_info-1].deviceid);
+
+                    //if(XISlavePointer != pHev->info[pHev->num_info-1].use)
+
+                    set_touch_map();
+                }
+                else if(pHev->flags & XISlaveRemoved)
+                {
+                    printf("[%s%d] num_info%d %d \n",__FUNCTION__, __LINE__,
+                    pHev->num_info, pHev->info[pHev->num_info-1].deviceid);
+                    remove_touch_map(pHev->info[pHev->num_info-1].deviceid);
+                }
+                else
+                {
+                    //printf("flag is %d \n", pHev->flags);
+                }
+            }
+
+        }
+
+        XFreeEventData(pDisplay, pCookie);
+        usleep(50*1000);
+    }
+
+    return ;
+}
+
 gboolean
 usd_xrandr_manager_start (UsdXrandrManager *manager,
                           GError          **error)
@@ -2816,7 +3144,7 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
         gdk_window_add_filter (gdk_get_default_root_window(),
                                (GdkFilterFunc)event_filter,
                                manager);
-        
+
         /* 添加触摸屏鼠标设置 */
         set_touchscreen_cursor_rotation(manager->priv->rw_screen);
 
@@ -2826,6 +3154,14 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
         log_close ();
 
         ukui_settings_profile_end (NULL);
+
+        int pthr_listenXinput = -1;
+        pthread_t thread;
+        pthr_listenXinput = pthread_create(&thread, NULL, (void *)&listen_to_Xinput_Event, NULL);
+        if(0 != pthr_listenXinput)
+        {
+            printf("[%s%d] creat thread failed\n", __FUNCTION__, __LINE__);
+        }
 
         return TRUE;
 }
