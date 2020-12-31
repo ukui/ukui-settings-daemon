@@ -1893,8 +1893,8 @@ Bool check_monitor_map(char *pName, int *pID)
     {
         pTouchMapInfo = pIList->data;
 
-        printf("[%s %d] name[%s -- %d] [%s]\n", __FUNCTION__, __LINE__,
-        pTouchMapInfo->cMonitorName, pTouchMapInfo->touchId, pName);
+        printf("[%s %d] LIST[%d -- %s] Name[%s]\n", __FUNCTION__, __LINE__,
+        pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName, pName);
 
         if(strcmp(pName, pTouchMapInfo->cMonitorName))
         {
@@ -1936,8 +1936,8 @@ Bool check_touch_map(int id, char *pName)
     {
         pTouchMapInfo = pIList->data;
 
-        printf("[%s %d] name[%s] touchId[%d] %d\n", __FUNCTION__, __LINE__,
-        pTouchMapInfo->cMonitorName, pTouchMapInfo->touchId, id);
+        printf("[%s %d] LIST[%d -- %s] IN[%d]\n", __FUNCTION__, __LINE__,
+        pTouchMapInfo->touchId, pTouchMapInfo->cMonitorName, id);
 
         if(id != pTouchMapInfo->touchId)
         {
@@ -1983,23 +1983,22 @@ Bool check_monitor_exist(char *pName)
     Window win = RootWindow(pDisplay, iXScreen);
     XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
 
-        //查询所有显示器
-        for(i = 0; i < pScreenRes->noutput; i++)
+    //查询所有显示器
+    for(i = 0; i < pScreenRes->noutput; i++)
+    {
+        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
+        if(NULL == pOutInfo)
         {
-                pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pScreenRes->outputs[i]);
-                if(NULL == pOutInfo)
-                {
-                        printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-                        return bExist;
-                }
-
-            if(0 == strcmp(pName, pOutInfo->name))
-            {
-                bExist = True;
-                break;
-            }  
+            printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
+            return bExist;
         }
 
+        if(0 == strcmp(pName, pOutInfo->name))
+        {
+            bExist = True;
+            break;
+        }
+    }
 
     return bExist;
 }
@@ -2008,13 +2007,19 @@ Bool check_monitor_exist(char *pName)
 //查找主显示器的名称 和是否映射过
 void get_primary_status(char *cName, int *pbMap)
 {
+    if((NULL == cName)||(NULL == pbMap))
+    {
+        printf("[%s%d] cName pbMap NULL\n", __FUNCTION__, __LINE__);
+        return;
+    }
+
     int id = 0;
     Display *pDisplay = NULL;
     pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
-        return NULL;
+        return;
     }  
 
     int iMonitorNum = 0;
@@ -2029,22 +2034,10 @@ void get_primary_status(char *cName, int *pbMap)
         return;
     }
 
-    XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
+    strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo->name));
+    printf("[%s%d] name[%s] %ld \n", __FUNCTION__, __LINE__, cName, pMonitorInfo->name);
 
-        pOutInfo = XRRGetOutputInfo(pDisplay, pScreenRes, pMonitorInfo->outputs[0]);
-        if(NULL != pOutInfo)
-        {
-            printf("[%s%d] name[%s] \n", __FUNCTION__, __LINE__, pOutInfo->name);
-        }
-        else
-        {
-                printf("[%s%d] pOutInfo NULL \n", __FUNCTION__, __LINE__);
-                return NULL;
-        }
-        
-    strcpy(cName, pOutInfo->name);
-
-    *pbMap = check_monitor_map(pOutInfo->name, &id);
+    *pbMap = check_monitor_map(cName, &id);
 
     return;
 }
@@ -2070,7 +2063,7 @@ void remove_touch_map(int id)
 
 /* Here to run command xinput and record maplist*/
 void
-do_action (int input_id, char *output_name)
+do_action(int input_id, char *output_name)
 {
     char buff[100];
     char cName[64];
@@ -2089,8 +2082,6 @@ do_action (int input_id, char *output_name)
     return;
 }
 
-
-
 /* 设置触摸屏触点的角度 */
 void set_touchscreen_cursor_rotation(MateRRScreen *screen)
 {
@@ -2099,8 +2090,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
     Window  root;
     int     xscreen;
     XRRScreenResources *res;
-    Display *dpy = GDK_DISPLAY_XDISPLAY (gdk_display_get_default());
-
+    Display *dpy = XOpenDisplay(NULL);
     GList *ts_devs = NULL;
 
     ts_devs = get_touchscreen (dpy);
@@ -2226,7 +2216,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
         fprintf(stderr, "xrandr extension too low\n");
         return;
     }
-
+    XCloseDisplay(dpy);
     g_list_free(ts_devs);
 }
 
@@ -3026,17 +3016,12 @@ void set_touch_map(int touchId)
     }
 
     int i = 0;
-    int j = 0;
-    int iDeviceNum = 0;
     Bool bMapOk = False;  //触摸屏映射成功标志
-    Bool bTouch = False;  //该ID是触摸屏
     Bool bPrimaryMapped = False; //主屏映射过标志
     char cPrimaryName[64];
     Display *pDisplay = NULL;
-    XIDeviceInfo *pALLInfo = NULL;
-    XIDeviceInfo *pPreInfo = NULL;
     XRROutputInfo *pOutInfo = NULL;
-    
+
     get_primary_status(cPrimaryName, &bPrimaryMapped);
     printf("[%s%d] name[%s] %d \n", __FUNCTION__, __LINE__, cPrimaryName, bPrimaryMapped);
 
@@ -3046,40 +3031,6 @@ void set_touch_map(int touchId)
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
     }
-
-    pALLInfo = XIQueryDevice(pDisplay, XIAllDevices, &iDeviceNum);
-    if(NULL == pALLInfo)
-    {
-        printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
-        return;
-    }
-    
-    //find touchscreen Id
-    for(i = 0; i < iDeviceNum; i++)
-    {
-        pPreInfo = &pALLInfo[i];
-        if(NULL == pPreInfo)
-        {
-            printf("[%s%d] \n", __FUNCTION__, __LINE__);
-            continue;
-        }
-
-        //查询找到触摸屏的ID
-        for(j = 0; j < pPreInfo->num_classes; j++)
-        {            
-            if((XITouchClass == pPreInfo->classes[j]->type)&&(pPreInfo->classes[j]->sourceid == touchId))
-            {
-                bTouch = True;
-            }
-        }
-    }
-
-    if(False == bTouch)
-    {
-        printf("[%s%d] bTouch false\n", __FUNCTION__, __LINE__);
-        return;
-    }
-
 
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
@@ -3137,7 +3088,6 @@ void set_touch_map(int touchId)
         bMapOk = True;
     }
 
-    XIFreeDeviceInfo(pALLInfo);
     XCloseDisplay(pDisplay);
 
     return;    
@@ -3153,6 +3103,9 @@ void listen_to_Xinput_Event()
         printf("xopendisplay failed\n");
         return;
     }
+    int nInputDev = 0;
+    XDeviceInfo *pAllXDevInfo = NULL;
+    XDeviceInfo *pPreXDevInfo = NULL;
 
     XIEventMask mask[2];
     XIEventMask *m;
@@ -3184,30 +3137,45 @@ void listen_to_Xinput_Event()
         {
             if(XI_HierarchyChanged == pCookie->evtype)
             {
-                XIHierarchyEvent *pHev = (XIHierarchyEvent *)pCookie->data;
-                if(pHev->flags & XISlaveAdded)
+                XIHierarchyEvent *pHev = (XIHierarchyEvent*)pCookie->data;
+                pAllXDevInfo = XListInputDevices(pDisplay, &nInputDev);
+                if(NULL == pAllXDevInfo)
                 {
-                    if(XIFloatingSlave == pHev->info[pHev->num_info-1].use)
-                    set_touch_map(pHev->info[pHev->num_info-1].deviceid);
+                    printf("[%s%d]pAllXDevInfo null\n", __FUNCTION__, __LINE__);
+                    return;
                 }
-                else if(pHev->flags & XISlaveRemoved)
+
+                pPreXDevInfo = &pAllXDevInfo[nInputDev-1];
+                if(NULL == pPreXDevInfo)
                 {
-                    printf("[%s%d] num_info%d %d \n",__FUNCTION__, __LINE__,
-                    pHev->num_info, pHev->info[pHev->num_info-1].deviceid);
-                    remove_touch_map(pHev->info[pHev->num_info-1].deviceid);
+                    printf("[%s%d]pPreXDevInfo null\n", __FUNCTION__, __LINE__);
+                    return;
                 }
-                else
+
+                
+                switch (pHev->flags)
                 {
-                    //printf("flag is %d \n", pHev->flags);
+                    case XISlaveAdded:
+                            printf("[%s%d] id=%ld \n",__FUNCTION__, __LINE__, pPreXDevInfo->id);
+                            
+                            if(XInternAtom(pDisplay, XI_TOUCHSCREEN, True) == pPreXDevInfo->type)
+                            set_touch_map(pPreXDevInfo->id);
+                            break;
+                    case XISlaveRemoved:
+                            
+                            remove_touch_map(pHev->info[pHev->num_info-1].deviceid);
+                            break;
+                    default:
+                            //printf("flag is %d \n", pHev->flags);
+                            break;
                 }
             }
-
         }
 
         XFreeEventData(pDisplay, pCookie);
         usleep(50*1000);
     }
-
+    XCloseDisplay(pDisplay);
     return ;
 }
 
