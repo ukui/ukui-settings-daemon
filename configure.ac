@@ -73,6 +73,7 @@ PKG_CHECK_MODULES(SETTINGS_DAEMON,
 	gio-2.0 >= $GIO_REQUIRED_VERSION
 	gmodule-2.0
 	gthread-2.0
+    xtst
 	dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
 )
 
@@ -80,6 +81,7 @@ PKG_CHECK_MODULES(SETTINGS_PLUGIN,
 	gtk+-3.0 >= $GTK_REQUIRED_VERSION
 	gio-2.0 >= $GIO_REQUIRED_VERSION
     gudev-1.0
+    xtst
 	dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
 )
 
