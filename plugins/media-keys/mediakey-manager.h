@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QTimer>
+#include <QTime>
 #include <QString>
 #include <QProcess>
 #include <QGSettings>
@@ -29,11 +30,12 @@
 #include <QDir>
 #include <QList>
 #include <QDBusConnection>
+#include <QDebug>
 
 #include "volumewindow.h"
 #include "devicewindow.h"
 #include "acme.h"
-
+#include "xeventmonitor.h"
 #ifdef signals
 #undef signals
 #endif
@@ -71,6 +73,7 @@ private:
     MediaKeysManager(QObject* parent = nullptr);
     void initScreens();
     void initKbd();
+    void initXeventMonitor();
 
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
     static void onContextStateNotify(MateMixerContext*,GParamSpec*,void*);
@@ -122,6 +125,8 @@ public Q_SLOTS:
 private Q_SLOTS:
     //void timeoutCallback();
     void updateKbdCallback(const QString&);
+    void XkbEventsPress(const QString &keyStr);
+    void XkbEventsRelease(const QString &keyStr);
 
 Q_SIGNALS:
     /** media-keys plugin will emit this signal by org.ukui.SettingsDaemon.MediaKeys
@@ -148,7 +153,8 @@ private:
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
-
+    bool               m_winFlag  = false;
+    bool               m_ctrlFlag = false;
 };
 
 #endif // MEDIAKEYSMANAGER_H

@@ -23,13 +23,13 @@
 #include <QThread>
 #include <QMetaMethod>
 #include <QDebug>
-
+extern "C"{
 #include <X11/Xlib.h>
 #include <X11/Xlibint.h>
 #include <X11/XKBlib.h>
 #include <X11/extensions/record.h>
 #include <X11/keysym.h>
-
+}
 class XEventMonitorPrivate;
 class XEventMonitor : public QThread
 {

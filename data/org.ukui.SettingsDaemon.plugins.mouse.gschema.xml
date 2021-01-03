@@ -10,5 +10,10 @@
       <summary>Priority to use for this plugin</summary>
       <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
     </key>
+    <key name="locate-pointer" type="b">
+      <default>false</default>
+      <summary>Display mouse position according to gSettings value changes.</summary>
+      <description>Mainly realizes the signal transmission function.</description>
+    </key>
   </schema>
 </schemalist>

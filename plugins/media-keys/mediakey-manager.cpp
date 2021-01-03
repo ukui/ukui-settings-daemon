@@ -16,8 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#include <QTime>
-#include <QDebug>
+
 #include "mediakey-manager.h"
 #include "eggaccelerators.h"
 
@@ -79,7 +78,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     initScreens();
     initKbd();
-
+    initXeventMonitor();
     l = begin = mScreenList->begin();
     end = mScreenList->end();
     for(; l != end; ++l){
@@ -108,6 +107,8 @@ void MediaKeysManager::mediaKeysStop()
     mVolumeWindow = nullptr;
     delete mDeviceWindow;
     mDeviceWindow = nullptr;
+
+    XEventMonitor::instance()->exit();
 
     l = mScreenList->begin();
     end = mScreenList->end();
@@ -139,6 +140,97 @@ void MediaKeysManager::mediaKeysStop()
     g_clear_object(&mStream);
     g_clear_object(&mControl);
     g_clear_object(&mContext);
+}
+
+void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
+{
+    QString KeyName;
+    static bool winFlag = false;
+    static bool ctrlFlag = false;
+    if (keyStr.compare("Print") == 0){
+        executeCommand("kylin-screenshot", " full");
+        return;
+    }
+    if (keyStr.length() >= 8)
+        KeyName = keyStr.left(8);
+
+    if(KeyName.compare("Super_L+") == 0 ||
+       KeyName.compare("Super_R+") == 0 )
+        winFlag = true;
+
+    if(winFlag && keyStr.compare("Super_L") == 0 ||
+       winFlag && keyStr.compare("Super_R") == 0 ){
+        winFlag = false;
+        return;
+    } else if(m_winFlag && keyStr.compare("Super_L") == 0 ||
+              m_winFlag && keyStr.compare("Super_R") == 0 )
+            return;
+
+    if (keyStr.length() >= 10)
+        KeyName = keyStr.left(10);
+
+    if(KeyName.compare("Control_L+") == 0 ||
+       KeyName.compare("Control_R+") == 0 )
+        ctrlFlag = true;
+
+    if(ctrlFlag && keyStr.compare("Control_L") == 0 ||
+       ctrlFlag && keyStr.compare("Control_R") == 0 ){
+        ctrlFlag = false;
+        return;
+    } else if(m_ctrlFlag && keyStr.compare("Control_L") == 0 ||
+              m_ctrlFlag && keyStr.compare("Control_R") == 0 )
+            return;
+
+    if(keyStr.compare("Super_L") == 0 ||
+       keyStr.compare("Super_R") == 0 )
+        executeCommand("ukui-menu", nullptr);
+    if (keyStr.compare("Control_L") == 0 ||
+        keyStr.compare("Control_R") == 0){
+        QGSettings *settings = new QGSettings("org.ukui.SettingsDaemon.plugins.mouse");
+        settings->set("locate-pointer", !settings->get("locate-pointer").toBool());
+        delete settings;
+        settings = nullptr;
+    }
+}
+
+void MediaKeysManager::XkbEventsPress(const QString &keyStr)
+{
+    QString KeyName;
+
+    if (keyStr.length() >= 8)
+        KeyName = keyStr.left(8);
+
+    if(KeyName.compare("Super_L+") == 0 ||
+       KeyName.compare("Super_R+") == 0 )
+        m_winFlag = true;
+
+    if(m_winFlag && keyStr.compare("Super_L") == 0 ||
+       m_winFlag && keyStr.compare("Super_R") == 0 ){
+        m_winFlag = false;
+        return;
+    }
+
+    if (keyStr.length() >= 10)
+        KeyName = keyStr.left(10);
+
+    if(KeyName.compare("Control_L+") == 0 ||
+       KeyName.compare("Control_R+") == 0 )
+        m_ctrlFlag = true;
+
+    if(m_ctrlFlag && keyStr.compare("Control_L") == 0 ||
+       m_ctrlFlag && keyStr.compare("Control_R") == 0 ){
+        m_ctrlFlag = false;
+        return;
+    }
+}
+
+void MediaKeysManager::initXeventMonitor()
+{
+    XEventMonitor::instance()->start();
+    connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
+            this, SLOT(XkbEventsRelease(QString)));
+    connect(XEventMonitor::a(), SIGNAL(keyPress(QString)),
+            this, SLOT(XkbEventsPress(QString)));
 }
 
 void MediaKeysManager::initScreens()
