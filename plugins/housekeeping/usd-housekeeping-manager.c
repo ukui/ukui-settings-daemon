@@ -242,19 +242,45 @@ settings_changed_callback (GSettings              *settings,
         do_cleanup_soon (manager);
 }
 
+static gboolean
+heck_is_livecd()
+{
+    char cmd[128] = {0};
+    char str[1024];
+    FILE *fp;
+    int pid;
+    sprintf(cmd, "cat /proc/cmdline");
+    fp = popen(cmd, "r");
+    while(fgets(str, sizeof(str)-1, fp))
+    {
+        if(strstr(str,"boot=casper")){
+            printf("is livecd\n");
+            pclose(fp);
+            return TRUE;
+        }
+    }
+    pclose(fp);
+    if(getuid() == 999)
+          return TRUE;
+    return FALSE;
+}
+
 gboolean
 usd_housekeeping_manager_start (UsdHousekeepingManager *manager,
                                 GError                **error)
 {
         g_debug ("Starting housekeeping manager");
-        ukui_settings_profile_start (NULL);
 
+        if (heck_is_livecd())
+              return TRUE;
+
+        ukui_settings_profile_start (NULL);
         usd_ldsm_setup (FALSE);
 
         manager->priv->settings = g_settings_new (THUMB_CACHE_SCHEMA);
 
-	g_signal_connect (manager->priv->settings, "changed",
-			  G_CALLBACK (settings_changed_callback), manager);
+        g_signal_connect (manager->priv->settings, "changed",
+                          G_CALLBACK (settings_changed_callback), manager);
 
         /* Clean once, a few minutes after start-up */
         do_cleanup_soon (manager);
