@@ -229,7 +229,7 @@ void MediaKeysManager::initXeventMonitor()
     XEventMonitor::instance()->start();
     connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
             this, SLOT(XkbEventsRelease(QString)));
-    connect(XEventMonitor::a(), SIGNAL(keyPress(QString)),
+    connect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),
             this, SLOT(XkbEventsPress(QString)));
 }
 
