@@ -456,6 +456,47 @@ static void debug_changed (GSettings *settings, gchar *key, gpointer user_data)
         }
 }
 
+static int
+lock_file(int fd)
+{
+        struct flock fl;
+        fl.l_type   = F_WRLCK;//设置写锁
+        fl.l_start  = 0;
+        fl.l_whence = SEEK_SET;
+        fl.l_len    = 0;
+        fl.l_pid = -1;//锁定文件，设置为-1
+
+        return (fcntl(fd, F_SETLK, &fl));
+}
+
+static int
+is_running(const char *procname)
+{
+        char buf[16] = {0};
+        char filename[128] = {0};
+        sprintf(filename, "%s/%s%s.lock", g_get_user_config_dir(), procname, getenv("DISPLAY"));
+        int fd = open(filename, O_CREAT|O_RDWR ,0664);//可读可写，不存在时创建
+        if (fd < 0) {
+            printf("open file %s failed!\n", filename);
+            return 1;
+        }
+        if (replace)
+              sleep(1);
+        if (-1 == lock_file(fd)) /*尝试加锁*/
+        {
+            printf("%s is already running\n", procname);
+            close(fd);
+            return 1;
+        }
+        else
+        {
+            ftruncate(fd, 0);/*截断文件，重新写入pid*/
+            sprintf(buf, "%ld", (long)getpid());
+            write(fd, buf, strlen(buf) + 1);
+            return 0;
+        }
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -483,8 +524,8 @@ main (int argc, char *argv[])
                 debug = g_settings_get_boolean (debug_settings, DEBUG_KEY);
                 g_signal_connect (debug_settings, "changed::" DEBUG_KEY, G_CALLBACK (debug_changed), NULL);
 
-		if (debug) {
-		    g_setenv ("G_MESSAGES_DEBUG", "all", FALSE);
+		        if (debug) {
+		            g_setenv ("G_MESSAGES_DEBUG", "all", FALSE);
 		}
         }
 
@@ -503,9 +544,15 @@ main (int argc, char *argv[])
                 goto out;
         }
 
-        if (! bus_register (bus)) {
-                goto out;
+        bus_register (bus);
+
+        if (is_running("ukui-settings-daemon"))
+        {
+            goto out;
         }
+       // if (! bus_register (bus)) {
+       //         goto out;
+       // }
 
 #ifdef HAVE_LIBNOTIFY
         notify_init ("ukui-settings-daemon");

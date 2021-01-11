@@ -33,6 +33,13 @@
 #include <dbus/dbus-glib.h>
 #include <dbus/dbus-glib-lowlevel.h>
 
+#include <pthread.h>
+#include <X11/Xlib.h>
+#include <X11/Xlibint.h>
+#include <X11/XKBlib.h>
+#include <X11/extensions/record.h>
+#include <X11/keysym.h>
+
 #ifdef HAVE_LIBMATEMIXER
 #include <libmatemixer/matemixer.h>
 #endif
@@ -92,11 +99,24 @@ struct _UsdMediaKeysManagerPrivate
         guint             notify[HANDLED_KEYS];
         GDBusProxy *bproxy;
         GDBusConnection *bcon;
+
+        GHashTable       *hash;
 };
 
 enum {
         MEDIA_PLAYER_KEY_PRESSED,
         LAST_SIGNAL
+};
+
+static const int *ModifiersVec[] = {
+    XK_Control_L,
+    XK_Control_R,
+    XK_Shift_L,
+    XK_Shift_R,
+    XK_Super_L,
+    XK_Super_R,
+    XK_Alt_L,
+    XK_Alt_R
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -351,6 +371,10 @@ static void init_kbd(UsdMediaKeysManager* manager)
 		Key* key;
 
 		gchar* signal_name;
+
+        if(g_strcmp0 (keys[i].settings_key, "screenshot") == 0)
+              continue;
+
 		signal_name = g_strdup_printf ("changed::%s", keys[i].settings_key);
 		g_signal_connect (manager->priv->settings,
 						  signal_name,
@@ -1323,6 +1347,255 @@ acme_filter_events (GdkXEvent           *xevent,
         return GDK_FILTER_CONTINUE;
 }
 
+static gboolean m_CtrlFlag = FALSE;
+static gboolean m_winFlag = FALSE;
+
+void key_release_str (UsdMediaKeysManager *manager,
+                      char *key_str)
+{
+    static gboolean ctrlFlag = FALSE;
+    static gboolean winFlag = FALSE;
+
+    if(g_strcmp0(key_str, "Print")==0)
+          do_screenshot_action(manager);
+
+    if(strncmp(key_str, "Super_L+", 8)==0 ||
+       strncmp(key_str, "Super_R+", 8)==0 )
+        winFlag = TRUE;
+
+    if(winFlag && g_strcmp0(key_str, "Super_L") == 0 ||
+       winFlag && g_strcmp0(key_str, "Super_R") == 0){
+        winFlag = FALSE;
+        return;
+    } else if (m_winFlag && g_strcmp0(key_str, "Super_L") == 0 ||
+               m_winFlag && g_strcmp0(key_str, "Super_R") == 0 )
+        return;
+
+    if (strncmp(key_str, "Control_L+", 10) == 0 ||
+        strncmp(key_str, "Control_R+", 10) == 0 )
+        ctrlFlag = TRUE;
+
+    if(ctrlFlag && g_strcmp0(key_str, "Control_L") == 0 ||
+       ctrlFlag && g_strcmp0(key_str, "Control_R") == 0 ){
+        ctrlFlag = FALSE;
+        return;
+    } else if (m_CtrlFlag && g_strcmp0(key_str, "Control_L") == 0 ||
+               m_CtrlFlag && g_strcmp0(key_str, "Control_R") == 0 )
+        return;
+
+    if( g_strcmp0 (key_str, "Control_L") == 0 ||
+        g_strcmp0 (key_str, "Control_R") == 0 )
+    {
+        GSettings *settings = g_settings_new ("org.ukui.SettingsDaemon.plugins.mouse");
+        g_settings_set_boolean (settings, "locate-pointer", (!g_settings_get_boolean(settings, "locate-pointer")));
+        g_object_unref(settings);
+    }
+
+    if (g_strcmp0 (key_str, "Super_L") == 0 ||
+        g_strcmp0 (key_str, "Super_R") == 0 )
+    {
+        execute (manager, "ukui-menu", FALSE, FALSE);
+    }
+}
+
+void key_press_str (char *key_str)
+{
+    if(strncmp(key_str, "Control_L+", 10) == 0 ||
+       strncmp(key_str, "Control_R+", 10) == 0 )
+        m_CtrlFlag = TRUE;
+
+    if(m_CtrlFlag && g_strcmp0(key_str, "Control_L") == 0 ||
+       m_CtrlFlag && g_strcmp0(key_str, "Control_R") == 0 )
+        m_CtrlFlag = FALSE;
+
+    if (strncmp(key_str, "Super_L+", 8) == 0 ||
+        strncmp(key_str, "Super_R+", 8) == 0 )
+        m_winFlag = TRUE;
+
+    if (m_winFlag && g_strcmp0(key_str, "Super_L") == 0 ||
+        m_winFlag && g_strcmp0(key_str, "Super_R") == 0 )
+        m_winFlag = FALSE;
+}
+
+void KeyReleaseModifier(UsdMediaKeysManager *manager,
+                        xEvent              *event)
+{
+
+    GList *list, *l;
+    Display *display = XOpenDisplay(NULL);
+    char *KeyStr = malloc (256);
+    char *Str    = malloc (256);
+    KeySym keySym = XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+    int hashNum = g_hash_table_size (manager->priv->hash);
+
+    memset (KeyStr, 0, sizeof(KeyStr));
+    memset (Str,    0, sizeof(Str));
+
+    if(hashNum != 0){
+        list = g_hash_table_get_keys (manager->priv->hash);
+
+        for(l = list; l!=NULL;l = l->next){
+            strcat(Str, XKeysymToString(l->data));
+            strcat (Str, "+");
+        }
+
+        for(int i=0; i<8; i++){
+            if(ModifiersVec[i] == keySym){
+                memcpy(KeyStr, Str, (strlen(Str) - 1));
+                goto END;
+            }
+        }
+        strcat (KeyStr, Str);
+    }
+    strcat (KeyStr, XKeysymToString(keySym));
+
+END :
+    key_release_str (manager, KeyStr);
+    free (KeyStr);
+    free(Str);
+    XCloseDisplay(display);
+
+}
+
+void KeyPressModifier(UsdMediaKeysManager *manager,
+                      xEvent              *event)
+{
+
+    GList *list, *l;
+    Display *display = XOpenDisplay(NULL);
+    char *KeyStr = malloc (256);
+    char *Str    = malloc (256);
+    int hashNum = g_hash_table_size (manager->priv->hash);
+    KeySym keySym = XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+
+    memset (KeyStr, 0, sizeof(KeyStr));
+    memset (Str,    0, sizeof(Str));
+
+    list = g_hash_table_get_keys (manager->priv->hash);
+    for(l = list; l!=NULL;l = l->next){
+        strcat(Str, XKeysymToString(l->data));
+        strcat (Str, "+");
+    }
+    for(int i=0; i<8; i++){
+        if(ModifiersVec[i] == keySym){
+            memcpy(KeyStr, Str, (strlen(Str) - 1));
+            goto END;
+        }
+    }
+    strcat (KeyStr, Str);
+    strcat (KeyStr, XKeysymToString(keySym));
+
+END:
+    key_press_str (KeyStr);
+    free(KeyStr);
+    free(Str);
+    XCloseDisplay(display);
+}
+
+void updateModifier(xEvent *event,
+                    gboolean isAdd,
+                    UsdMediaKeysManager *manager)
+{
+    Display *display = XOpenDisplay(NULL);
+    KeySym keySym = XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+
+    for(int i=0; i<8; i++){
+        if(ModifiersVec[i] == keySym){
+            if (isAdd)
+                g_hash_table_add (manager->priv->hash, keySym);
+            else if (g_hash_table_contains(manager->priv->hash, keySym)){
+                g_hash_table_remove (manager->priv->hash, keySym);
+            }
+        }
+    }
+    XCloseDisplay(display);
+}
+
+static void
+handleRecordEvent(UsdMediaKeysManager *manager,
+                  XRecordInterceptData* data)
+{
+    if (data->category == XRecordFromServer) {
+        xEvent * event = (xEvent *)data->data;
+        switch (event->u.u.type)
+        {
+        case KeyPress:
+             updateModifier (event, TRUE, manager);
+             KeyPressModifier(manager, event);
+             break;
+        case KeyRelease:
+            updateModifier (event, FALSE, manager);
+            KeyReleaseModifier(manager, event);
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+static void
+xevent_callback(XPointer ptr,
+                XRecordInterceptData* data)
+{
+    handleRecordEvent((UsdMediaKeysManager *)ptr, data);
+}
+
+static void
+xevent_monitor(UsdMediaKeysManager *manager)
+{
+    Display* display = XOpenDisplay(0);
+    if (display == 0) {
+        fprintf(stderr, "unable to open display\n");
+        return;
+    }
+    // Receive from ALL clients, including future clients.
+    XRecordClientSpec clients = XRecordAllClients;
+    XRecordRange* range = XRecordAllocRange();
+    if (range == 0) {
+        fprintf(stderr, "unable to allocate XRecordRange\n");
+        return;
+    }
+    memset(range, 0, sizeof(XRecordRange));
+    range->device_events.first = KeyPress;
+    range->device_events.last  = KeyRelease;
+
+    // And create the XRECORD context.
+    XRecordContext context = XRecordCreateContext(display, 0, &clients, 1, &range, 1);
+    if (context == 0) {
+        fprintf(stderr, "XRecordCreateContext failed\n");
+        return;
+    }
+    XFree(range);
+    XSync(display, True);
+
+    Display* display_datalink = XOpenDisplay(0);
+    if (display_datalink == 0) {
+        fprintf(stderr, "unable to open second display\n");
+        XCloseDisplay (display_datalink);
+        return;
+    }
+    if (!XRecordEnableContextAsync(display_datalink, context,  xevent_callback, manager)) {
+        fprintf(stderr, "XRecordEnableContext() failed\n");
+        XCloseDisplay (display_datalink);
+        return;
+    }
+    XCloseDisplay (display_datalink);
+}
+
+static void
+init_xevent_monitor(UsdMediaKeysManager *manager)
+{
+    manager->priv->hash = g_hash_table_new(NULL, NULL);
+
+    int pthr_xevent = -1;
+    pthread_t thread;
+    pthr_xevent = pthread_create(&thread, NULL, (void *)&xevent_monitor, (void*)manager);
+    if(pthr_xevent != 0)
+    {
+        printf("[%s%d] creat thread failed\n", __FUNCTION__, __LINE__);
+    }
+}
+
 static gboolean
 start_media_keys_idle_cb (UsdMediaKeysManager *manager)
 {
@@ -1335,7 +1608,7 @@ start_media_keys_idle_cb (UsdMediaKeysManager *manager)
 
         init_screens (manager);
         init_kbd (manager);
-
+        init_xevent_monitor (manager);
         /* Start filtering the events */
         for (l = manager->priv->screens; l != NULL; l = l->next) {
                 ukui_settings_profile_start ("gdk_window_add_filter");

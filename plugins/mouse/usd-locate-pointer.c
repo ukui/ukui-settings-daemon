@@ -608,16 +608,30 @@ set_locate_pointer (void)
     }
 }
 
+static void
+mouse_callback (GSettings          *settings,
+                const gchar        *key,
+                gpointer           *manager)
+{
+    if(g_strcmp0 (key, "locate-pointer") == 0){
+        GdkDisplay *display = gdk_display_get_default ();
+        usd_locate_pointer (display);
+    }
+}
 
 int main (int argc, char *argv[])
 {
   gtk_init (&argc, &argv);
 
-  set_locate_pointer ();
-
+  //set_locate_pointer ();
+  GSettings *settings = g_settings_new ("org.ukui.SettingsDaemon.plugins.mouse");
+  g_signal_connect (settings, "changed",
+                    G_CALLBACK (mouse_callback), NULL);
   gdk_x11_display_error_trap_push(gdk_display_get_default());
   gtk_main ();
   gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
+
+  g_object_unref(settings);
 
   return 0;
 }
