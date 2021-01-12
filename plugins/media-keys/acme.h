@@ -63,6 +63,10 @@ enum {
         SCREENSHOT_KEY,
         WINDOW_SCREENSHOT_KEY,
         AREA_SCREENSHOT_KEY,
+        WINDOWSWITCH_KEY,
+        WINDOWSWITCH_KEY_2,
+        SYSTEM_MONITOR_KEY,
+        CONNECTION_EDITOR_KEY,
         HANDLED_KEYS,
 };
 
@@ -109,6 +113,10 @@ static struct {
         { SCREENSHOT_KEY, "screenshot", NULL, NULL },
         { WINDOW_SCREENSHOT_KEY, "window-screenshot", NULL, NULL },
         { AREA_SCREENSHOT_KEY, "area-screenshot", NULL, NULL },
+        { WINDOWSWITCH_KEY, "ukui-window-switch", NULL, NULL},
+        { WINDOWSWITCH_KEY_2, "ukui-window-switch2", NULL, NULL},
+        { SYSTEM_MONITOR_KEY, "ukui-system-monitor", NULL, NULL },
+        { CONNECTION_EDITOR_KEY, "nm-connection-editor", NULL, NULL },
 };
 
 #endif /* __ACME_H__ */

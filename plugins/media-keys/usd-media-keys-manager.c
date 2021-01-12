@@ -1146,6 +1146,23 @@ do_window_screenshot_action (UsdMediaKeysManager *manager)
         execute (manager, "kylin-screenshot screen",FALSE,FALSE);
 }
 
+static void
+do_window_switch_action (UsdMediaKeysManager *manager)
+{
+        execute (manager, "ukui-window-switch --show-workspace",FALSE,FALSE);
+}
+
+static void
+do_system_monitor_action (UsdMediaKeysManager *manager)
+{
+        execute (manager, "ukui-system-monitor",FALSE,FALSE);
+}
+
+static void
+do_connection_editor_action (UsdMediaKeysManager *manager)
+{
+         execute (manager, "nm-connection-editor",FALSE,FALSE);
+}
 
 static gboolean
 do_action (UsdMediaKeysManager *manager,
@@ -1272,6 +1289,16 @@ do_action (UsdMediaKeysManager *manager,
                 break;
         case WINDOW_SCREENSHOT_KEY:
                 do_window_screenshot_action (manager);
+                break;
+        case WINDOWSWITCH_KEY:
+        case WINDOWSWITCH_KEY_2:
+                do_window_switch_action (manager);
+                break;
+        case SYSTEM_MONITOR_KEY:
+                do_system_monitor_action (manager);
+                break;
+        case CONNECTION_EDITOR_KEY:
+                do_connection_editor_action (manager);
                 break;
         default:
                 g_assert_not_reached ();
