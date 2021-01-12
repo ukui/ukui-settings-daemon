@@ -564,12 +564,12 @@ user_says_things_are_ok (UsdXrandrManager *manager, GdkWindow *parent_window)
                 // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, FALSE);
                 g_settings_set_enum(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, show);
                 return TRUE;
-		}
+                }
         else {
-		         // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, FALSE);
+                         // g_settings_set_boolean(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, FALSE);
                  g_settings_set_enum(priv->settings, CONF_KEY_XRANDR_WIN_SHOW, show);
                 return FALSE;
-		}
+                }
 }
 
 struct confirmation {
@@ -585,10 +585,10 @@ confirm_with_user_idle_cb (gpointer data)
         char *backup_filename;
         char *intended_filename;
 
-	static int stat = 0;
-	if (stat)
-		return FALSE;
-	stat = 1;
+        static int stat = 0;
+        if (stat)
+                return FALSE;
+        stat = 1;
 
         backup_filename = mate_rr_config_get_backup_filename ();
         intended_filename = mate_rr_config_get_intended_filename ();
@@ -599,7 +599,7 @@ confirm_with_user_idle_cb (gpointer data)
                 restore_backup_configuration (confirmation->manager, backup_filename, intended_filename, confirmation->timestamp);
 
         g_free (confirmation);
-	stat = 0;
+        stat = 0;
 
         return FALSE;
 }
@@ -959,7 +959,7 @@ make_xinerama_setup (MateRRScreen *screen)
          * position it from left to right
          */
         MateRRConfig *result = mate_rr_config_new_current (screen, NULL);
-	MateRROutputInfo **outputs = mate_rr_config_get_outputs (result);
+        MateRROutputInfo **outputs = mate_rr_config_get_outputs (result);
         int i;
         int x;
 
@@ -1664,7 +1664,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         for (l = just_turned_on; l; l = l->next) {
                 MateRROutputInfo *output;
-		        int width,height;
+                        int width,height;
 
                 i = GPOINTER_TO_INT (l->data);
                 output = outputs[i];
@@ -1870,7 +1870,7 @@ check_match(int output_width, int output_height, double input_width, double inpu
 }
 
 //check if pName exit in g_TouchMapList
-// IN:pName 
+// IN:pName
 // OUT:pId
 // RETURN: bMap
 static Bool check_monitor_map(char *pName, int *pID)
@@ -1912,7 +1912,7 @@ static Bool check_monitor_map(char *pName, int *pID)
     return bMap;
 }
 
-// IN:id 
+// IN:id
 // OUT:pName
 // RETURN: bMap
 static Bool check_touch_map(int id, char *pName)
@@ -1963,7 +1963,7 @@ static Bool check_monitor_exist(char *pName)
     Display *pDisplay = NULL;
     XIDeviceInfo *pALLInfo = NULL;
     XRROutputInfo *pOutInfo = NULL;
-    
+
     pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
@@ -1977,7 +1977,7 @@ static Bool check_monitor_exist(char *pName)
         printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
         return bExist;
     }
-    
+
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
     XRRScreenResources *pScreenRes = XRRGetScreenResources(pDisplay, win);
@@ -2021,7 +2021,7 @@ static void get_primary_status(char *cName, int *pbMap)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
-    }  
+    }
 
     int iMonitorNum = 0;
     int iXScreen = DefaultScreen(pDisplay);
@@ -2068,7 +2068,7 @@ char dllpath[64] = "/usr/lib/libkysset.so";
 
 static int loadlib()
 {
-     int ret = -1;   
+     int ret = -1;
      void *handle  = dlopen(dllpath, RTLD_LAZY);
      if(NULL == handle)
      {
@@ -2079,7 +2079,7 @@ static int loadlib()
      map_to_output = (FUNC_MAPTOOUTPUT)dlsym(handle, "MapToOutput");
      if(NULL == map_to_output)
      {
-         printf("[%s%d] map_to_output null\n", __FUNCTION__, __LINE__); 
+         printf("[%s%d] map_to_output null\n", __FUNCTION__, __LINE__);
          return ret;
      }
 
@@ -2108,10 +2108,10 @@ static void do_action(Display *dpy, int input_id, char *output_name)
         ret = map_to_output(dpy, cId, output_name);
         if(Success != ret)
         {
-            printf("[%s%d] map_to_output err[%d]\n", __FUNCTION__, __LINE__, ret); 
+            printf("[%s%d] map_to_output err[%d]\n", __FUNCTION__, __LINE__, ret);
             return;
         }
-        printf("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);  
+        printf("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);
     }
 
     TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
@@ -2210,9 +2210,9 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                             //different map
                             else
                             {
-                                printf("[%s%d] here %s | %s\n\n", __FUNCTION__, __LINE__, 
+                                printf("[%s%d] here %s | %s\n\n", __FUNCTION__, __LINE__,
                                 cName, output_info->name);
-                                
+
                                 //exist  : map old
                                 if(check_monitor_exist(output_info->name))
                                 {
@@ -2228,10 +2228,10 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                                 }
                             }
                         }
-                        //id unmapped 
+                        //id unmapped
                         else
                         {
-                            //check if primary mapped 
+                            //check if primary mapped
                             get_primary_status(cName, &bMap);
                             if(bMap)
                             {
@@ -2250,7 +2250,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
             }
         }
     }
-    else 
+    else
     {
         g_list_free(ts_devs);
         fprintf(stderr, "xrandr extension too low\n");
@@ -2266,7 +2266,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
-	    gboolean pop_flag = FALSE;
+            gboolean pop_flag = FALSE;
 
         if (!priv->running)
                 return;
@@ -3096,7 +3096,7 @@ void set_touch_map(int touchId)
                 do_action(pDisplay, touchId, pOutInfo->name);
                 bMapOk = True;
                 break;
-            }  
+            }
         }
     }
     else
@@ -3117,10 +3117,10 @@ void set_touch_map(int touchId)
                 do_action(pDisplay, touchId, pOutInfo->name);
                 bMapOk = True;
                 break;
-            }  
+            }
         }
     }
-    
+
     //查找所有显示器都未成功映射，则映射到主显示器上
     if(False == bMapOk)
     {
@@ -3130,7 +3130,7 @@ void set_touch_map(int touchId)
 
     XCloseDisplay(pDisplay);
 
-    return;    
+    return;
 }
 void listen_to_Xinput_Event()
 {
@@ -3192,17 +3192,17 @@ void listen_to_Xinput_Event()
                     return;
                 }
 
-                
+
                 switch (pHev->flags)
                 {
                     case XISlaveAdded:
                             printf("[%s%d] id=%ld \n",__FUNCTION__, __LINE__, pPreXDevInfo->id);
-                            
+
                             if(XInternAtom(pDisplay, XI_TOUCHSCREEN, True) == pPreXDevInfo->type)
                             set_touch_map(pPreXDevInfo->id);
                             break;
                     case XISlaveRemoved:
-                            
+
                             remove_touch_map(pHev->info[pHev->num_info-1].deviceid);
                             break;
                     default:
