@@ -522,7 +522,8 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 	 * But it might not be started yet, so peony_is_drawing_bg() would fail.
 	 * In this case, we wait till the session is loaded, to avoid double-draws.
 	 */
-	if (p->usd_can_draw)
+	/*
+    if (p->usd_can_draw)
 	{
 		if (p->peony_can_draw)
 		{
@@ -533,7 +534,7 @@ usd_background_manager_start (UsdBackgroundManager  *manager,
 			setup_background (manager);
 		}
 	}
-
+    */
 	ukui_settings_profile_end (NULL);
 
 	return TRUE;
