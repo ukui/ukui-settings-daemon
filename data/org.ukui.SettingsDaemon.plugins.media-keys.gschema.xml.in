@@ -205,5 +205,10 @@
       <summary>Open the internet connectionr</summary>
       <description>Binding open the unm-connection-edito.</description>
     </key>
+    <key name="ukui-search" type="s">
+      <default>'&lt;Win&gt;s'</default>
+      <summary>Unflod Ukui Search</summary>
+      <description>Binding to unflod the ukui-search.</description>
+    </key>
   </schema>
 </schemalist>

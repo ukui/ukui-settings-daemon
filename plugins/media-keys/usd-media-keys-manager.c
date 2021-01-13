@@ -1161,7 +1161,13 @@ do_system_monitor_action (UsdMediaKeysManager *manager)
 static void
 do_connection_editor_action (UsdMediaKeysManager *manager)
 {
-         execute (manager, "nm-connection-editor",FALSE,FALSE);
+        execute (manager, "nm-connection-editor",FALSE,FALSE);
+}
+
+static void
+do_open_ukui_search_action(UsdMediaKeysManager *manager)
+{
+        execute (manager, "ukui-search -s",FALSE,FALSE);
 }
 
 static gboolean
@@ -1299,6 +1305,9 @@ do_action (UsdMediaKeysManager *manager,
                 break;
         case CONNECTION_EDITOR_KEY:
                 do_connection_editor_action (manager);
+                break;
+        case GLOBAL_SEARCH_KEY:
+                do_open_ukui_search_action (manager);
                 break;
         default:
                 g_assert_not_reached ();
