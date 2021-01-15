@@ -40,6 +40,11 @@
       <summary>Volume up</summary>
       <description>Binding to raise the system volume.</description>
     </key>
+    <key name="mic-mute" type="s">
+      <default>'XF86AudioMicMute'</default>
+      <summary>Mic mute</summary>
+      <description>Mute the Mic from the system.</description>
+    </key>
     <key name="power" type="s">
       <default>''</default>
       <summary>Shut down</summary>
@@ -82,6 +87,11 @@
     </key>
     <key name="ukui-control-center" type="s">
       <default>'&lt;Win&gt;i'</default>
+      <summary>Open System Settings</summary>
+      <description>Binding to open system settings.</description>
+    </key>
+    <key name="ukui-control-center2" type="s">
+      <default>'XF86Tools'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
