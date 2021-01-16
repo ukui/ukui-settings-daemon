@@ -66,6 +66,12 @@
 #define TOUCHPAD_SCHEMA "org.ukui.peripherals-touchpad"
 #define TOUCHPAD_ENABLED_KEY "touchpad-enabled"
 
+#define POINTER_SCHEMA  "org.ukui.SettingsDaemon.plugins.mouse"
+#define POINTER_KEY     "locate-pointer"
+
+#define SESSION_SCHEMA  "org.ukui.session"
+#define WIN_KEY         "win-key-release"
+
 #define VOLUME_STEP 6
 
 #define USD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_MANAGER, UsdMediaKeysManagerPrivate))
@@ -89,6 +95,8 @@ struct _UsdMediaKeysManagerPrivate
         GtkWidget        *volume_dialog;
         GtkWidget        *dialog;
         GSettings        *settings;
+        GSettings        *point_settings;
+        GSettings        *session_settings;
         GVolumeMonitor   *volume_monitor;
 
         /* Multihead stuff */
@@ -855,13 +863,13 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
                 mate_mixer_stream_control_get_mute (manager->priv->control);
 
         //获取底层的声音将其转换为界面的声音，再做递增/减，递增递减之后再将其显示到界面上，最后再转换写入到底层
-        if(volume <= volume_min + maxlessmin / 100 * 60.0)
+        /*if(volume <= volume_min + maxlessmin / 100 * 60.0)
             volume = volume_min + (volume - volume_min) / 3.0;
         else if(volume > volume_min + maxlessmin / 100.0 * 80.0)
             volume = volume_min + maxlessmin / 100.0 * 40.0 +((volume - volume_min) - maxlessmin / 100.0 * 80.0) * 3.0;
         else
             volume = volume - maxlessmin / 100.0 * 40.0;
-
+        */
         switch (type) {
         case MUTE_KEY:
                 muted = !muted;
@@ -898,14 +906,14 @@ do_sound_action (UsdMediaKeysManager *manager, int type)
                        CLAMP (100 * volume / (volume_max - volume_min), 0, 100),
                        muted,
                        sound_changed);
-
+        /*
         if(volume <= volume_min + maxlessmin / 100 * 20.0)
             volume = volume_min + (volume - volume_min) * 3.0;
         else if(volume > volume_min + maxlessmin / 100.0 * 40.0)
             volume = volume_min + maxlessmin / 100.0 * 80.0 + ((volume - volume_min) - maxlessmin / 100.0 * 40.0) / 3.0;
         else
             volume = volume + maxlessmin / 100.0 * 40.0;
-
+        */
         if (volume != mate_mixer_stream_control_get_volume (manager->priv->control)) {
                 if (mate_mixer_stream_control_set_volume (manager->priv->control, volume))
                         sound_changed = TRUE;
@@ -1199,13 +1207,13 @@ do_system_monitor_action (UsdMediaKeysManager *manager)
 static void
 do_connection_editor_action (UsdMediaKeysManager *manager)
 {
-        execute (manager, "nm-connection-editor",FALSE,FALSE);
+         execute (manager, "nm-connection-editor",FALSE,FALSE);
 }
 
 static void
 do_open_ukui_search_action(UsdMediaKeysManager *manager)
 {
-        execute (manager, "ukui-search -s",FALSE,FALSE);
+         execute (manager, "ukui-search -s",FALSE,FALSE);
 }
 
 static gboolean
@@ -1471,15 +1479,18 @@ void key_release_str (UsdMediaKeysManager *manager,
     if( g_strcmp0 (key_str, "Control_L") == 0 ||
         g_strcmp0 (key_str, "Control_R") == 0 )
     {
-        GSettings *settings = g_settings_new ("org.ukui.SettingsDaemon.plugins.mouse");
-        g_settings_set_boolean (settings, "locate-pointer", (!g_settings_get_boolean(settings, "locate-pointer")));
-        g_object_unref(settings);
+        g_settings_set_boolean (manager->priv->point_settings,
+                                POINTER_KEY,
+                                (!g_settings_get_boolean(manager->priv->point_settings,
+                                                         POINTER_KEY)));
     }
 
     if (g_strcmp0 (key_str, "Super_L") == 0 ||
         g_strcmp0 (key_str, "Super_R") == 0 )
     {
-        execute (manager, "ukui-menu", FALSE, FALSE);
+        gboolean res = g_settings_get_boolean (manager->priv->session_settings, WIN_KEY);
+        if (!res)
+            execute (manager, "ukui-menu", FALSE, FALSE);
     }
 }
 
@@ -1688,7 +1699,8 @@ start_media_keys_idle_cb (UsdMediaKeysManager *manager)
         ukui_settings_profile_start (NULL);
         manager->priv->volume_monitor = g_volume_monitor_get ();
         manager->priv->settings = g_settings_new (BINDING_SCHEMA);
-
+        manager->priv->point_settings = g_settings_new (POINTER_SCHEMA);
+        manager->priv->session_settings = g_settings_new (SESSION_SCHEMA);
         init_screens (manager);
         init_kbd (manager);
         init_xevent_monitor (manager);
@@ -1767,7 +1779,14 @@ usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
                 g_object_unref (priv->settings);
                 priv->settings = NULL;
         }
-
+        if (priv->point_settings != NULL) {
+                g_object_unref (priv->point_settings);
+                priv->point_settings = NULL;
+        }
+        if (priv->session_settings != NULL) {
+                g_object_unref (priv->session_settings);
+                priv->session_settings = NULL;
+        }
         if (priv->volume_monitor != NULL) {
                 g_object_unref (priv->volume_monitor);
                 priv->volume_monitor = NULL;
