@@ -1449,7 +1449,7 @@ void show_question(GSettings *scale)
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
-    if (result){
+    if (result == 1){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 36);
         g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 2);
@@ -1485,7 +1485,7 @@ void show_question_one(GSettings *scale)
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 
-    if (result){
+    if (result == 1){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 24);
         g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 1);
