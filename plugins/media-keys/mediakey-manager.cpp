@@ -25,6 +25,14 @@ MediaKeysManager* MediaKeysManager::mManager = nullptr;
 const int VOLUMESTEP = 6;
 #define midValue(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))
 
+#define MEDIAKEY_SCHEMA "org.ukui.SettingsDaemon.plugins.media-keys"
+
+#define POINTER_SCHEMA  "org.ukui.SettingsDaemon.plugins.mouse"
+#define POINTER_KEY     "locate-pointer"
+
+#define SESSION_SCHEMA  "org.ukui.session"
+#define WIN_KEY         "win-key-release"
+
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     gdk_init(NULL,NULL);
@@ -52,16 +60,18 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
-    syslog(LOG_DEBUG,"Starting mediakeys manager!");
+    mSettings = new QGSettings(MEDIAKEY_SCHEMA);
+    pointSettings = new QGSettings(POINTER_SCHEMA);
+    sessionSettings = new QGSettings(SESSION_SCHEMA);
 
-    //mTimer = new QTimer();
-    mSettings = new QGSettings("org.ukui.SettingsDaemon.plugins.media-keys");
     mScreenList = new QList<GdkScreen*>();
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
     mExecCmd = new QProcess();
     mManager->mStream = NULL;
     mManager->mControl = NULL;
+    mManager->mInputControl = NULL;
+    mManager->mInputStream  = NULL;
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
@@ -69,9 +79,12 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     if(mate_mixer_is_initialized()){
         mContext = mate_mixer_context_new();
-        g_signal_connect(mContext,"notify::state",G_CALLBACK(onContextStateNotify),NULL);
-        g_signal_connect(mContext,"notify::default-output-stream",G_CALLBACK(onContextDefaultOutputNotify),NULL);
-        g_signal_connect(mContext,"notify::removed",G_CALLBACK(onContextStreamRemoved),NULL);
+        g_signal_connect(mContext,"notify::state",
+                         G_CALLBACK(onContextStateNotify),this);
+        g_signal_connect(mContext,"notify::default-output-stream",
+                         G_CALLBACK(onContextDefaultOutputNotify),this);
+        g_signal_connect(mContext,"notify::removed",
+                         G_CALLBACK(onContextStreamRemoved),this);
 
         mate_mixer_context_open(mContext);
     }
@@ -101,6 +114,10 @@ void MediaKeysManager::mediaKeysStop()
 
     delete mSettings;
     mSettings = nullptr;
+    delete pointSettings;
+    pointSettings = nullptr;
+    delete sessionSettings;
+    sessionSettings = nullptr;
     delete mExecCmd;
     mExecCmd = nullptr;
     delete mVolumeWindow;
@@ -139,6 +156,8 @@ void MediaKeysManager::mediaKeysStop()
 
     g_clear_object(&mStream);
     g_clear_object(&mControl);
+    g_clear_object(&mInputControl);
+    g_clear_object(&mInputStream);
     g_clear_object(&mContext);
 }
 
@@ -151,6 +170,13 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
         executeCommand("kylin-screenshot", " full");
         return;
     }
+
+    if(keyStr.compare("Control_L+Shift_L+Escape") == 0 || 
+       keyStr.compare("Shift_L+Control_L+Escape") == 0) {
+          executeCommand("ukui-system-monitor", nullptr);
+          return;
+    }
+
     if (keyStr.length() >= 8)
         KeyName = keyStr.left(8);
 
@@ -158,12 +184,12 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
        KeyName.compare("Super_R+") == 0 )
         winFlag = true;
 
-    if(winFlag && keyStr.compare("Super_L") == 0 ||
-       winFlag && keyStr.compare("Super_R") == 0 ){
+    if ((winFlag && keyStr.compare("Super_L") == 0 )||
+        (winFlag && keyStr.compare("Super_R") == 0 )){
         winFlag = false;
         return;
-    } else if(m_winFlag && keyStr.compare("Super_L") == 0 ||
-              m_winFlag && keyStr.compare("Super_R") == 0 )
+    } else if((m_winFlag && keyStr.compare("Super_L") == 0 )||
+              (m_winFlag && keyStr.compare("Super_R") == 0 ))
             return;
 
     if (keyStr.length() >= 10)
@@ -173,24 +199,22 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
        KeyName.compare("Control_R+") == 0 )
         ctrlFlag = true;
 
-    if(ctrlFlag && keyStr.compare("Control_L") == 0 ||
-       ctrlFlag && keyStr.compare("Control_R") == 0 ){
+    if((ctrlFlag && keyStr.compare("Control_L") == 0 )||
+       (ctrlFlag && keyStr.compare("Control_R") == 0 )){
         ctrlFlag = false;
         return;
-    } else if(m_ctrlFlag && keyStr.compare("Control_L") == 0 ||
-              m_ctrlFlag && keyStr.compare("Control_R") == 0 )
+    } else if((m_ctrlFlag && keyStr.compare("Control_L") == 0 )||
+              (m_ctrlFlag && keyStr.compare("Control_R") == 0 ))
             return;
 
     if(keyStr.compare("Super_L") == 0 ||
-       keyStr.compare("Super_R") == 0 )
-        executeCommand("ukui-menu", nullptr);
-    if (keyStr.compare("Control_L") == 0 ||
-        keyStr.compare("Control_R") == 0){
-        QGSettings *settings = new QGSettings("org.ukui.SettingsDaemon.plugins.mouse");
-        settings->set("locate-pointer", !settings->get("locate-pointer").toBool());
-        delete settings;
-        settings = nullptr;
+       keyStr.compare("Super_R") == 0 ){
+        if (!sessionSettings->get(WIN_KEY).toBool())
+            executeCommand("ukui-menu", nullptr);
     }
+    if (keyStr.compare("Control_L") == 0 ||
+        keyStr.compare("Control_R") == 0)
+        pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
 }
 
 void MediaKeysManager::XkbEventsPress(const QString &keyStr)
@@ -287,17 +311,23 @@ MediaKeysManager::acmeFilterEvents(GdkXEvent* xevent,GdkEvent* event,void* data)
     return GDK_FILTER_CONTINUE;
 }
 
-void MediaKeysManager::onContextStateNotify(MateMixerContext* context,GParamSpec* pspec,void* data)
+void MediaKeysManager::onContextStateNotify(MateMixerContext *context,
+                                            GParamSpec       *pspec,
+                                            MediaKeysManager *manager)
 {
-    updateDefaultOutput();
+    updateDefaultOutput(manager);
 }
 
-void MediaKeysManager::onContextDefaultOutputNotify(MateMixerContext* context,GParamSpec* pspec,void* data)
+void MediaKeysManager::onContextDefaultOutputNotify(MateMixerContext *context,
+                                                    GParamSpec       *pspec,
+                                                    MediaKeysManager *manager)
 {
-    updateDefaultOutput();
+    updateDefaultOutput(manager);
 }
 
-void MediaKeysManager::onContextStreamRemoved(MateMixerContext* context,char* name,void* data)
+void MediaKeysManager::onContextStreamRemoved(MateMixerContext *context,
+                                              char             *name,
+                                              MediaKeysManager *mManager)
 {
     if (mManager->mStream != NULL) {
         MateMixerStream *stream =
@@ -310,22 +340,31 @@ void MediaKeysManager::onContextStreamRemoved(MateMixerContext* context,char* na
     }
 }
 
-void MediaKeysManager::updateDefaultOutput()
+void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
 {
-   MateMixerStream        *stream;
-   MateMixerStreamControl *control = NULL;
-   stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
-   if (stream != NULL)
-           control = mate_mixer_stream_get_default_control (stream);
-   if (stream == mManager->mStream)
+    MateMixerStream        *stream;
+    MateMixerStreamControl *control = NULL;
+    MateMixerStream        *inputStream;
+    MateMixerStreamControl *inputControl = NULL;
+
+    stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
+    if (stream != NULL)
+        control = mate_mixer_stream_get_default_control (stream);
+
+    inputStream = mate_mixer_context_get_default_input_stream (mManager->mContext);
+    if (inputStream != NULL)
+        inputControl = mate_mixer_stream_get_default_control (inputStream);
+
+    if (stream == mManager->mStream || inputStream == mManager->mInputStream)
            return;
-   if(NULL != mManager->mStream)
+
    	g_clear_object (&mManager->mStream);
-   if(NULL != mManager->mControl)
    	g_clear_object (&mManager->mControl);
+    g_clear_object (&mManager->mInputStream);
+    g_clear_object (&mManager->mInputControl);
    
-   if (control != NULL) {
-           MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
+    if (control != NULL) {
+            MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
 
            /* Do not use the stream if it is not possible to mute it or
             * change the volume */
@@ -335,10 +374,27 @@ void MediaKeysManager::updateDefaultOutput()
 
            mManager->mStream = stream;
            mManager->mControl = control;
-           syslog (LOG_DEBUG,"Default output stream updated to %s",
+           qDebug ("Default output stream updated to %s",
                     mate_mixer_stream_get_name (stream));
    } else
-           syslog (LOG_DEBUG,"Default output stream unset");
+           qDebug ("Default output stream unset");
+
+   if (inputControl != NULL) {
+            MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
+
+           /* Do not use the stream if it is not possible to mute it or
+            * change the volume */
+           if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
+               !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
+                   return;
+
+           mManager->mInputStream = inputStream;
+           mManager->mInputControl = inputControl;
+           qDebug ("Default input stream updated to %s",
+                    mate_mixer_stream_get_name (inputStream));
+   } else
+           qDebug ("Default input stream unset");
+
 }
 
 GdkScreen *
@@ -372,6 +428,9 @@ bool MediaKeysManager::doAction(int type)
     case VOLUME_UP_KEY:
         doSoundAction(type);
         break;
+    case MIC_MUTE_KEY:
+        doMicSoundAction();
+        break;
     case POWER_KEY:
         doShutdownAction();
         break;
@@ -394,6 +453,7 @@ bool MediaKeysManager::doAction(int type)
         doScreensaverAction();
         break;
     case SETTINGS_KEY:
+    case SETTINGS_KEY_2:
         doSettingsAction();
         break;
     case WINDOWSWITCH_KEY:
@@ -464,10 +524,6 @@ bool MediaKeysManager::doAction(int type)
         break;
     case WINDOW_SCREENSHOT_KEY:
         doScreenshotAction(" screen");
-        break;
-    //case SIDEBAR_KEY:
-    case SIDEBAR_KEY_2:
-        doSidebarAction();
         break;
     case SYSTEM_MONITOR_KEY:
         doOpenMonitor();
@@ -613,6 +669,15 @@ void MediaKeysManager::doTouchpadAction()
 
     touchpadSettings->set("touchpad-enabled",!touchpadState);
     delete touchpadSettings;
+}
+
+void MediaKeysManager::doMicSoundAction()
+{
+    bool mute;
+    mute = mate_mixer_stream_control_get_mute (mInputControl);
+    mate_mixer_stream_control_set_mute(mInputControl, !mute);
+    mDeviceWindow->setAction ((!mute) ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mDeviceWindow->dialogShow();
 }
 
 void MediaKeysManager::doSoundAction(int keyType)

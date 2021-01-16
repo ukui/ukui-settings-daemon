@@ -82,7 +82,8 @@ void DeviceWindow::initWindowInfo()
     setWindowOpacity(0.7);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
-    move((screenWidth-width())/2 , (screenHeight-height())/1.25);
+    move(screenWidth-width() - 200,
+         screenHeight-height() - 100);
 }
 
 void DeviceWindow::setAction(const QString icon)
@@ -95,7 +96,7 @@ void DeviceWindow::setAction(const QString icon)
     else if("touchpad-disabled" == icon)
         mIconName = allIconName[1];
     else
-        mIconName = nullptr;
+        mIconName = icon;
 }
 
 void DeviceWindow::dialogShow()
@@ -105,8 +106,8 @@ void DeviceWindow::dialogShow()
 
     ensureSvgInfo(&svgWidth,&svgHeight,&svgX,&svgY);
 
-    mBut->setFixedSize(QSize(150,140));
-    mBut->setIconSize(QSize(120,110));
+    mBut->setFixedSize(QSize(144,144));
+    mBut->setIconSize(QSize(120,120));
 
     mBut->setIcon(QIcon::fromTheme(mIconName));
 

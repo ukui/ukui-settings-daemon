@@ -76,16 +76,17 @@ private:
     void initXeventMonitor();
 
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
-    static void onContextStateNotify(MateMixerContext*,GParamSpec*,void*);
-    static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,void*);
-    static void onContextStreamRemoved(MateMixerContext*,char*,void*);
-    static void updateDefaultOutput();
+    static void onContextStateNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+    static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+    static void onContextStreamRemoved(MateMixerContext*,char*,MediaKeysManager*);
+    static void updateDefaultOutput(MediaKeysManager *);
     GdkScreen *acmeGetScreenFromEvent (XAnyEvent*);
     bool doAction(int);
 
     /******************Functional class function(功能类函数)****************/
     void doTouchpadAction();
     void doSoundAction(int);
+    void doMicSoundAction();
     void updateDialogForVolume(uint,bool,bool);
     void executeCommand(const QString&,const QString&);
     void doShutdownAction();
@@ -143,6 +144,9 @@ private:
     static MediaKeysManager* mManager;
     QTimer            *mTimer;
     QGSettings        *mSettings;
+    QGSettings        *pointSettings;
+    QGSettings        *sessionSettings;
+
     QList<GdkScreen*> *mScreenList;     //GdkSCreen list
     QProcess          *mExecCmd;
     GdkScreen         *mCurrentScreen;  //current GdkScreen
@@ -150,6 +154,9 @@ private:
     MateMixerStream   *mStream;
     MateMixerContext  *mContext;
     MateMixerStreamControl  *mControl;
+    MateMixerStream   *mInputStream;
+    MateMixerStreamControl  *mInputControl;
+
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
