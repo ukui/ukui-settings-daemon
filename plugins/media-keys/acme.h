@@ -69,6 +69,7 @@ enum {
         WINDOWSWITCH_KEY_2,
         SYSTEM_MONITOR_KEY,
         CONNECTION_EDITOR_KEY,
+        GLOBAL_SEARCH_KEY,
         HANDLED_KEYS,
 };
 
@@ -121,6 +122,7 @@ static struct {
         { WINDOWSWITCH_KEY_2, "ukui-window-switch2", NULL, NULL},
         //{ SYSTEM_MONITOR_KEY, "ukui-system-monitor", NULL, NULL },
         { CONNECTION_EDITOR_KEY, "nm-connection-editor", NULL, NULL },
+        { GLOBAL_SEARCH_KEY, "ukui-search", NULL, NULL },
 };
 
 #endif /* __ACME_H__ */
