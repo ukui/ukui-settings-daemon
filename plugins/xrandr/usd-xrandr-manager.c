@@ -2037,7 +2037,7 @@ static void get_primary_status(char *cName, int *pbMap)
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
     }
-
+    int i = 0;
     int iMonitorNum = 0;
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
@@ -2049,9 +2049,17 @@ static void get_primary_status(char *cName, int *pbMap)
         return;
     }
 
-    strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo->name));
-    printf("[%s%d] name[%s] %ld \n", __FUNCTION__, __LINE__, cName, pMonitorInfo->name);
-
+    strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo[0].name));
+    for(i = 0; i < iMonitorNum; i++)
+    {
+        if(pMonitorInfo[i].primary)
+        {
+            strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo[i].name));
+            printf("[%s%d] name[%s] %ld \n", __FUNCTION__, __LINE__, cName, pMonitorInfo[i].name);
+            break;
+        }
+    }
+    
     *pbMap = check_monitor_map(cName, &id);
 
     XCloseDisplay(pDisplay);
