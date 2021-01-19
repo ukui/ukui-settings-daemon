@@ -602,10 +602,10 @@ confirm_with_user_idle_cb (gpointer data)
         char *backup_filename;
         char *intended_filename;
 
-	static int stat = 0;
-	if (stat)
-		return FALSE;
-	stat = 1;
+        static int stat = 0;
+        if (stat)
+                return FALSE;
+        stat = 1;
 
         backup_filename = mate_rr_config_get_backup_filename ();
         intended_filename = mate_rr_config_get_intended_filename ();
@@ -616,7 +616,7 @@ confirm_with_user_idle_cb (gpointer data)
                 restore_backup_configuration (confirmation->manager, backup_filename, intended_filename, confirmation->timestamp);
 
         g_free (confirmation);
-	stat = 0;
+        stat = 0;
 
         return FALSE;
 }
@@ -976,7 +976,7 @@ make_xinerama_setup (MateRRScreen *screen)
          * position it from left to right
          */
         MateRRConfig *result = mate_rr_config_new_current (screen, NULL);
-	MateRROutputInfo **outputs = mate_rr_config_get_outputs (result);
+        MateRROutputInfo **outputs = mate_rr_config_get_outputs (result);
         int i;
         int x;
 
@@ -1466,7 +1466,7 @@ void show_question(GSettings *scale)
 
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
-    if (result){
+    if (result == 1){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 36);
         g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 2);
@@ -1502,7 +1502,7 @@ void show_question_one(GSettings *scale)
     result = gtk_dialog_run(GTK_DIALOG(dialog));
     gtk_widget_destroy(dialog);
 
-    if (result){
+    if (result == 1){
         GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
         g_settings_set_int (mouse, "cursor-size", 24);
         g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 1);
@@ -1887,7 +1887,7 @@ check_match(int output_width, int output_height, double input_width, double inpu
 }
 
 //check if pName exit in g_TouchMapList
-// IN:pName 
+// IN:pName
 // OUT:pId
 // RETURN: bMap
 static Bool check_monitor_map(char *pName, int *pID)
@@ -1929,7 +1929,7 @@ static Bool check_monitor_map(char *pName, int *pID)
     return bMap;
 }
 
-// IN:id 
+// IN:id
 // OUT:pName
 // RETURN: bMap
 static Bool check_touch_map(int id, char *pName)
@@ -1984,7 +1984,7 @@ static Bool check_monitor_connect(char *pName)
     int i = 0;
     Display *pDisplay = NULL;
     XRROutputInfo *pOutInfo = NULL;
-    
+
     pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
@@ -2036,7 +2036,7 @@ static void get_primary_status(char *cName, int *pbMap)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
-    }  
+    }
 
     int iMonitorNum = 0;
     int iXScreen = DefaultScreen(pDisplay);
@@ -2092,7 +2092,7 @@ static int loadlib()
      map_to_output = (FUNC_MAPTOOUTPUT)dlsym(handle, "MapToOutput");
      if(NULL == map_to_output)
      {
-         printf("[%s%d] map_to_output null\n", __FUNCTION__, __LINE__); 
+         printf("[%s%d] map_to_output null\n", __FUNCTION__, __LINE__);
          return ret;
      }
 
@@ -2121,10 +2121,10 @@ static void do_action(Display *dpy, int input_id, char *output_name)
         ret = map_to_output(dpy, cId, output_name);
         if(Success != ret)
         {
-            printf("[%s%d] map_to_output err[%d]\n", __FUNCTION__, __LINE__, ret); 
+            printf("[%s%d] map_to_output err[%d]\n", __FUNCTION__, __LINE__, ret);
             return;
         }
-        printf("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);  
+        printf("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);
     }
 
     TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
@@ -2520,10 +2520,10 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                                 }
                             }
                         }
-                        //id unmapped 
+                        //id unmapped
                         else
                         {
-                            //check if primary mapped 
+                            //check if primary mapped
                             get_primary_status(cName, &bMap);
                             if(bMap)
                             {
@@ -2542,7 +2542,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
             }
         }
     }
-    else 
+    else
     {
         g_list_free(ts_devs);
         fprintf(stderr, "xrandr extension too low\n");

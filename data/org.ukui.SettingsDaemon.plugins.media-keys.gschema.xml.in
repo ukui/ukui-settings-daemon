@@ -40,6 +40,11 @@
       <summary>Volume up</summary>
       <description>Binding to raise the system volume.</description>
     </key>
+    <key name="mic-mute" type="s">
+      <default>'XF86AudioMicMute'</default>
+      <summary>Mic mute</summary>
+      <description>Mute the Mic from the system.</description>
+    </key>
     <key name="power" type="s">
       <default>''</default>
       <summary>Shut down</summary>
@@ -82,6 +87,11 @@
     </key>
     <key name="ukui-control-center" type="s">
       <default>'&lt;Win&gt;i'</default>
+      <summary>Open System Settings</summary>
+      <description>Binding to open system settings.</description>
+    </key>
+    <key name="ukui-control-center2" type="s">
+      <default>'XF86Tools'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
@@ -179,6 +189,36 @@
       <default>'&lt;Shift&gt;Print'</default>
       <summary>Take a screenshot of an area</summary>
       <description>Binding to take a screenshot of an area.</description>
+    </key>
+    <key name="ukui-sidebar" type="s">
+      <default>'&lt;Win&gt;a'</default>
+      <summary>Unflod Ukui Sidebar</summary>
+      <description>Binding to unflod the sidebar.</description>
+    </key>
+    <key name="ukui-window-switch" type="s">
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
+    <key name="ukui-window-switch2" type="s">
+      <default>'&lt;Win&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
+    <key name="ukui-system-monitor" type="s">
+      <default>'&lt;Ctrl&gt;&lt;Shift&gt;Escape'</default>
+      <summary>Open the system monitor</summary>
+      <description>Binding open the ukui-system-monitor.</description>
+    </key>
+    <key name="nm-connection-editor" type="s">
+      <default>'&lt;Win&gt;k'</default>
+      <summary>Open the internet connectionr</summary>
+      <description>Binding open the unm-connection-edito.</description>
+    </key>
+    <key name="ukui-search" type="s">
+      <default>'&lt;Win&gt;s'</default>
+      <summary>Unflod Ukui Search</summary>
+      <description>Binding to unflod the ukui-search.</description>
     </key>
   </schema>
 </schemalist>

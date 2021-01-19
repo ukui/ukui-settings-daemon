@@ -53,116 +53,116 @@ static inline gboolean
 is_alt (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'a' || string[1] == 'A') &&
-	  (string[2] == 'l' || string[2] == 'L') &&
-	  (string[3] == 't' || string[3] == 'T') &&
-	  (string[4] == '>'));
+          (string[1] == 'a' || string[1] == 'A') &&
+          (string[2] == 'l' || string[2] == 'L') &&
+          (string[3] == 't' || string[3] == 'T') &&
+          (string[4] == '>'));
 }
 
 static inline gboolean
 is_ctl (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'c' || string[1] == 'C') &&
-	  (string[2] == 't' || string[2] == 'T') &&
-	  (string[3] == 'l' || string[3] == 'L') &&
-	  (string[4] == '>'));
+          (string[1] == 'c' || string[1] == 'C') &&
+          (string[2] == 't' || string[2] == 'T') &&
+          (string[3] == 'l' || string[3] == 'L') &&
+          (string[4] == '>'));
 }
 
 static inline gboolean
 is_modx (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'm' || string[1] == 'M') &&
-	  (string[2] == 'o' || string[2] == 'O') &&
-	  (string[3] == 'd' || string[3] == 'D') &&
-	  (string[4] >= '1' && string[4] <= '5') &&
-	  (string[5] == '>'));
+          (string[1] == 'm' || string[1] == 'M') &&
+          (string[2] == 'o' || string[2] == 'O') &&
+          (string[3] == 'd' || string[3] == 'D') &&
+          (string[4] >= '1' && string[4] <= '5') &&
+          (string[5] == '>'));
 }
 
 static inline gboolean
 is_ctrl (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'c' || string[1] == 'C') &&
-	  (string[2] == 't' || string[2] == 'T') &&
-	  (string[3] == 'r' || string[3] == 'R') &&
-	  (string[4] == 'l' || string[4] == 'L') &&
-	  (string[5] == '>'));
+          (string[1] == 'c' || string[1] == 'C') &&
+          (string[2] == 't' || string[2] == 'T') &&
+          (string[3] == 'r' || string[3] == 'R') &&
+          (string[4] == 'l' || string[4] == 'L') &&
+          (string[5] == '>'));
 }
 
 static inline gboolean
 is_shft (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 's' || string[1] == 'S') &&
-	  (string[2] == 'h' || string[2] == 'H') &&
-	  (string[3] == 'f' || string[3] == 'F') &&
-	  (string[4] == 't' || string[4] == 'T') &&
-	  (string[5] == '>'));
+          (string[1] == 's' || string[1] == 'S') &&
+          (string[2] == 'h' || string[2] == 'H') &&
+          (string[3] == 'f' || string[3] == 'F') &&
+          (string[4] == 't' || string[4] == 'T') &&
+          (string[5] == '>'));
 }
 
 static inline gboolean
 is_shift (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 's' || string[1] == 'S') &&
-	  (string[2] == 'h' || string[2] == 'H') &&
-	  (string[3] == 'i' || string[3] == 'I') &&
-	  (string[4] == 'f' || string[4] == 'F') &&
-	  (string[5] == 't' || string[5] == 'T') &&
-	  (string[6] == '>'));
+          (string[1] == 's' || string[1] == 'S') &&
+          (string[2] == 'h' || string[2] == 'H') &&
+          (string[3] == 'i' || string[3] == 'I') &&
+          (string[4] == 'f' || string[4] == 'F') &&
+          (string[5] == 't' || string[5] == 'T') &&
+          (string[6] == '>'));
 }
 
 static inline gboolean
 is_control (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'c' || string[1] == 'C') &&
-	  (string[2] == 'o' || string[2] == 'O') &&
-	  (string[3] == 'n' || string[3] == 'N') &&
-	  (string[4] == 't' || string[4] == 'T') &&
-	  (string[5] == 'r' || string[5] == 'R') &&
-	  (string[6] == 'o' || string[6] == 'O') &&
-	  (string[7] == 'l' || string[7] == 'L') &&
-	  (string[8] == '>'));
+          (string[1] == 'c' || string[1] == 'C') &&
+          (string[2] == 'o' || string[2] == 'O') &&
+          (string[3] == 'n' || string[3] == 'N') &&
+          (string[4] == 't' || string[4] == 'T') &&
+          (string[5] == 'r' || string[5] == 'R') &&
+          (string[6] == 'o' || string[6] == 'O') &&
+          (string[7] == 'l' || string[7] == 'L') &&
+          (string[8] == '>'));
 }
 
 static inline gboolean
 is_release (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'r' || string[1] == 'R') &&
-	  (string[2] == 'e' || string[2] == 'E') &&
-	  (string[3] == 'l' || string[3] == 'L') &&
-	  (string[4] == 'e' || string[4] == 'E') &&
-	  (string[5] == 'a' || string[5] == 'A') &&
-	  (string[6] == 's' || string[6] == 'S') &&
-	  (string[7] == 'e' || string[7] == 'E') &&
-	  (string[8] == '>'));
+          (string[1] == 'r' || string[1] == 'R') &&
+          (string[2] == 'e' || string[2] == 'E') &&
+          (string[3] == 'l' || string[3] == 'L') &&
+          (string[4] == 'e' || string[4] == 'E') &&
+          (string[5] == 'a' || string[5] == 'A') &&
+          (string[6] == 's' || string[6] == 'S') &&
+          (string[7] == 'e' || string[7] == 'E') &&
+          (string[8] == '>'));
 }
 
 static inline gboolean
 is_meta (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'm' || string[1] == 'M') &&
-	  (string[2] == 'e' || string[2] == 'E') &&
-	  (string[3] == 't' || string[3] == 'T') &&
-	  (string[4] == 'a' || string[4] == 'A') &&
-	  (string[5] == '>'));
+          (string[1] == 'm' || string[1] == 'M') &&
+          (string[2] == 'e' || string[2] == 'E') &&
+          (string[3] == 't' || string[3] == 'T') &&
+          (string[4] == 'a' || string[4] == 'A') &&
+          (string[5] == '>'));
 }
 
 static inline gboolean
 is_super (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 's' || string[1] == 'S') &&
-	  (string[2] == 'u' || string[2] == 'U') &&
-	  (string[3] == 'p' || string[3] == 'P') &&
-	  (string[4] == 'e' || string[4] == 'E') &&
-	  (string[5] == 'r' || string[5] == 'R') &&
-	  (string[6] == '>'));
+          (string[1] == 's' || string[1] == 'S') &&
+          (string[2] == 'u' || string[2] == 'U') &&
+          (string[3] == 'p' || string[3] == 'P') &&
+          (string[4] == 'e' || string[4] == 'E') &&
+          (string[5] == 'r' || string[5] == 'R') &&
+          (string[6] == '>'));
 }
 
 static inline gboolean
@@ -179,32 +179,32 @@ static inline gboolean
 is_hyper (const gchar *string)
 {
   return ((string[0] == '<') &&
-	  (string[1] == 'h' || string[1] == 'H') &&
-	  (string[2] == 'y' || string[2] == 'Y') &&
-	  (string[3] == 'p' || string[3] == 'P') &&
-	  (string[4] == 'e' || string[4] == 'E') &&
-	  (string[5] == 'r' || string[5] == 'R') &&
-	  (string[6] == '>'));
+          (string[1] == 'h' || string[1] == 'H') &&
+          (string[2] == 'y' || string[2] == 'Y') &&
+          (string[3] == 'p' || string[3] == 'P') &&
+          (string[4] == 'e' || string[4] == 'E') &&
+          (string[5] == 'r' || string[5] == 'R') &&
+          (string[6] == '>'));
 }
 
 static inline gboolean is_primary(const gchar* string)
 {
-	return ((string[0] == '<') &&
-		(string[1] == 'p' || string[1] == 'P') &&
-		(string[2] == 'r' || string[2] == 'R') &&
-		(string[3] == 'i' || string[3] == 'I') &&
-		(string[4] == 'm' || string[4] == 'M') &&
-		(string[5] == 'a' || string[5] == 'A') &&
-		(string[6] == 'r' || string[6] == 'R') &&
-		(string[7] == 'y' || string[7] == 'Y') &&
-		(string[8] == '>'));
+        return ((string[0] == '<') &&
+                (string[1] == 'p' || string[1] == 'P') &&
+                (string[2] == 'r' || string[2] == 'R') &&
+                (string[3] == 'i' || string[3] == 'I') &&
+                (string[4] == 'm' || string[4] == 'M') &&
+                (string[5] == 'a' || string[5] == 'A') &&
+                (string[6] == 'r' || string[6] == 'R') &&
+                (string[7] == 'y' || string[7] == 'Y') &&
+                (string[8] == '>'));
 }
 
 static inline gboolean
 is_keycode (const gchar *string)
 {
   return ((string[0] == '0') &&
-	  (string[1] == 'x'));
+          (string[1] == 'x'));
 }
 
 /**
@@ -237,202 +237,287 @@ is_keycode (const gchar *string)
 gboolean
 egg_accelerator_parse_virtual (const gchar            *accelerator,
                                guint                  *accelerator_key,
-			       guint                 **accelerator_codes,
+                               guint                 **accelerator_codes,
                                EggVirtualModifierType *accelerator_mods)
 {
-  guint keyval;
-  GdkModifierType mods;
-  gint len;
-  gboolean bad_keyval;
+    guint keyval;
+    GdkModifierType mods;
+    gint len;
+    gboolean bad_keyval;
 
-  if (accelerator_key)
-    *accelerator_key = 0;
-  if (accelerator_mods)
-    *accelerator_mods = 0;
-  if (accelerator_codes)
-    *accelerator_codes = NULL;
+    if (accelerator_key)
+        *accelerator_key = 0;
+    if (accelerator_mods)
+        *accelerator_mods = 0;
+    if (accelerator_codes)
+        *accelerator_codes = NULL;
 
-  g_return_val_if_fail (accelerator != NULL, FALSE);
+    g_return_val_if_fail (accelerator != NULL, FALSE);
 
-  bad_keyval = FALSE;
+    bad_keyval = FALSE;
 
-  keyval = 0;
-  mods = 0;
-  len = strlen (accelerator);
-  while (len)
+    keyval = 0;
+    mods = 0;
+    len = strlen (accelerator);
+    while (len)
     {
-      if (*accelerator == '<')
-	{
-	  if (len >= 9 && is_release (accelerator))
-	    {
-	      accelerator += 9;
-	      len -= 9;
-	      mods |= EGG_VIRTUAL_RELEASE_MASK;
-	    }
-	  else if (len >= 9 && is_primary (accelerator))
-	    {
-	      accelerator += 9;
-	      len -= 9;
-	      mods |= EGG_VIRTUAL_CONTROL_MASK;
-	    }
-	  else if (len >= 9 && is_control (accelerator))
-	    {
-	      accelerator += 9;
-	      len -= 9;
-	      mods |= EGG_VIRTUAL_CONTROL_MASK;
-	    }
-	  else if (len >= 7 && is_shift (accelerator))
-	    {
-	      accelerator += 7;
-	      len -= 7;
-	      mods |= EGG_VIRTUAL_SHIFT_MASK;
-	    }
-	  else if (len >= 6 && is_shft (accelerator))
-	    {
-	      accelerator += 6;
-	      len -= 6;
-	      mods |= EGG_VIRTUAL_SHIFT_MASK;
-	    }
-	  else if (len >= 6 && is_ctrl (accelerator))
-	    {
-	      accelerator += 6;
-	      len -= 6;
-	      mods |= EGG_VIRTUAL_CONTROL_MASK;
-	    }
-	  else if (len >= 6 && is_modx (accelerator))
-	    {
-	      static const guint mod_vals[] = {
-		EGG_VIRTUAL_ALT_MASK, EGG_VIRTUAL_MOD2_MASK, EGG_VIRTUAL_MOD3_MASK,
-		EGG_VIRTUAL_MOD4_MASK, EGG_VIRTUAL_MOD5_MASK
-	      };
-
-	      len -= 6;
-	      accelerator += 4;
-	      mods |= mod_vals[*accelerator - '1'];
-	      accelerator += 2;
-	    }
-	  else if (len >= 5 && is_ctl (accelerator))
-	    {
-	      accelerator += 5;
-	      len -= 5;
-	      mods |= EGG_VIRTUAL_CONTROL_MASK;
-	    }
-	  else if (len >= 5 && is_alt (accelerator))
-	    {
-	      accelerator += 5;
-	      len -= 5;
-	      mods |= EGG_VIRTUAL_ALT_MASK;
-	    }
-          else if (len >= 6 && is_meta (accelerator))
-	    {
-	      accelerator += 6;
-	      len -= 6;
-	      mods |= EGG_VIRTUAL_META_MASK;
-	    }
-          else if (len >= 7 && is_hyper (accelerator))
-	    {
-	      accelerator += 7;
-	      len -= 7;
-	      mods |= EGG_VIRTUAL_HYPER_MASK;
-	    }
-          else if (len >= 7 && is_super (accelerator))
-	    {
-	      accelerator += 7;
-	      len -= 7;
-	      mods |= EGG_VIRTUAL_SUPER_MASK;
-	    }
-         else if (len >= 5 && is_win (accelerator))
+        if (*accelerator == '<')
         {
-          accelerator += 5;
-          len -= 5;
-          mods |= EGG_VIRTUAL_MOD4_MASK;
+            if (len >= 9 && is_release (accelerator))
+            {
+                accelerator += 9;
+                len -= 9;
+                mods |= EGG_VIRTUAL_RELEASE_MASK;
+            }
+            else if (len >= 9 && is_primary (accelerator))
+            {
+                accelerator += 9;
+                len -= 9;
+                mods |= EGG_VIRTUAL_CONTROL_MASK;
+            }
+            else if (len >= 9 && is_control (accelerator))
+            {
+                accelerator += 9;
+                len -= 9;
+                mods |= EGG_VIRTUAL_CONTROL_MASK;
+            }
+            else if (len >= 7 && is_shift (accelerator))
+            {
+                accelerator += 7;
+                len -= 7;
+                mods |= EGG_VIRTUAL_SHIFT_MASK;
+            }
+            else if (len >= 6 && is_shft (accelerator))
+            {
+                accelerator += 6;
+                len -= 6;
+                mods |= EGG_VIRTUAL_SHIFT_MASK;
+            }
+            else if (len >= 6 && is_ctrl (accelerator))
+            {
+                accelerator += 6;
+                len -= 6;
+                mods |= EGG_VIRTUAL_CONTROL_MASK;
+            }
+            else if (len >= 6 && is_modx (accelerator))
+            {
+                static const guint mod_vals[] = {
+                    EGG_VIRTUAL_ALT_MASK, EGG_VIRTUAL_MOD2_MASK, EGG_VIRTUAL_MOD3_MASK,
+                    EGG_VIRTUAL_MOD4_MASK, EGG_VIRTUAL_MOD5_MASK
+                };
+
+                len -= 6;
+                accelerator += 4;
+                mods |= mod_vals[*accelerator - '1'];
+                accelerator += 2;
+            }
+            else if (len >= 5 && is_ctl (accelerator))
+            {
+                accelerator += 5;
+                len -= 5;
+                mods |= EGG_VIRTUAL_CONTROL_MASK;
+            }
+            else if (len >= 5 && is_alt (accelerator))
+            {
+                accelerator += 5;
+                len -= 5;
+                mods |= EGG_VIRTUAL_ALT_MASK;
+            }
+            else if (len >= 6 && is_meta (accelerator))
+            {
+                accelerator += 6;
+                len -= 6;
+                mods |= EGG_VIRTUAL_META_MASK;
+            }
+            else if (len >= 7 && is_hyper (accelerator))
+            {
+                accelerator += 7;
+                len -= 7;
+                mods |= EGG_VIRTUAL_HYPER_MASK;
+            }
+            else if (len >= 7 && is_super (accelerator))
+            {
+                accelerator += 7;
+                len -= 7;
+                mods |= EGG_VIRTUAL_SUPER_MASK;
+            }
+            else if (len >= 5 && is_win (accelerator))
+            {
+                accelerator += 5;
+                len -= 5;
+                mods |= EGG_VIRTUAL_MOD4_MASK;
+            }
+            else
+            {
+                gchar last_ch;
+
+                last_ch = *accelerator;
+                while (last_ch && last_ch != '>')
+                {
+                    last_ch = *accelerator;
+                    accelerator += 1;
+                    len -= 1;
+                }
+            }
         }
-	  else
-	    {
-	      gchar last_ch;
+        else {
+            if(len == 1) {
+                if(g_strcmp0(accelerator, "A") == 0)
+                      keyval = gdk_keyval_from_name ("a");
+                else if(g_strcmp0(accelerator, "B") == 0)
+                      keyval = gdk_keyval_from_name ("b");
+                else if(g_strcmp0(accelerator, "C") == 0)
+                      keyval = gdk_keyval_from_name ("c");
+                else if(g_strcmp0(accelerator, "D") == 0)
+                      keyval = gdk_keyval_from_name ("d");
+                else if(g_strcmp0(accelerator, "E") == 0)
+                      keyval = gdk_keyval_from_name ("e");
+                else if(g_strcmp0(accelerator, "F") == 0)
+                      keyval = gdk_keyval_from_name ("f");
+                else if(g_strcmp0(accelerator, "G") == 0)
+                      keyval = gdk_keyval_from_name ("g");
+                else if(g_strcmp0(accelerator, "H") == 0)
+                      keyval = gdk_keyval_from_name ("h");
+                else if(g_strcmp0(accelerator, "I") == 0)
+                      keyval = gdk_keyval_from_name ("i");
+                else if(g_strcmp0(accelerator, "J") == 0)
+                      keyval = gdk_keyval_from_name ("j");
+                else if(g_strcmp0(accelerator, "K") == 0)
+                      keyval = gdk_keyval_from_name ("k");
+                else if(g_strcmp0(accelerator, "L") == 0)
+                      keyval = gdk_keyval_from_name ("l");
+                else if(g_strcmp0(accelerator, "M") == 0)
+                      keyval = gdk_keyval_from_name ("m");
+                else if(g_strcmp0(accelerator, "N") == 0)
+                      keyval = gdk_keyval_from_name ("n");
+                else if(g_strcmp0(accelerator, "O") == 0)
+                      keyval = gdk_keyval_from_name ("o");
+                else if(g_strcmp0(accelerator, "P") == 0)
+                      keyval = gdk_keyval_from_name ("p");
+                else if(g_strcmp0(accelerator, "Q") == 0)
+                      keyval = gdk_keyval_from_name ("q");
+                else if(g_strcmp0(accelerator, "R") == 0)
+                      keyval = gdk_keyval_from_name ("r");
+                else if(g_strcmp0(accelerator, "S") == 0)
+                      keyval = gdk_keyval_from_name ("s");
+                else if(g_strcmp0(accelerator, "T") == 0)
+                      keyval = gdk_keyval_from_name ("t");
+                else if(g_strcmp0(accelerator, "U") == 0)
+                      keyval = gdk_keyval_from_name ("u");
+                else if(g_strcmp0(accelerator, "V") == 0)
+                      keyval = gdk_keyval_from_name ("v");
+                else if(g_strcmp0(accelerator, "W") == 0)
+                      keyval = gdk_keyval_from_name ("w");
+                else if(g_strcmp0(accelerator, "X") == 0)
+                      keyval = gdk_keyval_from_name ("x");
+                else if(g_strcmp0(accelerator, "Y") == 0)
+                      keyval = gdk_keyval_from_name ("y");
+                else if(g_strcmp0(accelerator, "Z") == 0)
+                      keyval = gdk_keyval_from_name ("z");
+                else if(g_strcmp0(accelerator, ".") == 0)
+                      keyval = gdk_keyval_from_name ("period");
+                else if(g_strcmp0(accelerator, ",") == 0)
+                      keyval = gdk_keyval_from_name ("comma");
+                else
+                      keyval = gdk_keyval_from_name (accelerator);
+            }
+            else if(len == 2 || len == 3) {
+                if(g_strcmp0(accelerator, "Esc") == 0)
+                      keyval = gdk_keyval_from_name ("Escape");
+                else if(g_strcmp0(accelerator, "f1") == 0)
+                      keyval = gdk_keyval_from_name ("F1");
+                else if(g_strcmp0(accelerator, "f2") == 0)
+                      keyval = gdk_keyval_from_name ("F2");
+                else if(g_strcmp0(accelerator, "f3") == 0)
+                      keyval = gdk_keyval_from_name ("F3");
+                else if(g_strcmp0(accelerator, "f4") == 0)
+                      keyval = gdk_keyval_from_name ("F4");
+                else if(g_strcmp0(accelerator, "f5") == 0)
+                      keyval = gdk_keyval_from_name ("F5");
+                else if(g_strcmp0(accelerator, "f6") == 0)
+                      keyval = gdk_keyval_from_name ("F6");
+                else if(g_strcmp0(accelerator, "f7") == 0)
+                      keyval = gdk_keyval_from_name ("F7");
+                else if(g_strcmp0(accelerator, "f8") == 0)
+                      keyval = gdk_keyval_from_name ("F8");
+                else if(g_strcmp0(accelerator, "f9") == 0)
+                      keyval = gdk_keyval_from_name ("F9");
+                else if(g_strcmp0(accelerator, "f10") == 0)
+                      keyval = gdk_keyval_from_name ("F10");
+                else if(g_strcmp0(accelerator, "f11") == 0)
+                      keyval = gdk_keyval_from_name ("F11");
+                else if(g_strcmp0(accelerator, "f12") == 0)
+                      keyval = gdk_keyval_from_name ("F12");
+                else
+                      keyval = gdk_keyval_from_name (accelerator);
+            }else
+                  keyval = gdk_keyval_from_name (accelerator);
 
-	      last_ch = *accelerator;
-	      while (last_ch && last_ch != '>')
-		{
-		  last_ch = *accelerator;
-		  accelerator += 1;
-		  len -= 1;
-		}
-	    }
-	}
-      else
-	{
-          keyval = gdk_keyval_from_name (accelerator);
+            if (keyval == 0)
+            {
+                /* If keyval is 0, then maybe it's a keycode.  Check for 0x## */
+                if (len >= 4 && is_keycode (accelerator))
+                {
+                    char keystring[5];
+                    gchar *endptr;
+                    gint tmp_keycode;
 
-          if (keyval == 0)
-	    {
-	      /* If keyval is 0, then maybe it's a keycode.  Check for 0x## */
-	      if (len >= 4 && is_keycode (accelerator))
-		{
-		  char keystring[5];
-		  gchar *endptr;
-		  gint tmp_keycode;
+                    memcpy (keystring, accelerator, 4);
+                    keystring [4] = '\000';
 
-		  memcpy (keystring, accelerator, 4);
-		  keystring [4] = '\000';
+                    tmp_keycode = strtol (keystring, &endptr, 16);
 
-		  tmp_keycode = strtol (keystring, &endptr, 16);
+                    if (endptr == NULL || *endptr != '\000')
+                    {
+                            bad_keyval = TRUE;
+                    }
+                    else if (accelerator_codes != NULL)
+                    {
+                        /* 0x00 is an invalid keycode too. */
+                        if (tmp_keycode == 0) {
+                            bad_keyval = TRUE;
+                        } else {
+                            *accelerator_codes = g_new0 (guint, 2);
+                            (*accelerator_codes)[0] = tmp_keycode;
+                        }
+                    }
+                }
+                else {
+                    bad_keyval = TRUE;
+                }
+            }
+            else if (accelerator_codes != NULL)
+            {
+                GdkKeymapKey *keys;
+                gint n_keys, i, j;
 
-		  if (endptr == NULL || *endptr != '\000')
-		    {
-		      bad_keyval = TRUE;
-		    }
-		  else if (accelerator_codes != NULL)
-		    {
-		      /* 0x00 is an invalid keycode too. */
-		      if (tmp_keycode == 0) {
-			bad_keyval = TRUE;
-		      } else {
-			*accelerator_codes = g_new0 (guint, 2);
-			(*accelerator_codes)[0] = tmp_keycode;
-		      }
-		    }
-		}
-	      else
-		{
-		  bad_keyval = TRUE;
-		}
-	    }
-	  else if (accelerator_codes != NULL)
-	    {
-	      GdkKeymapKey *keys;
-	      gint n_keys, i, j;
-
-	      if (!gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default(), keyval, &keys, &n_keys)) {
- 	 	bad_keyval = TRUE;
-	      } else {
-		*accelerator_codes = g_new0 (guint, n_keys + 1);
-
-		for (i = 0, j = 0; i < n_keys; ++i) {
-		  if (keys[i].level == 0)
-		    (*accelerator_codes)[j++] = keys[i].keycode;
-		}
-
-		if (j == 0) {
-		  g_free (*accelerator_codes);
-		  *accelerator_codes = NULL;
-		  bad_keyval = TRUE;
-	        }
-	        g_free (keys);
-	      }
-	    }
-
-          accelerator += len;
-          len -= len;
-	}
+                if (!gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default(), keyval, &keys, &n_keys)) {
+                    bad_keyval = TRUE;
+                } else {
+                    *accelerator_codes = g_new0 (guint, n_keys + 1);
+                    for (i = 0, j = 0; i < n_keys; ++i) {
+                        if (keys[i].level == 0)
+                            (*accelerator_codes)[j++] = keys[i].keycode;
+                    }
+                    if (j == 0) {
+                        g_free (*accelerator_codes);
+                        *accelerator_codes = NULL;
+                        bad_keyval = TRUE;
+                    }
+                    g_free (keys);
+                }
+            }
+            accelerator += len;
+            len -= len;
+        }
     }
 
-  if (accelerator_key)
-    *accelerator_key = gdk_keyval_to_lower (keyval);
-  if (accelerator_mods)
-    *accelerator_mods = mods;
+    if (accelerator_key)
+        *accelerator_key = gdk_keyval_to_lower (keyval);
+    if (accelerator_mods)
+        *accelerator_mods = mods;
 
-  return !bad_keyval;
+    return !bad_keyval;
 }
 
 /**
@@ -450,7 +535,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
  */
 gchar*
 egg_virtual_accelerator_name (guint                  accelerator_key,
-			      guint		     keycode,
+                              guint		     keycode,
                               EggVirtualModifierType accelerator_mods)
 {
   gchar *gtk_name;
@@ -461,10 +546,10 @@ egg_virtual_accelerator_name (guint                  accelerator_key,
 
   if (!accelerator_key)
     {
-	gchar *name;
-	name = g_strdup_printf ("%s0x%02x", gtk_name, keycode);
-	g_free (gtk_name);
-	return name;
+        gchar *name;
+        name = g_strdup_printf ("%s0x%02x", gtk_name, keycode);
+        g_free (gtk_name);
+        return name;
     }
 
   return gtk_name;
@@ -486,8 +571,8 @@ egg_virtual_accelerator_name (guint                  accelerator_key,
  */
 gchar*
 egg_virtual_accelerator_label (guint                  accelerator_key,
-			       guint		      keycode,
-			       EggVirtualModifierType accelerator_mods)
+                               guint		      keycode,
+                               EggVirtualModifierType accelerator_mods)
 {
   gchar *gtk_label;
   GdkModifierType gdkmods = 0;
@@ -497,10 +582,10 @@ egg_virtual_accelerator_label (guint                  accelerator_key,
 
   if (!accelerator_key)
     {
-	gchar *label;
-	label = g_strdup_printf ("%s0x%02x", gtk_label, keycode);
-	g_free (gtk_label);
-	return label;
+        gchar *label;
+        label = g_strdup_printf ("%s0x%02x", gtk_label, keycode);
+        g_free (gtk_label);
+        return label;
     }
 
   return gtk_label;

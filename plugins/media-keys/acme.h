@@ -31,6 +31,7 @@ enum {
         MUTE_KEY,
         VOLUME_DOWN_KEY,
         VOLUME_UP_KEY,
+        MIC_MUTE_KEY,
         POWER_KEY,
         EJECT_KEY,
         HOME_KEY,
@@ -54,6 +55,7 @@ enum {
         MAGNIFIER_KEY,
         SCREENREADER_KEY,
         SETTINGS_KEY,
+        SETTINGS_KEY_2,
         FILE_MANAGER_KEY,
         FILE_MANAGER_KEY_2,
         ON_SCREEN_KEYBOARD_KEY,
@@ -63,6 +65,11 @@ enum {
         SCREENSHOT_KEY,
         WINDOW_SCREENSHOT_KEY,
         AREA_SCREENSHOT_KEY,
+        WINDOWSWITCH_KEY,
+        WINDOWSWITCH_KEY_2,
+        SYSTEM_MONITOR_KEY,
+        CONNECTION_EDITOR_KEY,
+        GLOBAL_SEARCH_KEY,
         HANDLED_KEYS,
 };
 
@@ -76,6 +83,7 @@ static struct {
         { MUTE_KEY, "volume-mute", NULL, NULL },
         { VOLUME_DOWN_KEY, "volume-down", NULL, NULL },
         { VOLUME_UP_KEY, "volume-up", NULL, NULL },
+        { MIC_MUTE_KEY, "mic-mute", NULL, NULL},
         { POWER_KEY, "power", NULL, NULL },
         { EJECT_KEY, "eject", NULL, NULL },
         { HOME_KEY, "home", NULL, NULL },
@@ -86,6 +94,7 @@ static struct {
         { SCREENSAVER_KEY, "screensaver", NULL, NULL },
         { SCREENSAVER_KEY_2, "screensaver2", NULL, NULL },
         { SETTINGS_KEY, "ukui-control-center", NULL, NULL},
+        { SETTINGS_KEY_2, "ukui-control-center2", NULL, NULL},
         { FILE_MANAGER_KEY, "peony-qt", NULL, NULL},
         { FILE_MANAGER_KEY_2, "peony-qt2", NULL, NULL},
         { HELP_KEY, "help", NULL, NULL },
@@ -109,6 +118,11 @@ static struct {
         { SCREENSHOT_KEY, "screenshot", NULL, NULL },
         { WINDOW_SCREENSHOT_KEY, "window-screenshot", NULL, NULL },
         { AREA_SCREENSHOT_KEY, "area-screenshot", NULL, NULL },
+        { WINDOWSWITCH_KEY, "ukui-window-switch", NULL, NULL},
+        { WINDOWSWITCH_KEY_2, "ukui-window-switch2", NULL, NULL},
+        //{ SYSTEM_MONITOR_KEY, "ukui-system-monitor", NULL, NULL },
+        { CONNECTION_EDITOR_KEY, "nm-connection-editor", NULL, NULL },
+        { GLOBAL_SEARCH_KEY, "ukui-search", NULL, NULL },
 };
 
 #endif /* __ACME_H__ */

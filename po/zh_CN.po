@@ -650,6 +650,10 @@ msgstr "截取一个区域的截图"
 msgid "Binding to take a screenshot of an area."
 msgstr "截取一个区域的截图快捷键绑定。"
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:67
+msgid "Unflod Ukui Search"
+msgstr "显示全局搜索"
+
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"
 msgstr "在通知区域显示"
