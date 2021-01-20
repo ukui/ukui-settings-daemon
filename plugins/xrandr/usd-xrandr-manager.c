@@ -48,6 +48,7 @@
 #include <X11/extensions/Xrandr.h>
 #include <xorg/xserver-properties.h>
 #include <gudev/gudev.h>
+#include <libudev.h>
 
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr-config.h>
@@ -95,6 +96,22 @@
 #define USD_XRANDR_DBUS_NAME USD_DBUS_NAME ".XRANDR"
 
 #define MAX_SIZE_MATCH_DIFF 0.05
+
+//START 触摸屏自动映射相关
+#define MONITOR_SAVE_CONF_NAME "touchcfg.ini"           //记录触屏和显示器映射的配置文件名称
+#define MONITOR_NULL_SERIAL "kydefault"
+#define KYSSET_PATH "/usr/lib/libkysset.so"
+
+typedef int (*FUNC_MAPTOOUTPUT)(Display*, char*, char*);
+FUNC_MAPTOOUTPUT map_to_output = NULL;
+
+typedef struct _MapInfoFromFile
+{
+    char cTouchName[128];     //触摸屏的名称
+    char cTouchSerial[128];   //触摸屏的序列号
+    char cMonitorName[128];   //显示器的名称
+}MapInfoFromFile;             //配置文件中记录的映射关系信息
+//END 触摸屏自动映射相关
 
 typedef struct
 {
@@ -1945,7 +1962,7 @@ static Bool check_touch_map(int id, char *pName)
         }
         else
         {
-            printf("[%s %d] bMap\n", __FUNCTION__, __LINE__);
+            printf("[%s %d] be Mapped\n", __FUNCTION__, __LINE__);
             bMap = True;
             strcpy(pName, pTouchMapInfo->cMonitorName);
             return bMap;
@@ -1954,28 +1971,25 @@ static Bool check_touch_map(int id, char *pName)
     return bMap;
 }
 
-//检测该显示器是否存在
-static Bool check_monitor_exist(char *pName)
+//检测该显示器是否连接
+static Bool check_monitor_connect(char *pName)
 {
-    Bool bExist = False;
+    if(NULL == pName)
+    {
+        printf("[%s %d] pName null\n", __FUNCTION__, __LINE__);
+        return False;
+    }
+
+    Bool bConnect = False;
     int i = 0;
-    int iDeviceNum = 0;
     Display *pDisplay = NULL;
-    XIDeviceInfo *pALLInfo = NULL;
     XRROutputInfo *pOutInfo = NULL;
 
     pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
-        return bExist;
-    }
-
-    pALLInfo = XIQueryDevice(pDisplay, XIAllDevices, &iDeviceNum);
-    if(NULL == pALLInfo)
-    {
-        printf("[%s%d] pALLInfo NULL\n", __FUNCTION__, __LINE__);
-        return bExist;
+        return bConnect;
     }
 
     int iXScreen = DefaultScreen(pDisplay);
@@ -1989,19 +2003,21 @@ static Bool check_monitor_exist(char *pName)
         if(NULL == pOutInfo)
         {
             printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-            return bExist;
+            return bConnect;
         }
 
-        if(0 == strcmp(pName, pOutInfo->name))
+        //存在且已连接
+        if(0 == strcmp(pName, pOutInfo->name) && (Success == pOutInfo->connection))
         {
-            printf("[%s%d] pOutInfo NULL  %s %d\n", __FUNCTION__, __LINE__,
+            printf("[%s%d] [%s] bConnect[%d]\n", __FUNCTION__, __LINE__,
             pOutInfo->name,pOutInfo->connection);
-            bExist = True;
+            bConnect = True;
             break;
         }
     }
 
-    return bExist;
+    XCloseDisplay(pDisplay);
+    return bConnect;
 }
 
 
@@ -2015,29 +2031,38 @@ static void get_primary_status(char *cName, int *pbMap)
     }
 
     int id = 0;
-    Display *pDisplay = NULL;
-    pDisplay = XOpenDisplay(NULL);
+    Display *pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
     }
-
+    int i = 0;
     int iMonitorNum = 0;
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
 
-    XRRMonitorInfo *pMonitorInfo = XRRGetMonitors(pDisplay, win, 1, &iMonitorNum);;
+    XRRMonitorInfo *pMonitorInfo = XRRGetMonitors(pDisplay, win, 1, &iMonitorNum);
     if(NULL == pMonitorInfo)
     {
         printf("[%s%d] pMonitorInfo NULL\n", __FUNCTION__, __LINE__);
         return;
     }
 
-    strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo->name));
-    printf("[%s%d] name[%s] %ld \n", __FUNCTION__, __LINE__, cName, pMonitorInfo->name);
+    strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo[0].name));
+    for(i = 0; i < iMonitorNum; i++)
+    {
+        if(pMonitorInfo[i].primary)
+        {
+            strcpy(cName, XGetAtomName(pDisplay, pMonitorInfo[i].name));
+            printf("[%s%d] name[%s] %ld \n", __FUNCTION__, __LINE__, cName, pMonitorInfo[i].name);
+            break;
+        }
+    }
 
     *pbMap = check_monitor_map(cName, &id);
+
+    XCloseDisplay(pDisplay);
 
     return;
 }
@@ -2062,14 +2087,10 @@ static void remove_touch_map(int id)
 }
 
 
-typedef int (*FUNC_MAPTOOUTPUT)(Display*, char*, char*);
-FUNC_MAPTOOUTPUT map_to_output = NULL;
-char dllpath[64] = "/usr/lib/libkysset.so";
-
 static int loadlib()
 {
      int ret = -1;
-     void *handle  = dlopen(dllpath, RTLD_LAZY);
+     void *handle  = dlopen(KYSSET_PATH, RTLD_LAZY);
      if(NULL == handle)
      {
         printf("[%s%d] dlopen null\n", __FUNCTION__, __LINE__);
@@ -2119,11 +2140,287 @@ static void do_action(Display *dpy, int input_id, char *output_name)
     pTMInfo->touchId = input_id;
 
     if(!check_touch_map(input_id, cName))
-    g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
+    {
+        g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
+    }
 
     return;
 }
 
+static int find_event_from_name(char *_name, char *_serial, char *_event)
+{
+    int ret = -1;
+    if((NULL == _name) || (NULL == _serial) || (NULL == _event))
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        return ret;
+    }
+
+    struct udev *udev;
+    struct udev_enumerate *enumerate;
+    struct udev_list_entry *devices, *dev_list_entry;
+    struct udev_device *dev;
+
+    udev = udev_new();
+    enumerate = udev_enumerate_new(udev);
+
+    udev_enumerate_add_match_subsystem(enumerate, "input");
+    udev_enumerate_scan_devices(enumerate);
+    devices = udev_enumerate_get_list_entry(enumerate);
+
+    udev_list_entry_foreach(dev_list_entry, devices)
+    {
+        const char *pPath;
+        const char *pEvent;
+        const char cName[] = "event";
+        pPath = udev_list_entry_get_name(dev_list_entry);
+        //printf("[%s%d] path: %s\n",__FUNCTION__, __LINE__, pPath);
+        dev = udev_device_new_from_syspath(udev, pPath);
+        //touchScreen is usb_device
+        dev = udev_device_get_parent_with_subsystem_devtype(
+                dev,
+                "usb",
+                "usb_device");
+        if (!dev)
+        {
+            //printf("Unable to find parent usb device. \n");
+            continue;
+        }
+
+        pEvent = strstr(pPath, cName);
+		if(NULL == pEvent)
+		{
+			continue;
+		}
+
+        const char *pProduct = udev_device_get_sysattr_value(dev,"product");
+        const char *pSerial = udev_device_get_sysattr_value(dev, "serial");
+
+		if(NULL == pProduct)
+		{
+			continue;
+		}
+
+		//有的设备没有pSerial， 可能导致映射错误， 不处理
+		//pProduct 是_name的子串
+		if((NULL == _serial)||(0 == strcmp(MONITOR_NULL_SERIAL, _serial)))
+		{
+			if(NULL != strstr(_name, pProduct))
+			{
+				strcpy(_event, pEvent);
+				ret = Success;
+				printf("[%s%d] pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s \n ",__FUNCTION__, __LINE__,
+					pEvent, _name, _serial, pProduct, pSerial);
+				break;
+			}
+		}
+		else
+		{
+		    if((NULL != strstr(_name, pProduct)) && (0 == strcmp(_serial, pSerial)))
+			{
+				strcpy(_event, pEvent);
+				ret = Success;
+				printf("[%s%d] pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s \n ",__FUNCTION__, __LINE__,
+					pEvent, _name, _serial, pProduct, pSerial);
+				break;
+			}
+		}
+
+        udev_device_unref(dev);
+    }
+    udev_enumerate_unref(enumerate);
+    udev_unref(udev);
+
+    return ret;
+}
+
+static int find_touchId_from_event(Display *_dpy, char *_event, int *pId)
+{
+    int ret = -1;
+    if((NULL == pId) || (NULL == _event) || (NULL == _dpy))
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        return ret;
+    }
+    int         	i           = 0;
+    int         	num_devices = 0;
+    XIDeviceInfo 	*devs_info;
+    unsigned char 	*cNode      = NULL;
+    const char  	cName[]     = "event";
+    char        	*cEvent     = NULL;
+
+    devs_info = XIQueryDevice(_dpy, XIAllDevices, &num_devices);
+
+    for(i = 0; i < num_devices; i++)
+    {
+        cNode = get_device_node(devs_info[i]);
+        if(NULL == cNode)
+        {
+            continue;
+        }
+
+        cEvent = strstr((const char*)cNode, cName);
+        //printf("[%s%d] cNode:%s ptr:%s\n",__FUNCTION__, __LINE__, cNode, cEvent);
+
+        if( 0 == strcmp(_event, cEvent))
+        {
+            *pId = devs_info[i].deviceid;
+            printf("[%s%d] cNode:%s id:%d\n",__FUNCTION__, __LINE__,cNode, *pId);
+            ret = Success;
+            break;
+        }
+    }
+
+    return ret;
+}
+
+//IN: name serial
+//OUT: pID
+//RETURN: 0--success;
+static int find_touchId_from_name(Display *_dpy, char *_name, char *_serial, int *_pId)
+{
+    int ret = -1;
+    if((NULL == _name) || (NULL == _serial) || (NULL == _pId) || (NULL == _dpy))
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        goto LEAVE;
+    }
+    char cEventName[32]; // eg:event25
+
+    ret = find_event_from_name(_name, _serial, cEventName);
+    if(Success != ret)
+    {
+        printf("[%s%d] find_event_from_name ret[%d]. \n", __FUNCTION__, __LINE__, ret);
+        goto LEAVE;
+    }
+
+    ret = find_touchId_from_event(_dpy, cEventName, _pId);
+    if(Success != ret)
+    {
+        printf("[%s%d] find_touchId_from_event ret[%d]. \n", __FUNCTION__, __LINE__, ret);
+        goto LEAVE;
+    }
+
+LEAVE:
+    return ret;
+}
+
+//IN:cFileName
+//OUT:pNum
+//RETURN:MapInfoFromFile
+static int get_mapBak_from_file(char *_cFileName, int *_pNum, MapInfoFromFile *pstMapInfo)
+{
+    if((NULL == _cFileName) || (NULL == _pNum))
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        return -1;
+    }
+    GKeyFileFlags 	flags 		= G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS;
+    GError 			*error 		= NULL;
+    GKeyFile		*keyfile 	= NULL;
+	int 			ret   		= -1;
+	char 			mapName[16];
+
+    keyfile = g_key_file_new();
+	if (NULL == keyfile)
+	{
+        printf("[%s%d] keyfile null\n", __FUNCTION__, __LINE__);
+		return ret;
+    }
+
+    ret = g_key_file_load_from_file(keyfile,_cFileName,flags,NULL);
+    if (FALSE == ret)
+	{
+        printf("[%s%d] can't find file %s\n", __FUNCTION__, __LINE__, _cFileName);
+		return ret;
+    }
+
+    gint mapNum = g_key_file_get_int64(keyfile, "COUNT", "num", &error);
+	printf("[%s%d] mapNum %d\n", __FUNCTION__, __LINE__, mapNum);
+
+    for(int i = 0; i < mapNum; i++)
+    {
+		snprintf(mapName, sizeof(mapName), "%s%d", "MAP", i+1);
+		gchar *name = NULL;
+		gchar *serial = NULL;
+		gchar *srcname = NULL;
+		name = g_key_file_get_string(keyfile, mapName, "name", &error);
+		serial = g_key_file_get_string(keyfile, mapName, "serial", &error);
+		srcname = g_key_file_get_string(keyfile, mapName, "srcname", &error);
+
+		if(NULL != name)
+		{
+			strcpy(pstMapInfo[i].cTouchName, name);
+		}
+
+		if(NULL != serial)
+		{
+			strcpy(pstMapInfo[i].cTouchSerial, serial);
+		}
+
+		if(NULL != srcname)
+		{
+			strcpy(pstMapInfo[i].cMonitorName, srcname);
+		}
+
+		printf("[%s%d] %s  %s  %s\n", __FUNCTION__, __LINE__,
+		pstMapInfo[i].cTouchName, pstMapInfo[i].cTouchSerial, pstMapInfo[i].cMonitorName);
+    }
+
+    *_pNum = mapNum;
+
+    return Success;
+}
+
+static void remap_from_file(Display *_dpy)
+{
+	if(NULL == _dpy)
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    static int flagAct = False;
+    if(flagAct)
+    {
+        return;
+    }
+	flagAct = True;
+
+    int     ret             = -1;
+    int     i               = 0;
+    int     mapNum          = 0;
+    int     touchId         = 0;
+    MapInfoFromFile stMapInfo[16];
+    memset(stMapInfo, 0, sizeof(stMapInfo));
+
+	char *pCfgPath = g_build_filename (g_get_user_config_dir (), MONITOR_SAVE_CONF_NAME, NULL);
+	printf("[%s%d] pCfgPath[%s] \n", __FUNCTION__, __LINE__, pCfgPath);
+
+    ret = get_mapBak_from_file(pCfgPath, &mapNum, stMapInfo);
+    if((0 == mapNum)||(Success != ret))
+    {
+        printf("[%s%d] no map record. \n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    for(i = 0; i < mapNum; i++)
+    {
+        ret = find_touchId_from_name(_dpy, stMapInfo[i].cTouchName,
+        stMapInfo[i].cTouchSerial, &touchId);
+        if(Success != ret)
+        {
+            continue;
+        }
+
+        printf("[%s%d] find result %s %s %d. \n", __FUNCTION__, __LINE__,
+            stMapInfo[i].cTouchName, stMapInfo[i].cTouchSerial, touchId);
+
+        do_action(_dpy, touchId, stMapInfo[i].cMonitorName);
+    }
+
+    return;
+}
 
 
 /* 设置触摸屏触点的角度 */
@@ -2136,6 +2433,8 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
     XRRScreenResources *res;
     Display *dpy = XOpenDisplay(NULL);
     GList *ts_devs = NULL;
+
+    remap_from_file(dpy);
 
     ts_devs = get_touchscreen (dpy);
 
@@ -2210,16 +2509,16 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
                             //different map
                             else
                             {
-                                printf("[%s%d] here %s | %s\n\n", __FUNCTION__, __LINE__,
+                                printf("[%s%d] here old[%s] | new[%s]\n\n", __FUNCTION__, __LINE__,
                                 cName, output_info->name);
 
-                                //exist  : map old
-                                if(check_monitor_exist(output_info->name))
+                                //connect  : map old
+                                if(check_monitor_connect(cName))
                                 {
                                     printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
                                     do_action(dpy, info->dev_info.deviceid, cName);
                                 }
-                                //unexist: remove old map, and map new
+                                //not connect: remove old map, and map new
                                 else
                                 {
                                     printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
@@ -2266,7 +2565,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
-            gboolean pop_flag = FALSE;
+	    gboolean pop_flag = FALSE;
 
         if (!priv->running)
                 return;
@@ -3044,7 +3343,7 @@ apply_default_configuration_from_file (UsdXrandrManager *manager, guint32 timest
 
 
 //IN: 触摸屏的ID
-void set_touch_map(int touchId)
+static void set_touch_map(int touchId)
 {
     char cName[64];
     int id = 0;
@@ -3132,7 +3431,7 @@ void set_touch_map(int touchId)
 
     return;
 }
-void listen_to_Xinput_Event()
+static void listen_to_Xinput_Event()
 {
     Display *pDisplay = NULL;
     pDisplay = XOpenDisplay(NULL);
