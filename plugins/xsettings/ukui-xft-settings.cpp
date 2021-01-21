@@ -108,7 +108,7 @@ static double get_dpi_from_gsettings_or_x_server (GSettings *gsettings)
     if (value != 0) {
         dpi = value;
     } else {
-        dpi = get_dpi_from_x_server ();
+        dpi = DPI_FALLBACK;//get_dpi_from_x_server ();
     }
 
     return dpi;
@@ -373,6 +373,10 @@ void UkuiXftSettings::xft_settings_set_xresources ()
                 if (major >= 2) {
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
+
+                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
+                                                     CursorsNames[i],
+                                                     cursor_size);
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);

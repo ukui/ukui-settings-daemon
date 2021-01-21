@@ -468,8 +468,8 @@ msgid "Binding to shut down."
 msgstr "конец связи"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:19
-msgid "Log out"
-msgstr "注销"
+msgid "Open the shutdown management interfac"
+msgstr "打开关机管理界面"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:20
 msgid "Binding to log out."

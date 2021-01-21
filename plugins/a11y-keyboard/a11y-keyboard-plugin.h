@@ -2,7 +2,6 @@
 #define A11YKEYBOARDPLUGIN_H
 
 #include "plugin-interface.h"
-#include "a11y-keyboard_global.h"
 #include "a11y-keyboard-manager.h"
 
 class A11yKeyboardPlugin :  public PluginInterface

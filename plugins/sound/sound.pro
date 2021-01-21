@@ -17,23 +17,22 @@ PKGCONFIG += glib-2.0 \
              gio-2.0 \
 
 INCLUDEPATH += \
-    -I /usr/include/pulse \
-    -I $$PWD/../../common
+    -I /usr/include/pulse 
 
 LIBS += \
     -lpulse 
 
 
 SOURCES += \
-    soundmanager.cpp \
-    soundplugin.cpp
+    sound-manager.cpp \
+    sound-plugin.cpp
 
 DISTFILES += \
     sound.ukui-settings-plugin.in
 
 HEADERS += \
-    soundmanager.h \
-    soundplugin.h
+    sound-manager.h \
+    sound-plugin.h
 
 sound_lib.path = $${PLUGIN_INSTALL_DIRS}
 sound_lib.files = $$OUT_PWD/libsound.so

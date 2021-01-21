@@ -40,6 +40,11 @@
       <summary>Volume up</summary>
       <description>Binding to raise the system volume.</description>
     </key>
+    <key name="mic-mute" type="s">
+      <default>'XF86AudioMicMute'</default>
+      <summary>Mic mute</summary>
+      <description>Mute the Mic from the system.</description>
+    </key>
     <key name="power" type="s">
       <default>''</default>
       <summary>Shut down</summary>
@@ -47,7 +52,7 @@
     </key>
     <key name="logout" type="s">
       <default>'&lt;Ctrl&gt;&lt;Alt&gt;Delete'</default>
-      <summary>Log out</summary>
+      <summary>Open the shutdown management interfac</summary>
       <description>Binding to log out.</description>
     </key>
     <key name="eject" type="s">
@@ -80,38 +85,23 @@
       <summary>Lock screen</summary>
       <description>Binding to lock the screen.</description>
     </key>
-    <key name="ukui-sidebar" type="s">
-      <default>'&lt;Win&gt;a'</default>
-      <summary>Unflod Ukui Sidebar</summary>
-      <description>Binding to unflod the sidebar.</description>
-    </key>
-    <key name="ukui-sidebar2" type="s">
-      <default>'&lt;Ctrl&gt;&lt;Alt&gt;a'</default>
-      <summary>Unflod Ukui Sidebar</summary>
-      <description>Binding to unflod the sidebar.</description>
-    </key>
-    <key name="ukui-window-switch" type="s">
-      <default>'&lt;Ctrl&gt;&lt;Alt&gt;w'</default>
-      <summary>Open Window Switch</summary>
-      <description>Binding to open window switch.</description>
-    </key>
-    <key name="ukui-window-switch2" type="s">
-      <default>'&lt;Win&gt;w'</default>
-      <summary>Open Window Switch</summary>
-      <description>Binding to open window switch.</description>
-    </key>
     <key name="ukui-control-center" type="s">
       <default>'&lt;Win&gt;i'</default>
       <summary>Open System Settings</summary>
       <description>Binding to open system settings.</description>
     </key>
+    <key name="ukui-control-center2" type="s">
+      <default>'XF86Tools'</default>
+      <summary>Open System Settings</summary>
+      <description>Binding to open system settings.</description>
+    </key>
     <key name="peony-qt" type="s">
-      <default>'&lt;Ctrl&gt;&lt;Alt&gt;e'</default>
+      <default>'&lt;Win&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
     <key name="peony-qt2" type="s">
-      <default>'&lt;Win&gt;e'</default>
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;e'</default>
       <summary>Open File Manager</summary>
       <description>Binding to open file manager.</description>
     </key>
@@ -200,8 +190,23 @@
       <summary>Take a screenshot of an area</summary>
       <description>Binding to take a screenshot of an area.</description>
     </key>
+    <key name="ukui-sidebar" type="s">
+      <default>'&lt;Win&gt;a'</default>
+      <summary>Unflod Ukui Sidebar</summary>
+      <description>Binding to unflod the sidebar.</description>
+    </key>
+    <key name="ukui-window-switch" type="s">
+      <default>'&lt;Ctrl&gt;&lt;Alt&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
+    <key name="ukui-window-switch2" type="s">
+      <default>'&lt;Win&gt;w'</default>
+      <summary>Open Window Switch</summary>
+      <description>Binding to open window switch.</description>
+    </key>
     <key name="ukui-system-monitor" type="s">
-      <default>'&lt;Ctrl&gt;&lt;Alt&gt;.'</default>
+      <default>'&lt;Ctrl&gt;&lt;Shift&gt;Escape'</default>
       <summary>Open the system monitor</summary>
       <description>Binding open the ukui-system-monitor.</description>
     </key>

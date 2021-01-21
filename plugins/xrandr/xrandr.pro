@@ -16,13 +16,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include($$PWD/../../common/common.pri)
 
-INCLUDEPATH += \
-        -I $$PWD/../../common/          \
-        -I ukui-settings-daemon/        \
-
 PKGCONFIG += \
-            xrandr x11 gtk+-3.0 \
-            glib-2.0 mate-desktop-2.0
+            xrandr   \
+            x11      \
+            xi \
+            gtk+-3.0 \
+            glib-2.0 \
+            mate-desktop-2.0 \
+            gudev-1.0
 
 SOURCES += \
     xrandr-manager.cpp \
@@ -30,7 +31,6 @@ SOURCES += \
 
 HEADERS += \
     xrandr-manager.h \
-    xrandr_global.h \
     xrandr-plugin.h
 
 xrandr_lib.path  = $${PLUGIN_INSTALL_DIRS}

@@ -35,7 +35,6 @@ debuild -D
 | a11y-settings | 辅助功能      |
 | background    | 设置背景      |
 | clipboard     | 剪贴板        |
-| common        | 抓取键盘按键  |
 | color         | 色温设置      |
 | housekepping  | 实时监听磁盘空间|
 | keybindings   | 自定义绑定快捷键|

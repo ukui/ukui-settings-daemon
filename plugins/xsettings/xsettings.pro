@@ -19,10 +19,10 @@ PKGCONFIG +=\
     glib-2.0 \
     gio-2.0 \
     gdk-3.0 \
-    atk
-
-INCLUDEPATH += \
-    -I $$PWD/../../common
+    atk \
+    fontconfig \
+    xcursor \
+    xfixes
 
 SOURCES += \
     ukui-xsettings-plugin.cpp \

@@ -19,7 +19,6 @@
 #ifndef HOUSEKEPPINGPLUGIN_H
 #define HOUSEKEPPINGPLUGIN_H
 
-#include "housekeeping_global.h"
 #include "housekeeping-manager.h"
 #include "plugin-interface.h"
 

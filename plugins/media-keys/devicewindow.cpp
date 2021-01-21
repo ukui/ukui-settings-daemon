@@ -19,13 +19,14 @@
 #include "devicewindow.h"
 #include "ui_devicewindow.h"
 #include <QDebug>
+#include <QPainter>
+#include <QBitmap>
 
-const QString ICONDIR = "/usr/share/icons/ukui-icon-theme-default/scalable";
 const QString allIconName[] = {
-    ICONDIR + "/status/gpm-brightness-lcd.svg",
-    ICONDIR + "/status/touchpad-disabled-symbolic.svg",
-    ICONDIR + "/status/touchpad-enabled-symbolic.svg",
-    ICONDIR + "/actions/media-eject.svg",
+    "gpm-brightness-lcd",
+    "touchpad-disabled-symbolic",
+    "touchpad-enabled-symbolic",
+    "media-eject",
     nullptr
 };
 
@@ -39,9 +40,9 @@ DeviceWindow::DeviceWindow(QWidget *parent) :
 DeviceWindow::~DeviceWindow()
 {
     delete ui;
-    delete mSvg;
+    delete mBut;
     delete mTimer;
-    mSvg = nullptr;
+    mBut = nullptr;
     mTimer = nullptr;
 }
 
@@ -50,25 +51,44 @@ void DeviceWindow::initWindowInfo()
     int num,screenWidth,screenHeight;
     QScreen* currentScreen;
 
-    mSvg = new QSvgWidget(this);
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
+
+    mBut = new QPushButton(this);
+    mBut->setDisabled(true);
 
     num = QX11Info::appScreen();                       //curent screen number 当前屏幕编号
     currentScreen = QApplication::screens().at(num);   //current screen       当前屏幕
     screenWidth = currentScreen->size().width();
     screenHeight = currentScreen->size().height();
 
-    setFixedSize(190,190);
-    setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint);
+    setFixedSize(150,140);
+    setWindowFlags(Qt::FramelessWindowHint |
+                   Qt::Tool |
+                   Qt::WindowStaysOnTopHint |
+                   Qt::X11BypassWindowManagerHint |
+                   Qt::Popup);
+
+    QBitmap bmp(this->size());
+    bmp.fill();
+    QPainter p(&bmp);
+    p.setPen(Qt::NoPen);
+    p.setBrush(Qt::black);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.drawRoundedRect(bmp.rect(),6,6);
+    setMask(bmp);
+
+
     setWindowOpacity(0.7);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
-    move((screenWidth-width())/2 , (screenHeight-height())/2);
+    move(screenWidth-width() - 200,
+         screenHeight-height() - 100);
 }
 
 void DeviceWindow::setAction(const QString icon)
 {
+    mIconName.clear();
     if("media-eject" == icon)
         mIconName = allIconName[3];
     else if("touchpad-enabled" == icon)
@@ -76,7 +96,7 @@ void DeviceWindow::setAction(const QString icon)
     else if("touchpad-disabled" == icon)
         mIconName = allIconName[1];
     else
-        mIconName = nullptr;
+        mIconName = icon;
 }
 
 void DeviceWindow::dialogShow()
@@ -86,8 +106,11 @@ void DeviceWindow::dialogShow()
 
     ensureSvgInfo(&svgWidth,&svgHeight,&svgX,&svgY);
 
-    mSvg->setGeometry(svgX,svgY,svgWidth,svgHeight);
-    mSvg->load(mIconName);
+    mBut->setFixedSize(QSize(144,144));
+    mBut->setIconSize(QSize(120,120));
+
+    mBut->setIcon(QIcon::fromTheme(mIconName));
+
     show();
     mTimer->start(2000);
 }

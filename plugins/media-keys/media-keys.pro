@@ -15,28 +15,24 @@ PKGCONFIG += \
     gsettings-qt \
     libmatemixer
 
-INCLUDEPATH += \
-    $$PWD/../common
-
 LIBS += \
     -lX11 -lXi
 
-include($$PWD/../common/common.pri)
 include($$PWD/../../common/common.pri)
 
 DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
 
 SOURCES += \
         devicewindow.cpp     \
-        mediakeysmanager.cpp \
         volumewindow.cpp \
+        mediakey-manager.cpp \
         mediakey-plugin.cpp
 
 HEADERS += \
     acme.h \
     devicewindow.h      \
-    mediakeysmanager.h  \
-    volumewindow.h \
+    volumewindow.h      \
+    mediakey-manager.h  \
     mediakey-plugin.h
 
 FORMS += \

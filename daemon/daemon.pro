@@ -15,14 +15,12 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 include($$PWD/../common/common.pri)
 
 INCLUDEPATH += \
-        -I $$PWD/../common/\
         -I /usr/include/mate-desktop-2.0/
 
 PKGCONFIG += \
         glib-2.0\
         gio-2.0\
         gobject-2.0\
-        dbus-glib-1\
         gmodule-2.0
 
 LIBS += \

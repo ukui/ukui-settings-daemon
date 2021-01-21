@@ -16,25 +16,28 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef SOUNDPLUGIN_H
-#define SOUNDPLUGIN_H
-
-#include "soundmanager.h"
+#ifndef A11YSETTINGSPLUGIN_H
+#define A11YSETTINGSPLUGIN_H
 #include "plugin-interface.h"
+#include "a11y-settings-manager.h"
 
-class SoundPlugin : public PluginInterface{
+class A11ySettingsPlugin : public PluginInterface
+{
 public:
-    ~SoundPlugin();
+    ~A11ySettingsPlugin();
     static PluginInterface* getInstance();
 
-    virtual void activate();
-    virtual void deactivate();
+    void activate();
+    void deactivate();
 
 private:
-    SoundPlugin();
-    SoundManager* soundManager;
-    static SoundPlugin* mSoundPlugin;
+    A11ySettingsPlugin();
+    A11ySettingsPlugin(A11ySettingsPlugin&) = delete;
+
+    A11ySettingsManager*        settingsManager;
+    static PluginInterface*     mInstance;
 };
 
-extern "C" PluginInterface* Q_DECL_EXPORT createSettingsPlugin();
-#endif /*SOUND_PLUGIN_H */
+extern "C" Q_DECL_EXPORT PluginInterface* createSettingsPlugin();
+
+#endif // A11YSETTINGSPLUGIN_H

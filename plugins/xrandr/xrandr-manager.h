@@ -34,8 +34,11 @@
 #include <QGSettings/qgsettings.h>
 
 #include <X11/Xlib.h>
-#include <X11/extensions/Xrandr.h>
 #include <X11/extensions/XInput2.h>
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/Xrandr.h>
+#include <xorg/xserver-properties.h>
+#include <gudev/gudev.h>
 
 extern "C" {
 #define MATE_DESKTOP_USE_UNSTABLE_API
@@ -77,6 +80,9 @@ public:
                                                   unsigned int   timestamp);
     static bool ApplyStoredConfigurationAtStartup(XrandrManager *manager,
                                                   unsigned int timestamp);
+    static void monitorSettingsScreenScale (MateRRScreen *screen);
+    static void oneScaleLogoutDialog(QGSettings *settings);
+    static void twoScaleLogoutDialog(QGSettings *settings);
 
 private:
     QTimer                *time;

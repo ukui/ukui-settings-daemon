@@ -21,12 +21,11 @@ include($$PWD/../../common/common.pri)
 PKGCONFIG += \
         gtk+-3.0 \
         glib-2.0  \
-        gsettings-qt
+        gsettings-qt \
+        xi
 
 
 INCLUDEPATH += \
-        -I $$PWD/../../common       \
-        -I $$PWD/../common          \
         -I ukui-settings-daemon/
 
 SOURCES += \
@@ -43,7 +42,7 @@ mouse_lib.files = $$OUT_PWD/libmouse.so
 touchpad.path = /usr/bin/
 touchpad.files = $$PWD/touchpad-state
 
-udev.path = /etc/udev/rules.d/
+udev.path = /lib/udev/rules.d/
 udev.files = $$PWD/01-touchpad-state-onmouse.rules
 
 INSTALLS += mouse_lib touchpad udev

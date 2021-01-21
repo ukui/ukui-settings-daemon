@@ -18,7 +18,7 @@
  */
 #include <QApplication>
 #include <QScreen>
-#include "backgroundplugin.h"
+#include "background-plugin.h"
 #include "clib-syslog.h"
 
 PluginInterface* BackgroundPlugin::mInstance = nullptr;

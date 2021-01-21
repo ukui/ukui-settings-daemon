@@ -19,7 +19,6 @@
 #ifndef XRANDRPLUGIN_H
 #define XRANDRPLUGIN_H
 
-#include "xrandr_global.h"
 #include "plugin-interface.h"
 #include "xrandr-manager.h"
 

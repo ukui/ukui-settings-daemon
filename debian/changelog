@@ -1,3 +1,18 @@
+ukui-settings-daemon (3.0.3-1) unstable; urgency=medium
+
+  * New upstream release.
+  * d/control: don't depend xserver-xorg-input-synaptics on s390x.
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Thu, 24 Dec 2020 06:39:28 +0000
+
+ukui-settings-daemon (3.0.2-1) unstable; urgency=medium
+
+  * Upload to unstable.
+  * New upstream release.
+  * d/control: drop libdbus-glib-1 from build-depends. (Closes: #955959)
+
+ -- handsome_feng <jianfengli@ubuntukylin.com>  Mon, 07 Dec 2020 20:29:17 +0800
+
 ukui-settings-daemon (3.0.1-1) experimental; urgency=medium
 
   * New upstream release.

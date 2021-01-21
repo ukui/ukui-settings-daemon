@@ -24,7 +24,7 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QDebug>
-#include "ukui-xrdb-manager.h"
+#include "xrdb-manager.h"
 #include <syslog.h>
 
 #define midColor(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))

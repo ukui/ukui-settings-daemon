@@ -19,7 +19,7 @@
 #include <QStringList>
 #include <QDBusReply>
 #include <QDBusMessage>
-#include "mprismanager.h"
+#include "mpris-manager.h"
 #include <syslog.h>
 
 const QString MPRIS_OBJECT_PATH = "/org/mpris/MediaPlayer2";
@@ -51,6 +51,7 @@ const QStringList busNames ={"org.mpris.MediaPlayer2.audacious",
                              "org.mpris.MediaPlayer2.xnoise",
                              "org.mpris.MediaPlayer2.gmusicbrowser",
                              "org.mpris.MediaPlayer2.spotify",
+                             "org.mpris.MediaPlayer2.KylinVideo",
                             };
 
 MprisManager* MprisManager::mMprisManager = nullptr;
