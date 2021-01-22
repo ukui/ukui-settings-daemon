@@ -373,7 +373,6 @@ void UkuiXftSettings::xft_settings_set_xresources ()
                 if (major >= 2) {
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
-
                     gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
                                                      CursorsNames[i],
                                                      cursor_size);
@@ -384,7 +383,11 @@ void UkuiXftSettings::xft_settings_set_xresources ()
         }
     }
     // end add
+    GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
+		                                   GDK_LEFT_PTR);
+    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
 
+    g_object_unref(G_OBJECT(cursor));
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
 }
