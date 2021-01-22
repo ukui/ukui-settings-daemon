@@ -35,6 +35,7 @@ Build-Depends: debhelper-compat (=12),
                libimlib2-dev,
                xserver-xorg-dev,
                libgudev-1.0-dev,
+               libkf5screen-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
