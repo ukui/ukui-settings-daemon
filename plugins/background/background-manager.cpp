@@ -95,8 +95,11 @@ void BackgroundManager::SetBackground()
     ScnNum = QApplication::screens().length();
     for(int i = 0; i < ScnNum; i++){
         screen =  QApplication::screens().at(i);
-        qDebug()<<screen->geometry();
-        imlib_render_image_on_drawable_at_size(screen->geometry().x(), screen->geometry().y(), screen->geometry().width(),screen->geometry().height());
+        //qDebug()<<screen->geometry();
+        imlib_render_image_on_drawable_at_size(screen->geometry().x() * 2,
+                                               screen->geometry().y() * 2,
+                                               screen->geometry().width() *2,
+                                               screen->geometry().height() * 2);
     }
     XSetWindowBackgroundPixmap(dpy, root, pix);
     XClearWindow(dpy, root);
