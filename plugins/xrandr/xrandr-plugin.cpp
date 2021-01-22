@@ -24,9 +24,9 @@ XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
 
 XrandrPlugin::XrandrPlugin()
 {
-    syslog(LOG_ERR,"Xrandr Plugin initializing");
+    qDebug("Xrandr Plugin initializing");
     if(nullptr == mXrandrManager)
-        mXrandrManager = XrandrManager::XrandrManagerNew();
+        mXrandrManager = new XrandrManager();
 }
 
 XrandrPlugin::~XrandrPlugin()
@@ -39,7 +39,7 @@ XrandrPlugin::~XrandrPlugin()
 
 void XrandrPlugin::activate()
 {
-    syslog(LOG_ERR,"activating Xrandr plugins");
+    qDebug("activating Xrandr plugins");
     bool res;
     res = mXrandrManager->XrandrManagerStart();
     if(!res)

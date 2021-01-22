@@ -6,10 +6,10 @@
     <value nick="cancel" value="3"/>
   </enum>
   <enum id="org.ukui.SettingsDaemon.xrandr-rotations-enum">
-    <value nick="normal" value="0"/>
-    <value nick="left"   value="1"/>
-    <value nick="upside-down" value="2"/>
-    <value nick="right"  value="3"/>
+    <value nick="normal" value="1"/>
+    <value nick="left"   value="2"/>
+    <value nick="upside-down" value="4"/>
+    <value nick="right"  value="8"/>
   </enum>
   <schema gettext-domain="ukui-settings-daemon" id="org.ukui.SettingsDaemon.plugins.xrandr" path="/org/ukui/settings-daemon/plugins/xrandr/">
     <key name="active" type="b">

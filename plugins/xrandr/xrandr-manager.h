@@ -21,18 +21,26 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QFile>
 #include <QDebug>
-#include <QDomDocument>
-#include <QtXml>
-#include <QX11Info>
 #include <QDBusConnection>
 #include <QDBusInterface>
-#include <QWidget>
-#include <QMultiMap>
-#include <QScreen>
 #include <QGSettings/qgsettings.h>
+#include <QScreen>
 
+#include <KF5/KScreen/kscreen/config.h>
+#include <KF5/KScreen/kscreen/log.h>
+#include <KF5/KScreen/kscreen/output.h>
+#include <KF5/KScreen/kscreen/edid.h>
+#include <KF5/KScreen/kscreen/configmonitor.h>
+#include <KF5/KScreen/kscreen/getconfigoperation.h>
+#include <KF5/KScreen/kscreen/setconfigoperation.h>
+
+#include <QOrientationReading>
+#include <memory>
+
+#include "xrandr-config.h"
+
+#include <glib.h>
 #include <X11/Xlib.h>
 #include <X11/extensions/XInput2.h>
 #include <X11/extensions/XInput.h>
@@ -40,59 +48,53 @@
 #include <xorg/xserver-properties.h>
 #include <gudev/gudev.h>
 
-extern "C" {
-#define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-rr.h>
-#include <libmate-desktop/mate-rr-config.h>
-#include <libmate-desktop/mate-rr-labeler.h>
-#include <libmate-desktop/mate-desktop-utils.h>
-}
-
 class XrandrManager: public QObject
 {
     Q_OBJECT
-private:
-    XrandrManager();
-    XrandrManager(XrandrManager&)=delete;
-    XrandrManager&operator=(const XrandrManager&)=delete;
+    Q_CLASSINFO("D-Bus Interface", "org.kde.KScreen")
+
 public:
-    ~XrandrManager();
-    static XrandrManager *XrandrManagerNew();
+    XrandrManager();
+    ~XrandrManager() override;
+
+public:
+
     bool XrandrManagerStart();
     void XrandrManagerStop();
+    void StartXrandrIdleCb ();
+    void monitorsInit();
+    void applyConfig();
+    void applyKnownConfig();
+    void applyIdealConfig();
+    void outputConnectedChanged();
+    void doApplyConfig(const KScreen::ConfigPtr &config);
+    void doApplyConfig(std::unique_ptr<xrandrConfig> config);
+    void refreshConfig();
+    void outputAdded(const KScreen::OutputPtr &output);
+    void outputRemoved(int outputId);
+    void primaryOutputChanged(const KScreen::OutputPtr &output);
+    void orientationChangedProcess(Qt::ScreenOrientation orientation);
 
 public Q_SLOTS:
-    void StartXrandrIdleCb ();
     void RotationChangedEvent(QString);
 
-public:
-    bool ReadMonitorsXml();
-    bool SetScreenSize(Display  *dpy, Window root, int width, int height);
-    void RestoreBackupConfiguration(XrandrManager *manager,
-                                    const char    *backup_filename,
-                                    const char    *intended_filename,
-                                    unsigned int   timestamp);
-    static void OnRandrEvent (MateRRScreen *screen, gpointer data);
-    static void AutoConfigureOutputs (XrandrManager *manager,
-                                      unsigned int  timestamp);
-    static bool ApplyConfigurationFromFilename   (XrandrManager *manager,
-                                                  const char    *filename,
-                                                  unsigned int   timestamp);
-    static bool ApplyStoredConfigurationAtStartup(XrandrManager *manager,
-                                                  unsigned int timestamp);
-    static void monitorSettingsScreenScale (MateRRScreen *screen);
-    static void oneScaleLogoutDialog(QGSettings *settings);
-    static void twoScaleLogoutDialog(QGSettings *settings);
+Q_SIGNALS:
+    // DBus
+    void outputConnected(const QString &outputName);
+    void unknownOutputConnected(const QString &outputName);
 
 private:
+    Q_INVOKABLE void getInitialConfig();
+
     QTimer                *time;
     QGSettings            *mXrandrSetting;
-    static XrandrManager  *mXrandrManager;
-    MateRRScreen          *mScreen;
 
-protected:
-    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
-    QMultiMap<QString, int>     mIntDate;
+    std::unique_ptr<xrandrConfig> mMonitoredConfig;
+    KScreen::ConfigPtr mConfig;
+    bool mMonitoring;
+    bool mConfigDirty = true;
+    QScreen *mScreen;
+    bool mStartingUp = true;
 };
 
 #endif // XRANDRMANAGER_H

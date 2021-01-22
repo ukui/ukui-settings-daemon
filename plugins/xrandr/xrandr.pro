@@ -17,20 +17,22 @@ DEFINES += QT_DEPRECATED_WARNINGS
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
-            xrandr   \
-            x11      \
-            xi \
-            gtk+-3.0 \
-            glib-2.0 \
-            mate-desktop-2.0 \
-            gudev-1.0
+        Qt5Sensors  \
+        kscreen2    \
+        x11         \
+        xi          \
+        gudev-1.0
 
 SOURCES += \
+    xrandr-config.cpp \
     xrandr-manager.cpp \
+    xrandr-output.cpp \
     xrandr-plugin.cpp
 
 HEADERS += \
+    xrandr-config.h \
     xrandr-manager.h \
+    xrandr-output.h \
     xrandr-plugin.h
 
 xrandr_lib.path  = $${PLUGIN_INSTALL_DIRS}
