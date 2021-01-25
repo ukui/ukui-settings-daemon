@@ -110,6 +110,8 @@ private:
     void doMultiMediaPlayerAction(const QString);
     void doSidebarAction();
     void doWindowSwitchAction();
+    void doOpenUkuiSearchAction();
+    void doOpenKdsAction();
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);

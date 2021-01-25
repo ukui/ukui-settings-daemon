@@ -223,7 +223,6 @@ void MediaKeysManager::XkbEventsPress(const QString &keyStr)
 
     if (keyStr.length() >= 8)
         KeyName = keyStr.left(8);
-
     if(KeyName.compare("Super_L+") == 0 ||
        KeyName.compare("Super_R+") == 0 )
         m_winFlag = true;
@@ -530,6 +529,12 @@ bool MediaKeysManager::doAction(int type)
         break;
     case CONNECTION_EDITOR_KEY:
         doOpenConnectionEditor();
+        break;
+    case GLOBAL_SEARCH_KEY:
+        doOpenUkuiSearchAction();
+        break;
+    case KDS_KEY:
+        doOpenKdsAction();
         break;
     default:
         break;
@@ -950,6 +955,17 @@ void MediaKeysManager::doOpenConnectionEditor()
 {
     executeCommand("nm-connection-editor","");
 }
+
+void MediaKeysManager::doOpenUkuiSearchAction()
+{
+    executeCommand("ukui-search"," -s");
+}
+
+void MediaKeysManager::doOpenKdsAction()
+{
+    executeCommand("kydisplayswitch","");
+}
+
 void MediaKeysManager::doUrlAction(const QString scheme)
 {
     GError *error = NULL;
