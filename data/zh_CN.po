@@ -734,6 +734,14 @@ msgstr "打开系统监视器"
 msgid "Open the internet connectionr"
 msgstr "打开网络连接"
 
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:220
+msgid "Unflod Ukui Search"
+msgstr "显示全局搜索"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:225
+msgid "Kylin Display Switch"
+msgstr "打开显示器切换"
+
 #: ./org.ukui.SettingsDaemon.plugins.color.gschema.xml:16
 msgid "If the night light mode is enabled"
 msgstr "启用夜灯模式"

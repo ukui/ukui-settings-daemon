@@ -172,9 +172,9 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     }
 
     if(keyStr.compare("Control_L+Shift_L+Escape") == 0 || 
-       keyStr.compare("Shift_L+Control_L+Escape") == 0) {
-          executeCommand("ukui-system-monitor", nullptr);
-          return;
+       keyStr.compare("Shift_L+Control_L+Escape") == 0 ){
+        doOpenMonitor();
+        return;
     }
 
     if (keyStr.length() >= 8)
@@ -531,6 +531,12 @@ bool MediaKeysManager::doAction(int type)
     case CONNECTION_EDITOR_KEY:
         doOpenConnectionEditor();
         break;
+    case GLOBAL_SEARCH_KEY:
+        doOpenUkuiSearchAction();
+        break;
+    case KDS_KEY:
+        doOpenKdsAction();
+        break;
     default:
         break;
     }
@@ -676,7 +682,7 @@ void MediaKeysManager::doMicSoundAction()
     bool mute;
     mute = mate_mixer_stream_control_get_mute (mInputControl);
     mate_mixer_stream_control_set_mute(mInputControl, !mute);
-    mDeviceWindow->setAction ((!mute) ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mDeviceWindow->setAction (mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
     mDeviceWindow->dialogShow();
 }
 
@@ -890,7 +896,7 @@ void MediaKeysManager::doOpenCalcAction()
 
     tool1 = "galculator";
     tool2 = "mate-calc";
-    tool3 = "gnome-calculator";
+    tool3 = "kylin-calculator";
 
     if(binaryFileExists(tool1)){
         executeCommand(tool1,"");
@@ -946,10 +952,22 @@ void MediaKeysManager::doOpenMonitor()
 {
     executeCommand("ukui-system-monitor","");
 }
+
 void MediaKeysManager::doOpenConnectionEditor()
 {
     executeCommand("nm-connection-editor","");
 }
+
+void MediaKeysManager::doOpenUkuiSearchAction()
+{
+    executeCommand("ukui-search", " -s");
+}
+
+void MediaKeysManager::doOpenKdsAction()
+{
+    executeCommand("kydisplayswitch", "");
+}
+
 void MediaKeysManager::doUrlAction(const QString scheme)
 {
     GError *error = NULL;
