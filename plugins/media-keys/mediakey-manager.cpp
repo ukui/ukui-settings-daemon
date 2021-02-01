@@ -534,6 +534,7 @@ bool MediaKeysManager::doAction(int type)
         doOpenUkuiSearchAction();
         break;
     case KDS_KEY:
+    case KDS_KEY2:
         doOpenKdsAction();
         break;
     default:

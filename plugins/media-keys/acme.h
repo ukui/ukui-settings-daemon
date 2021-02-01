@@ -69,6 +69,7 @@ enum {
         CONNECTION_EDITOR_KEY,
         GLOBAL_SEARCH_KEY,
         KDS_KEY,
+        KDS_KEY2,
         HANDLED_KEYS,
 };
 
@@ -123,6 +124,7 @@ static struct {
         { CONNECTION_EDITOR_KEY, "nm-connection-editor", NULL, NULL },
         { GLOBAL_SEARCH_KEY, "ukui-search", NULL, NULL },
         { KDS_KEY, "kylin-display-switch", NULL, NULL },
+        { KDS_KEY2, "kylin-display-switch2", NULL, NULL }
 };
 
 #endif /* __ACME_H__ */
