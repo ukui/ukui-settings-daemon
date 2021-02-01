@@ -37,7 +37,8 @@
 
 #include <QOrientationReading>
 #include <memory>
-
+#include "xrandr-dbus.h"
+#include "xrandr-adaptor.h"
 #include "xrandr-config.h"
 
 #include <glib.h>
@@ -58,7 +59,6 @@ public:
     ~XrandrManager() override;
 
 public:
-
     bool XrandrManagerStart();
     void XrandrManagerStop();
     void StartXrandrIdleCb ();
@@ -74,6 +74,8 @@ public:
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
+
+    void callMethod(QRect geometry);
 
 public Q_SLOTS:
     void RotationChangedEvent(QString);

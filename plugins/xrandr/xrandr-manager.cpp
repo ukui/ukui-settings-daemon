@@ -21,7 +21,6 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QX11Info>
-
 #include "xrandr-manager.h"
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
@@ -31,6 +30,10 @@
 #define XSETTINGS_KEY_SCALING       "scaling-factor"
 
 #define MAX_SIZE_MATCH_DIFF         0.05
+
+#define DBUS_NAME  "org.ukui.SettingsDaemon"
+#define DBUS_PATH  "/org/ukui/SettingsDaemon/xrandr"
+#define DBUS_INTER "org.ukui.SettingsDaemon.xrandr"
 
 typedef struct
 {
@@ -45,6 +48,14 @@ XrandrManager::XrandrManager()
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
     KScreen::Log::instance();
     QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+    xrandrDbus *mDbus = new xrandrDbus();
+    new XrandrAdaptor(mDbus);
+    QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    if(sessionBus.registerService(DBUS_NAME)){
+        sessionBus.registerObject(DBUS_PATH,
+                                  mDbus,
+                                  QDBusConnection::ExportAllContents);
+    }
 }
 
 void XrandrManager::getInitialConfig()
@@ -407,14 +418,27 @@ void XrandrManager::outputRemoved(int outputId)
 }
 
 void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
-    Q_ASSERT(mMonitoredConfig->data());
+    Q_ASSERT(mConfig);
     int index = output.isNull() ? 0 : output->id();
     if(index != 0){
-//        QString str = xrandrOutput::metadata(mConfig->primaryOutput())[QStringLiteral("fullname")].toString();
-//        qDebug()<<__func__<<str;
+        QRect geometry = output->geometry();
+        callMethod(geometry);
     }
 }
 
+void XrandrManager::callMethod(QRect geometry)
+{
+    QDBusMessage message =
+            QDBusMessage::createMethodCall(DBUS_NAME,
+                                           DBUS_PATH,
+                                           DBUS_INTER,
+                                           "priScreenChanged");
+    message << geometry.x()<< geometry.y()<<geometry.width()<<geometry.height();
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+    if (response.type() != QDBusMessage::ReplyMessage){
+        qDebug("priScreenChanged called failed");
+    }
+}
 
 void XrandrManager::monitorsInit()
 {
@@ -426,6 +450,10 @@ void XrandrManager::monitorsInit()
         mConfig->disconnect(this);
     }
     mConfig = mMonitoredConfig->data();
+
+    QRect geometry = mConfig->primaryOutput()->geometry();
+    callMethod(geometry);
+
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
     connect(mConfig.data(), &KScreen::Config::outputAdded,
             this, &XrandrManager::outputAdded);

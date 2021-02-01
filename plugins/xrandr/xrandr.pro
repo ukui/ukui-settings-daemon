@@ -24,13 +24,17 @@ PKGCONFIG += \
         gudev-1.0
 
 SOURCES += \
+    xrandr-adaptor.cpp \
     xrandr-config.cpp \
+    xrandr-dbus.cpp \
     xrandr-manager.cpp \
     xrandr-output.cpp \
     xrandr-plugin.cpp
 
 HEADERS += \
+    xrandr-adaptor.h \
     xrandr-config.h \
+    xrandr-dbus.h \
     xrandr-manager.h \
     xrandr-output.h \
     xrandr-plugin.h
