@@ -183,6 +183,7 @@ static void get_allowed_rotations_for_output (MateRRConfig *config,
                                               MateRROutputInfo *output,
                                               int *out_num_rotations,
                                               MateRRRotation *out_rotations);
+static void ensure_current_configuration_is_saved (void);
 
 G_DEFINE_TYPE (UsdXrandrManager, usd_xrandr_manager, G_TYPE_OBJECT)
 
@@ -1194,6 +1195,23 @@ error_message (UsdXrandrManager *mgr, const char *primary_text, GError *error_to
 static void
 handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
 {
+        char *cmd = "kydisplayswitch";
+        char **argv;
+
+        if (g_shell_parse_argv (cmd, NULL, &argv, NULL)) {
+                g_spawn_async (g_get_home_dir (),
+                               argv,
+                               NULL,
+                               G_SPAWN_SEARCH_PATH,
+                               NULL,
+                               NULL,
+                               NULL,
+                               NULL);
+        }
+        g_strfreev (argv);
+        g_free(cmd);
+        return;
+
         UsdXrandrManagerPrivate *priv = mgr->priv;
         MateRRScreen *screen = priv->rw_screen;
         MateRRConfig *current;
@@ -1445,47 +1463,94 @@ refresh_tray_icon_menu_if_active (UsdXrandrManager *manager, guint32 timestamp)
  * Function: show_question()  显示缩放弹窗
  * urpose :  When the system detects the high clear screen, the pops up change scale window
  */
+
+static void
+two_scale_confirmation_response (GtkDialog *dialog,
+                                 gint       response_id,
+                                 gpointer   user_data)
+{
+    if (response_id == GTK_RESPONSE_YES){
+        GSettings *scale = g_settings_new(XSETTINGS_SCHEMA);
+        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
+        g_settings_set_int (mouse, "cursor-size", 36);
+        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 2);
+        g_object_unref (mouse);
+        g_object_unref (scale);
+        system("ukui-session-tools --logout");
+    }
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
+
 void show_question(GSettings *scale)
 {
     GtkWidget       *dialog;
-    GtkResponseType result;
+    GtkResponseType  result;
+    GtkWidget       *button;
 
     dialog = gtk_message_dialog_new(NULL,
-                GTK_DIALOG_MODAL,
+                0,
                 GTK_MESSAGE_QUESTION,
                 GTK_BUTTONS_NONE,
                 _("Does the system detect high clear equipment"
                 " and whether to switch to recommended scaling (200%%)?"
                 " Click on the confirmation logout."));
     gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+
+    gtk_dialog_add_button (GTK_DIALOG (dialog),
+                           GTK_STOCK_CANCEL,
+                           GTK_RESPONSE_CANCEL);
+    button = gtk_button_new_with_mnemonic (_("Confirmation"));
+    gtk_widget_show (button);
+    gtk_widget_set_can_default (button, TRUE);
+    gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+                                  button,
+                                  GTK_RESPONSE_YES);
+    gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+                                     GTK_RESPONSE_YES);
 
     gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
     gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(dialog), FALSE);
 
-    result = gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
-    if (result == 1){
-        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
-        g_settings_set_int (mouse, "cursor-size", 36);
-        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 2);
-        g_object_unref (mouse);
-        system("ukui-session-tools --logout");
-    }
+    gtk_widget_show (dialog);
+
+    g_signal_connect (dialog,
+                      "response",
+                      G_CALLBACK (two_scale_confirmation_response),
+                      NULL);
 }
 
 /*
  * Function: show_question_one() 显示缩放弹窗
  * urpose :  When the system detects the high clear screen, the pops up change scale window
  */
+
+static void
+one_scale_confirmation_response (GtkDialog *dialog,
+                                 gint       response_id,
+                                 gpointer   user_data)
+{
+    if (response_id == GTK_RESPONSE_YES){
+        GSettings *scale = g_settings_new(XSETTINGS_SCHEMA);
+        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
+        g_settings_set_int (mouse, "cursor-size", 24);
+        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 1);
+        g_object_unref (mouse);
+        g_object_unref (scale);
+        system("ukui-session-tools --logout");
+    }
+    gtk_widget_destroy (GTK_WIDGET (dialog));
+}
+
 void show_question_one(GSettings *scale)
 {
     GtkWidget       *dialog;
-    GtkResponseType result;
+    GtkResponseType  result;
+    GtkWidget       *button;
 
     dialog = gtk_message_dialog_new(NULL,
-                        GTK_DIALOG_MODAL,
+                        0,
                         GTK_MESSAGE_QUESTION,
                         GTK_BUTTONS_NONE,
                         _("The system detects that the HD device has been replaced."
@@ -1493,22 +1558,28 @@ void show_question_one(GSettings *scale)
                           "Click on the confirmation logout."));
 
     gtk_window_set_title(GTK_WINDOW(dialog), _("Prompt"));
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Cancel"),0);
-    gtk_dialog_add_button(GTK_DIALOG(dialog),_("Confirmation"),1);
+    gtk_dialog_add_button (GTK_DIALOG (dialog),
+                           GTK_STOCK_CANCEL,
+                           GTK_RESPONSE_CANCEL);
+    button = gtk_button_new_with_mnemonic (_("Confirmation"));
+    gtk_widget_show (button);
+    gtk_widget_set_can_default (button, TRUE);
+    gtk_dialog_add_action_widget (GTK_DIALOG (dialog),
+                                  button,
+                                  GTK_RESPONSE_YES);
+    gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+                                     GTK_RESPONSE_YES);
 
     gtk_window_set_keep_above(GTK_WINDOW(dialog), TRUE);
     gtk_window_set_position (GTK_WINDOW (dialog), GTK_WIN_POS_CENTER);
+    gtk_window_set_skip_taskbar_hint(GTK_WINDOW(dialog), FALSE);
 
-    result = gtk_dialog_run(GTK_DIALOG(dialog));
-    gtk_widget_destroy(dialog);
+    gtk_widget_show (dialog);
 
-    if (result == 1){
-        GSettings *mouse = g_settings_new("org.ukui.peripherals-mouse");
-        g_settings_set_int (mouse, "cursor-size", 24);
-        g_settings_set_int (scale, XSETTINGS_KEY_SCALING, 1);
-        g_object_unref (mouse);
-        system("ukui-session-tools --logout");
-    }
+    g_signal_connect (dialog,
+                      "response",
+                      G_CALLBACK (one_scale_confirmation_response),
+                      NULL);
 }
 
 /*
@@ -1667,11 +1738,14 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         continue;
 
                 if (mate_rr_output_info_is_active (output)) {
-                        int width, height;
+                        int width, height,refresh;
                         g_assert (mate_rr_output_info_is_connected (output));
 
                         mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
                         mate_rr_output_info_set_geometry (output, x, 0, width, height);
+                        refresh = mate_rr_output_info_get_refresh_rate (output);
+                        if (refresh < 50)
+                            mate_rr_output_info_set_refresh_rate (output, 60);
 
                         x += width;
                 }
@@ -1681,7 +1755,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
 
         for (l = just_turned_on; l; l = l->next) {
                 MateRROutputInfo *output;
-                        int width,height;
+                        int width,height,refresh;
 
                 i = GPOINTER_TO_INT (l->data);
                 output = outputs[i];
@@ -1692,6 +1766,9 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                 width = mate_rr_output_info_get_preferred_width (output);
                 height = mate_rr_output_info_get_preferred_height (output);
                 mate_rr_output_info_set_geometry (output, x, 0, width, height);
+                refresh = mate_rr_output_info_get_refresh_rate (output);
+                if (refresh < 50)
+                    mate_rr_output_info_set_refresh_rate (output, 60);
 
                 x += width;
         }
