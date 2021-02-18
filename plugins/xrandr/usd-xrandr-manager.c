@@ -3561,7 +3561,7 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                                manager);
 
         /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(manager->priv->rw_screen, TRUE);
+        set_touchscreen_cursor_rotation(manager->priv->rw_screen);
 
         printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
         Display *dpy = XOpenDisplay(NULL);
