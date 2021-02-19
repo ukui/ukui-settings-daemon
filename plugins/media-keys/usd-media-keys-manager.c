@@ -72,6 +72,9 @@
 #define SESSION_SCHEMA  "org.ukui.session"
 #define WIN_KEY         "win-key-release"
 
+#define SCREENSHOT_SCHEMA   "org.ukui.screenshot"
+#define RUNINGS_KEY         "isrunning"
+
 #define VOLUME_STEP 6
 
 #define USD_MEDIA_KEYS_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), USD_TYPE_MEDIA_KEYS_MANAGER, UsdMediaKeysManagerPrivate))
@@ -97,6 +100,8 @@ struct _UsdMediaKeysManagerPrivate
         GSettings        *settings;
         GSettings        *point_settings;
         GSettings        *session_settings;
+        GSettings        *screenshot_settings;
+
         GVolumeMonitor   *volume_monitor;
 
         /* Multihead stuff */
@@ -1488,8 +1493,9 @@ void key_release_str (UsdMediaKeysManager *manager,
     if (g_strcmp0 (key_str, "Super_L") == 0 ||
         g_strcmp0 (key_str, "Super_R") == 0 )
     {
-        gboolean res = g_settings_get_boolean (manager->priv->session_settings, WIN_KEY);
-        if (!res)
+        gboolean sess_res = g_settings_get_boolean (manager->priv->session_settings, WIN_KEY);
+        gboolean shot_res = g_settings_get_boolean (manager->priv->screenshot_settings, RUNINGS_KEY);
+        if (!sess_res && !shot_res)
             execute (manager, "ukui-menu", FALSE, FALSE);
     }
 }
@@ -1701,6 +1707,9 @@ start_media_keys_idle_cb (UsdMediaKeysManager *manager)
         manager->priv->settings = g_settings_new (BINDING_SCHEMA);
         manager->priv->point_settings = g_settings_new (POINTER_SCHEMA);
         manager->priv->session_settings = g_settings_new (SESSION_SCHEMA);
+        manager->priv->screenshot_settings = g_settings_new (SCREENSHOT_SCHEMA);
+        g_settings_set_boolean (manager->priv->screenshot_settings, RUNINGS_KEY, FALSE);
+
         init_screens (manager);
         init_kbd (manager);
         init_xevent_monitor (manager);
@@ -1786,6 +1795,10 @@ usd_media_keys_manager_stop (UsdMediaKeysManager *manager)
         if (priv->session_settings != NULL) {
                 g_object_unref (priv->session_settings);
                 priv->session_settings = NULL;
+        }
+        if (priv->screenshot_settings != NULL) {
+                g_object_unref (priv->screenshot_settings);
+                priv->screenshot_settings = NULL;
         }
         if (priv->volume_monitor != NULL) {
                 g_object_unref (priv->volume_monitor);
