@@ -75,7 +75,7 @@ public:
     void primaryOutputChanged(const KScreen::OutputPtr &output);
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
 
-    void callMethod(QRect geometry);
+    void callMethod(QRect geometry, QString name);
 
 public Q_SLOTS:
     void RotationChangedEvent(QString);

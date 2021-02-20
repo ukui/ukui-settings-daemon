@@ -41,11 +41,19 @@ int XrandrAdaptor::height()
     return out0;
 }
 
-int XrandrAdaptor::priScreenChanged(int x, int y, int width, int height)
+int XrandrAdaptor::priScreenChanged(int x, int y, int width, int height, const QString &name)
 {
     // handle method call org.ukui.SettingsDaemon.xrandr.priScreenChanged
     int out0;
-    QMetaObject::invokeMethod(parent(), "priScreenChanged", Q_RETURN_ARG(int, out0), Q_ARG(int, x), Q_ARG(int, y), Q_ARG(int, width), Q_ARG(int, height));
+    QMetaObject::invokeMethod(parent(), "priScreenChanged", Q_RETURN_ARG(int, out0), Q_ARG(int, x), Q_ARG(int, y), Q_ARG(int, width), Q_ARG(int, height), Q_ARG(QString, name));
+    return out0;
+}
+
+QString XrandrAdaptor::priScreenName()
+{
+    // handle method call org.ukui.SettingsDaemon.xrandr.priScreenName
+    QString out0;
+    QMetaObject::invokeMethod(parent(), "priScreenName", Q_RETURN_ARG(QString, out0));
     return out0;
 }
 

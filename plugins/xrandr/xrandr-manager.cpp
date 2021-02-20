@@ -348,6 +348,10 @@ void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
 void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 {
     mMonitoredConfig = std::move(config);
+    monitorsInit();
+
+    QRect geometry = mMonitoredConfig->data()->primaryOutput()->geometry();
+    callMethod(geometry, mMonitoredConfig->data()->primaryOutput()->name());
 
     refreshConfig();
 }
@@ -422,18 +426,18 @@ void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
     int index = output.isNull() ? 0 : output->id();
     if(index != 0){
         QRect geometry = output->geometry();
-        callMethod(geometry);
+        callMethod(geometry, output->name());
     }
 }
 
-void XrandrManager::callMethod(QRect geometry)
+void XrandrManager::callMethod(QRect geometry, QString name)
 {
     QDBusMessage message =
             QDBusMessage::createMethodCall(DBUS_NAME,
                                            DBUS_PATH,
                                            DBUS_INTER,
                                            "priScreenChanged");
-    message << geometry.x()<< geometry.y()<<geometry.width()<<geometry.height();
+    message << geometry.x()<< geometry.y()<<geometry.width()<<geometry.height() << name;
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
     if (response.type() != QDBusMessage::ReplyMessage){
         qDebug("priScreenChanged called failed");
@@ -450,9 +454,6 @@ void XrandrManager::monitorsInit()
         mConfig->disconnect(this);
     }
     mConfig = mMonitoredConfig->data();
-
-    QRect geometry = mConfig->primaryOutput()->geometry();
-    callMethod(geometry);
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
     connect(mConfig.data(), &KScreen::Config::outputAdded,
