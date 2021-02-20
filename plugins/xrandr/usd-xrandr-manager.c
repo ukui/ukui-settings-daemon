@@ -2473,6 +2473,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
     if (!g_list_length (ts_devs))
     {
         fprintf(stdin, "No touchscreen find...\n");
+        XCloseDisplay(dpy);
         return;
     }
 
@@ -2480,19 +2481,19 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
         !XRRQueryVersion (dpy, &major, &minor))
     {
         fprintf (stderr, "RandR extension missing\n");
-        return;
+        goto LEAVE;
     }
 
     if ((major < 1) || (minor < 5))
     {
         g_list_free(ts_devs);
         fprintf(stderr, "xrandr extension too low\n");
-        return;
+        goto LEAVE;
     }
 
     res = XRRGetScreenResources (dpy, root);
     if (!res)
-        return;
+        goto LEAVE;
 
     for (o = 0; o < res->noutput; o++)
     {
@@ -2524,6 +2525,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
         }
     }
 
+LEAVE:
     XCloseDisplay(dpy);
     g_list_free(ts_devs);
 }
@@ -3398,8 +3400,6 @@ static void set_touch_map(Display *pDisplay, int touchId)
         do_action(pDisplay, touchId, cPrimaryName, False);
         bMapOk = True;
     }
-
-    XCloseDisplay(pDisplay);
 
     return;
 }
