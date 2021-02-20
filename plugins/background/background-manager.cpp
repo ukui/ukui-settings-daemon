@@ -21,6 +21,7 @@
 #include <QX11Info>
 #include "background-manager.h"
 #include <Imlib2.h>
+#include <gdk/gdkx.h>
 
 #define BACKGROUND          "org.mate.background"
 #define PICTURE_FILE_NAME   "picture-filename"
@@ -30,7 +31,6 @@
 
 BackgroundManager::BackgroundManager()
 {
-    dpy =  XOpenDisplay(NULL);
     m_screen = QApplication::screens().at(0);
 }
 
@@ -38,7 +38,6 @@ BackgroundManager::~BackgroundManager()
 {
     if(bSettingOld)
         delete bSettingOld;
-    XCloseDisplay(dpy);
 }
 
 void BackgroundManager::initGSettings(){
@@ -66,6 +65,8 @@ void BackgroundManager::SetBackground()
     QScreen  *screen;
     Imlib_Image img;
     int ScnNum, width = 0,height = 0;
+
+    dpy = gdk_x11_get_default_xdisplay();
 
     img = imlib_load_image(Filename.toLatin1().data());
     if (!img) {
@@ -139,5 +140,5 @@ void BackgroundManager::virtualGeometryChangedProcess(const QRect &geometry)
 void BackgroundManager::BackgroundManagerStart()
 {
     initGSettings();
-    SetBackground();
+    //SetBackground();
 }

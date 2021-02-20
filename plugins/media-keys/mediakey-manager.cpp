@@ -166,6 +166,12 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     QString KeyName;
     static bool winFlag = false;
     static bool ctrlFlag = false;
+    if (keyStr.compare("Shift_L+Print") == 0 || 
+        keyStr.compare("Shift_R+Print") == 0 ){
+        executeCommand("kylin-screenshot", " gui");
+        return;
+    }
+
     if (keyStr.compare("Print") == 0){
         executeCommand("kylin-screenshot", " full");
         return;
@@ -682,7 +688,7 @@ void MediaKeysManager::doMicSoundAction()
     bool mute;
     mute = mate_mixer_stream_control_get_mute (mInputControl);
     mate_mixer_stream_control_set_mute(mInputControl, !mute);
-    mDeviceWindow->setAction ((!mute) ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
     mDeviceWindow->dialogShow();
 }
 
