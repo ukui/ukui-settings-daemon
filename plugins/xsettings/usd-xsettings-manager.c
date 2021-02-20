@@ -679,9 +679,9 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
             XcursorImages *images = XcursorLibraryLoadImages(CursorsNames[i], tmpCursorTheme, tmpCursorSize);
 	        if (!images) {
                 g_debug("xcursorlibrary load images :null image, theme name=%s", tmpCursorTheme);
-                continue;
-            }
-            Cursor handle = XcursorImagesLoadCursor(dpy, images);
+		        continue;
+	        }
+	        Cursor handle = XcursorImagesLoadCursor(dpy, images);
             int event_base, error_base;
             if (XFixesQueryExtension(dpy, &event_base, &error_base))
             {
@@ -694,12 +694,19 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                     gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
                                                      CursorsNames[i],
                                                      settings->cursor_size);
+
+                    GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(), GDK_LEFT_PTR);
+                    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
+                                                     CursorsNames[i],
+                                                     settings->cursor_size);
+                    g_object_unref(G_OBJECT(cursor));
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
             XcursorImagesDestroy(images);
         }
-    }
+	}
 	// end add
 
         XCloseDisplay (dpy);

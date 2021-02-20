@@ -483,7 +483,8 @@ ldsm_check_all_mounts (gpointer data)
 
                 path = g_unix_mount_get_mount_path (mount);
 
-                if (g_strcmp0 (path, "/boot/efi") == 0)
+                if (g_strcmp0 (path, "/boot/efi") == 0 ||
+                    g_strcmp0 (path, "/boot") == 0 )
                       continue;
 
                 if (g_unix_mount_is_readonly (mount)) {
