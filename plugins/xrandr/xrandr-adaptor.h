@@ -50,12 +50,16 @@ class XrandrAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"height\">\n"
 "      <arg direction=\"out\" type=\"i\"/>\n"
 "    </method>\n"
+"    <method name=\"priScreenName\">\n"
+"      <arg direction=\"out\" type=\"s\"/>\n"
+"    </method>\n"
 "    <method name=\"priScreenChanged\">\n"
 "      <arg direction=\"out\" type=\"i\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"x\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"y\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"width\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"height\"/>\n"
+"      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
 "    </method>\n"
 "  </interface>\n"
         "")
@@ -66,7 +70,8 @@ public:
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
     int height();
-    int priScreenChanged(int x, int y, int width, int height);
+    int priScreenChanged(int x, int y, int width, int height, const QString &name);
+    QString priScreenName();
     int width();
     int x();
     int y();

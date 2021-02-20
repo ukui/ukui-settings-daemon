@@ -14,21 +14,30 @@ xrandrDbus::xrandrDbus(QObject* parent) :
 int xrandrDbus::x() {
     return mX;
 }
+
 int xrandrDbus::y() {
     return mY;
 }
+
 int xrandrDbus::width() {
     return mWidth;
 }
+
 int xrandrDbus::height() {
     return mHeight;
 }
-int xrandrDbus::priScreenChanged(int x, int y, int width, int height)
+
+QString xrandrDbus::priScreenName(){
+    return mName;
+}
+
+int xrandrDbus::priScreenChanged(int x, int y, int width, int height, QString name)
 {
     mX = x;
     mY = y;
     mWidth = width;
     mHeight = height;
+    mName = name;
     //qDebug()<< x<< y << width << height;
     Q_EMIT screenPrimaryChanged(x, y, width, height);
     return 0;

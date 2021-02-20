@@ -16,7 +16,8 @@ public Q_SLOTS:
     int y();
     int width();
     int height();
-    int priScreenChanged(int x, int y, int width, int height);
+    QString priScreenName();
+    int priScreenChanged(int x, int y, int width, int height, QString name);
 
 Q_SIGNALS:
     void screenPrimaryChanged(int x, int y, int width, int height);
@@ -26,6 +27,7 @@ public:
     int mY = 0;
     int mWidth = 0;
     int mHeight = 0;
+    QString mName;
 };
 
 #endif // XRANDRDBUS_H
