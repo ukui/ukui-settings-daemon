@@ -2147,17 +2147,17 @@ static void get_primary_status(char *cName, int *pbMap)
 //映射中 touch id 是唯一的
 static void remove_touch_map(int id)
 {
-    GList *pIList = NULL;
-    TouchMapInfo *pTMInfo = NULL;
-
+    GList          *pIList   = NULL;
+    TouchMapInfo   *pTMInfo  = NULL;
+    int            mapNumOld = g_list_length(g_TouchMapList);
     for(pIList = g_TouchMapList; pIList; pIList = pIList->next)
     {
         pTMInfo = pIList->data;
         if(id == pTMInfo->touchId)
         {
-            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
             g_TouchMapList = g_list_remove(g_TouchMapList, pTMInfo);
-            printf("[%s%d] remove[%d] %d\n", __FUNCTION__, __LINE__, pTMInfo->touchId, g_list_length(g_TouchMapList));
+            printf("[%s%d] remove[%d - %s]. list num from[%d] to[%d].\n", __FUNCTION__, __LINE__,
+            pTMInfo->touchId, pTMInfo->cMonitorName,  mapNumOld, g_list_length(g_TouchMapList));
         }
     }
     return;
@@ -2191,8 +2191,14 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
 {
     char cId[16];
     char buff[128];
-    char cName[64];  //确保传参非空 此接口未用
+    char cName[64];  //确保传参非空
     int ret = -1;
+
+    //按配置文件映射优先级最高，从本地记录list中移除冲突记录
+    if (True == remap)
+    {
+        remove_touch_map(input_id);
+    }
 
     if(NULL == map_to_output)
     {
@@ -2216,26 +2222,10 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
     strcpy(pTMInfo->cMonitorName, output_name);
     pTMInfo->touchId = input_id;
 
-    printf("[%s%d] map_to_output %d %s\n", __FUNCTION__, __LINE__, pTMInfo->touchId, pTMInfo->cMonitorName);
-
-    if (True == remap)
+    //id未映射过则加入list
+    if(!check_touch_map(input_id, cName))
     {
-        if(!check_touch_map(input_id, cName))
-        {
-            g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
-        }
-        else
-        {
-            remove_touch_map(input_id);
-            g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
-        }
-    }
-    else
-    {
-        if(!check_touch_map(input_id, cName))
-        {
-            g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
-        }
+        g_TouchMapList = g_list_append (g_TouchMapList, pTMInfo);
     }
 
     return;
@@ -2336,23 +2326,52 @@ static int find_touchId_from_event(Display *_dpy, char *_event, int *pId)
         printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
         return ret;
     }
-    int         	i           = 0;
-    int         	num_devices = 0;
-    XIDeviceInfo 	*devs_info  = NULL;
-    unsigned char 	*cNode      = NULL;
-    const char  	cName[]     = "event";
-    char        	*cEvent     = NULL;
+    int         	i            = 0;
+    int             j            = 0;
+    int         	num_devices  = 0;
+    XDeviceInfo 	*pXDevs_info = NULL;
+    XDevice         *pXDev       = NULL;
+    unsigned char 	*cNode       = NULL;
+    const char  	cName[]      = "event";
+    char        	*cEvent      = NULL;
+    int             nprops       = 0;
+    Atom            *props       = NULL;
+    char            *name;
+    Atom            act_type;
+    int             act_format;
+    unsigned long   nitems, bytes_after;
+    unsigned char   *data;
 
-    devs_info = XIQueryDevice(_dpy, XIAllDevices, &num_devices);
-    if(NULL == devs_info)
-    {
-        printf("[%s%d] devs_info null. \n", __FUNCTION__, __LINE__);
-        return ret;
-    }
-
+    pXDevs_info = XListInputDevices(_dpy, &num_devices);
     for(i = 0; i < num_devices; i++)
     {
-        cNode = get_device_node(devs_info[i]);
+        pXDev = XOpenDevice(_dpy, pXDevs_info[i].id);
+        if (!pXDev)
+        {
+            printf("unable to open device '%s'\n", pXDevs_info[i].name);
+            continue;
+        }
+
+        props = XListDeviceProperties(_dpy, pXDev, &nprops);
+        if (!props)
+        {
+            printf("Device '%s' does not report any properties.\n", pXDevs_info[i].name);
+            continue;
+        }
+
+        for(j = 0; j < nprops; j++)
+        {
+            name = XGetAtomName(_dpy, props[j]);
+            if(0 != strcmp(name, "Device Node"))
+            {
+                continue;
+            }
+            XGetDeviceProperty(_dpy, pXDev, props[j], 0, 1000, False,
+                                   AnyPropertyType, &act_type, &act_format,
+                                   &nitems, &bytes_after, &data);
+            cNode = data;
+        }
+
         if(NULL == cNode)
         {
             continue;
@@ -2363,7 +2382,7 @@ static int find_touchId_from_event(Display *_dpy, char *_event, int *pId)
 
         if( 0 == strcmp(_event, cEvent))
         {
-            *pId = devs_info[i].deviceid;
+            *pId = pXDevs_info[i].id;
             printf("[%s%d] cNode:%s id:%d\n",__FUNCTION__, __LINE__,cNode, *pId);
             ret = Success;
             break;
@@ -2442,10 +2461,10 @@ static int get_mapBak_from_file(char *_cFileName, int *_pNum, MapInfoFromFile *p
 		snprintf(mapName, sizeof(mapName), "%s%d", "MAP", i+1);
 		gchar *name = NULL;
 		gchar *serial = NULL;
-		gchar *srcname = NULL;
+		gchar *scrname = NULL;
 		name = g_key_file_get_string(keyfile, mapName, "name", &error);
 		serial = g_key_file_get_string(keyfile, mapName, "serial", &error);
-		srcname = g_key_file_get_string(keyfile, mapName, "srcname", &error);
+		scrname = g_key_file_get_string(keyfile, mapName, "scrname", &error);
 
 		if(NULL != name)
 		{
@@ -2457,9 +2476,9 @@ static int get_mapBak_from_file(char *_cFileName, int *_pNum, MapInfoFromFile *p
 			strcpy(pstMapInfo[i].cTouchSerial, serial);
 		}
 
-		if(NULL != srcname)
+		if(NULL != scrname)
 		{
-			strcpy(pstMapInfo[i].cMonitorName, srcname);
+			strcpy(pstMapInfo[i].cMonitorName, scrname);
 		}
 
 		printf("[%s%d] %s  %s  %s\n", __FUNCTION__, __LINE__,
@@ -2487,7 +2506,7 @@ static void remap_from_file(Display *_dpy)
     memset(stMapInfo, 0, sizeof(stMapInfo));
 
 	char *pCfgPath = g_build_filename (g_get_user_config_dir (), MONITOR_SAVE_CONF_NAME, NULL);
-	printf("[%s%d] pCfgPath[%s] \n", __FUNCTION__, __LINE__, pCfgPath);
+	//printf("[%s%d] pCfgPath[%s] \n", __FUNCTION__, __LINE__, pCfgPath);
 
     ret = get_mapBak_from_file(pCfgPath, &mapNum, stMapInfo);
     if((0 == mapNum)||(Success != ret))
@@ -2504,11 +2523,83 @@ static void remap_from_file(Display *_dpy)
         {
             continue;
         }
-
-        printf("[%s%d] find result %s %s %d. \n", __FUNCTION__, __LINE__,
-            stMapInfo[i].cTouchName, stMapInfo[i].cTouchSerial, touchId);
-
+        //printf("[%s%d] find result %s %s %d. \n", __FUNCTION__, __LINE__, stMapInfo[i].cTouchName, stMapInfo[i].cTouchSerial, touchId);
         do_action(_dpy, touchId, stMapInfo[i].cMonitorName,True);
+    }
+    return;
+}
+
+static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
+{
+    if(NULL == _pName)
+    {
+        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
+        return;
+    }
+
+    char cName[64];
+    char cPriName[64];
+    int bMap = False;
+    int tmpId = 0;
+
+    //有插拔显示器时
+    if(TRUE == _popFlag)
+    {
+        //check if primary mapped
+        get_primary_status(cPriName, &bMap);
+        if(!bMap)
+        {
+            printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            remove_touch_map(_id);
+            do_action(_dpy, _id, cPriName, False);
+            return;
+        }
+        else
+        {
+            bMap = check_monitor_map(cPriName, &tmpId);
+            if((_id == tmpId)&&(TRUE == bMap))
+            {
+                do_action(_dpy, _id, cPriName, False);
+                return;
+            }
+        }
+    }
+
+    //id mapped
+    if(check_touch_map(_id, cName))
+    {
+        //same map
+        if(0 == strcmp(cName, _pName))
+        {
+            printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            do_action(_dpy, _id, _pName, False);
+        }
+        //different map
+        else
+        {
+            printf("[%s%d] here old[%s] | new[%s]\n\n", __FUNCTION__, __LINE__,
+            cName, _pName);
+
+            //connect : map old
+            if(check_monitor_connect(cName))
+            {
+                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                do_action(_dpy, _id, cName, False);
+            }
+            //not connect: remove old map, and map new
+            else
+            {
+                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                remove_touch_map(_id);
+                do_action(_dpy, _id, _pName, False);
+            }
+        }
+    }
+    //id unmapped
+    else
+    {
+        printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+        do_action(_dpy, _id, _pName, False);
     }
 
     return;
@@ -2516,7 +2607,7 @@ static void remap_from_file(Display *_dpy)
 
 
 /* 设置触摸屏触点的角度 */
-void set_touchscreen_cursor_rotation(MateRRScreen *screen)
+void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
 {
     int     event_base, error_base, major, minor;
     int     o;
@@ -2525,126 +2616,72 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
     XRRScreenResources *res;
     Display *dpy = XOpenDisplay(NULL);
     GList *ts_devs = NULL;
+    GList *l = NULL;
+
+    xscreen = DefaultScreen (dpy);
+    root = RootWindow (dpy, xscreen);
 
     ts_devs = get_touchscreen (dpy);
-
     if (!g_list_length (ts_devs))
     {
         fprintf(stdin, "No touchscreen find...\n");
+        XCloseDisplay(dpy);
         return;
     }
-
-    GList *l = NULL;
 
     if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
         !XRRQueryVersion (dpy, &major, &minor))
     {
         fprintf (stderr, "RandR extension missing\n");
-        return;
+        goto LEAVE;
     }
 
-    xscreen = DefaultScreen (dpy);
-    root = RootWindow (dpy, xscreen);
-
-    if ( major >= 1 && minor >= 5)
-    {
-        res = XRRGetScreenResources (dpy, root);
-        if (!res)
-          return;
-
-        for (o = 0; o < res->noutput; o++)
-        {
-            XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
-
-            if (!output_info)
-            {
-                fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
-                continue;
-            }
-
-            if (output_info->connection == 0)
-            {
-                int output_mm_width = output_info->mm_width;
-                int output_mm_height = output_info->mm_height;
-
-                for ( l = ts_devs; l; l = l->next)
-                {
-                    TsInfo *info = l -> data;
-                    GUdevDevice *udev_device;
-                    const char *udev_subsystems[] = {"input", NULL};
-
-                    double width, height;
-
-                    GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
-                    udev_device = g_udev_client_query_by_device_file (udev_client, info->input_node);
-                    if (udev_device &&
-                        g_udev_device_has_property (udev_device, "ID_INPUT_WIDTH_MM"))
-                    {
-                        width = g_udev_device_get_property_as_double (udev_device,
-                                                                    "ID_INPUT_WIDTH_MM");
-                        height = g_udev_device_get_property_as_double (udev_device,
-                                                                     "ID_INPUT_HEIGHT_MM");
-
-                        char cName[64];
-                        int bMap = False;
-                        //id mapped
-                        if(check_touch_map(info->dev_info.deviceid, cName))
-                        {
-                            //same map
-                            if(0 == strcmp(cName, output_info->name))
-                            {
-                                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-                                do_action(dpy, info->dev_info.deviceid, output_info->name, False);
-                            }
-                            //different map
-                            else
-                            {
-                                printf("[%s%d] here old[%s] | new[%s]\n\n", __FUNCTION__, __LINE__,
-                                cName, output_info->name);
-
-                                //connect  : map old
-                                if(check_monitor_connect(cName))
-                                {
-                                    printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-                                    do_action(dpy, info->dev_info.deviceid, cName, False);
-                                }
-                                //not connect: remove old map, and map new
-                                else
-                                {
-                                    printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-                                    remove_touch_map(info->dev_info.deviceid);
-                                    do_action(dpy, info->dev_info.deviceid, output_info->name, False);
-                                }
-                            }
-                        }
-                        //id unmapped
-                        else
-                        {
-                            //check if primary mapped
-                            get_primary_status(cName, &bMap);
-                            if(bMap)
-                            {
-                                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-                                do_action(dpy, info->dev_info.deviceid, output_info->name, False);
-                            }
-                            else
-                            {
-                                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-                                do_action(dpy, info->dev_info.deviceid, cName, False);
-                            }
-                        }
-                    }
-                    g_clear_object (&udev_client);
-                }
-            }
-        }
-    }
-    else
+    if ((major < 1) || (minor < 5))
     {
         g_list_free(ts_devs);
         fprintf(stderr, "xrandr extension too low\n");
-        return;
+        goto LEAVE;
     }
+
+    res = XRRGetScreenResources (dpy, root);
+    if (!res)
+        goto LEAVE;
+
+    const char *udev_subsystems[] = {"input", NULL};
+    GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
+    g_clear_object (&udev_client);
+
+    for (o = 0; o < res->noutput; o++)
+    {
+        XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
+        if (!output_info)
+        {
+            fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
+            continue;
+        }
+
+        if (0 != output_info->connection)
+        {
+            continue;
+        }
+
+        for ( l = ts_devs; l; l = l->next)
+        {
+            TsInfo *info = l -> data;
+            if(NULL == info)
+            {
+                continue;
+            }
+
+            printf("[%s%d] info Touchid[%d] MonitorName[%s]\n", __FUNCTION__, __LINE__,
+            info->dev_info.deviceid, output_info->name);
+
+            auto_map(dpy, info->dev_info.deviceid, output_info->name, popFlag);
+
+        }
+    }
+
+LEAVE:
     XCloseDisplay(dpy);
     g_list_free(ts_devs);
 }
@@ -2728,7 +2765,12 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         }
 
         /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(screen);
+        set_touchscreen_cursor_rotation(screen,pop_flag);
+
+        printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
+        Display *dpy = XOpenDisplay(NULL);
+        remap_from_file(dpy);
+        XCloseDisplay(dpy);
 
         /* poke mate-color-manager */
         apply_color_profiles ();
@@ -2738,9 +2780,6 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         /*监听HDMI插拔设置缩放*/
         if(pop_flag){
             pop_flag = FALSE;
-            Display *dpy = XOpenDisplay(NULL);
-            remap_from_file(dpy);
-            XCloseDisplay(dpy);
             monitor_settings_screen_zoom(screen);
         }
         log_close ();
@@ -3518,8 +3557,6 @@ static void set_touch_map(Display *pDisplay, int touchId)
         bMapOk = True;
     }
 
-    XCloseDisplay(pDisplay);
-
     return;
 }
 static void listen_to_Xinput_Event()
@@ -3587,12 +3624,11 @@ static void listen_to_Xinput_Event()
                 {
                     case XISlaveAdded:
                             printf("[%s%d] id=%ld \n",__FUNCTION__, __LINE__, pPreXDevInfo->id);
-
                             if(XInternAtom(pDisplay, XI_TOUCHSCREEN, True) == pPreXDevInfo->type)
                             {
+                                remap_from_file(pDisplay);
                                 set_touch_map(pDisplay, pPreXDevInfo->id);
                             }
-
                             break;
                     case XISlaveRemoved:
 
@@ -3686,14 +3722,13 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                                (GdkFilterFunc)event_filter,
                                manager);
 
+        /* 添加触摸屏鼠标设置 */
+        set_touchscreen_cursor_rotation(manager->priv->rw_screen,TRUE);
 
+        printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
         Display *dpy = XOpenDisplay(NULL);
         remap_from_file(dpy);
         XCloseDisplay(dpy);
-
-        /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(manager->priv->rw_screen);
-
 
         start_or_stop_icon (manager);
 
