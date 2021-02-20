@@ -2191,7 +2191,7 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
 {
     char cId[16];
     char buff[128];
-    char cName[64];  //确保传参非空 此接口未用
+    char cName[64];  //确保传参非空
     int ret = -1;
 
     if(NULL == map_to_output)
@@ -2377,7 +2377,7 @@ static void remap_from_file(Display *_dpy)
     return;
 }
 
-static void auto_map(Display *_dpy, int _id, char *_pName)
+static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
 {
     if(NULL == _pName)
     {
@@ -2390,20 +2390,25 @@ static void auto_map(Display *_dpy, int _id, char *_pName)
     int bMap = False;
     int tmpId = 0;
 
-    //check if primary mapped
-    get_primary_status(cPriName, &bMap);
-    if(!bMap)
+    //有插拔显示器时
+    if(TRUE == _popFlag)
     {
-        printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
-        do_action(_dpy, _id, cPriName, False);
-        return;
-    }
-    else
-    {
-        bMap = check_monitor_map(cPriName, &tmpId);
-        if((_id == tmpId)&&(TRUE == bMap))
+        //check if primary mapped
+        get_primary_status(cPriName, &bMap);
+        if(!bMap)
         {
+            printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            do_action(_dpy, _id, cPriName, False);
             return;
+        }
+        else
+        {
+            bMap = check_monitor_map(cPriName, &tmpId);
+            if((_id == tmpId)&&(TRUE == bMap))
+            {
+                do_action(_dpy, _id, cPriName, False);
+                return;
+            }
         }
     }
 
@@ -2449,7 +2454,7 @@ static void auto_map(Display *_dpy, int _id, char *_pName)
 
 
 /* 设置触摸屏触点的角度 */
-void set_touchscreen_cursor_rotation(MateRRScreen *screen)
+void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
 {
     int     event_base, error_base, major, minor;
     int     o;
@@ -2513,7 +2518,7 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen)
             printf("[%s%d] info Touchid[%d] MonitorName[%s]\n", __FUNCTION__, __LINE__,
             info->dev_info.deviceid, output_info->name);
 
-            auto_map(dpy, info->dev_info.deviceid, output_info->name);
+            auto_map(dpy, info->dev_info.deviceid, output_info->name, popFlag);
 
         }
     }
@@ -2601,7 +2606,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         }
 
         /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(screen);
+        set_touchscreen_cursor_rotation(screen,pop_flag);
 
         printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
         Display *dpy = XOpenDisplay(NULL);
@@ -3561,7 +3566,7 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                                manager);
 
         /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(manager->priv->rw_screen);
+        set_touchscreen_cursor_rotation(manager->priv->rw_screen,TRUE);
 
         printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
         Display *dpy = XOpenDisplay(NULL);
