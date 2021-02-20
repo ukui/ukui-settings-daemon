@@ -2398,6 +2398,7 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
         if(!bMap)
         {
             printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            remove_touch_map(_id);
             do_action(_dpy, _id, cPriName, False);
             return;
         }
