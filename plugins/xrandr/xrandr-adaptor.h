@@ -24,14 +24,14 @@ class QVariant;
 QT_END_NAMESPACE
 
 /*
- * Adaptor class for interface org.ukui.SettingsDaemon.xrandr
+ * Adaptor class for interface org.ukui.SettingsDaemon.wayland
  */
-class XrandrAdaptor: public QDBusAbstractAdaptor
+class WaylandAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.ukui.SettingsDaemon.xrandr")
+    Q_CLASSINFO("D-Bus Interface", "org.ukui.SettingsDaemon.wayland")
     Q_CLASSINFO("D-Bus Introspection", ""
-"  <interface name=\"org.ukui.SettingsDaemon.xrandr\">\n"
+"  <interface name=\"org.ukui.SettingsDaemon.wayland\">\n"
 "    <signal name=\"screenPrimaryChanged\">\n"
 "      <arg direction=\"out\" type=\"i\" name=\"x\"/>\n"
 "      <arg direction=\"out\" type=\"i\" name=\"y\"/>\n"
@@ -64,8 +64,8 @@ class XrandrAdaptor: public QDBusAbstractAdaptor
 "  </interface>\n"
         "")
 public:
-    XrandrAdaptor(QObject *parent);
-    virtual ~XrandrAdaptor();
+    WaylandAdaptor(QObject *parent);
+    virtual ~WaylandAdaptor();
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS

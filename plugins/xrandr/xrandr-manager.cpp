@@ -32,8 +32,8 @@
 #define MAX_SIZE_MATCH_DIFF         0.05
 
 #define DBUS_NAME  "org.ukui.SettingsDaemon"
-#define DBUS_PATH  "/org/ukui/SettingsDaemon/xrandr"
-#define DBUS_INTER "org.ukui.SettingsDaemon.xrandr"
+#define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
+#define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
 
 typedef struct
 {
@@ -385,6 +385,18 @@ void XrandrManager::applyKnownConfig()
     }
 }
 
+void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
+{
+    KScreen::OutputList kscreenOutputs = Config->outputs();
+    for (auto output : kscreenOutputs)
+    {
+        int x = output->geometry().x();
+        if(x == 0)
+            output->setPrimary(true);
+    }
+    doApplyConfig(Config);
+}
+
 void XrandrManager::applyConfig()
 {
     if (!mMonitoredConfig){
@@ -394,6 +406,9 @@ void XrandrManager::applyConfig()
     if (mMonitoredConfig->fileExists()) {
         applyKnownConfig();
         return;
+    }
+    else {
+        init_primary_screens(mMonitoredConfig->data());
     }
     applyIdealConfig();
 }

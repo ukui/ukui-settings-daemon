@@ -3,8 +3,8 @@
 #include <QDBusInterface>
 #include <QDebug>
 #define DBUS_NAME  "org.ukui.SettingsDaemon"
-#define DBUS_PATH  "/org/ukui/SettingsDaemon/xrandr"
-#define DBUS_INTER "org.ukui.SettingsDaemon.xrandr"
+#define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
+#define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
 
 xrandrDbus::xrandrDbus(QObject* parent) :
     QObject(parent){

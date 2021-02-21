@@ -74,6 +74,7 @@ public:
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
+    void init_primary_screens(KScreen::ConfigPtr config);
 
     void callMethod(QRect geometry, QString name);
 

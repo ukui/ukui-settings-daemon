@@ -18,64 +18,64 @@
 #include <QtCore/QVariant>
 
 /*
- * Implementation of adaptor class XrandrAdaptor
+ * Implementation of adaptor class WaylandAdaptor
  */
 
-XrandrAdaptor::XrandrAdaptor(QObject *parent)
+WaylandAdaptor::WaylandAdaptor(QObject *parent)
     : QDBusAbstractAdaptor(parent)
 {
     // constructor
     setAutoRelaySignals(true);
 }
 
-XrandrAdaptor::~XrandrAdaptor()
+WaylandAdaptor::~WaylandAdaptor()
 {
     // destructor
 }
 
-int XrandrAdaptor::height()
+int WaylandAdaptor::height()
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.height
+    // handle method call org.ukui.SettingsDaemon.wayland.height
     int out0;
     QMetaObject::invokeMethod(parent(), "height", Q_RETURN_ARG(int, out0));
     return out0;
 }
 
-int XrandrAdaptor::priScreenChanged(int x, int y, int width, int height, const QString &name)
+int WaylandAdaptor::priScreenChanged(int x, int y, int width, int height, const QString &name)
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.priScreenChanged
+    // handle method call org.ukui.SettingsDaemon.wayland.priScreenChanged
     int out0;
     QMetaObject::invokeMethod(parent(), "priScreenChanged", Q_RETURN_ARG(int, out0), Q_ARG(int, x), Q_ARG(int, y), Q_ARG(int, width), Q_ARG(int, height), Q_ARG(QString, name));
     return out0;
 }
 
-QString XrandrAdaptor::priScreenName()
+QString WaylandAdaptor::priScreenName()
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.priScreenName
+    // handle method call org.ukui.SettingsDaemon.wayland.priScreenName
     QString out0;
     QMetaObject::invokeMethod(parent(), "priScreenName", Q_RETURN_ARG(QString, out0));
     return out0;
 }
 
-int XrandrAdaptor::width()
+int WaylandAdaptor::width()
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.width
+    // handle method call org.ukui.SettingsDaemon.wayland.width
     int out0;
     QMetaObject::invokeMethod(parent(), "width", Q_RETURN_ARG(int, out0));
     return out0;
 }
 
-int XrandrAdaptor::x()
+int WaylandAdaptor::x()
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.x
+    // handle method call org.ukui.SettingsDaemon.wayland.x
     int out0;
     QMetaObject::invokeMethod(parent(), "x", Q_RETURN_ARG(int, out0));
     return out0;
 }
 
-int XrandrAdaptor::y()
+int WaylandAdaptor::y()
 {
-    // handle method call org.ukui.SettingsDaemon.xrandr.y
+    // handle method call org.ukui.SettingsDaemon.wayland.y
     int out0;
     QMetaObject::invokeMethod(parent(), "y", Q_RETURN_ARG(int, out0));
     return out0;

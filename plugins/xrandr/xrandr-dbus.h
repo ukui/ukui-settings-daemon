@@ -6,7 +6,7 @@
 class xrandrDbus : public QObject
 {
     Q_OBJECT
-        Q_CLASSINFO("D-Bus Interface","org.ukui.SettingsDaemon.xrandr")
+        Q_CLASSINFO("D-Bus Interface","org.ukui.SettingsDaemon.wayland")
 
 public:
     xrandrDbus(QObject* parent=0);
