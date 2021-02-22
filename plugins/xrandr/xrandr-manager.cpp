@@ -49,7 +49,7 @@ XrandrManager::XrandrManager()
     KScreen::Log::instance();
     QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
     xrandrDbus *mDbus = new xrandrDbus();
-    new XrandrAdaptor(mDbus);
+    new WaylandAdaptor(mDbus);
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if(sessionBus.registerService(DBUS_NAME)){
         sessionBus.registerObject(DBUS_PATH,
@@ -347,11 +347,21 @@ void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
 
 void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 {
+    QRect geometry;
+    QString name;
+
     mMonitoredConfig = std::move(config);
     monitorsInit();
 
-    QRect geometry = mMonitoredConfig->data()->primaryOutput()->geometry();
-    callMethod(geometry, mMonitoredConfig->data()->primaryOutput()->name());
+    if (mMonitoredConfig->data()->primaryOutput().isNull()){
+        qDebug()<<"No primary screen output was found";
+        geometry = QRect(0, 0, 0 , 0);
+        name = "";
+    } else {
+        geometry = mMonitoredConfig->data()->primaryOutput()->geometry();
+        name     = mMonitoredConfig->data()->primaryOutput()->name();
+    }
+    callMethod(geometry, name);
 
     refreshConfig();
 }
@@ -440,8 +450,8 @@ void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
     Q_ASSERT(mConfig);
     int index = output.isNull() ? 0 : output->id();
     if(index != 0){
-        QRect geometry = output->geometry();
-        callMethod(geometry, output->name());
+        //QRect geometry = output->geometry();
+        //callMethod(geometry, output->name());
     }
 }
 
