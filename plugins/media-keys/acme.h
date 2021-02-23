@@ -115,7 +115,7 @@ static struct {
         { LOGOUT_KEY, "logout", NULL, NULL },
         { TERMINAL_KEY, "terminal", NULL, NULL },
         { TERMINAL_KEY_2, "terminal2", NULL, NULL },
-        { SCREENSHOT_KEY, "screenshot", NULL, NULL },
+        //{ SCREENSHOT_KEY, "screenshot", NULL, NULL },
         { WINDOW_SCREENSHOT_KEY, "window-screenshot", NULL, NULL },
         //{ AREA_SCREENSHOT_KEY, "area-screenshot", NULL, NULL },
         { WINDOWSWITCH_KEY, "ukui-window-switch", NULL, NULL},
