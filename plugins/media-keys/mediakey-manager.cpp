@@ -166,6 +166,13 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     QString KeyName;
     static bool winFlag = false;
     static bool ctrlFlag = false;
+
+    if (keyStr.compare("Shift_L+Print") == 0 ||
+        keyStr.compare("Shift_R+Print") == 0 ){
+        executeCommand("kylin-screenshot", " gui");
+        return;
+    }
+
     if (keyStr.compare("Print") == 0){
         executeCommand("kylin-screenshot", " full");
         return;
@@ -535,6 +542,7 @@ bool MediaKeysManager::doAction(int type)
         doOpenUkuiSearchAction();
         break;
     case KDS_KEY:
+    case KDS_KEY2:
         doOpenKdsAction();
         break;
     default:
