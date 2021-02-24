@@ -20,11 +20,14 @@
 #include "ui_ldsm-trash-empty.h"
 
 #include <QIcon>
+#include <QFont>
+#include <QObject>
+#include <QPushButton>
+#include <QDesktopWidget>
+#include <QDir>
 #include <QFile>
-#include <QDebug>
-
-#include <glib.h>
-#include <QGSettings/qgsettings.h>
+#include <QFileInfo>
+#include <QFileInfoList>
 
 LdsmTrashEmpty::LdsmTrashEmpty(QWidget *parent) :
     QDialog(parent),
@@ -32,17 +35,100 @@ LdsmTrashEmpty::LdsmTrashEmpty(QWidget *parent) :
 {
     ui->setupUi(this);
     windowLayoutInit();
+    connectEvent();
 }
 
 LdsmTrashEmpty::~LdsmTrashEmpty()
 {
     delete ui;
+    delete first_text;
+    delete second_text;
+    delete trash_empty;
+    delete cancel;
 }
 
 void LdsmTrashEmpty::windowLayoutInit()
 {
-    setFixedSize(400,200);
+    QFont font;
+    QDesktopWidget* desktop=QApplication::desktop();
+    setFixedSize(650,180);
     setWindowTitle(tr("Emptying the trash"));
     setWindowIcon(QIcon("/new/prefix1/warning.png"));
+    int dialog_width=width();
+    int dialog_height=height();
+    this->move((desktop->width()-dialog_width)/2,(desktop->height()-dialog_height)/2);
 
+    first_text=new QLabel(this);
+    second_text=new QLabel(this);
+    trash_empty=new QPushButton(this);
+    cancel=new QPushButton(this);
+
+    first_text->setGeometry(66,20,560,30);
+    font.setBold(true);
+    font.setPointSize(12);
+    first_text->setFont(font);
+    first_text->setText(tr("Empty all of the items from the trash?"));
+    second_text->setGeometry(66,50,560,30*2);
+    second_text->setWordWrap(true);
+    second_text->setAlignment(Qt::AlignLeft);
+    second_text->setText(tr("If you choose to empty the trash, all items in it will be permanently lost." \
+                            "Please note that you can also delete them separately."));
+    cancel->setGeometry(dialog_width-120,dialog_height-35,100,25);
+    cancel->setText(tr("cancel"));
+    trash_empty->setGeometry(dialog_width-240,dialog_height-35,100,25);
+    trash_empty->setText(tr("Empty Trash"));
+}
+
+void LdsmTrashEmpty::usd_ldsm_trash_empty()
+{
+    this->exec();
+}
+
+void LdsmTrashEmpty::connectEvent()
+{
+    connect(trash_empty,SIGNAL(clicked()),this,SLOT(trash_empty_button_clicked()));
+    connect(cancel,SIGNAL(clicked()),this,SLOT(cancel_button_clicked()));
+}
+
+void LdsmTrashEmpty::trash_empty_delete_contents(const QString path)
+{
+    QDir dir(path);
+    QFileInfoList fileList;
+    QFileInfo curFile;
+    if(!dir.exists())
+        return;
+    fileList=dir.entryInfoList(QDir::Files|QDir::Dirs|QDir::Readable|QDir::Writable|
+                               QDir::Hidden|QDir::NoDotAndDotDot,QDir::Name);
+    while(fileList.size()>0)
+    {
+        int infoNum=fileList.size();
+        for(int i=infoNum-1;i>=0;i--)
+        {
+            curFile=fileList[i];
+            if(curFile.isFile())
+            {
+                QFile fileTemp(curFile.filePath());
+                fileTemp.remove();
+            }
+            if(curFile.isDir())
+            {
+                QDir dirTemp(curFile.filePath());
+                dirTemp.removeRecursively();
+            }
+            fileList.removeAt(i);
+        }
+    }
+}
+
+void LdsmTrashEmpty::trash_empty_button_clicked()
+{
+    QString trash_path;
+    trash_path=QDir::homePath()+"/.local/share/Trash";
+    trash_empty_delete_contents(trash_path);
+    this->accept();
+}
+
+void LdsmTrashEmpty::cancel_button_clicked()
+{
+    this->accept();
 }

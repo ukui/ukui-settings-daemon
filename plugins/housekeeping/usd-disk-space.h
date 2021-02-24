@@ -36,6 +36,7 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
+#include <ldsm-trash-empty.h>
 #include "usd-ldsm-dialog.h"
 
 #include <qhash.h>
@@ -52,42 +53,42 @@ class DIskSpace :  public QObject
     Q_OBJECT
 public:
     DIskSpace();
-
     ~DIskSpace();
     void UsdLdsmSetup (bool check_now);
     void UsdLdsmClean ();
     void usdLdsmGetConfig ();
-    static bool ldsm_mount_is_user_ignore (const char *path);
-    static void ldsm_mounts_changed (GObject  *monitor,gpointer  data);
-    static bool ldsm_mount_should_ignore (GUnixMountEntry *mount);
-    static bool ldsm_mount_has_space (LdsmMountInfo *mount);
-    static void ldsm_maybe_warn_mounts (GList *mounts,
-                                        bool multiple_volumes,
-                                        bool other_usable_volumes);
-    static bool ldsm_notify_for_mount (LdsmMountInfo *mount,
-                                       bool       multiple_volumes,
-                                       bool       other_usable_volumes);
+    bool ldsm_mount_is_user_ignore (const char *path);
+    bool ldsm_mount_should_ignore (GUnixMountEntry *mount);
+    bool ldsm_mount_has_space (LdsmMountInfo *mount);
+    void ldsm_maybe_warn_mounts (GList *mounts,
+                                 bool multiple_volumes,
+                                 bool other_usable_volumes);
+    bool ldsm_notify_for_mount (LdsmMountInfo *mount,
+                                bool       multiple_volumes,
+                                bool       other_usable_volumes);
+    static void ldsm_mounts_changed (GObject  *monitor,gpointer  data,DIskSpace *disk);
 
 public Q_SLOTS:
     void usdLdsmUpdateConfig(QString);
-    static bool ldsm_check_all_mounts();
+    bool ldsm_check_all_mounts();
 
 private:
     void cleanNotifyHash();
-    static DIskSpace *mDisk;
-    static GHashTable        *ldsm_notified_hash ;
-    static QHash<const char*, LdsmMountInfo*> m_notified_hash;
-    static QTimer*       ldsm_timeout_cb;
+    DIskSpace         *mDisk;
+    GHashTable        *ldsm_notified_hash ;
+    QHash<const char*, LdsmMountInfo*> m_notified_hash;
+    QTimer            *ldsm_timeout_cb;
+    GUnixMountMonitor *ldsm_monitor;
+    double             free_percent_notify;
+    double             free_percent_notify_again;
+    unsigned int       free_size_gb_no_notify;
+    unsigned int       min_notify_period;
+    GSList            *ignore_paths;
+    QGSettings        *settings;
+    LdsmDialog        *dialog;
+    LdsmTrashEmpty    *trash_empty;
+    QVariantList       ignoreList;
 
-    static GUnixMountMonitor *ldsm_monitor;
-    static double             free_percent_notify;
-    static double             free_percent_notify_again;
-    static unsigned int       free_size_gb_no_notify;
-    static unsigned int       min_notify_period;
-    static GSList            *ignore_paths;
-    static QGSettings        *settings;
-    static LdsmDialog        *dialog;
-    QVariantList             ignoreList;
 };
 
 #endif // DISKSPACE_H
