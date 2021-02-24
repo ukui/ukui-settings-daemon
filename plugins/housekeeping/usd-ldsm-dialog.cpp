@@ -76,11 +76,11 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
 {
     QFont font;
     QDesktopWidget* desktop=QApplication::desktop();
-    setFixedSize(620,210);
+    setFixedSize(660,210);
     int dialog_width=width();
     int dialog_height=height();
 
-    setWindowTitle("Low Disk Space");
+    setWindowTitle(tr("Low Disk Space"));
     this->move((desktop->width()-dialog_width)/2,(desktop->height()-dialog_height)/2);
 
     picture_label=new QLabel(this);
@@ -94,8 +94,8 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
     picture_label->setAlignment(Qt::AlignCenter);
     picture_label->setStyleSheet(QString("border-image:url(../ldsm_dialog/warning.png);"));
     //warning information text
-    primary_label->setGeometry(66,20,300,20);
-    second_label->setGeometry(66,50,530,20*2);
+    primary_label->setGeometry(66,20,560,20);
+    second_label->setGeometry(66,50,560,20*2);
     second_label->setWordWrap(true);
     second_label->setAlignment(Qt::AlignLeft);
 
@@ -131,10 +131,10 @@ QString LdsmDialog::getPrimaryText()
     QString primary_text;
     char* free_space=g_format_size(space_remaining);
     if(other_partitions)
-        primary_text=QString().sprintf("The volume \"%1\" has only %s disk space remaining.",
+        primary_text=QString().sprintf((tr("The volume \"%1\" has only %s disk space remaining.")).toLocal8Bit().constData(),
                                        free_space).arg(partition_name);
     else
-        primary_text=QString().sprintf("The computer has only %s disk space remaining.",
+        primary_text=QString().sprintf((tr("The computer has only %s disk space remaining.")).toLocal8Bit().constData(),
                                        free_space);
     return primary_text;
 }
@@ -203,19 +203,16 @@ bool update_ignore_paths(QList<QString>** ignore_paths,QString mount_path,bool i
 /****************slots*********************/
 void LdsmDialog::checkButtonIgnore()
 {
-    printf("-------clicked- ignore\n");
     done(LDSM_DIALOG_IGNORE);
 }
 
 void LdsmDialog::checkButtonTrashEmpty()
 {
-    printf("--clicked trash\n");
     done(LDSM_DIALOG_RESPONSE_EMPTY_TRASH);
 }
 
 void LdsmDialog::checkButtonAnalyze()
 {
-    printf("--clicked ANalyze");
     done(LDSM_DIALOG_RESPONSE_ANALYZE);
 }
 
