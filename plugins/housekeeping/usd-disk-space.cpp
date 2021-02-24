@@ -35,48 +35,32 @@
 #define SETTINGS_MIN_NOTIFY_PERIOD        "min-notify-period"
 #define SETTINGS_IGNORE_PATHS             "ignore-paths"
 
-//DIskSpace *DIskSpace::mDisk = nullptr;
 static guint64 *time_read;
-QTimer* DIskSpace::ldsm_timeout_cb = NULL;
-
-
-DIskSpace *DIskSpace::mDisk = NULL;
-GHashTable        *DIskSpace::ldsm_notified_hash  = NULL;
-QHash<const char*, LdsmMountInfo*> DIskSpace::m_notified_hash;
-
-
-GUnixMountMonitor *DIskSpace::ldsm_monitor = NULL;
-double             DIskSpace::free_percent_notify;
-double             DIskSpace::free_percent_notify_again;
-unsigned int       DIskSpace::free_size_gb_no_notify;
-unsigned int       DIskSpace::min_notify_period = 0;
-GSList            *DIskSpace::ignore_paths = NULL;
-QGSettings        *DIskSpace::settings;
-LdsmDialog        *DIskSpace::dialog = NULL;
 
 DIskSpace::DIskSpace()
 {
 
     ldsm_timeout_cb = new QTimer();
+    trash_empty=new LdsmTrashEmpty();
     connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
     ldsm_timeout_cb->start();
-    ldsm_monitor = NULL;
-    free_percent_notify = 0.05;
-    free_percent_notify_again = 0.01;
-    free_size_gb_no_notify = 2;
-    min_notify_period = 10;
-    ignore_paths = NULL;
+    this->ldsm_notified_hash=NULL;
+    this->ldsm_monitor = NULL;
+    this->free_percent_notify = 0.05;
+    this->free_percent_notify_again = 0.01;
+    this->free_size_gb_no_notify = 2;
+    this->min_notify_period = 10;
+    this->ignore_paths = NULL;
 
     if (QGSettings::isSchemaInstalled(SETTINGS_HOUSEKEEPING_SCHEMA)) {
         settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
-
     }
-    dialog = NULL;
+    this->dialog = NULL;
 }
 
 DIskSpace::~DIskSpace()
 {
-
+    delete trash_empty;
 }
 
 static gint
@@ -140,7 +124,6 @@ void DIskSpace::usdLdsmGetConfig()
     for (it = ignoreList.constBegin(); it != ignoreList.constEnd(); ++it) {
         m_notified_hash.remove((*it).toString().toLatin1().data());
     }
-
 }
 
 static void
@@ -169,7 +152,6 @@ static gboolean is_hash_item_not_in_mounts(QHash<const char*, LdsmMountInfo*> &h
         if (hash.find(path) !=hash.end() )
             return FALSE;
     }
-
     return TRUE;
 }
 
@@ -281,7 +263,6 @@ static bool ldsm_mount_is_virtual (LdsmMountInfo *mount)
         /* Filesystems with zero blocks are virtual */
         return true;
     }
-
     return false;
 }
 
@@ -411,7 +392,6 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
                              free_space,
                              name,
                              path);
-
     g_free (name);
 
     response = dialog->exec();
@@ -427,12 +407,14 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
         break;
     case LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
         retval = TRUE;
-        // usd_ldsm_trash_empty ();//调清空回收站dialog
+        trash_empty->usd_ldsm_trash_empty();//调清空回收站dialog
         break;
-
     case GTK_RESPONSE_NONE:
     case GTK_RESPONSE_DELETE_EVENT:
         retval = TRUE;
+        break;
+    case LDSM_DIALOG_IGNORE:
+        retval = FALSE;
         break;
     default:
         g_assert_not_reached ();
@@ -468,9 +450,9 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
 
         path = g_unix_mount_get_mount_path (mount_info->mount);
 
-                previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
-                if (previous_mount_info != NULL)
-                    previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
+        previous_mount_info = (LdsmMountInfo *)g_hash_table_lookup (ldsm_notified_hash, path);
+        if (previous_mount_info != NULL)
+            previous_free_space = (gdouble) previous_mount_info->buf.f_bavail / (gdouble) previous_mount_info->buf.f_blocks;
         //        liutong
         // 找m_notified_hash中(mount_info->mount)得到的path
         QHash<const char*, LdsmMountInfo*>::iterator it = m_notified_hash.find(path);
@@ -494,7 +476,7 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
             if (difftime (curr_time, previous_mount_info->notify_time) > (gdouble)(min_notify_period * 60)) {
                 show_notify = TRUE;
                 mount_info->notify_time = curr_time;
-            } else {
+            }else {
                 /* It's too soon to show the dialog again. However, we still replace the LdsmMountInfo
                  * struct in the hash table, but give it the notfiy time from the previous dialog.
                  * This will stop the notification from reappearing unnecessarily as soon as the timeout expires.
@@ -601,21 +583,20 @@ bool DIskSpace::ldsm_check_all_mounts ()
     return TRUE;
 }
 
-void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data)
+void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data,DIskSpace *disk)
 {
     GList *mounts;
-
     /* remove the saved data for mounts that got removed */
     mounts = g_unix_mounts_get (time_read);
 
-    is_hash_item_not_in_mounts(m_notified_hash, mounts);
+    is_hash_item_not_in_mounts(disk->m_notified_hash, mounts);
     g_list_free_full (mounts, (GDestroyNotify) g_unix_mount_free);
 
     /* check the status now, for the new mounts */
-    ldsm_check_all_mounts ();
+    disk->ldsm_check_all_mounts();
 
     /* and reset the timeout */
-    ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
+    disk->ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
 }
 
 void DIskSpace::UsdLdsmSetup(bool check_now)
@@ -633,11 +614,10 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
     g_unix_mount_monitor_set_rate_limit (ldsm_monitor, 1000);
 #endif
     g_signal_connect (ldsm_monitor, "mounts-changed",
-                      G_CALLBACK (DIskSpace::ldsm_mounts_changed), NULL);
+                      G_CALLBACK (DIskSpace::ldsm_mounts_changed), this);
     if (check_now)
         ldsm_check_all_mounts ();
     //ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
-
 }
 
 void DIskSpace::cleanNotifyHash() {
@@ -652,7 +632,6 @@ void DIskSpace::cleanNotifyHash() {
 
 void DIskSpace::UsdLdsmClean()
 {
-
     cleanNotifyHash();
 
     if (ldsm_monitor)
