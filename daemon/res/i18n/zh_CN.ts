@@ -154,6 +154,11 @@
         <translation>对话框</translation>
     </message>
     <message>
+        <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="83"/>
+        <source>Low Disk Space</source>
+        <translation>磁盘空间小</translation>
+    </message>
+    <message>
         <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="112"/>
         <source>Ignore</source>
         <translation>忽视</translation>
@@ -167,6 +172,16 @@
         <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="121"/>
         <source>Examine</source>
         <translation>检查</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="134"/>
+        <source>The volume &quot;%1&quot; has only %s disk space remaining.</source>
+        <translation>卷 &quot;%1&quot; 仅剩余 %s 硬盘空间。</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="137"/>
+        <source>The computer has only %s disk space remaining.</source>
+        <translation>本计算机仅剩余 %s 硬盘空间。</translation>
     </message>
     <message>
         <location filename="../../../plugins/housekeeping/usd-ldsm-dialog.cpp" line="146"/>
@@ -207,9 +222,29 @@
         <translation>对话框</translation>
     </message>
     <message>
-        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="45"/>
+        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="55"/>
         <source>Emptying the trash</source>
-        <translation>清空垃圾</translation>
+        <translation>清空回收站</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="70"/>
+        <source>Empty all of the items from the trash?</source>
+        <translation>删除回收站里的所有项目？</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="74"/>
+        <source>If you choose to empty the trash, all items in it will be permanently lost.Please note that you can also delete them separately.</source>
+        <translation>如果您选择清空回收站，里面所有的项目都将永久丢失。请注意您也可以分别删除这些项目。</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="77"/>
+        <source>cancel</source>
+        <translation>取消</translation>
+    </message>
+    <message>
+        <location filename="../../../plugins/housekeeping/ldsm-trash-empty.cpp" line="79"/>
+        <source>Empty Trash</source>
+        <translation>清空回收站</translation>
     </message>
 </context>
 <context>
@@ -313,25 +348,25 @@ X服务器版本数据：
         <translation>系统检测到高清设备已被更换。您是否需要切换到建议的缩放比例（100%）？点击确认后会注销生效。</translation>
     </message>
     <message>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="575"/>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="600"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="576"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="602"/>
         <source>Scale tips</source>
         <translation>缩放提示</translation>
     </message>
     <message>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="578"/>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="603"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="579"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="605"/>
         <source>Confirmation</source>
         <translation>确认</translation>
     </message>
     <message>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="579"/>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="604"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="580"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="606"/>
         <source>Cancel</source>
         <translation>取消</translation>
     </message>
     <message>
-        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="595"/>
+        <location filename="../../../plugins/xrandr/xrandr-manager.cpp" line="596"/>
         <source>Does the system detect high clear equipment and whether to switch to recommended scaling (200%)? Click on the confirmation logout.</source>
         <translation>系统检测到高清设备，您是否切换到建议的缩放（200%）？点击确认后会注销生效。</translation>
     </message>
