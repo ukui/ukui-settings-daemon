@@ -22,10 +22,7 @@
 #include <QObject>
 #include <QDialog>
 #include <QLabel>
-#include <QFile>
-#include <QProgressBar>
 #include <QPushButton>
-#include <QMessageBox>
 
 namespace Ui {
 class LdsmTrashEmpty;
@@ -38,16 +35,23 @@ class LdsmTrashEmpty : public QDialog
 public:
     explicit LdsmTrashEmpty(QWidget *parent = nullptr);
     ~LdsmTrashEmpty();
-    void trashEmptyStart();
-    void showConfirmationDialog();
+    void usd_ldsm_trash_empty();
+
+public Q_SLOTS:
+    void cancel_button_clicked();
+    void trash_empty_button_clicked();
 
 private:
     Ui::LdsmTrashEmpty *ui;
-
+    QLabel *first_text;
+    QLabel *second_text;
+    QPushButton *trash_empty;
+    QPushButton *cancel;
 
 private:
     void windowLayoutInit();
-
+    void connectEvent();
+    void trash_empty_delete_contents(const QString path);
 
 };
 
