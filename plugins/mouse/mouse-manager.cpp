@@ -729,7 +729,7 @@ void MouseManager::SetMotionLegacyDriver (XDeviceInfo     *device_info)
 
     /* And threshold */
     motion_threshold = settings->get(KEY_MOTION_THRESHOLD).toInt();
-    qDebug()<<__func__<<" motion_threshold = "<<motion_threshold;
+
     /* Get the list of feedbacks for the device */
     states = XGetFeedbackControl (dpy, device, &num_feedbacks);
     if (states == NULL) {
@@ -887,17 +887,30 @@ void MouseManager::SetMotionAll ()
     int n_devices;
     int i;
 
-    device_info = XListInputDevices (gdk_x11_get_default_xdisplay (), &n_devices);
-    if(!device_info){
-        qWarning("SetMotionAll: device_info is null");
-        return;
+    if(mDeviceFlag && mDeviceIface->isValid()){
+        double mAccel;
+        double motion_acceleration = settings_mouse->get(KEY_MOTION_ACCELERATION).toDouble();
+        bool accel = settings_mouse->get(KEY_MOUSE_ACCEL).toBool();
+        if (motion_acceleration >= 0.0 || motion_acceleration <= 10.0)
+            mAccel = motion_acceleration * 0.2 - 1;
+        else
+            mAccel = 0;
+        mDeviceIface->setProperty("pointerAcceleration", mAccel);
+        mDeviceIface->setProperty("pointerAccelerationProfileAdaptive", accel);
     }
-    for (i = 0; i < n_devices; i++) {
-        SetMotion (&device_info[i]);
-    }
+    else {
+        device_info = XListInputDevices (gdk_x11_get_default_xdisplay (), &n_devices);
+        if(!device_info){
+            qWarning("SetMotionAll: device_info is null");
+            return;
+        }
+        for (i = 0; i < n_devices; i++) {
+            SetMotion (&device_info[i]);
+        }
 
-    if (device_info != NULL)
-        XFreeDeviceList (device_info);
+        if (device_info != NULL)
+            XFreeDeviceList (device_info);
+    }
 }
 
 void set_middle_button_evdev (XDeviceInfo *device_info,
@@ -1709,14 +1722,48 @@ void MouseManager::SetDevicepresenceHandler ()
         gdk_window_add_filter (NULL, devicepresence_filter,this);
 }
 
+void MouseManager::initWaylandMouseStatus()
+{
+    QVariant deviceReply = mWaylandIface->property("devicesSysNames");
+
+    if (deviceReply.isValid()) {
+        QStringList deviceList = deviceReply.toStringList();
+        for (QString device : deviceList) {
+            QDBusInterface *deviceIface = new QDBusInterface("org.ukui.KWin",
+                                                             "/org/ukui/KWin/InputDevice/"+ device,
+                                                             "org.ukui.KWin.InputDevice",
+                                                             QDBusConnection::sessionBus(),
+                                                             this);
+            if (deviceIface->isValid() &&
+                    deviceIface->property("pointer").toBool()) {
+                mDeviceIface = deviceIface;
+                mDeviceFlag = true;
+                return;
+            }
+        }
+    }
+}
+
+void MouseManager::initWaylandDbus()
+{
+    mWaylandIface = new QDBusInterface("org.ukui.KWin",
+                                       "/org/ukui/KWin/InputDevice",
+                                       "org.ukui.KWin.InputDeviceManager",
+                                       QDBusConnection::sessionBus(),
+                                       this);
+    if (mWaylandIface->isValid()) {
+        initWaylandMouseStatus();
+    }
+}
+
 void MouseManager::MouseManagerIdleCb()
 {
-
+    initWaylandDbus();
     time->stop();
 
-    QObject::connect(settings_mouse,SIGNAL(changed(QString)),
+    connect(settings_mouse,SIGNAL(changed(QString)),
                      this,SLOT(MouseCallback(QString)));
-    QObject::connect(settings_touchpad,SIGNAL(changed(QString)),
+    connect(settings_touchpad,SIGNAL(changed(QString)),
                      this,SLOT(TouchpadCallback(QString)));
     syndaemon_spawned = FALSE;
 

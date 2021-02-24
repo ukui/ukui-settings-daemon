@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 QT += gui
-QT += core widgets x11extras
+QT += core widgets x11extras dbus
 TARGET = mouse
 TEMPLATE = lib
 DEFINES += MOUSE_LIBRARY

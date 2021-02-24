@@ -26,7 +26,8 @@
 #include <QProcess>
 #include <QtX11Extras/QX11Info>
 #include <QGSettings/qgsettings.h>
-
+#include <QDBusInterface>
+#include <QDBusReply>
 
 #include <glib.h>
 #include <errno.h>
@@ -57,6 +58,8 @@ public Q_SLOTS:
     void MouseManagerIdleCb();
     void MouseCallback(QString);
     void TouchpadCallback(QString);
+    void initWaylandDbus();
+    void initWaylandMouseStatus();
 
 public:
     void SetLeftHandedAll (bool mouse_left_handed,
@@ -112,6 +115,9 @@ private:
     gboolean locate_pointer_spawned;
     GPid     locate_pointer_pid;
     bool     imwheelSpawned;
+    bool     mDeviceFlag = false;
+    QDBusInterface *mWaylandIface;
+    QDBusInterface *mDeviceIface;
 
     static MouseManager *mMouseManager;
 };
