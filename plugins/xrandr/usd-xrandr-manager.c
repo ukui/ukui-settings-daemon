@@ -1195,6 +1195,8 @@ error_message (UsdXrandrManager *mgr, const char *primary_text, GError *error_to
 static void
 handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
 {
+        return NULL;
+#if 0
         char *cmd = "kydisplayswitch";
         char **argv;
 
@@ -1312,6 +1314,7 @@ handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
         log_close ();
 
         g_debug ("done handling fn-f7");
+#endif
 }
 
 static MateRROutputInfo *
@@ -3831,7 +3834,7 @@ usd_xrandr_manager_init (UsdXrandrManager *manager)
 {
         manager->priv = USD_XRANDR_MANAGER_GET_PRIVATE (manager);
 
-        manager->priv->switch_video_mode_keycode = get_keycode_for_keysym_name (VIDEO_KEYSYM);
+        manager->priv->switch_video_mode_keycode = NULL;//get_keycode_for_keysym_name (VIDEO_KEYSYM);
         manager->priv->rotate_windows_keycode = get_keycode_for_keysym_name (ROTATE_KEYSYM);
 
         manager->priv->current_fn_f7_config = -1;

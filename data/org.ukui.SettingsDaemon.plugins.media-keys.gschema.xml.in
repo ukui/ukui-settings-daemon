@@ -225,5 +225,10 @@
       <summary>Kylin Display Switch</summary>
       <description>Binding open the kylin-display-switch.</description>
     </key>
+    <key name="kylin-display-switch2" type="s">
+      <default>'XF86Display'</default>
+      <summary>Kylin Display Switch</summary>
+      <description>Binding open the kylin-display-switch.</description>
+    </key>
   </schema>
 </schemalist>

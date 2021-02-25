@@ -1371,6 +1371,7 @@ do_action (UsdMediaKeysManager *manager,
                 do_open_ukui_search_action (manager);
                 break;
         case KDS_KEY:
+        case KDS_KEY2:
                 do_open_kds_action (manager);
                 break;
         default:
