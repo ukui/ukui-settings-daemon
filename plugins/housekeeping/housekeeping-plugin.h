@@ -35,6 +35,7 @@ private:
     HousekeepingPlugin(HousekeepingPlugin&)=delete;
 
 private:
+    QString             userName;
     HousekeepingManager *mHouseManager;
     static PluginInterface     *mInstance;
 
