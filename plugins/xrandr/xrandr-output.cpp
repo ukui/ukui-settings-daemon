@@ -355,7 +355,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
 #endif
 }
 
-QVariantMap xrandrOutput::metadata(const KScreen::OutputPtr &output)
+QVariantMap metadata(const KScreen::OutputPtr &output)
 {
     QVariantMap metadata;
     metadata[QStringLiteral("name")] = output->name();
@@ -365,4 +365,59 @@ QVariantMap xrandrOutput::metadata(const KScreen::OutputPtr &output)
 
     metadata[QStringLiteral("fullname")] = output->edid()->deviceId();
     return metadata;
+}
+
+void xrandrOutput::writeGlobal(const KScreen::OutputPtr &output)
+{
+    // get old values and subsequently override
+    QVariantMap info = getGlobalData(output);
+    if (!writeGlobalPart(output, info, nullptr)) {
+        return;
+    }
+    QFile file(globalFileName(output->hashMd5()));
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "Failed to open global output file for writing! " << file.errorString();
+        return;
+    }
+
+    file.write(QJsonDocument::fromVariant(info).toJson());
+    return;
+}
+
+bool xrandrOutput::writeGlobalPart(const KScreen::OutputPtr &output, QVariantMap &info,
+                             const KScreen::OutputPtr &fallback)
+{
+
+    info[QStringLiteral("id")] = output->hash();
+    info[QStringLiteral("metadata")] = metadata(output);
+    info[QStringLiteral("rotation")] = output->rotation();
+
+    // Round scale to four digits
+    info[QStringLiteral("scale")] = int(output->scale() * 10000 + 0.5) / 10000.;
+
+    QVariantMap modeInfo;
+    float refreshRate = -1.;
+    QSize modeSize;
+    if (output->currentMode() && output->isEnabled()) {
+        refreshRate = output->currentMode()->refreshRate();
+        modeSize = output->currentMode()->size();
+    } else if (fallback && fallback->currentMode()) {
+        refreshRate = fallback->currentMode()->refreshRate();
+        modeSize = fallback->currentMode()->size();
+    }
+
+    if (refreshRate < 0 || !modeSize.isValid()) {
+        return false;
+    }
+
+    modeInfo[QStringLiteral("refresh")] = refreshRate;
+
+    QVariantMap modeSizeMap;
+    modeSizeMap[QStringLiteral("width")] = modeSize.width();
+    modeSizeMap[QStringLiteral("height")] = modeSize.height();
+    modeInfo[QStringLiteral("size")] = modeSizeMap;
+
+    info[QStringLiteral("mode")] = modeInfo;
+
+    return true;
 }

@@ -75,7 +75,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile()
             QFile::remove(filePath());
             if (QFile::copy(lidOpenedFilePath, filePath())) {
                 QFile::remove(lidOpenedFilePath);
-                qDebug() << "Restored lid opened config to" << id();
+                //qDebug() << "Restored lid opened config to" << id();
             }
         }
     }
@@ -101,12 +101,12 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName)
     QFile file;
     if (QFile::exists(configsDirPath() % mFixedConfigFileName)) {
         file.setFileName(configsDirPath() % mFixedConfigFileName);
-        qDebug() << "found a fixed config, will use " << file.fileName();
+        //qDebug() << "found a fixed config, will use " << file.fileName();
     } else {
         file.setFileName(configsDirPath() % fileName);
     }
     if (!file.open(QIODevice::ReadOnly)) {
-        qDebug() << "failed to open file" << file.fileName();
+        //qDebug() << "failed to open file" << file.fileName();
         return nullptr;
     }
 
@@ -133,6 +133,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName)
     if (!canBeApplied(config->data())) {
         return nullptr;
     }
+
     return config;
 }
 
@@ -146,6 +147,75 @@ bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
     return KScreen::Config::canBeApplied(config, mValidityFlags);
 }
 
+bool xrandrConfig::writeFile()
+{
+    return writeFile(filePath());
+}
+
+bool xrandrConfig::writeFile(const QString &filePath)
+{
+    if (id().isEmpty()) {
+        return false;
+    }
+    const KScreen::OutputList outputs = mConfig->outputs();
+
+    const auto oldConfig = readFile();
+    KScreen::OutputList oldOutputs;
+    if (oldConfig) {
+        oldOutputs = oldConfig->data()->outputs();
+    }
+
+    QVariantList outputList;
+    for (const KScreen::OutputPtr &output : outputs) {
+        QVariantMap info;
+
+        const auto oldOutputIt = std::find_if(oldOutputs.constBegin(), oldOutputs.constEnd(),
+                                              [output](const KScreen::OutputPtr &out) {
+                                                  return out->hashMd5() == output->hashMd5();
+                                               }
+        );
+        const KScreen::OutputPtr oldOutput = oldOutputIt != oldOutputs.constEnd() ? *oldOutputIt :
+                                                                                    nullptr;
+
+        if (!output->isConnected()) {
+            continue;
+        }
+
+        xrandrOutput::writeGlobalPart(output, info, oldOutput);
+        info[QStringLiteral("primary")] = output->isPrimary();
+        info[QStringLiteral("enabled")] = output->isEnabled();
+
+        auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
+            if (!out) {
+                return;
+            }
+
+            QVariantMap pos;
+            pos[QStringLiteral("x")] = out->pos().x();
+            pos[QStringLiteral("y")] = out->pos().y();
+            info[QStringLiteral("pos")] = pos;
+        };
+        setOutputConfigInfo(output->isEnabled() ? output : oldOutput);
+
+        if (output->isEnabled()) {
+            // try to update global output data
+            xrandrOutput::writeGlobal(output);
+        }
+
+        outputList.append(info);
+    }
+
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly)) {
+        qWarning() << "Failed to open config file for writing! " << file.errorString();
+        return false;
+    }
+    file.write(QJsonDocument::fromVariant(outputList).toJson());
+    //qDebug() << "Config saved on: " << file.fileName();
+
+    return true;
+}
+
 void xrandrConfig::log()
 {
     if (!mConfig) {
@@ -154,7 +224,7 @@ void xrandrConfig::log()
     const auto outputs = mConfig->outputs();
     for (const auto &o : outputs) {
         if (o->isConnected()) {
-            qDebug() << o;
+            //qDebug() << o;
         }
     }
 }

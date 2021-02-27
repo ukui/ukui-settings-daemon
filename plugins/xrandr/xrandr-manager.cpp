@@ -44,8 +44,15 @@ typedef struct
 
 XrandrManager::XrandrManager()
 {
+    mSaveTimer = nullptr;
     time = new QTimer(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
+    mChangeCompressor = new QTimer(this);
+    QGSettings *mXsettings = new QGSettings(XSETTINGS_SCHEMA);
+    mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toInt();
+    if(mXsettings)
+        delete mXsettings;
+
     KScreen::Log::instance();
     QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
     xrandrDbus *mDbus = new xrandrDbus();
@@ -368,7 +375,7 @@ void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 
 void XrandrManager::refreshConfig()
 {
-    //setMonitorForChanges(false);
+    setMonitorForChanges(false);
     mConfigDirty = false;
     KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
 
@@ -379,8 +386,71 @@ void XrandrManager::refreshConfig()
         if (mConfigDirty) {
             // Config changed in the meantime again, apply.
             doApplyConfig(mMonitoredConfig->data());
+        } else {
+            setMonitorForChanges(true);
         }
     });
+}
+
+void XrandrManager::saveCurrentConfig()
+{
+    qDebug() << "Saving current config to file";
+
+    // We assume the config is valid, since it's what we got, but we are interested
+    // in the "at least one enabled screen" check
+
+    if (mMonitoredConfig->canBeApplied()) {
+        mMonitoredConfig->writeFile();
+        mMonitoredConfig->log();
+    } else {
+        qWarning() << "Config does not have at least one screen enabled, WILL NOT save this config, this is not what user wants.";
+        mMonitoredConfig->log();
+    }
+}
+
+void XrandrManager::configChanged()
+{
+    qDebug() << "Change detected";
+    mMonitoredConfig->log();
+
+    // Modes may have changed, fix-up current mode id
+    bool changed = false;
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (output->isConnected() && output->isEnabled() && (output->currentMode().isNull() || (output->followPreferredMode() && output->currentModeId() != output->preferredModeId()))) {
+            qDebug() << "Current mode was" << output->currentModeId() << ", setting preferred mode" << output->preferredModeId();
+            output->setCurrentModeId(output->preferredModeId());
+            changed = true;
+        }
+    }
+    if (changed) {
+        refreshConfig();
+    }
+
+    // Reset timer, delay the writeback
+    if (!mSaveTimer) {
+        mSaveTimer = new QTimer(this);
+        mSaveTimer->setInterval(300);
+        mSaveTimer->setSingleShot(true);
+        connect(mSaveTimer, &QTimer::timeout, this, &XrandrManager::saveCurrentConfig);
+    }
+    mSaveTimer->start();
+}
+
+void XrandrManager::setMonitorForChanges(bool enabled)
+{
+    if (mMonitoring == enabled) {
+        return;
+    }
+
+    qDebug() << "Monitor for changes: " << enabled;
+    mMonitoring = enabled;
+    if (mMonitoring) {
+        connect(KScreen::ConfigMonitor::instance(), &KScreen::ConfigMonitor::configurationChanged,
+                this, &XrandrManager::configChanged, Qt::UniqueConnection);
+    } else {
+        disconnect(KScreen::ConfigMonitor::instance(), &KScreen::ConfigMonitor::configurationChanged,
+                   this, &XrandrManager::configChanged);
+    }
 }
 
 void XrandrManager::applyKnownConfig()
@@ -438,7 +508,17 @@ void XrandrManager::outputConnectedChanged()
 
 void XrandrManager::outputAdded(const KScreen::OutputPtr &output)
 {
-    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+    if (output->isConnected()) {
+        mChangeCompressor->start();
+    }
+    //QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+//    if (!mMonitoredConfig->fileExists()){
+//        QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
+//                                                        QStringLiteral("/kscreen/") %
+//                                                        QStringLiteral("" /*"configs/"*/);
+//        QString hash = mMonitoredConfig->data()->connectedOutputsHash();
+//        writeFile(dir % hash);
+//    }
 }
 
 void XrandrManager::outputRemoved(int outputId)
@@ -450,7 +530,7 @@ void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
     Q_ASSERT(mConfig);
     int index = output.isNull() ? 0 : output->id();
     if(index != 0){
-        //QRect geometry = output->geometry();
+        QRect geometry = output->geometry();
         //callMethod(geometry, output->name());
     }
 }
@@ -462,7 +542,11 @@ void XrandrManager::callMethod(QRect geometry, QString name)
                                            DBUS_PATH,
                                            DBUS_INTER,
                                            "priScreenChanged");
-    message << geometry.x()<< geometry.y()<<geometry.width()<<geometry.height() << name;
+    int x = geometry.x()/mScale;
+    int y = geometry.y()/mScale;
+    int w = geometry.width()/mScale;
+    int h = geometry.height()/mScale;
+    message << x<< y << w << h << name;
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
     if (response.type() != QDBusMessage::ReplyMessage){
         qDebug("priScreenChanged called failed");
@@ -471,6 +555,9 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 
 void XrandrManager::monitorsInit()
 {
+    mChangeCompressor->setInterval(10);
+    mChangeCompressor->setSingleShot(true);
+    connect(mChangeCompressor, &QTimer::timeout, this, &XrandrManager::applyConfig);
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
@@ -482,9 +569,10 @@ void XrandrManager::monitorsInit()
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
     connect(mConfig.data(), &KScreen::Config::outputAdded,
-            this, &XrandrManager::outputAdded);
+            this, &XrandrManager::outputAdded), Qt::UniqueConnection;
     connect(mConfig.data(), &KScreen::Config::outputRemoved,
-            this, &XrandrManager::outputRemoved);
+            this, &XrandrManager::outputRemoved,
+            static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
     connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
             this, &XrandrManager::primaryOutputChanged);
 }
@@ -503,7 +591,8 @@ void XrandrManager::StartXrandrIdleCb()
     if(!mScreen)
         mScreen = QApplication::screens().at(0);
 
-    connect(mXrandrSetting,SIGNAL(changed(QString)),this,SLOT(RotationChangedEvent(QString)));
+    connect(mXrandrSetting,SIGNAL(changed(QString)),this,
+            SLOT(RotationChangedEvent(QString)));
     connect(mScreen, &QScreen::orientationChanged, this,
             &XrandrManager::orientationChangedProcess);
 }

@@ -70,6 +70,11 @@ public:
     void doApplyConfig(const KScreen::ConfigPtr &config);
     void doApplyConfig(std::unique_ptr<xrandrConfig> config);
     void refreshConfig();
+
+    void configChanged();
+    void saveCurrentConfig();
+    void setMonitorForChanges(bool enabled);
+
     void outputAdded(const KScreen::OutputPtr &output);
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
@@ -88,10 +93,11 @@ Q_SIGNALS:
 
 private:
     Q_INVOKABLE void getInitialConfig();
-
     QTimer                *time;
+    QTimer                *mSaveTimer;
+    QTimer                *mChangeCompressor;
     QGSettings            *mXrandrSetting;
-
+    int                   mScale = 1;
     std::unique_ptr<xrandrConfig> mMonitoredConfig;
     KScreen::ConfigPtr mConfig;
     bool mMonitoring;

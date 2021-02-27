@@ -26,10 +26,15 @@
 class xrandrOutput
 {
 public:
-    static void readInOutputs(KScreen::ConfigPtr config, const QVariantList &outputsInfo);
+    static void readInOutputs(KScreen::ConfigPtr config,
+                              const QVariantList &outputsInfo);
+
+    static void writeGlobal(const KScreen::OutputPtr &output);
+    static bool writeGlobalPart(const KScreen::OutputPtr &output,
+                                QVariantMap &info,
+                                const KScreen::OutputPtr &fallback);
 
     static QString dirPath();
-    static QVariantMap metadata(const KScreen::OutputPtr &output);
 
 private:
     static QString globalFileName(const QString &hash);
