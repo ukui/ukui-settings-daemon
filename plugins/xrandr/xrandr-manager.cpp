@@ -358,7 +358,7 @@ void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
     QString name;
 
     mMonitoredConfig = std::move(config);
-    monitorsInit();
+    //monitorsInit();
 
     if (mMonitoredConfig->data()->primaryOutput().isNull()){
         qDebug()<<"No primary screen output was found";

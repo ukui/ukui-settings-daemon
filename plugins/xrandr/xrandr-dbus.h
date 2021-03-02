@@ -1,6 +1,7 @@
 #ifndef XRANDRDBUS_H
 #define XRANDRDBUS_H
 
+#include <QGSettings/qgsettings.h>
 #include <QObject>
 
 class xrandrDbus : public QObject
@@ -10,6 +11,7 @@ class xrandrDbus : public QObject
 
 public:
     xrandrDbus(QObject* parent=0);
+    ~xrandrDbus();
 
 public Q_SLOTS:
     int x();
@@ -17,6 +19,7 @@ public Q_SLOTS:
     int width();
     int height();
     QString priScreenName();
+    void activateLauncherMenu();
     int priScreenChanged(int x, int y, int width, int height, QString name);
 
 Q_SIGNALS:
@@ -28,6 +31,8 @@ public:
     int mWidth = 0;
     int mHeight = 0;
     QString mName;
+    QGSettings *mSession;
+    QGSettings *mScreenShot;
 };
 
 #endif // XRANDRDBUS_H

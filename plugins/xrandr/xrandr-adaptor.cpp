@@ -33,6 +33,12 @@ WaylandAdaptor::~WaylandAdaptor()
     // destructor
 }
 
+void WaylandAdaptor::activateLauncherMenu()
+{
+    // handle method call org.ukui.SettingsDaemon.wayland.activateLauncherMenu
+    QMetaObject::invokeMethod(parent(), "activateLauncherMenu");
+}
+
 int WaylandAdaptor::height()
 {
     // handle method call org.ukui.SettingsDaemon.wayland.height

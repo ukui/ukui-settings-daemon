@@ -215,8 +215,8 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
 
     if(keyStr.compare("Super_L") == 0 ||
        keyStr.compare("Super_R") == 0 ){
-        if (!sessionSettings->get(WIN_KEY).toBool())
-            executeCommand("ukui-menu", nullptr);
+        //if (!sessionSettings->get(WIN_KEY).toBool())
+        //    executeCommand("ukui-menu", nullptr);
     }
     if (keyStr.compare("Control_L") == 0 ||
         keyStr.compare("Control_R") == 0)

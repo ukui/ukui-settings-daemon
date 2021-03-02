@@ -53,6 +53,7 @@ class WaylandAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"priScreenName\">\n"
 "      <arg direction=\"out\" type=\"s\"/>\n"
 "    </method>\n"
+"    <method name=\"activateLauncherMenu\"/>\n"
 "    <method name=\"priScreenChanged\">\n"
 "      <arg direction=\"out\" type=\"i\"/>\n"
 "      <arg direction=\"in\" type=\"i\" name=\"x\"/>\n"
@@ -69,6 +70,7 @@ public:
 
 public: // PROPERTIES
 public Q_SLOTS: // METHODS
+    void activateLauncherMenu();
     int height();
     int priScreenChanged(int x, int y, int width, int height, const QString &name);
     QString priScreenName();

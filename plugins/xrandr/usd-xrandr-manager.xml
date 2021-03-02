@@ -22,6 +22,8 @@
     <method name="priScreenName">
       <arg type="s" direction="out"/>
     </method>
+    <method name="activateLauncherMenu">
+    </method>
     <method name="priScreenChanged">
       <arg type="i" direction="out"/>
       <arg name="x" type="i" direction="in"/>
