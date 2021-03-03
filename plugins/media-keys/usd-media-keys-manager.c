@@ -947,43 +947,19 @@ do_mic_sound_action (UsdMediaKeysManager *manager)
 }
 
 static void
-update_default_output (UsdMediaKeysManager *manager)
+update_default_input (UsdMediaKeysManager *manager)
 {
-        MateMixerStream        *stream;
         MateMixerStream        *input_stream;
-        MateMixerStreamControl *control = NULL;
         MateMixerStreamControl *input_control = NULL;
 
-        stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
-        if (stream != NULL)
-                control = mate_mixer_stream_get_default_control (stream);
         input_stream = mate_mixer_context_get_default_input_stream (manager->priv->context);
         if (input_stream != NULL)
               input_control = mate_mixer_stream_get_default_control (input_stream);
+        if (input_stream == manager->priv->input_stream)
+              return;
 
-        if (stream == manager->priv->stream || input_stream == manager->priv->input_stream)
-                return;
-
-        g_clear_object (&manager->priv->stream);
-        g_clear_object (&manager->priv->control);
         g_clear_object (&manager->priv->input_stream);
         g_clear_object (&manager->priv->input_control);
-
-        if (control != NULL) {
-                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
-
-                /* Do not use the stream if it is not possible to mute it or
-                 * change the volume */
-                if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
-                    !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
-                        return;
-
-                manager->priv->stream  = g_object_ref (stream);
-                manager->priv->control = g_object_ref (control);
-                g_debug ("Default output stream updated to %s",
-                         mate_mixer_stream_get_name (stream));
-        } else
-                g_debug ("Default output stream unset");
 
         if (input_control != NULL){
             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (input_control);
@@ -1002,11 +978,53 @@ update_default_output (UsdMediaKeysManager *manager)
 }
 
 static void
+update_default_output (UsdMediaKeysManager *manager)
+{
+        MateMixerStream        *stream;
+        MateMixerStreamControl *control = NULL;
+
+        stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
+        if (stream != NULL)
+                control = mate_mixer_stream_get_default_control (stream);
+
+        if (stream == manager->priv->stream)
+                return;
+
+        g_clear_object (&manager->priv->stream);
+        g_clear_object (&manager->priv->control);
+
+        if (control != NULL) {
+                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
+
+                /* Do not use the stream if it is not possible to mute it or
+                 * change the volume */
+                if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
+                    !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
+                        return;
+
+                manager->priv->stream  = g_object_ref (stream);
+                manager->priv->control = g_object_ref (control);
+                g_debug ("Default output stream updated to %s",
+                         mate_mixer_stream_get_name (stream));
+        } else
+                g_debug ("Default output stream unset");
+}
+
+static void
 on_context_state_notify (MateMixerContext    *context,
                          GParamSpec          *pspec,
                          UsdMediaKeysManager *manager)
 {
+        update_default_input (manager);
         update_default_output (manager);
+}
+
+static void
+on_context_default_input_notify (MateMixerContext    *context,
+                                 GParamSpec          *pspec,
+                                 UsdMediaKeysManager *manager)
+{
+        update_default_input (manager);
 }
 
 static void
@@ -1760,6 +1778,10 @@ usd_media_keys_manager_start (UsdMediaKeysManager *manager, GError **error)
                 g_signal_connect (manager->priv->context,
                                   "notify::state",
                                   G_CALLBACK (on_context_state_notify),
+                                  manager);
+                g_signal_connect (manager->priv->context,
+                                  "notify::default-input-stream",
+                                  G_CALLBACK (on_context_default_input_notify),
                                   manager);
                 g_signal_connect (manager->priv->context,
                                   "notify::default-output-stream",
