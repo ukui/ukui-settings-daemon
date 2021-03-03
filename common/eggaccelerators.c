@@ -239,10 +239,10 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
                                guint                 **accelerator_codes,
                                EggVirtualModifierType *accelerator_mods)
 {
-    guint keyval;
-    GdkModifierType mods;
-    gint len;
-    gboolean bad_keyval;
+    guint keyval = 0;
+    GdkModifierType mods = 0;
+    gint len = 0;
+    gboolean bad_keyval = FALSE;
 
     if (accelerator_key)
         *accelerator_key = 0;
@@ -348,8 +348,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
             }
             else
             {
-                gchar last_ch;
-
+                gchar last_ch = NULL;
                 last_ch = *accelerator;
                 while (last_ch && last_ch != '>')
                 {
@@ -459,7 +458,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
                 {
                     char keystring[5];
                     gchar *endptr;
-                    gint tmp_keycode;
+                    gint tmp_keycode = 0;
 
                     memcpy (keystring, accelerator, 4);
                     keystring [4] = '\000';
@@ -488,8 +487,7 @@ egg_accelerator_parse_virtual (const gchar            *accelerator,
             else if (accelerator_codes != NULL)
             {
                 GdkKeymapKey *keys;
-                gint n_keys, i, j;
-
+                gint n_keys = 0, i = 0, j = 0;
                 if (!gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default(), keyval, &keys, &n_keys)) {
                     bad_keyval = TRUE;
                 } else {
@@ -595,8 +593,8 @@ egg_keymap_resolve_virtual_modifiers (GdkKeymap              *keymap,
                                       EggVirtualModifierType  virtual_mods,
                                       GdkModifierType        *concrete_mods)
 {
-  GdkModifierType concrete;
-  int i;
+  GdkModifierType concrete = 0;
+  int i = 0;
   const EggModmap *modmap;
 
   g_return_if_fail (concrete_mods != NULL);
@@ -621,7 +619,7 @@ egg_keymap_virtualize_modifiers (GdkKeymap              *keymap,
                                  GdkModifierType         concrete_mods,
                                  EggVirtualModifierType *virtual_mods)
 {
-  GdkModifierType virtual;
+  GdkModifierType virtual = 0;
   int i;
   const EggModmap *modmap;
 
@@ -637,7 +635,7 @@ egg_keymap_virtualize_modifiers (GdkKeymap              *keymap,
     {
       if (MODMAP_ENTRY_TO_MODIFIER (i) & concrete_mods)
         {
-          EggVirtualModifierType cleaned;
+          EggVirtualModifierType cleaned = 0;
 
           cleaned = modmap->mapping[i] & ~(EGG_VIRTUAL_MOD2_MASK |
                                            EGG_VIRTUAL_MOD3_MASK |
@@ -688,7 +686,7 @@ reload_modmap (GdkKeymap *keymap,
       guint *keyvals;
       int n_entries;
       int j;
-      EggVirtualModifierType mask;
+      EggVirtualModifierType mask = 0;
 
       keys = NULL;
       keyvals = NULL;

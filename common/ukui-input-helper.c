@@ -26,7 +26,7 @@
 gboolean
 supports_xinput_devices (void)
 {
-        gint op_code, event, error;
+        gint op_code = 0, event = 0, error = 0;
 
         return XQueryExtension (GDK_DISPLAY_XDISPLAY (gdk_display_get_default ()),
                                 "XInputExtension",
@@ -89,7 +89,7 @@ touchpad_is_present (void)
         XDeviceInfo *device_info;
         int n_devices;
         int i;
-        gboolean retval;
+        static gboolean retval;
 
         if (supports_xinput_devices () == FALSE)
                 return TRUE;

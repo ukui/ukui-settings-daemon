@@ -81,22 +81,27 @@ XEventMonitorPrivate::~XEventMonitorPrivate()
 
 void XEventMonitorPrivate::emitButtonSignal(const char *member, xEvent *event)
 {
-    int x = event->u.keyButtonPointer.rootX;
-    int y = event->u.keyButtonPointer.rootY;
+    int x, y;
+
+    x = event->u.keyButtonPointer.rootX;
+    y = event->u.keyButtonPointer.rootY;
     QMetaObject::invokeMethod(q_ptr, member,
                               Qt::DirectConnection,
                               Q_ARG(int, x),
                               Q_ARG(int, y));
 }
-#include <syslog.h>
+
 void XEventMonitorPrivate::emitKeySignal(const char *member, xEvent *event)
 {
-    Display *display = XOpenDisplay(NULL);
+    Display *display = NULL;
+    int keyCode;
+    KeySym keySym;
 
-    int keyCode = event->u.u.detail;
-    KeySym keySym = XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+    display = XOpenDisplay(NULL);
+    keyCode = event->u.u.detail;
+    keySym = XkbKeycodeToKeysym(display, keyCode, 0, 0);
 
-    QString keyStrSplice;
+    QString keyStrSplice = "";
     for(auto modifier : modifiers)
     {
         keyStrSplice += QString(XKeysymToString(modifier)) + "+";
@@ -212,7 +217,9 @@ bool XEventMonitorPrivate::filterWheelEvent(int detail)
 void XEventMonitorPrivate::updateModifier(xEvent *event, bool isAdd)
 {
     Display *display = XOpenDisplay(NULL);
-    KeySym keySym = XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+    KeySym keySym  = 0;
+    KeyCode kCode = event->u.u.detail;
+    keySym = XkbKeycodeToKeysym(display, kCode, 0, 0);
 
     if(ModifiersVec.contains(keySym))
     {

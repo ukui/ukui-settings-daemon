@@ -123,7 +123,7 @@ grab_key_unsafe (Key                 *key,
         int   bit;
         int   bits_set_cnt;
         int   uppervalue;
-        guint mask;
+        guint mask = 0;
 
         setup_modifiers ();
 
@@ -210,9 +210,9 @@ key_uses_keycode (const Key *key, guint keycode)
 gboolean
 match_key (Key *key, XEvent *event)
 {
-	guint keyval;
+    guint keyval = 0;
 	GdkModifierType consumed;
-	gint group;
+    gint group = 0;
 
 	if (key == NULL)
 		return FALSE;
@@ -230,7 +230,7 @@ match_key (Key *key, XEvent *event)
     if (gdk_keymap_translate_keyboard_state (gdk_keymap_get_for_display(gdk_display_get_default()), event->xkey.keycode,
                          (GdkModifierType)event->xkey.state, group,
 					     &keyval, NULL, NULL, &consumed)) {
-		guint lower, upper;
+        guint lower = 0, upper = 0;
 
 		gdk_keyval_convert_case (keyval, &lower, &upper);
 

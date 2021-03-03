@@ -27,8 +27,11 @@ void syslog_init(const char *category, int facility)
         return;
     }
 
-    memset(sysCategory, 0, sizeof sysCategory);
-    strncpy(sysCategory, category, sizeof sysCategory - 1);
+#pragma optimize("",off);
+    memset(sysCategory, 0, sizeof(sysCategory));
+#pragma optimize("",on);
+
+    strncpy(sysCategory, category, sizeof(sysCategory) - 1);
     sysFacility = facility;
 }
 
@@ -38,11 +41,13 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
 
     char buf[2048] = {0};
     char *logLevelstr = NULL;
-    unsigned long tagLen = 0;
+    //unsigned long tagLen = 0;
     va_list para;
     va_start(para, fmt);
 
-    memset(buf, 0, sizeof buf);
+#pragma optimize("",off);
+    memset(buf, 0, sizeof(buf));
+#pragma optimize("",on);
 
     openlog("", LOG_NDELAY, sysFacility);
     switch (logLevel) {
@@ -74,9 +79,9 @@ void syslog_info(int logLevel, const char *fileName, const char *functionName, i
         logLevelstr = "UNKNOWN";
 
     }
-    snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d ", logLevelstr, sysCategory, fileName, functionName, line);
-    tagLen = strlen(buf);
-    vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
+    //snprintf(buf, sizeof buf - 1, "%s [%s] %s %s line:%-5d ", logLevelstr, sysCategory, fileName, functionName, line);
+    //tagLen = strlen(buf);
+    //vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
     closelog();
     va_end(para);
 }

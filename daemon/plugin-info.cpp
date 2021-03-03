@@ -120,7 +120,6 @@ PluginInfo::PluginInfo(QString& fileName)
          mWebsite = str;
     } else {
         CT_SYSLOG(LOG_ERR, "Could not find 'Website' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
-
         g_object_unref(error);
         error = nullptr;
     }
@@ -128,13 +127,15 @@ PluginInfo::PluginInfo(QString& fileName)
     /* Get Priority */
     priority = g_key_file_get_integer (pluginFile, PLUGIN_GROUP, "Priority", NULL);
     if (priority >= PLUGIN_PRIORITY_MAX) {
-         this->mPriority = priority;
+        mPriority = priority;
     } else {
-         this->mPriority = PLUGIN_PRIORITY_DEFAULT;
+         mPriority = 100;
     }
 
-    if (nullptr != error) g_object_unref(error);
-    if (nullptr != pluginFile) g_key_file_free (pluginFile);
+    if (nullptr != error)
+        g_object_unref(error);
+    if (nullptr != pluginFile)
+        g_key_file_free (pluginFile);
 }
 
 PluginInfo::~PluginInfo()
@@ -154,9 +155,11 @@ bool PluginInfo::pluginActivate()
     // load module
     if (nullptr == mPlugin) {
         res = loadPluginModule(*this);
+        if(!res)
+            return false;
     }
 
-    if (res && (nullptr != mPlugin)) {
+    if (res && mPlugin) {
         mPlugin->activate();
         mActive = true;
         res = true;

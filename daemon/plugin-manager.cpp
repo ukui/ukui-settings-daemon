@@ -75,7 +75,7 @@ bool PluginManager::managerStart()
     QString                 schema;
     GError*                 error = NULL;
     const char*             name = NULL;
-
+    int                     i, size;
     qDebug("Starting settings manager");
 
     QStandardPaths::writableLocation(QStandardPaths::ApplicationsLocation);
@@ -83,10 +83,10 @@ bool PluginManager::managerStart()
     QString path = libpath.mid(0,libpath.lastIndexOf('/')-4)+"/ukui-settings-daemon";
 
     dir = g_dir_open ((char*)path.toUtf8().data(), 0, &error);
-    if (NULL == dir) {
+    if (!dir) {
         CT_SYSLOG(LOG_ERR, "%s", error->message);
         g_error_free(error);
-        error = nullptr;
+        error = NULL;
         return false;
     }
 
@@ -98,27 +98,27 @@ bool PluginManager::managerStart()
         filename = g_build_filename((char*)path.toUtf8().data(), name, NULL);
         if (g_file_test(filename, G_FILE_TEST_IS_REGULAR)) {
             QString ftmp(filename);
-            PluginInfo* info = new PluginInfo(ftmp);
-            if (info == NULL) {
-                continue;
+            PluginInfo *info;
+            info = new PluginInfo(ftmp);
+            if (!info) {
+                goto ERR;
             }
-
             if (mPlugin->contains(info)) {
                 CT_SYSLOG(LOG_DEBUG, "The list has contain this plugin, '%s'", ftmp.toUtf8().data());
-                if (info != NULL) delete info;
+                if (info)
+                    delete info;
             }
-
             // check plugin's schema
             schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
             if (is_schema (schema)) {
-                CT_SYSLOG(LOG_DEBUG, "right schema '%s'", schema.toUtf8().data());
                 info->setPluginSchema(schema);
                 mPlugin->insert(0, info);
             } else {
-                CT_SYSLOG(LOG_ERR, "Ignoring unknown schema '%s'", schema.toUtf8().data());
-                if (info != NULL) delete info;
+                if (info)
+                    delete info;
             }
         }
+        ERR:
         g_free(filename);
     }
     g_dir_close(dir);
@@ -126,14 +126,14 @@ bool PluginManager::managerStart()
     //sort plugin
 	qSort(mPlugin->begin(),mPlugin->end(),sortPluginByPriority);
 
-    CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
-    for (int i = 0; i < mPlugin->size(); ++i) {
+    size = mPlugin->size();
+    for (i = 0; i < size; ++i) {
         PluginInfo* info = mPlugin->at(i);
-        CT_SYSLOG(LOG_DEBUG, "start activity plugin: %s ...", info->getPluginName().toUtf8().data());
-        info->pluginActivate();
+        if(info){
+            info->pluginActivate();
+            delete info;
+        }
     }
-    CT_SYSLOG(LOG_DEBUG, "All plugins has been activited!");
-
     return true;
 }
 
@@ -145,7 +145,6 @@ void PluginManager::managerStop()
         plugin->pluginDeactivate();
         delete plugin;
     }
-
     // exit main event loop
     QCoreApplication::exit();
 }
