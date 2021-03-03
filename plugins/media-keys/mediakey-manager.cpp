@@ -323,6 +323,13 @@ void MediaKeysManager::onContextStateNotify(MateMixerContext *context,
     updateDefaultOutput(manager);
 }
 
+void MediaKeysManager::onContextDefaultInputNotify(MateMixerContext *context,
+                                                   GParamSpec       *pspec,
+                                                   MediaKeysManager *manager)
+{
+    updateDefaultInput(manager);
+}
+
 void MediaKeysManager::onContextDefaultOutputNotify(MateMixerContext *context,
                                                     GParamSpec       *pspec,
                                                     MediaKeysManager *manager)
@@ -345,28 +352,57 @@ void MediaKeysManager::onContextStreamRemoved(MateMixerContext *context,
     }
 }
 
-void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
+void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
 {
-    MateMixerStream        *stream;
-    MateMixerStreamControl *control = NULL;
     MateMixerStream        *inputStream;
     MateMixerStreamControl *inputControl = NULL;
-
-    stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
-    if (stream != NULL)
-        control = mate_mixer_stream_get_default_control (stream);
 
     inputStream = mate_mixer_context_get_default_input_stream (mManager->mContext);
     if (inputStream != NULL)
         inputControl = mate_mixer_stream_get_default_control (inputStream);
 
-    if (stream == mManager->mStream || inputStream == mManager->mInputStream)
+    if(inputStream == mManager->mInputStream)
+        return;
+
+    g_clear_object (&mManager->mInputStream);
+    g_clear_object (&mManager->mInputControl);
+
+
+    if (inputControl != NULL) {
+             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
+
+            /* Do not use the stream if it is not possible to mute it or
+             * change the volume */
+            if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
+                !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
+                    return;
+
+            mManager->mInputStream = inputStream;
+            mManager->mInputControl = inputControl;
+            qDebug ("Default input stream updated to %s",
+                     mate_mixer_stream_get_name (inputStream));
+    } else
+            qDebug ("Default input stream unset");
+}
+
+void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
+{
+    MateMixerStream        *stream;
+    MateMixerStreamControl *control = NULL;
+
+
+    stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
+    if (stream != NULL)
+        control = mate_mixer_stream_get_default_control (stream);
+
+
+
+    if (stream == mManager->mStream)
            return;
 
    	g_clear_object (&mManager->mStream);
    	g_clear_object (&mManager->mControl);
-    g_clear_object (&mManager->mInputStream);
-    g_clear_object (&mManager->mInputControl);
+
    
     if (control != NULL) {
             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
@@ -383,23 +419,6 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
                     mate_mixer_stream_get_name (stream));
    } else
            qDebug ("Default output stream unset");
-
-   if (inputControl != NULL) {
-            MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
-
-           /* Do not use the stream if it is not possible to mute it or
-            * change the volume */
-           if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
-               !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
-                   return;
-
-           mManager->mInputStream = inputStream;
-           mManager->mInputControl = inputControl;
-           qDebug ("Default input stream updated to %s",
-                    mate_mixer_stream_get_name (inputStream));
-   } else
-           qDebug ("Default input stream unset");
-
 }
 
 GdkScreen *
