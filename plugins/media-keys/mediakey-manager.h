@@ -77,8 +77,10 @@ private:
 
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
     static void onContextStateNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+    static void onContextDefaultInputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
     static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
     static void onContextStreamRemoved(MateMixerContext*,char*,MediaKeysManager*);
+    static void updateDefaultInput(MediaKeysManager *);
     static void updateDefaultOutput(MediaKeysManager *);
     GdkScreen *acmeGetScreenFromEvent (XAnyEvent*);
     bool doAction(int);
