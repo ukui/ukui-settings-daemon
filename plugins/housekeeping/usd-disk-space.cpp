@@ -24,7 +24,7 @@
 
 #define GIGABYTE                   1024 * 1024 * 1024
 
-#define CHECK_EVERY_X_SECONDS      60
+#define CHECK_EVERY_X_SECONDS      120000
 
 #define DISK_SPACE_ANALYZER        "ukui-disk-usage-analyzer"
 
@@ -244,17 +244,19 @@ bool DIskSpace::ldsm_mount_should_ignore (GUnixMountEntry *mount)
 bool  DIskSpace::ldsm_mount_has_space (LdsmMountInfo *mount)
 {
     double free_space;
-
+    bool percent_flag = false;
+    bool size_falg = false;
     free_space = (double) mount->buf.f_bavail / (double) mount->buf.f_blocks;
+
     /* enough free space, nothing to do */
     if (free_space > free_percent_notify)
-        return true;
+        percent_flag = true;
 
     if (((gint64) mount->buf.f_frsize * (gint64) mount->buf.f_bavail) > ((gint64) free_size_gb_no_notify * GIGABYTE))
-        return true;
+        size_falg = true;
 
-    /* If we got here, then this volume is low on space */
-    return false;
+    /* If it returns false, then this volume is low on space */
+    return (percent_flag && size_falg);
 }
 
 static bool ldsm_mount_is_virtual (LdsmMountInfo *mount)
@@ -414,10 +416,11 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
         retval = TRUE;
         break;
     case LDSM_DIALOG_IGNORE:
-        retval = FALSE;
+        retval = TRUE;
         break;
     default:
-        g_assert_not_reached ();
+        //g_assert_not_reached ();
+        retval = FALSE;
     }
     free (path);
     return retval;
@@ -439,6 +442,8 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
         time_t curr_time;
         const char *path;
         gboolean show_notify;
+        QString every_two_minutes_check;
+        gdouble free_space_check;
 
         if (done) {
             /* Don't show any more dialogs if the user took action with the last one. The user action
@@ -495,6 +500,11 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
             if (ldsm_notify_for_mount (mount_info, multiple_volumes, other_usable_volumes))
                 done = TRUE;
         }
+
+        free_space_check = (gint64) mount_info->buf.f_frsize * (gint64) mount_info->buf.f_bavail;
+        every_two_minutes_check = QString().sprintf("The volume \"%1\" has %s disk space remaining.",
+                                       g_format_size(free_space_check)).arg(g_unix_mount_guess_name(mount_info->mount));
+        printf("%s\n",every_two_minutes_check.toStdString().data());
     }
 }
 
@@ -513,6 +523,7 @@ bool DIskSpace::ldsm_check_all_mounts ()
      * Iterating through the static mounts means we automatically ignore dynamically mounted media.
      */
     ldsm_timeout_cb->stop();
+    ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
     mounts = g_unix_mount_points_get (time_read);
 
     for (l = mounts; l != NULL; l = l->next) {
@@ -533,6 +544,11 @@ bool DIskSpace::ldsm_check_all_mounts ()
         mount_info->mount = mount;
 
         path = g_unix_mount_get_mount_path (mount);
+
+        if (g_strcmp0 (path, "/boot/efi") == 0 ||
+            g_strcmp0 (path, "/boot") == 0 )
+            continue;
+
         if (g_unix_mount_is_readonly (mount)) {
             ldsm_free_mount_info (mount_info);
             continue;
@@ -594,19 +610,16 @@ void DIskSpace::ldsm_mounts_changed (GObject  *monitor,gpointer  data,DIskSpace 
 
     /* check the status now, for the new mounts */
     disk->ldsm_check_all_mounts();
-
-    /* and reset the timeout */
-    disk->ldsm_timeout_cb->start(CHECK_EVERY_X_SECONDS);
 }
 
 void DIskSpace::UsdLdsmSetup(bool check_now)
 {
     if (!m_notified_hash.empty() || ldsm_timeout_cb || ldsm_monitor) {
         qWarning ("Low disk space monitor already initialized.");
-        return;
+        //return;
     }
-    usdLdsmGetConfig();
-    connect(settings,SIGNAL(changes(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
+    //usdLdsmGetConfig();
+    connect(settings,SIGNAL(changed(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
 #if GLIB_CHECK_VERSION (2, 44, 0)
     ldsm_monitor = g_unix_mount_monitor_get ();
 #else
