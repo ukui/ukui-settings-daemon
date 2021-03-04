@@ -887,7 +887,7 @@ void MouseManager::SetMotionAll ()
     int n_devices;
     int i;
 
-    if(mDeviceFlag && mMouseDeviceIface->isValid()){
+    if(mMouseDeviceFlag && mMouseDeviceIface->isValid()){
         double mAccel;
         double motion_acceleration = settings_mouse->get(KEY_MOTION_ACCELERATION).toDouble();
         bool accel = settings_mouse->get(KEY_MOUSE_ACCEL).toBool();
@@ -898,7 +898,7 @@ void MouseManager::SetMotionAll ()
         mMouseDeviceIface->setProperty("pointerAcceleration", mAccel);
         mMouseDeviceIface->setProperty("pointerAccelerationProfileAdaptive", accel);
     }
-    if(mDeviceFlag && mTouchDeviceIface->isValid()){
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
         double mAccel;
         double motion_acceleration = settings_touchpad->get(KEY_MOTION_ACCELERATION).toDouble();
         if (motion_acceleration >= 1.0 || motion_acceleration <= 10.0)
@@ -1747,13 +1747,13 @@ void MouseManager::initWaylandMouseStatus()
             if (deviceIface->isValid() &&
                     deviceIface->property("pointer").toBool()) {
                 mMouseDeviceIface = deviceIface;
-                mDeviceFlag = true;
+                mMouseDeviceFlag = true;
                 return;
             }
             if (deviceIface->isValid() &&
                     deviceIface->property("touchpad").toBool()){
                 mTouchDeviceIface = deviceIface;
-                mDeviceFlag = true;
+                mTouchDeviceFlag = true;
             }
         }
     }

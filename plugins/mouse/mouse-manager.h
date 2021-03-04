@@ -115,7 +115,9 @@ private:
     gboolean locate_pointer_spawned;
     GPid     locate_pointer_pid;
     bool     imwheelSpawned;
-    bool     mDeviceFlag = false;
+    bool     mTouchDeviceFlag = false;
+    bool     mMouseDeviceFlag = false;
+
     QDBusInterface *mWaylandIface;
     QDBusInterface *mMouseDeviceIface;
     QDBusInterface *mTouchDeviceIface;
