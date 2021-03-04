@@ -81,7 +81,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
         mContext = mate_mixer_context_new();
         g_signal_connect(mContext,"notify::state",
                          G_CALLBACK(onContextStateNotify),mManager);
-        g_signal_connect(mContext,"notify::default-output-stream",
+        g_signal_connect(mContext,"notify::default-intput-stream",
                          G_CALLBACK(onContextDefaultInputNotify),mManager);
         g_signal_connect(mContext,"notify::default-output-stream",
                          G_CALLBACK(onContextDefaultOutputNotify),mManager);
