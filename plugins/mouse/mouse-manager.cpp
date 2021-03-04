@@ -887,7 +887,7 @@ void MouseManager::SetMotionAll ()
     int n_devices;
     int i;
 
-    if(mDeviceFlag && mDeviceIface->isValid()){
+    if(mDeviceFlag && mMouseDeviceIface->isValid()){
         double mAccel;
         double motion_acceleration = settings_mouse->get(KEY_MOTION_ACCELERATION).toDouble();
         bool accel = settings_mouse->get(KEY_MOUSE_ACCEL).toBool();
@@ -895,8 +895,18 @@ void MouseManager::SetMotionAll ()
             mAccel = motion_acceleration * 0.2 - 1;
         else
             mAccel = 0;
-        mDeviceIface->setProperty("pointerAcceleration", mAccel);
-        mDeviceIface->setProperty("pointerAccelerationProfileAdaptive", accel);
+        mMouseDeviceIface->setProperty("pointerAcceleration", mAccel);
+        mMouseDeviceIface->setProperty("pointerAccelerationProfileAdaptive", accel);
+    }
+    if(mDeviceFlag && mTouchDeviceIface->isValid()){
+        double mAccel;
+        double motion_acceleration = settings_touchpad->get(KEY_MOTION_ACCELERATION).toDouble();
+        if (motion_acceleration >= 1.0 || motion_acceleration <= 10.0)
+            mAccel = motion_acceleration * 0.2 - 1;
+        else
+            mAccel = 0;
+        mTouchDeviceIface->setProperty("pointerAcceleration", mAccel);
+        mTouchDeviceIface->setProperty("pointerAccelerationProfileAdaptive", true);
     }
     else {
         device_info = XListInputDevices (gdk_x11_get_default_xdisplay (), &n_devices);
@@ -1736,9 +1746,14 @@ void MouseManager::initWaylandMouseStatus()
                                                              this);
             if (deviceIface->isValid() &&
                     deviceIface->property("pointer").toBool()) {
-                mDeviceIface = deviceIface;
+                mMouseDeviceIface = deviceIface;
                 mDeviceFlag = true;
                 return;
+            }
+            if (deviceIface->isValid() &&
+                    deviceIface->property("touchpad").toBool()){
+                mTouchDeviceIface = deviceIface;
+                mDeviceFlag = true;
             }
         }
     }

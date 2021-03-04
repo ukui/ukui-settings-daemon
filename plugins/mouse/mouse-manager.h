@@ -117,7 +117,8 @@ private:
     bool     imwheelSpawned;
     bool     mDeviceFlag = false;
     QDBusInterface *mWaylandIface;
-    QDBusInterface *mDeviceIface;
+    QDBusInterface *mMouseDeviceIface;
+    QDBusInterface *mTouchDeviceIface;
 
     static MouseManager *mMouseManager;
 };

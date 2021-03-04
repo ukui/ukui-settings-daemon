@@ -131,7 +131,6 @@ bool PluginManager::managerStart()
         PluginInfo* info = mPlugin->at(i);
         if(info){
             info->pluginActivate();
-            delete info;
         }
     }
     return true;
