@@ -368,8 +368,11 @@ void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
 
     if(inputStream == mManager->mInputStream)
         return;
-    g_clear_object (&mManager->mInputStream);
-    g_clear_object (&mManager->mInputControl);
+
+    if(mManager->mInputStream && mManager->mInputControl){
+        g_clear_object (&mManager->mInputStream);
+        g_clear_object (&mManager->mInputControl);
+    }
 
     if (inputControl != NULL) {
         MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
@@ -380,8 +383,8 @@ void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
             !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
                 return;
 
-        mManager->mInputStream = inputStream;
-        mManager->mInputControl = inputControl;
+        mManager->mInputStream = (MateMixerStream *)g_object_ref(&inputStream);
+        mManager->mInputControl = (MateMixerStreamControl *)g_object_ref(&inputControl);
         qDebug ("Default input stream updated to %s",
                  mate_mixer_stream_get_name (inputStream));
     } else
@@ -400,9 +403,10 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
     if (stream == mManager->mStream)
            return;
 
-   	g_clear_object (&mManager->mStream);
-   	g_clear_object (&mManager->mControl);
-   
+    if(mManager->mStream  && mManager->mControl){
+        g_clear_object (&mManager->mStream);
+        g_clear_object (&mManager->mControl);
+    }
     if (control != NULL) {
             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
 
@@ -412,8 +416,8 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
                !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
                    return;
 
-           mManager->mStream = stream;
-           mManager->mControl = control;
+           mManager->mStream = (MateMixerStream *)g_object_ref(&stream);
+           mManager->mControl = (MateMixerStreamControl *)g_object_ref(&control);
            qDebug ("Default output stream updated to %s",
                     mate_mixer_stream_get_name (stream));
    } else
