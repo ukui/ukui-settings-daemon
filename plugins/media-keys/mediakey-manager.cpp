@@ -383,8 +383,8 @@ void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
             !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
                 return;
 
-        mManager->mInputStream = (MateMixerStream *)g_object_ref(&inputStream);
-        mManager->mInputControl = (MateMixerStreamControl *)g_object_ref(&inputControl);
+        mManager->mInputStream = (MateMixerStream *)g_object_ref(inputStream);
+        mManager->mInputControl = (MateMixerStreamControl *)g_object_ref(inputControl);
         qDebug ("Default input stream updated to %s",
                  mate_mixer_stream_get_name (inputStream));
     } else
@@ -416,8 +416,8 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
                !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
                    return;
 
-           mManager->mStream = (MateMixerStream *)g_object_ref(&stream);
-           mManager->mControl = (MateMixerStreamControl *)g_object_ref(&control);
+           mManager->mStream = (MateMixerStream *)g_object_ref(stream);
+           mManager->mControl = (MateMixerStreamControl *)g_object_ref(control);
            qDebug ("Default output stream updated to %s",
                     mate_mixer_stream_get_name (stream));
    } else
