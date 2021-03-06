@@ -39,6 +39,21 @@ HousekeepingPlugin::~HousekeepingPlugin()
 
 void HousekeepingPlugin::activate()
 {
+    char str[1024];
+    FILE *fp;
+    fp = popen("cat /proc/cmdline", "r");
+    while(fgets(str, sizeof(str)-1, fp))
+    {
+        if(strstr(str,"boot=casper")){
+            printf("is livecd\n");
+            pclose(fp);
+            return;
+        }
+    }
+    pclose(fp);
+    if(getuid() == 999)
+          return;
+
     mHouseManager->HousekeepingManagerStart();
 
 }
