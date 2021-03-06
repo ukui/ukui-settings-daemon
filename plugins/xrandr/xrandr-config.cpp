@@ -162,6 +162,7 @@ bool xrandrConfig::writeFile(const QString &filePath)
     const auto oldConfig = readFile();
     KScreen::OutputList oldOutputs;
     if (oldConfig) {
+        return false;
         oldOutputs = oldConfig->data()->outputs();
     }
 
