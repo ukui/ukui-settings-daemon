@@ -891,7 +891,7 @@ void MouseManager::SetMotionAll ()
         double mAccel;
         double motion_acceleration = settings_mouse->get(KEY_MOTION_ACCELERATION).toDouble();
         bool accel = settings_mouse->get(KEY_MOUSE_ACCEL).toBool();
-        if (motion_acceleration >= 0.0 || motion_acceleration <= 10.0)
+        if (motion_acceleration >= 0.0 && motion_acceleration <= 10.0)
             mAccel = motion_acceleration * 0.2 - 1;
         else
             mAccel = 0;
@@ -901,14 +901,14 @@ void MouseManager::SetMotionAll ()
     if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
         double mAccel;
         double motion_acceleration = settings_touchpad->get(KEY_MOTION_ACCELERATION).toDouble();
-        if (motion_acceleration >= 1.0 || motion_acceleration <= 10.0)
+        if (motion_acceleration >= 1.0 && motion_acceleration <= 10.0)
             mAccel = motion_acceleration * 0.2 - 1;
         else
             mAccel = 0;
         mTouchDeviceIface->setProperty("pointerAcceleration", mAccel);
-        mTouchDeviceIface->setProperty("pointerAccelerationProfileAdaptive", true);
+        //mTouchDeviceIface->setProperty("pointerAccelerationProfileAdaptive", true);
     }
-    else {
+    if (!(mMouseDeviceFlag || mTouchDeviceFlag)) {
         device_info = XListInputDevices (gdk_x11_get_default_xdisplay (), &n_devices);
         if(!device_info){
             qWarning("SetMotionAll: device_info is null");
@@ -1708,8 +1708,12 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     if (xev->type == xi_presence)
     {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
-            if (dpn->devchange == DeviceEnabled)
+            if (dpn->devchange == DeviceEnabled){
+                    if (manager->mWaylandIface->isValid()) {
+                        manager->initWaylandMouseStatus();
+                    }
                     manager->SetMouseSettings ();
+            }
     }
     return GDK_FILTER_CONTINUE;
 }
@@ -1745,13 +1749,14 @@ void MouseManager::initWaylandMouseStatus()
                                                              QDBusConnection::sessionBus(),
                                                              this);
             if (deviceIface->isValid() &&
-                    deviceIface->property("pointer").toBool()) {
+                deviceIface->property("pointer").toBool() &&
+                !deviceIface->property("touchpad").toBool()) {
                 mMouseDeviceIface = deviceIface;
                 mMouseDeviceFlag = true;
-                return;
             }
             if (deviceIface->isValid() &&
-                    deviceIface->property("touchpad").toBool()){
+                deviceIface->property("pointer").toBool() &&
+                deviceIface->property("touchpad").toBool()){
                 mTouchDeviceIface = deviceIface;
                 mTouchDeviceFlag = true;
             }
