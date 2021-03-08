@@ -398,6 +398,8 @@ trash_empty_show_confirmation_dialog ()
         gtk_window_set_icon_name (GTK_WINDOW (trash_empty_confirm_dialog),
                                   "user-trash");
 
+        gtk_window_set_skip_taskbar_hint(GTK_WINDOW(trash_empty_confirm_dialog), FALSE);
+
         gtk_widget_show (trash_empty_confirm_dialog);
 
         g_signal_connect (trash_empty_confirm_dialog, "response",

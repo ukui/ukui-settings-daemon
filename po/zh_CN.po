@@ -651,8 +651,28 @@ msgid "Binding to take a screenshot of an area."
 msgstr "截取一个区域的截图快捷键绑定。"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:67
+msgid "Unflod Ukui Sidebar"
+msgstr "展开侧边栏"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:68
+msgid "Open Window Switch"
+msgstr "打开工作区"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:69
+msgid "Open the system monitor"
+msgstr "打开系统监视器"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:70
+msgid "Open the internet connectionr"
+msgstr "打开网络连接"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:71
 msgid "Unflod Ukui Search"
 msgstr "显示全局搜索"
+
+#: ../data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in.h:72
+msgid "Kylin Display Switch"
+msgstr "打开显示器切换"
 
 #: ../data/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml.in.h:5
 msgid "Show Displays in Notification Area"

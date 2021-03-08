@@ -1207,6 +1207,8 @@ error_message (UsdXrandrManager *mgr, const char *primary_text, GError *error_to
 static void
 handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
 {
+        return NULL;
+#if 0
         char *cmd = "kydisplayswitch";
         char **argv;
 
@@ -1324,6 +1326,7 @@ handle_fn_f7 (UsdXrandrManager *mgr, guint32 timestamp)
         log_close ();
 
         g_debug ("done handling fn-f7");
+#endif
 }
 
 static MateRROutputInfo *
@@ -2098,7 +2101,7 @@ static Bool check_monitor_connect(char *pName)
         //存在且已连接
         if(0 == strcmp(pName, pOutInfo->name) && (Success == pOutInfo->connection))
         {
-            printf("[%s%d] [%s] bConnect[%d]\n", __FUNCTION__, __LINE__,
+            log_msg("[%s%d] [%s] bConnect[%d]\n", __FUNCTION__, __LINE__,
             pOutInfo->name,pOutInfo->connection);
             bConnect = True;
             break;
@@ -2577,7 +2580,7 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
     {
         if(!bMap)
         {
-            printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
             remove_touch_map(_id);
             do_action(_dpy, _id, cPriName, False);
             return;
@@ -2599,25 +2602,25 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
         //same map
         if(0 == strcmp(cName, _pName))
         {
-            printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+            log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
             do_action(_dpy, _id, _pName, False);
         }
         //different map
         else
         {
-            printf("[%s%d] here old[%s] | new[%s]\n\n", __FUNCTION__, __LINE__,
+            log_msg("[%s%d] here old[%s] | new[%s]\n\n", __FUNCTION__, __LINE__,
             cName, _pName);
 
             //connect : map old
             if(check_monitor_connect(cName))
             {
-                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
                 do_action(_dpy, _id, cName, False);
             }
             //not connect: remove old map, and map new
             else
             {
-                printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+                log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
                 remove_touch_map(_id);
                 do_action(_dpy, _id, _pName, False);
             }
@@ -2626,7 +2629,7 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
     //id unmapped
     else
     {
-        printf("[%s%d] here\n\n", __FUNCTION__, __LINE__);
+        log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
         do_action(_dpy, _id, _pName, False);
     }
 
@@ -3583,6 +3586,7 @@ static void set_touch_map(Display *pDisplay, int touchId)
         do_action(pDisplay, touchId, cPrimaryName, False);
         bMapOk = True;
     }
+    log_msg("[%s %d] touchId[%d], bMap[%d] \n", __FUNCTION__, __LINE__, touchId, bMapOk);
 
     return;
 }
@@ -3662,7 +3666,7 @@ static void listen_to_Xinput_Event()
                         remove_touch_map(pHev->info[pHev->num_info-1].deviceid);
                         break;
                     default:
-                        printf("flag is %d \n", pHev->flags);
+                        //printf("flag is %d \n", pHev->flags);
                         break;
                 }
             }
@@ -3865,7 +3869,7 @@ usd_xrandr_manager_init (UsdXrandrManager *manager)
 {
         manager->priv = USD_XRANDR_MANAGER_GET_PRIVATE (manager);
 
-        manager->priv->switch_video_mode_keycode = get_keycode_for_keysym_name (VIDEO_KEYSYM);
+        manager->priv->switch_video_mode_keycode = NULL;//get_keycode_for_keysym_name (VIDEO_KEYSYM);
         manager->priv->rotate_windows_keycode = get_keycode_for_keysym_name (ROTATE_KEYSYM);
 
         manager->priv->current_fn_f7_config = -1;

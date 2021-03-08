@@ -1778,24 +1778,26 @@ set_mouse_settings (UsdMouseManager *manager)
         set_left_handed_all (manager, mouse_left_handed, touchpad_left_handed);
 
         set_motion_all (manager);
-        set_middle_button_all (g_settings_get_boolean (manager->priv->settings_mouse, KEY_MIDDLE_BUTTON_EMULATION));
+        //set_middle_button_all (g_settings_get_boolean (manager->priv->settings_mouse, KEY_MIDDLE_BUTTON_EMULATION));
+}
 
-        set_disable_w_typing (manager, g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_DISABLE_W_TYPING));
+static void
+set_touchpad_settings (UsdMouseManager *manager)
+{
+    set_disable_w_typing (manager, g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_DISABLE_W_TYPING));
 
-        set_tap_to_click_all (manager);
-/* Do not set click actions since ukwm take over this
- *
- *       set_click_actions_all (manager);
- */
-        set_scrolling_all (manager->priv->settings_touchpad);
-        set_natural_scroll_all (manager);
-        set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
+    set_tap_to_click_all (manager);
 
-        set_plug_mouse_disble_touchpad (manager->priv->settings_touchpad);
-        
-        set_touchpad_double_click_drag_all (g_settings_get_boolean (manager->priv->settings_touchpad, 
+    set_scrolling_all (manager->priv->settings_touchpad);
+    set_natural_scroll_all (manager);
+    set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
+
+    if (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_DISBLE_O_E_MOUSE))
+          set_plug_mouse_disble_touchpad (manager->priv->settings_touchpad);
+
+    set_touchpad_double_click_drag_all (g_settings_get_boolean (manager->priv->settings_touchpad,
                                                                     KEY_TOUCHPAD_DOUBLE_CLICK_DRAG));
-        set_bottom_right_conrner_click_menu (manager, g_settings_get_boolean (manager->priv->settings_touchpad,
+    set_bottom_right_conrner_click_menu (manager, g_settings_get_boolean (manager->priv->settings_touchpad,
                                                                               KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M));
 }
 
@@ -1900,6 +1902,7 @@ usd_mouse_manager_idle_cb (UsdMouseManager *manager)
 
         set_mouse_settings (manager);
         set_locate_pointer (manager, g_settings_get_boolean (manager->priv->settings_mouse, KEY_MOUSE_LOCATE_POINTER));
+        set_touchpad_settings (manager);
 
 #if 0   /* FIXME need to fork (?) mousetweaks for this to work */
         set_mousetweaks_daemon (manager,

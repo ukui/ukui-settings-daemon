@@ -540,7 +540,7 @@ dialog_show (UsdMediaKeysManager *manager)
         GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->dialog);
         gtk_style_context_save (context);
         GtkCssProvider *provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.5);}", -1, NULL);
+        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.6);}", -1, NULL);
         gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
         gtk_style_context_add_class (context, "volume-box");
         g_object_unref (provider);
@@ -642,7 +642,7 @@ volume_dialog_show (UsdMediaKeysManager *manager)
         GtkStyleContext * context = gtk_widget_get_style_context (manager->priv->volume_dialog);
         gtk_style_context_save (context);
         GtkCssProvider *provider = gtk_css_provider_new ();
-        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.9);}", -1, NULL);
+        gtk_css_provider_load_from_data(provider, ".volume-box { border-radius:6px; background:rgba(19,20,20,0.95);}", -1, NULL);
         gtk_style_context_add_provider(context, GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_USER);
         gtk_style_context_add_class (context, "volume-box");
         g_object_unref (provider);
@@ -940,50 +940,26 @@ do_mic_sound_action (UsdMediaKeysManager *manager)
         mate_mixer_stream_control_set_mute(manager->priv->input_control, !mute);
         dialog_init (manager);
         usd_media_keys_window_set_action_custom (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
-                                                 (!mute) ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic", FALSE);
+                                                 mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic", FALSE);
         usd_media_keys_window_set_action (USD_MEDIA_KEYS_WINDOW (manager->priv->dialog),
                                           USD_MEDIA_KEYS_WINDOW_ACTION_CUSTOM);
         dialog_show (manager);
 }
 
 static void
-update_default_output (UsdMediaKeysManager *manager)
+update_default_input (UsdMediaKeysManager *manager)
 {
-        MateMixerStream        *stream;
         MateMixerStream        *input_stream;
-        MateMixerStreamControl *control = NULL;
         MateMixerStreamControl *input_control = NULL;
 
-        stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
-        if (stream != NULL)
-                control = mate_mixer_stream_get_default_control (stream);
         input_stream = mate_mixer_context_get_default_input_stream (manager->priv->context);
         if (input_stream != NULL)
               input_control = mate_mixer_stream_get_default_control (input_stream);
+        if (input_stream == manager->priv->input_stream)
+              return;
 
-        if (stream == manager->priv->stream || input_stream == manager->priv->input_stream)
-                return;
-
-        g_clear_object (&manager->priv->stream);
-        g_clear_object (&manager->priv->control);
         g_clear_object (&manager->priv->input_stream);
         g_clear_object (&manager->priv->input_control);
-
-        if (control != NULL) {
-                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
-
-                /* Do not use the stream if it is not possible to mute it or
-                 * change the volume */
-                if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
-                    !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
-                        return;
-
-                manager->priv->stream  = g_object_ref (stream);
-                manager->priv->control = g_object_ref (control);
-                g_debug ("Default output stream updated to %s",
-                         mate_mixer_stream_get_name (stream));
-        } else
-                g_debug ("Default output stream unset");
 
         if (input_control != NULL){
             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (input_control);
@@ -1002,11 +978,53 @@ update_default_output (UsdMediaKeysManager *manager)
 }
 
 static void
+update_default_output (UsdMediaKeysManager *manager)
+{
+        MateMixerStream        *stream;
+        MateMixerStreamControl *control = NULL;
+
+        stream = mate_mixer_context_get_default_output_stream (manager->priv->context);
+        if (stream != NULL)
+                control = mate_mixer_stream_get_default_control (stream);
+
+        if (stream == manager->priv->stream)
+                return;
+
+        g_clear_object (&manager->priv->stream);
+        g_clear_object (&manager->priv->control);
+
+        if (control != NULL) {
+                MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (control);
+
+                /* Do not use the stream if it is not possible to mute it or
+                 * change the volume */
+                if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
+                    !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
+                        return;
+
+                manager->priv->stream  = g_object_ref (stream);
+                manager->priv->control = g_object_ref (control);
+                g_debug ("Default output stream updated to %s",
+                         mate_mixer_stream_get_name (stream));
+        } else
+                g_debug ("Default output stream unset");
+}
+
+static void
 on_context_state_notify (MateMixerContext    *context,
                          GParamSpec          *pspec,
                          UsdMediaKeysManager *manager)
 {
+        update_default_input (manager);
         update_default_output (manager);
+}
+
+static void
+on_context_default_input_notify (MateMixerContext    *context,
+                                 GParamSpec          *pspec,
+                                 UsdMediaKeysManager *manager)
+{
+        update_default_input (manager);
 }
 
 static void
@@ -1221,6 +1239,12 @@ do_open_ukui_search_action(UsdMediaKeysManager *manager)
          execute (manager, "ukui-search -s",FALSE,FALSE);
 }
 
+static void
+do_open_kds_action(UsdMediaKeysManager *manager)
+{
+         execute (manager, "kydisplayswitch",FALSE,FALSE);
+}
+
 static gboolean
 do_action (UsdMediaKeysManager *manager,
            int                  type)
@@ -1364,6 +1388,10 @@ do_action (UsdMediaKeysManager *manager,
         case GLOBAL_SEARCH_KEY:
                 do_open_ukui_search_action (manager);
                 break;
+        case KDS_KEY:
+        case KDS_KEY2:
+                do_open_kds_action (manager);
+                break;
         default:
                 g_assert_not_reached ();
         }
@@ -1446,6 +1474,11 @@ void key_release_str (UsdMediaKeysManager *manager,
 {
     static gboolean ctrlFlag = FALSE;
     static gboolean winFlag = FALSE;
+    if (g_strcmp0(key_str, "Shift_L+Print")==0 ||
+        g_strcmp0(key_str, "Shift_R+Print")==0 ){
+        do_area_screenshot_action(manager);
+        return;
+    }
 
     if(g_strcmp0(key_str, "Print")==0){
           do_screenshot_action(manager);
@@ -1745,6 +1778,10 @@ usd_media_keys_manager_start (UsdMediaKeysManager *manager, GError **error)
                 g_signal_connect (manager->priv->context,
                                   "notify::state",
                                   G_CALLBACK (on_context_state_notify),
+                                  manager);
+                g_signal_connect (manager->priv->context,
+                                  "notify::default-input-stream",
+                                  G_CALLBACK (on_context_default_input_notify),
                                   manager);
                 g_signal_connect (manager->priv->context,
                                   "notify::default-output-stream",
