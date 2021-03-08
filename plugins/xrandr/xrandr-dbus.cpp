@@ -18,6 +18,11 @@ xrandrDbus::xrandrDbus(QObject* parent) :
     QObject(parent){
     mSession = new QGSettings(SESSION_SCHEMA);
     mScreenShot = new QGSettings(SCREENSHOT_SCHEMA);
+    QGSettings *xsettings =new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
+    if(xsettings){
+        mScale = xsettings->get("scaling-factor").toInt();
+        delete xsettings;
+    }
 }
 xrandrDbus::~xrandrDbus()
 {
@@ -39,6 +44,10 @@ int xrandrDbus::width() {
 
 int xrandrDbus::height() {
     return mHeight;
+}
+
+int xrandrDbus::scale(){
+    return mScale;
 }
 
 QString xrandrDbus::priScreenName(){

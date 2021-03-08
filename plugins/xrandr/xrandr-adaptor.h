@@ -50,6 +50,9 @@ class WaylandAdaptor: public QDBusAbstractAdaptor
 "    <method name=\"height\">\n"
 "      <arg direction=\"out\" type=\"i\"/>\n"
 "    </method>\n"
+"    <method name=\"scale\">\n"
+"      <arg direction=\"out\" type=\"i\"/>\n"
+"    </method>\n"
 "    <method name=\"priScreenName\">\n"
 "      <arg direction=\"out\" type=\"s\"/>\n"
 "    </method>\n"
@@ -74,6 +77,7 @@ public Q_SLOTS: // METHODS
     int height();
     int priScreenChanged(int x, int y, int width, int height, const QString &name);
     QString priScreenName();
+    int scale();
     int width();
     int x();
     int y();

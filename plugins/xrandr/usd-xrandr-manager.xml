@@ -19,6 +19,9 @@
     <method name="height">
       <arg type="i" direction="out"/>
     </method>
+    <method name="scale">
+      <arg type="i" direction="out"/>
+    </method>
     <method name="priScreenName">
       <arg type="s" direction="out"/>
     </method>

@@ -63,6 +63,14 @@ QString WaylandAdaptor::priScreenName()
     return out0;
 }
 
+int WaylandAdaptor::scale()
+{
+    // handle method call org.ukui.SettingsDaemon.wayland.scale
+    int out0;
+    QMetaObject::invokeMethod(parent(), "scale", Q_RETURN_ARG(int, out0));
+    return out0;
+}
+
 int WaylandAdaptor::width()
 {
     // handle method call org.ukui.SettingsDaemon.wayland.width

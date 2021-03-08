@@ -18,6 +18,7 @@ public Q_SLOTS:
     int y();
     int width();
     int height();
+    int scale();
     QString priScreenName();
     void activateLauncherMenu();
     int priScreenChanged(int x, int y, int width, int height, QString name);
@@ -30,6 +31,7 @@ public:
     int mY = 0;
     int mWidth = 0;
     int mHeight = 0;
+    int mScale = 1;
     QString mName;
     QGSettings *mSession;
     QGSettings *mScreenShot;
