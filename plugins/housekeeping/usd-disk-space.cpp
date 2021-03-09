@@ -51,6 +51,7 @@ DIskSpace::DIskSpace()
     this->free_size_gb_no_notify = 2;
     this->min_notify_period = 10;
     this->ignore_paths = NULL;
+    this->done = FALSE;
 
     if (QGSettings::isSchemaInstalled(SETTINGS_HOUSEKEEPING_SCHEMA)) {
         settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
@@ -398,6 +399,7 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
 
     response = dialog->exec();
     delete dialog;
+    dialog = NULL;
 
     switch (response) {
     case GTK_RESPONSE_CANCEL:
@@ -408,8 +410,8 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
         ldsm_analyze_path (path);
         break;
     case LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
-        retval = TRUE;
-        trash_empty->usd_ldsm_trash_empty();//调清空回收站dialog
+        retval = FALSE;
+        trash_empty->usdLdsmTrashEmpty();//调清空回收站dialog
         break;
     case GTK_RESPONSE_NONE:
     case GTK_RESPONSE_DELETE_EVENT:
@@ -432,7 +434,6 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
                                         bool other_usable_volumes)
 {
     GList *l;
-    gboolean done = FALSE;
 
     for (l = mounts; l != NULL; l = l->next) {
         LdsmMountInfo *mount_info = (LdsmMountInfo  *)l->data;
