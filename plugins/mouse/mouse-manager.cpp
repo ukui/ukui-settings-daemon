@@ -582,20 +582,28 @@ void MouseManager::SetLeftHanded (XDeviceInfo  *device_info,
 void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
                                      bool touchpad_left_handed)
 {
-    XDeviceInfo *device_info = nullptr;
-    int n_devices;
-    int i;
-    Display * dpy = QX11Info::display();
-    device_info = XListInputDevices (dpy, &n_devices);
-    if(!device_info){
-        qWarning("SetLeftHandedAll: device_info is null");
-        return;
+    if(mMouseDeviceFlag && mMouseDeviceIface->isValid()){
+        mMouseDeviceIface->setProperty("leftHanded", mouse_left_handed);
     }
-    for (i = 0; i < n_devices; i++) {
-        SetLeftHanded (&device_info[i], mouse_left_handed, touchpad_left_handed);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        mTouchDeviceIface->setProperty("leftHanded", touchpad_left_handed);
     }
-    if (device_info != NULL)
-        XFreeDeviceList (device_info);
+    if (!(mMouseDeviceFlag || mTouchDeviceFlag)) {
+        XDeviceInfo *device_info = nullptr;
+        int n_devices;
+        int i;
+        Display * dpy = QX11Info::display();
+        device_info = XListInputDevices (dpy, &n_devices);
+        if(!device_info){
+            qWarning("SetLeftHandedAll: device_info is null");
+            return;
+        }
+        for (i = 0; i < n_devices; i++) {
+            SetLeftHanded (&device_info[i], mouse_left_handed, touchpad_left_handed);
+        }
+        if (device_info != NULL)
+            XFreeDeviceList (device_info);
+    }
 }
 
 void MouseManager::SetMotionLibinput (XDeviceInfo     *device_info)
@@ -1213,11 +1221,16 @@ void MouseManager::SetDisableWTypingLibinput (bool  state)
 
 void MouseManager::SetDisableWTyping (bool         state)
 {
-    if (property_from_name ("Synaptics Off"))
-        SetDisableWTypingSynaptics (state);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        bool whileTyping = settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool();
+        mTouchDeviceIface->setProperty("disableWhileTyping", whileTyping);
+    } else {
+        if (property_from_name ("Synaptics Off"))
+            SetDisableWTypingSynaptics (state);
 
-    if (property_from_name ("libinput Disable While Typing Enabled"))
-        SetDisableWTypingLibinput (state);
+        if (property_from_name ("libinput Disable While Typing Enabled"))
+            SetDisableWTypingLibinput (state);
+    }
 }
 
 static void
@@ -1241,22 +1254,27 @@ set_tap_to_click (XDeviceInfo *device_info,  bool state,  bool left_handed,
 
 void MouseManager::SetTapToClickAll ()
 {
-    int numdevices, i;
-    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        bool tapClick = settings_touchpad->get(KEY_TOUCHPAD_TAP_TO_CLICK).toBool();
+        mTouchDeviceIface->setProperty("tapToClick", tapClick);
+    } else {
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
 
-    if (devicelist == NULL)
-            return;
+        if (devicelist == NULL)
+                return;
 
-    bool state = settings_touchpad->get(KEY_TOUCHPAD_TAP_TO_CLICK).toBool();
-    bool left_handed = GetTouchpadHandedness (settings_mouse->get(KEY_LEFT_HANDED).toBool());
-    int one_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_ONE_FINGER_TAP).toInt();
-    int two_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_TWO_FINGER_TAP).toInt();
-    int three_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toInt();
+        bool state = settings_touchpad->get(KEY_TOUCHPAD_TAP_TO_CLICK).toBool();
+        bool left_handed = GetTouchpadHandedness (settings_mouse->get(KEY_LEFT_HANDED).toBool());
+        int one_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_ONE_FINGER_TAP).toInt();
+        int two_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_TWO_FINGER_TAP).toInt();
+        int three_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toInt();
 
-    for (i = 0; i < numdevices; i++) {
-        set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+        for (i = 0; i < numdevices; i++) {
+            set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+        }
+        XFreeDeviceList (devicelist);
     }
-    XFreeDeviceList (devicelist);
 }
 
 static void set_scrolling_synaptics (XDeviceInfo *device_info,
@@ -1339,19 +1357,30 @@ static void set_scrolling (XDeviceInfo *device_info,
          set_scrolling_libinput (device_info, settings);
  }
 
-void SetScrollingAll (QGSettings *settings)
+void MouseManager::SetScrollingAll (QString keys)
 {
-    int numdevices, i;
-    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        bool edge, twoFinger;
+        if (keys.compare(QString::fromLocal8Bit(KEY_VERT_EDGE_SCROLL)) == 0){
+            edge = settings_touchpad->get(keys).toBool();
+            mTouchDeviceIface->setProperty("scrollEdge", edge);
+        } else if (keys.compare(QString::fromLocal8Bit(KEY_VERT_TWO_FINGER_SCROLL)) == 0){
+            twoFinger = settings_touchpad->get(keys).toBool();
+            mTouchDeviceIface->setProperty("scrollTwoFinger", twoFinger);
+        }
+    } else {
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
 
-    if (devicelist == NULL)
-        return;
+        if (devicelist == NULL)
+            return;
 
-    for (i = 0; i < numdevices; i++) {
-         set_scrolling (&devicelist[i], settings);
+        for (i = 0; i < numdevices; i++) {
+             set_scrolling (&devicelist[i], settings_touchpad);
+        }
+
+        XFreeDeviceList (devicelist);
     }
-
-    XFreeDeviceList (devicelist);
 }
 
 void set_natural_scroll_synaptics (XDeviceInfo *device_info,
@@ -1427,16 +1456,21 @@ void set_natural_scroll (XDeviceInfo *device_info,
 
 void MouseManager::SetNaturalScrollAll ()
 {
-    int numdevices, i;
-    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+    bool naturalScroll = settings_touchpad->get(KEY_TOUCHPAD_NATURAL_SCROLL).toBool();
 
-    if (devicelist == NULL)
-            return;
-    bool natural_scroll = settings_touchpad->get(KEY_TOUCHPAD_NATURAL_SCROLL).toBool();
-    for (i = 0; i < numdevices; i++) {
-            set_natural_scroll (&devicelist[i], natural_scroll);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        mTouchDeviceIface->setProperty("naturalScroll", naturalScroll);
+    } else {
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+
+        if (devicelist == NULL)
+                return;
+        for (i = 0; i < numdevices; i++) {
+                set_natural_scroll (&devicelist[i], naturalScroll);
+        }
+        XFreeDeviceList (devicelist);
     }
-    XFreeDeviceList (devicelist);
 }
 
 void set_touchpad_enabled (XDeviceInfo *device_info,
@@ -1470,16 +1504,20 @@ void set_touchpad_enabled (XDeviceInfo *device_info,
 
 }
 
-void SetTouchpadEnabledAll (bool state)
+void MouseManager::SetTouchpadEnabledAll (bool state)
 {
-    int numdevices, i;
-    XDeviceInfo *devicelist = XListInputDevices ( QX11Info::display(), &numdevices);
-    if (devicelist == NULL)
-            return;
-    for (i = 0; i < numdevices; i++) {
-            set_touchpad_enabled (&devicelist[i], state);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        mTouchDeviceIface->setProperty("enabled", state);
+    } else {
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices ( QX11Info::display(), &numdevices);
+        if (devicelist == NULL)
+                return;
+        for (i = 0; i < numdevices; i++) {
+                set_touchpad_enabled (&devicelist[i], state);
+        }
+        XFreeDeviceList (devicelist);
     }
-    XFreeDeviceList (devicelist);
 }
 
 bool SetDisbleTouchpad(XDeviceInfo *device_info,
@@ -1554,16 +1592,21 @@ void SetTouchpadDoubleClick(XDeviceInfo *device_info, bool state)
         qWarning("Error in setting natural scroll on \"%s\"", device_info->name);
     }
 }
-void SetTouchpadDoubleClickAll(bool state)
+void MouseManager::SetTouchpadDoubleClickAll(bool state)
 {
-    int numdevices, i;
-    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
-    if (devicelist == NULL)
-            return;
-    for (i = 0; i < numdevices; i++) {
-            SetTouchpadDoubleClick (&devicelist[i], state);
+    if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
+        return nullptr;
+        //mTouchDeviceIface->setProperty("tapDragLock", state);
+    } else {
+        int numdevices, i;
+        XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+        if (devicelist == NULL)
+                return;
+        for (i = 0; i < numdevices; i++) {
+                SetTouchpadDoubleClick (&devicelist[i], state);
+        }
+        XFreeDeviceList (devicelist);
     }
-    XFreeDeviceList (devicelist);
 }
 //设置关闭右下角菜单
 void MouseManager::SetBottomRightClickMenu(XDeviceInfo *device_info, bool state)
@@ -1647,7 +1690,7 @@ void MouseManager::TouchpadCallback (QString keys)
             || (keys.compare(QString::fromLocal8Bit(KEY_HORIZ_EDGE_SCROLL)) == 0)
             || (keys.compare(QString::fromLocal8Bit(KEY_VERT_TWO_FINGER_SCROLL))  == 0)
             || (keys.compare(QString::fromLocal8Bit(KEY_HORIZ_TWO_FINGER_SCROLL)) == 0)) {
-        SetScrollingAll (settings_touchpad);                //设置滚动
+        SetScrollingAll (keys);                //设置滚动
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_NATURAL_SCROLL)) == 0) {
         SetNaturalScrollAll ();                             //设置上移下滚或上移上滚
@@ -1679,20 +1722,21 @@ void MouseManager::SetMouseSettings ()
     bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
 
     SetLeftHandedAll (mouse_left_handed, touchpad_left_handed);
-
     SetMotionAll ();
     SetMiddleButtonAll (settings_mouse->get(KEY_MIDDLE_BUTTON_EMULATION).toBool());
+}
 
+void MouseManager::setTouchpadSettings()
+{
     SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
-
     SetTapToClickAll ();
-    SetScrollingAll (settings_touchpad);
+    SetScrollingAll (KEY_VERT_EDGE_SCROLL);
+    SetScrollingAll (KEY_VERT_TWO_FINGER_SCROLL);
     SetNaturalScrollAll ();
     SetTouchpadEnabledAll (settings_touchpad->get(KEY_TOUCHPAD_ENABLED).toBool());
     SetPlugMouseDisbleTouchpad(settings_touchpad);
     SetTouchpadDoubleClickAll(settings_touchpad->get(KEY_TOUCHPAD_DOUBLE_CLICK_DRAG).toBool());
     SetBottomRightConrnerClickMenu(settings_touchpad->get(KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M).toBool());
-
 }
 
 GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
@@ -1789,5 +1833,6 @@ void MouseManager::MouseManagerIdleCb()
 
     SetDevicepresenceHandler ();
     SetMouseSettings ();
+    setTouchpadSettings();
     SetLocatePointer (settings_mouse->get(KEY_MOUSE_LOCATE_POINTER).toBool());
 }

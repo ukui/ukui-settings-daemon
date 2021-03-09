@@ -95,6 +95,10 @@ public:
     void SetDevicepresenceHandler ();
     void SetMouseWheelSpeed (int speed);
     void SetMouseSettings();
+    void setTouchpadSettings();
+    void SetTouchpadEnabledAll (bool state);
+    void SetTouchpadDoubleClickAll(bool state);
+    void SetScrollingAll (QString keys);
 
 private: 
     friend GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
