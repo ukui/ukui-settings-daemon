@@ -35,11 +35,11 @@ class LdsmTrashEmpty : public QDialog
 public:
     explicit LdsmTrashEmpty(QWidget *parent = nullptr);
     ~LdsmTrashEmpty();
-    void usd_ldsm_trash_empty();
+    void usdLdsmTrashEmpty();
 
 public Q_SLOTS:
-    void cancel_button_clicked();
-    void trash_empty_button_clicked();
+    void checkButtonCancel();
+    void checkButtonTrashEmpty();
 
 private:
     Ui::LdsmTrashEmpty *ui;
@@ -51,7 +51,7 @@ private:
 private:
     void windowLayoutInit();
     void connectEvent();
-    void trash_empty_delete_contents(const QString path);
+    void deleteContents(const QString path);
 
 };
 

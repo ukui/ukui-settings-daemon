@@ -20,6 +20,7 @@
 #include "ui_usd-ldsm-dialog.h"
 
 #include <QDesktopWidget>
+#include <QRect>
 #include <QImage>
 #include <QPixmap>
 #include <QString>
@@ -76,12 +77,19 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
 {
     QFont font;
     QDesktopWidget* desktop=QApplication::desktop();
+    QRect desk_rect = desktop->screenGeometry(desktop->screenNumber(QCursor::pos()));
+    Qt::WindowFlags flags=Qt::Dialog;
+    flags |=Qt::WindowMinMaxButtonsHint;
+    flags |=Qt::WindowCloseButtonHint;
+    setWindowFlags(flags);
     setFixedSize(660,210);
     int dialog_width=width();
     int dialog_height=height();
+    int rect_width=desk_rect.width();
+    int rect_height=desk_rect.height();
 
     setWindowTitle(tr("Low Disk Space"));
-    this->move((desktop->width()-dialog_width)/2,(desktop->height()-dialog_height)/2);
+    this->move((rect_width-dialog_width)/2+desk_rect.left(),(rect_height-dialog_height)/2+desk_rect.top());
 
     picture_label=new QLabel(this);
     primary_label=new QLabel(this);
