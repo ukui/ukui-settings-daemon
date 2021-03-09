@@ -29,6 +29,7 @@ public:
     static PluginInterface *getInstance();
     virtual void activate();
     virtual void deactivate();
+    bool isTrialMode();
 
 private:
     HousekeepingPlugin();

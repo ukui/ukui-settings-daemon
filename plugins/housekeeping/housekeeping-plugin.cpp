@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <QString>
+#include <QFile>
 #include "housekeeping-plugin.h"
 #include "clib-syslog.h"
 
@@ -37,25 +39,30 @@ HousekeepingPlugin::~HousekeepingPlugin()
     }
 }
 
+bool HousekeepingPlugin::isTrialMode()
+{
+    QString str;
+    QByteArray t;
+    QFile file("/proc/cmdline");
+    file.open(QIODevice::ReadOnly | QIODevice::Text);
+    t = file.readAll();
+    str = QString(t);
+    if(str.indexOf("boot=casper") != -1){
+        printf("is Trial Mode\n");
+        file.close();
+        return true;
+    }
+    file.close();
+    if(getuid() == 999)
+        return true;
+    return false;
+}
+
 void HousekeepingPlugin::activate()
 {
-    char str[1024];
-    FILE *fp;
-    fp = popen("cat /proc/cmdline", "r");
-    while(fgets(str, sizeof(str)-1, fp))
-    {
-        if(strstr(str,"boot=casper")){
-            printf("is livecd\n");
-            pclose(fp);
-            return;
-        }
-    }
-    pclose(fp);
-    if(getuid() == 999)
-          return;
-
+    if(isTrialMode())
+        return;
     mHouseManager->HousekeepingManagerStart();
-
 }
 
 PluginInterface *HousekeepingPlugin::getInstance()
@@ -67,6 +74,8 @@ PluginInterface *HousekeepingPlugin::getInstance()
 
 void HousekeepingPlugin::deactivate()
 {
+    if(isTrialMode())
+        return;
     mHouseManager->HousekeepingManagerStop();
 }
 

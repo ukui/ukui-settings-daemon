@@ -88,6 +88,7 @@ private:
     LdsmDialog        *dialog;
     LdsmTrashEmpty    *trash_empty;
     QVariantList       ignoreList;
+    bool               done;
 
 };
 
