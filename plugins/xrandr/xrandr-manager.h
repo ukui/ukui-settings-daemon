@@ -97,7 +97,7 @@ private:
     QTimer                *mSaveTimer;
     QTimer                *mChangeCompressor;
     QGSettings            *mXrandrSetting;
-    int                   mScale = 1;
+    double                 mScale = 1;
     std::unique_ptr<xrandrConfig> mMonitoredConfig;
     KScreen::ConfigPtr mConfig;
     bool mMonitoring;

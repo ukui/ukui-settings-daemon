@@ -4,6 +4,9 @@
 #include <QProcess>
 #include <QDebug>
 
+#include <glib.h>
+#include <gio/gio.h>
+
 #define DBUS_NAME  "org.ukui.SettingsDaemon"
 #define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
@@ -54,11 +57,34 @@ QString xrandrDbus::priScreenName(){
     return mName;
 }
 
+void executeCommand(const QString& command)
+{
+    QString cmd = command;
+    char   **argv;
+    int     argc;
+    bool    retval;
+
+    if(!cmd.isEmpty()){
+        if (g_shell_parse_argv (cmd.toLatin1().data(), &argc, &argv, NULL)) {
+            retval = g_spawn_async (g_get_home_dir (),
+                                    argv,
+                                    NULL,
+                                    G_SPAWN_SEARCH_PATH,
+                                    NULL,
+                                    NULL,
+                                    NULL,
+                                    NULL);
+            g_strfreev (argv);
+        }
+    }
+}
+
 void xrandrDbus::activateLauncherMenu() {
     bool session = mSession->get(WIN_KEY).toBool();
     bool screenshot = mScreenShot->get(RUNNING_KEY).toBool();
-    if(!(session || screenshot))
-        QProcess::execute("ukui-menu");
+    if(!(session || screenshot)){
+            executeCommand ("ukui-menu");
+    }
 }
 
 int xrandrDbus::priScreenChanged(int x, int y, int width, int height, QString name)

@@ -1595,7 +1595,7 @@ void SetTouchpadDoubleClick(XDeviceInfo *device_info, bool state)
 void MouseManager::SetTouchpadDoubleClickAll(bool state)
 {
     if(mTouchDeviceFlag && mTouchDeviceIface->isValid()){
-        return nullptr;
+        return;
         //mTouchDeviceIface->setProperty("tapDragLock", state);
     } else {
         int numdevices, i;

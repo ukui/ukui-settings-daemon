@@ -165,13 +165,13 @@ get_window_scale_auto ()
 /* Get the key value to set the zoom
  * 获取要设置缩放的键值
  */
-static int
+static double
 get_window_scale (ukuiXSettingsManager *manager)
 {
     GSettings   *gsettings;
-    int         scale;
+    double       scale;
     gsettings = (GSettings *)g_hash_table_lookup(manager->gsettings,XSETTINGS_PLUGIN_SCHEMA);
-    scale = g_settings_get_int (gsettings, SCALING_FACTOR_KEY);
+    scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
     /* Auto-detect */
     if (scale == 0)
         scale = get_window_scale_auto ();
@@ -196,6 +196,10 @@ void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
                  g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
         manager->pManagers [i]->set_int ("Gtk/CursorThemeSize", cursor_size);
         manager->pManagers [i]->set_string ("Gtk/CursorThemeName", cursor_theme);
+        GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
+                                                       GDK_LEFT_PTR);
+        gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+        g_object_unref(G_OBJECT(cursor));
     }
 }
 
@@ -206,7 +210,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     char      *hinting;
     char      *rgba_order;
     double     dpi;
-    int        scale;
+    double     scale;
 
     mouse_gsettings = (GSettings *)g_hash_table_lookup (manager->gsettings, (void*)MOUSE_SCHEMA);
 
@@ -219,8 +223,13 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     antialias = TRUE;
     this->hinting = TRUE;
     hintstyle = "hintslight";
-
-    this->window_scale = scale;
+    if (scale >= 0 && scale <= 1.5) {
+          this->window_scale = 1;
+    } else if (scale >= 1.75 && scale <= 2.5) {
+          this->window_scale = 2;
+    } else if (scale >= 2.75) {
+          this->window_scale = 3;
+    }
     this->dpi = dpi * 1024; /* Xft wants 1/1024ths of an inch */
     this->scaled_dpi = dpi * scale * 1024;
 
@@ -373,9 +382,6 @@ void UkuiXftSettings::xft_settings_set_xresources ()
                 if (major >= 2) {
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
-                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
-                                                     CursorsNames[i],
-                                                     cursor_size);
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
@@ -383,11 +389,6 @@ void UkuiXftSettings::xft_settings_set_xresources ()
         }
     }
     // end add
-    GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
-		                                   GDK_LEFT_PTR);
-    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
-
-    g_object_unref(G_OBJECT(cursor));
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
 }

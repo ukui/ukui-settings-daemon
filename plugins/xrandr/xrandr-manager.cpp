@@ -49,7 +49,7 @@ XrandrManager::XrandrManager()
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
     mChangeCompressor = new QTimer(this);
     QGSettings *mXsettings = new QGSettings(XSETTINGS_SCHEMA);
-    mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toInt();
+    mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
     if(mXsettings)
         delete mXsettings;
 
