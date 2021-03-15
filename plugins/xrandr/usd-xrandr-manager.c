@@ -2215,12 +2215,13 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
         remove_touch_map(input_id);
     }
 
-    if(NULL == map_to_output)
-    {
+    //if(NULL == map_to_output)
+    //{
         sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_id, output_name);
         log_msg("buff is %s\n", buff);
         system(buff);
-    }
+    //}
+    #if 0
     else
     {
         sprintf(cId, "%d", input_id);
@@ -2232,6 +2233,7 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
         }
         log_msg("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);
     }
+    #endif
 
     TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
     strcpy(pTMInfo->cMonitorName, output_name);
