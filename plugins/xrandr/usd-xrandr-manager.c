@@ -2595,6 +2595,10 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
                 do_action(_dpy, _id, cPriName, False);
                 return;
             }
+            else if(0 == strcmp(cPriName, _pName))
+            {
+                return;
+            }
         }
     }
 
@@ -3548,10 +3552,10 @@ static void set_touch_map(Display *pDisplay, int touchId)
             if(NULL == pOutInfo)
             {
                 printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-                return;
+                continue;
             }
 
-            if(0 == strcmp(cPrimaryName, pOutInfo->name))
+            if((0 == strcmp(cPrimaryName, pOutInfo->name)) && (Success == pOutInfo->connection))
             {
                 printf("[%s%d] do_action[%d %s] \n", __FUNCTION__, __LINE__, touchId, pOutInfo->name);
                 do_action(pDisplay, touchId, pOutInfo->name, False);
@@ -3569,7 +3573,7 @@ static void set_touch_map(Display *pDisplay, int touchId)
             if(NULL == pOutInfo)
             {
                 printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-                return;
+                continue;
             }
 
             if(!check_monitor_map(pOutInfo->name, &id))
@@ -3643,14 +3647,14 @@ static void listen_to_Xinput_Event()
                 if(NULL == pAllXDevInfo)
                 {
                     printf("[%s%d]pAllXDevInfo null\n", __FUNCTION__, __LINE__);
-                    return;
+                    continue;
                 }
 
                 pPreXDevInfo = &pAllXDevInfo[nInputDev-1];   //新事件的设备在最后的位置， 以前的按ID排序
                 if(NULL == pPreXDevInfo)
                 {
                     printf("[%s%d]pPreXDevInfo null\n", __FUNCTION__, __LINE__);
-                    return;
+                    continue;
                 }
 
 
