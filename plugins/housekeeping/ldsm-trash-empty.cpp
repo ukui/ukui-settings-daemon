@@ -51,12 +51,19 @@ void LdsmTrashEmpty::windowLayoutInit()
 {
     QFont font;
     QDesktopWidget* desktop=QApplication::desktop();
+    QRect desk_rect = desktop->screenGeometry(desktop->screenNumber(QCursor::pos()));
+    Qt::WindowFlags flags=Qt::Dialog;
+    flags |=Qt::WindowMinMaxButtonsHint;
+    flags |=Qt::WindowCloseButtonHint;
+    setWindowFlags(flags);
     setFixedSize(650,180);
     setWindowTitle(tr("Emptying the trash"));
     setWindowIcon(QIcon("/new/prefix1/warning.png"));
     int dialog_width=width();
     int dialog_height=height();
-    this->move((desktop->width()-dialog_width)/2,(desktop->height()-dialog_height)/2);
+    int rect_width=desk_rect.width();
+    int rect_height=desk_rect.height();
+    this->move((rect_width-dialog_width)/2+desk_rect.left(),(rect_height-dialog_height)/2+desk_rect.top());
 
     first_text=new QLabel(this);
     second_text=new QLabel(this);
@@ -79,18 +86,18 @@ void LdsmTrashEmpty::windowLayoutInit()
     trash_empty->setText(tr("Empty Trash"));
 }
 
-void LdsmTrashEmpty::usd_ldsm_trash_empty()
+void LdsmTrashEmpty::usdLdsmTrashEmpty()
 {
     this->exec();
 }
 
 void LdsmTrashEmpty::connectEvent()
 {
-    connect(trash_empty,SIGNAL(clicked()),this,SLOT(trash_empty_button_clicked()));
-    connect(cancel,SIGNAL(clicked()),this,SLOT(cancel_button_clicked()));
+    connect(trash_empty,SIGNAL(clicked()),this,SLOT(checkButtonTrashEmpty()));
+    connect(cancel,SIGNAL(clicked()),this,SLOT(checkButtonCancel()));
 }
 
-void LdsmTrashEmpty::trash_empty_delete_contents(const QString path)
+void LdsmTrashEmpty::deleteContents(const QString path)
 {
     QDir dir(path);
     QFileInfoList fileList;
@@ -120,15 +127,15 @@ void LdsmTrashEmpty::trash_empty_delete_contents(const QString path)
     }
 }
 
-void LdsmTrashEmpty::trash_empty_button_clicked()
+void LdsmTrashEmpty::checkButtonTrashEmpty()
 {
     QString trash_path;
     trash_path=QDir::homePath()+"/.local/share/Trash";
-    trash_empty_delete_contents(trash_path);
+    deleteContents(trash_path);
     this->accept();
 }
 
-void LdsmTrashEmpty::cancel_button_clicked()
+void LdsmTrashEmpty::checkButtonCancel()
 {
     this->accept();
 }
