@@ -3,13 +3,16 @@
 # Project created by QtCreator 2020-05-30T09:30:00
 #
 #-------------------------------------------------
-QT       += dbus
-QT       -= gui
+QT += gui
+QT += core widgets x11extras dbus
+
+CONFIG += c++11 no_keywords link_pkgconfig plugin
+CONFIG += app_bunale
+
+DEFINES += QT_DEPRECATED_WARNINGS
+
 TEMPLATE = lib
 TARGET = xsettings
-
-CONFIG += c++11 plugin link_pkgconfig
-CONFIG -= app_bundle
 
 DEFINES += QT_DEPRECATED_WARNINGS
 

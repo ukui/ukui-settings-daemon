@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QDir>
 #include "xsettings-const.h"
 #include "ukui-xft-settings.h"
 #include "ukui-xsettings-manager.h"
@@ -165,13 +166,13 @@ get_window_scale_auto ()
 /* Get the key value to set the zoom
  * 获取要设置缩放的键值
  */
-static int
+static double
 get_window_scale (ukuiXSettingsManager *manager)
 {
     GSettings   *gsettings;
-    int         scale;
+    double       scale;
     gsettings = (GSettings *)g_hash_table_lookup(manager->gsettings,XSETTINGS_PLUGIN_SCHEMA);
-    scale = g_settings_get_int (gsettings, SCALING_FACTOR_KEY);
+    scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
     /* Auto-detect */
     if (scale == 0)
         scale = get_window_scale_auto ();
@@ -196,6 +197,10 @@ void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
                  g_str_equal (rgba, "rgb") ? "lcddefault" : "none");
         manager->pManagers [i]->set_int ("Gtk/CursorThemeSize", cursor_size);
         manager->pManagers [i]->set_string ("Gtk/CursorThemeName", cursor_theme);
+        GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
+                                                       GDK_LEFT_PTR);
+        gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+        g_object_unref(G_OBJECT(cursor));
     }
 }
 
@@ -206,7 +211,7 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     char      *hinting;
     char      *rgba_order;
     double     dpi;
-    int        scale;
+    double     scale;
 
     mouse_gsettings = (GSettings *)g_hash_table_lookup (manager->gsettings, (void*)MOUSE_SCHEMA);
 
@@ -219,8 +224,13 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     antialias = TRUE;
     this->hinting = TRUE;
     hintstyle = "hintslight";
-
-    this->window_scale = scale;
+    if (scale >= 0 && scale <= 1.5) {
+          this->window_scale = 1;
+    } else if (scale >= 1.75 && scale <= 2.5) {
+          this->window_scale = 2;
+    } else if (scale >= 2.75) {
+          this->window_scale = 3;
+    }
     this->dpi = dpi * 1024; /* Xft wants 1/1024ths of an inch */
     this->scaled_dpi = dpi * scale * 1024;
 
@@ -314,6 +324,18 @@ void UkuiXftSettings::xft_settings_set_xresources ()
         tmpCursorSize = XcursorGetDefaultSize(dpy);
     }
 
+    QDir dir;
+    QString FilePath = dir.homePath() + "/.Xresources";
+    QFile file;
+    QString date = QString("Xft.dpi:%1\n"
+                           "Xcursor.size:%2\n"
+                           "Xcursor.theme:%3").arg(scaled_dpi/1024).arg(cursor_size).arg(cursor_theme);
+    file.setFileName(FilePath);
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        file.write(date.toLatin1().data());
+    }
+    file.close();
+
     update_property (add_string, "Xft.dpi",
             g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->scaled_dpi / 1024.0));
     update_property (add_string, "Xft.antialias",
@@ -334,7 +356,7 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     /* Set the new X property */
     XChangeProperty(dpy, RootWindow (dpy, 0),
             XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
-    
+
     // begin add:for qt adjust cursor size&theme. add by liutong
     const char *CursorsNames[] = {
                 "X_cursor"       , "arrow"             , "bottom_side"        , "bottom_tee"  ,
@@ -373,10 +395,6 @@ void UkuiXftSettings::xft_settings_set_xresources ()
                 if (major >= 2) {
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
-
-                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
-                                                     CursorsNames[i],
-                                                     cursor_size);
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
@@ -384,11 +402,6 @@ void UkuiXftSettings::xft_settings_set_xresources ()
         }
     }
     // end add
-    GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
-                                                   GDK_LEFT_PTR);
-    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
-
-    g_object_unref(G_OBJECT(cursor));
     XCloseDisplay (dpy);
     g_string_free (add_string, TRUE);
 }

@@ -29,6 +29,9 @@
 #include <QApplication>
 #include <QDBusConnectionInterface>
 
+#include <sys/types.h>
+#include <signal.h>
+
 static void print_help ();
 static void parse_args (int argc, char *argv[]);
 static void stop_daemon ();
@@ -36,6 +39,11 @@ static void stop_daemon ();
 static bool no_daemon       = true;
 static bool replace         = false;
 
+void handler(int no)
+{
+    qDebug()<<"catch SIGTERM signal, with exitcode "<< no;
+    exit(15);
+}
 int main (int argc, char* argv[])
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -46,10 +54,11 @@ int main (int argc, char* argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
 
-    PluginManager*  manager = NULL;
+    PluginManager*  manager = nullptr;
     qDebug( "ukui-settings-daemon starting ...");
     QApplication app(argc, argv);
 
+    signal(SIGTERM, handler);
     QApplication::setQuitOnLastWindowClosed(false);
 
     QTranslator translator;
@@ -60,22 +69,19 @@ int main (int argc, char* argv[])
     if (replace) stop_daemon ();
 
     manager = PluginManager::getInstance();
-    if (nullptr == manager) {
-        qDebug("get plugin manager error");
-        goto out;
+    if (!manager) {
+        return 0;
     }
-    if (!manager->managerStart()) {
+    bool res = manager->managerStart();
+    if (!res) {
         qDebug( "manager start error!");
-        goto out;
+        return 0;
     }
     CT_SYSLOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
-out:
 
-    if (manager != NULL) delete manager;
-
-    CT_SYSLOG(LOG_DEBUG, "SettingsDaemon finished");
-
+    if (manager)
+        delete manager;
     return 0;
 }
 
@@ -124,4 +130,3 @@ static void stop_daemon ()
         }
     }
 }
-

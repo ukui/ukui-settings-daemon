@@ -40,6 +40,8 @@ public:
     bool start();
     int stop();
 
+    void sendSessionDbus();
+
     //gboolean setup_xsettings_managers (ukuiXSettingsManager *manager);
     XsettingsManager **pManagers;
     GHashTable  *gsettings;
