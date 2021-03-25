@@ -1707,6 +1707,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         GList *just_turned_on;
         GList *l;
         int x;
+        int num = 0;
         GError *error;
         gboolean applicable;
 
@@ -1734,8 +1735,16 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         mate_rr_output_info_set_active (output, TRUE);
                         mate_rr_output_info_set_rotation (output, MATE_RR_ROTATION_0);
                         just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
+                        num ++;
                 } else if (!mate_rr_output_info_is_connected (output) && mate_rr_output_info_is_active (output))
                         mate_rr_output_info_set_active (output, FALSE);
+        }
+
+        if (num > 0){
+            g_object_unref (config);
+            config = make_clone_setup (priv->rw_screen);
+            applicable = mate_rr_config_applicable (config, priv->rw_screen, NULL);
+            goto out;
         }
 
         /* Now, lay out the outputs from left to right.  Put first the outputs
@@ -1822,7 +1831,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         }
 
         /* Apply the configuration! */
-
+out:
         if (applicable)
                 apply_configuration_and_display_error (manager, config, timestamp);
 
@@ -2095,7 +2104,7 @@ static Bool check_monitor_connect(char *pName)
         if(NULL == pOutInfo)
         {
             printf("[%s%d] pOutInfo NULL\n", __FUNCTION__, __LINE__);
-            return bConnect;
+            continue;
         }
 
         //存在且已连接
@@ -2106,7 +2115,12 @@ static Bool check_monitor_connect(char *pName)
             bConnect = True;
             break;
         }
+
+        XRRFreeOutputInfo(pOutInfo);
     }
+
+    if(NULL != pScreenRes)
+    XRRFreeScreenResources(pScreenRes);
 
     XCloseDisplay(pDisplay);
     return bConnect;
@@ -2151,6 +2165,8 @@ static void get_primary_status(char *cName, int *pbMap)
             break;
         }
     }
+
+    XRRFreeMonitors(pMonitorInfo);
 
     *pbMap = check_monitor_map(cName, &id);
 
@@ -2580,7 +2596,7 @@ static void auto_map(Display *_dpy, int _id, char *_pName, int _popFlag)
     //有主屏变化时
     if(TRUE == _popFlag)
     {
-        if(!bMap)
+        if((!bMap)&&(check_monitor_connect(cPriName)))
         {
             log_msg("[%s%d] here\n\n", __FUNCTION__, __LINE__);
             remove_touch_map(_id);
@@ -2716,8 +2732,12 @@ void set_touchscreen_cursor_rotation(MateRRScreen *screen, int popFlag)
             auto_map(dpy, info->dev_info.deviceid, output_info->name, popFlag);
 
         }
+
+        XRRFreeOutputInfo(output_info);
     }
 
+    if(NULL != res)
+    XRRFreeScreenResources(res);
 LEAVE:
     XCloseDisplay(dpy);
     g_list_free(ts_devs);
@@ -2792,6 +2812,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
                         if (config_timestamp != priv->last_config_timestamp) {
                                 priv->last_config_timestamp = config_timestamp;
                                 auto_configure_outputs (manager, config_timestamp);
+                                ensure_current_configuration_is_saved();
                                 log_msg ("  Automatically configured outputs to deal with event\n");
                         } else
                                 log_msg ("  Ignored event as old and new config timestamps are the same\n");
@@ -2816,7 +2837,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         /*监听HDMI插拔设置缩放*/
         if(pop_flag){
             pop_flag = FALSE;
-            monitor_settings_screen_zoom(screen);
+            //monitor_settings_screen_zoom(screen);
         }
         log_close ();
 }
@@ -3116,6 +3137,9 @@ ensure_current_configuration_is_saved (void)
 
         rr_config = mate_rr_config_new_current (rr_screen, NULL);
         mate_rr_config_save (rr_config, NULL); /* NULL-GError */
+
+        char *backup_filename = mate_rr_config_get_backup_filename();
+        unlink(backup_filename);
 
         g_object_unref (rr_config);
         g_object_unref (rr_screen);
@@ -3562,6 +3586,8 @@ static void set_touch_map(Display *pDisplay, int touchId)
                 bMapOk = True;
                 break;
             }
+
+            XRRFreeOutputInfo(pOutInfo);
         }
     }
     else
@@ -3583,6 +3609,7 @@ static void set_touch_map(Display *pDisplay, int touchId)
                 bMapOk = True;
                 break;
             }
+            XRRFreeOutputInfo(pOutInfo);
         }
     }
 
@@ -3593,6 +3620,9 @@ static void set_touch_map(Display *pDisplay, int touchId)
         bMapOk = True;
     }
     log_msg("[%s %d] touchId[%d], bMap[%d] \n", __FUNCTION__, __LINE__, touchId, bMapOk);
+
+    if(NULL != pScreenRes)
+    XRRFreeScreenResources(pScreenRes);
 
     return;
 }
