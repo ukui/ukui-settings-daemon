@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -37,16 +42,21 @@ public:
     QString id() const;
 
     bool fileExists() const;
-    std::unique_ptr<xrandrConfig> readFile();
+    std::unique_ptr<xrandrConfig> readFile(bool state);
     std::unique_ptr<xrandrConfig> readOpenLidFile();
-    bool writeFile();
+    std::unique_ptr<xrandrConfig> readFile(const QString &fileName, bool state);
+    bool writeFile(bool state);
     bool writeOpenLidFile();
+    bool writeFile(const QString &filePath, bool state);
 
     KScreen::ConfigPtr data() const {
         return mConfig;
     }
     void log();
 
+    void setPriName(QString name){
+        priName = name;
+    }
     void setValidityFlags(KScreen::Config::ValidityFlags flags) {
         mValidityFlags = flags;
     }
@@ -55,15 +65,16 @@ public:
 
 private:
     QString filePath() const;
-    std::unique_ptr<xrandrConfig> readFile(const QString &fileName);
-    bool writeFile(const QString &filePath);
 
     bool canBeApplied(KScreen::ConfigPtr config) const;
     static QString configsDirPath();
+    static QString sleepDirPath();
 
     KScreen::ConfigPtr mConfig;
     KScreen::Config::ValidityFlags mValidityFlags;
 
+    QString priName;
+    bool    mAddScreen = false;
     static QString mConfigsDirName;
     static QString mFixedConfigFileName;
 

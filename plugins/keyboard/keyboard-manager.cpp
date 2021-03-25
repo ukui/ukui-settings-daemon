@@ -378,7 +378,8 @@ void KeyboardManager::start_keyboard_idle_cb ()
 {
     time->stop();
     have_xkb = 0;
-    settings->set(KEY_NUMLOCK_REMEMBER,TRUE);
+    settings->set(KEY_NUMLOCK_REMEMBER, true);
+    settings->set(KEY_CAPSLOCK_STATE, false);
     XEventMonitor::instance()->start();
 
     /* Essential - xkb initialization should happen before */

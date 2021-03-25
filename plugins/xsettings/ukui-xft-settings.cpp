@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QDir>
 #include "xsettings-const.h"
 #include "ukui-xft-settings.h"
 #include "ukui-xsettings-manager.h"
@@ -323,6 +324,17 @@ void UkuiXftSettings::xft_settings_set_xresources ()
         tmpCursorSize = XcursorGetDefaultSize(dpy);
     }
 
+    QDir dir;
+    QString FilePath = dir.homePath() + "/.Xresources";
+    QFile file;
+    QString date = QString("Xft.dpi:%1\n"
+                           "Xcursor.size:%2\n"
+                           "Xcursor.theme:%3").arg(scaled_dpi/1024).arg(cursor_size).arg(cursor_theme);
+    file.setFileName(FilePath);
+    if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
+        file.write(date.toLatin1().data());
+    }
+
     update_property (add_string, "Xft.dpi",
             g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) this->scaled_dpi / 1024.0));
     update_property (add_string, "Xft.antialias",
@@ -343,7 +355,7 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     /* Set the new X property */
     XChangeProperty(dpy, RootWindow (dpy, 0),
             XA_RESOURCE_MANAGER, XA_STRING, 8, PropModeReplace, (unsigned char *) add_string->str, add_string->len);
-    
+
     // begin add:for qt adjust cursor size&theme. add by liutong
     const char *CursorsNames[] = {
                 "X_cursor"       , "arrow"             , "bottom_side"        , "bottom_tee"  ,

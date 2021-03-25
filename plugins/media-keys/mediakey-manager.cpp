@@ -20,6 +20,8 @@
 #include "mediakey-manager.h"
 #include "eggaccelerators.h"
 
+#include <KF5/KGlobalAccel/KGlobalAccel>
+
 MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
 const int VOLUMESTEP = 6;
@@ -92,6 +94,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     }
 
     initScreens();
+    initShortcuts();
     initKbd();
     initXeventMonitor();
     l = begin = mScreenList->begin();
@@ -104,6 +107,59 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     }
 
     return true;
+}
+
+void MediaKeysManager::initShortcuts()
+{
+    /* sound mute*/
+    QAction *volumeMute= new QAction(this);
+    volumeMute->setObjectName(QStringLiteral("volume mute"));
+    volumeMute->setProperty("componentName", "volume mute");
+    KGlobalAccel::self()->setDefaultShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+    KGlobalAccel::self()->setShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+    connect(volumeMute, &QAction::triggered, this, [this]() {
+        doSoundAction(MUTE_KEY);
+    });
+
+    /*sound down*/
+    QAction *volumeDown= new QAction(this);
+    volumeDown->setObjectName(QStringLiteral("volume down"));
+    volumeDown->setProperty("componentName", "volume down");
+    KGlobalAccel::self()->setDefaultShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+    KGlobalAccel::self()->setShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+    connect(volumeDown, &QAction::triggered, this, [this]() {
+        doSoundAction(VOLUME_DOWN_KEY);
+    });
+
+    /*sound up*/
+    QAction *volumeUp= new QAction(this);
+    volumeUp->setObjectName(QStringLiteral("volume up"));
+    volumeUp->setProperty("componentName", "volume up");
+    KGlobalAccel::self()->setDefaultShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+    KGlobalAccel::self()->setShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+    connect(volumeUp, &QAction::triggered, this, [this]() {
+        doSoundAction(VOLUME_UP_KEY);
+    });
+
+    /*mic mute*/
+    QAction *micMute= new QAction(this);
+    micMute->setObjectName(QStringLiteral("mic mute"));
+    micMute->setProperty("componentName", "mic mute");
+    KGlobalAccel::self()->setDefaultShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+    KGlobalAccel::self()->setShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+    connect(micMute, &QAction::triggered, this, [this]() {
+        doMicSoundAction();
+    });
+
+    /*Shutdown interface*/
+    QAction *logout= new QAction(this);
+    logout->setObjectName(QStringLiteral("Shutdown interface"));
+    logout->setProperty("componentName", "Shutdown interface");
+    KGlobalAccel::self()->setDefaultShortcut(logout, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Delete});
+    KGlobalAccel::self()->setShortcut(logout, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Delete});
+    connect(logout, &QAction::triggered, this, [this]() {
+        doLogoutAction();
+    });
 }
 
 void MediaKeysManager::mediaKeysStop()
@@ -729,6 +785,7 @@ void MediaKeysManager::doSoundAction(int keyType)
     volumeStep = mSettings->get("volume-step").toInt();
     if(volumeStep <= 0 || volumeStep > 100)
         volumeStep = VOLUMESTEP;
+    volumeStep = (volumeStep * volumeMax) / 100;
 
     volume = volumeLast = mate_mixer_stream_control_get_volume(mControl);
     muted = mutedLast = mate_mixer_stream_control_get_mute(mControl);
@@ -745,7 +802,7 @@ void MediaKeysManager::doSoundAction(int keyType)
             volume = volumeMin;
             muted = true;
         }else{
-            volume -= volumeStep * 400;
+            volume -= volumeStep;
             muted = false;
         }
         if(volume < 300){
@@ -757,9 +814,9 @@ void MediaKeysManager::doSoundAction(int keyType)
         if(muted){
             muted = false;
             if(volume <= (volumeMin + volumeStep))
-                volume = volumeMin + volumeStep * 400;
+                volume = volumeMin + volumeStep;
         }else
-            volume = midValue(volume + volumeStep * 400, volumeMin, volumeMax);
+            volume = midValue(volume + volumeStep, volumeMin, volumeMax);
         break;
     }
 

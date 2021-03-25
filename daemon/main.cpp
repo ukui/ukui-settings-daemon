@@ -29,6 +29,9 @@
 #include <QApplication>
 #include <QDBusConnectionInterface>
 
+#include <sys/types.h>
+#include <signal.h>
+
 static void print_help ();
 static void parse_args (int argc, char *argv[]);
 static void stop_daemon ();
@@ -36,6 +39,11 @@ static void stop_daemon ();
 static bool no_daemon       = true;
 static bool replace         = false;
 
+void handler(int no)
+{
+    qDebug()<<"catch SIGTERM signal, with exitcode "<< no;
+    exit(15);
+}
 int main (int argc, char* argv[])
 {
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
@@ -50,6 +58,7 @@ int main (int argc, char* argv[])
     qDebug( "ukui-settings-daemon starting ...");
     QApplication app(argc, argv);
 
+    signal(SIGTERM, handler);
     QApplication::setQuitOnLastWindowClosed(false);
 
     QTranslator translator;

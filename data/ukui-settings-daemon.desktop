@@ -70,5 +70,5 @@ Name[zh_TW]=UKUI 設定值守護程式
 Exec=/usr/bin/ukui-settings-daemon
 OnlyShowIn=UKUI;
 X-UKUI-Autostart-Phase=Initialization
-X-UKUI-Autostart-Notify=true
+X-UKUI-Autostart-Notify=false
 X-UKUI-AutoRestart=true

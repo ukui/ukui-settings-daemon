@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -350,7 +355,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
 
     // TODO: this does not work at the moment with logical size replication. Deactivate for now.
     // correct positional config regressions on global output data changes
-#if 0
+#if 1
     adjustPositions(config, outputsInfo);
 #endif
 }

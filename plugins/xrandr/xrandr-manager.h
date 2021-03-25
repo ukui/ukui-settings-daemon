@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,33 +26,16 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QDebug>
+
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QGSettings/qgsettings.h>
 #include <QScreen>
 
-#include <KF5/KScreen/kscreen/config.h>
-#include <KF5/KScreen/kscreen/log.h>
-#include <KF5/KScreen/kscreen/output.h>
-#include <KF5/KScreen/kscreen/edid.h>
-#include <KF5/KScreen/kscreen/configmonitor.h>
-#include <KF5/KScreen/kscreen/getconfigoperation.h>
-#include <KF5/KScreen/kscreen/setconfigoperation.h>
-
-#include <QOrientationReading>
-#include <memory>
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
 
-#include <glib.h>
-#include <X11/Xlib.h>
-#include <X11/extensions/XInput2.h>
-#include <X11/extensions/XInput.h>
-#include <X11/extensions/Xrandr.h>
-#include <xorg/xserver-properties.h>
-#include <gudev/gudev.h>
 
 class XrandrManager: public QObject
 {
@@ -64,7 +52,7 @@ public:
     void StartXrandrIdleCb ();
     void monitorsInit();
     void applyConfig();
-    void applyKnownConfig();
+    void applyKnownConfig(bool state);
     void applyIdealConfig();
     void outputConnectedChanged();
     void doApplyConfig(const KScreen::ConfigPtr &config);
@@ -81,9 +69,12 @@ public:
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
     void init_primary_screens(KScreen::ConfigPtr config);
 
+    void primaryScreenChange();
     void callMethod(QRect geometry, QString name);
 
+
 public Q_SLOTS:
+    void mPrepareForSleep(bool);
     void RotationChangedEvent(QString);
 
 Q_SIGNALS:
@@ -98,10 +89,14 @@ private:
     QTimer                *mChangeCompressor;
     QGSettings            *mXrandrSetting;
     double                 mScale = 1;
+    QDBusInterface        *mLoginInter;
     std::unique_ptr<xrandrConfig> mMonitoredConfig;
     KScreen::ConfigPtr mConfig;
+    xrandrDbus *mDbus;
     bool mMonitoring;
     bool mConfigDirty = true;
+    bool mSleepState = false;
+    bool mAddScreen = false;
     QScreen *mScreen;
     bool mStartingUp = true;
 };

@@ -16,7 +16,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <QGuiApplication>
 #include <QDebug>
+#include <QDBusMessage>
+#include <QDBusConnection>
+#include <QScreen>
+
 #include "ukui-xsettings-manager.h"
 #include "xsettings-manager.h"
 #include "fontconfig-monitor.h"
@@ -367,6 +372,18 @@ fontconfig_callback (fontconfig_monitor_handle_t *handle,
     }
 }
 
+void ukuiXSettingsManager::sendSessionDbus()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("org.gnome.SessionManager",
+                                                          "/org/gnome/SessionManager",
+                                                          "org.gnome.SessionManager",
+                                                          "startupfinished");
+    QList<QVariant> args;
+    args.append("ukui-settings-daemon");
+    args.append("startupfinished");
+    message.setArguments(args);
+    QDBusConnection::sessionBus().send(message);
+}
 
 bool ukuiXSettingsManager::start()
 {
@@ -413,8 +430,33 @@ bool ukuiXSettingsManager::start()
     this->gsettings_font = g_settings_new (FONT_RENDER_SCHEMA);
     g_signal_connect (this->gsettings_font, "changed", G_CALLBACK (xft_callback), this);
 
+    GSettings   *gsettings;
+    double       scale;
+    gsettings = (GSettings *)g_hash_table_lookup(this->gsettings, XSETTINGS_PLUGIN_SCHEMA);
+    scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
+    if(scale > 1.0){
+        bool state = false;
+        int screenNum = QGuiApplication::screens().length();
+        for(int i = 0; i < screenNum; i++){
+            QScreen *screen = QGuiApplication::screens().at(i);
+            qDebug()<<screen->geometry();
+            if (screen->geometry().width() <= 1920 &&  screen->geometry().height() <= 1080)
+                state = true;
+            else
+                state = false;
+        }
+        if (state){
+            GSettings   *mGsettings;
+            mGsettings = (GSettings *)g_hash_table_lookup(this->gsettings, MOUSE_SCHEMA);
+            g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
+            g_settings_set_double (gsettings, SCALING_FACTOR_KEY, 1.0);
+        }
+    }
+
     update_xft_settings (this);
     start_fontconfig_monitor (this);
+    sendSessionDbus();
+
     for (i = 0;  pManagers [i]; i++){
         pManagers [i]->set_string ( "Net/FallbackIconTheme", "ukui");
     }

@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -36,6 +41,13 @@ QString xrandrConfig::configsDirPath()
     return dirPath % mConfigsDirName;
 }
 
+QString xrandrConfig::sleepDirPath()
+{
+    QString dirPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
+            QStringLiteral("/sleep-state/");
+    return dirPath % mConfigsDirName;
+}
+
 xrandrConfig::xrandrConfig(KScreen::ConfigPtr config, QObject *parent)
     : QObject(parent)
 {
@@ -63,7 +75,7 @@ bool xrandrConfig::fileExists() const
     return (QFile::exists(configsDirPath() % id()) || QFile::exists(configsDirPath() % mFixedConfigFileName));
 }
 
-std::unique_ptr<xrandrConfig> xrandrConfig::readFile()
+std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool state)
 {
     bool res = false;
     if (res){//Device::self()->isLaptop() && !Device::self()->isLidClosed()) {
@@ -79,18 +91,18 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile()
             }
         }
     }
-    return readFile(id());
+    return readFile(id(), state);
 }
 
 std::unique_ptr<xrandrConfig> xrandrConfig::readOpenLidFile()
 {
     const QString openLidFile = id() % QStringLiteral("_lidOpened");
-    auto config = readFile(openLidFile);
+    auto config = readFile(openLidFile, false);
     QFile::remove(configsDirPath() % openLidFile);
     return config;
 }
 
-std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName)
+std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bool state)
 {
     if (!mConfig) {
         return nullptr;
@@ -99,15 +111,28 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName)
     config->setValidityFlags(mValidityFlags);
 
     QFile file;
-    if (QFile::exists(configsDirPath() % mFixedConfigFileName)) {
-        file.setFileName(configsDirPath() % mFixedConfigFileName);
-        //qDebug() << "found a fixed config, will use " << file.fileName();
+    if(!state){
+        if (QFile::exists(configsDirPath() % mFixedConfigFileName)) {
+            file.setFileName(configsDirPath() % mFixedConfigFileName);
+            //qDebug() << "found a fixed config, will use " << file.fileName();
+        } else {
+            file.setFileName(configsDirPath() % fileName);
+        }
+        if (!file.open(QIODevice::ReadOnly)) {
+            //qDebug() << "failed to open file" << file.fileName();
+            return nullptr;
+        }
     } else {
-        file.setFileName(configsDirPath() % fileName);
-    }
-    if (!file.open(QIODevice::ReadOnly)) {
-        //qDebug() << "failed to open file" << file.fileName();
-        return nullptr;
+        if (QFile::exists(sleepDirPath() % mFixedConfigFileName)) {
+            file.setFileName(sleepDirPath() % mFixedConfigFileName);
+            //qDebug() << "found a fixed config, will use " << file.fileName();
+        } else {
+            file.setFileName(sleepDirPath() % fileName);
+        }
+        if (!file.open(QIODevice::ReadOnly)) {
+            //qDebug() << "failed to open file" << file.fileName();
+            return nullptr;
+        }
     }
 
     QJsonDocument parser;
@@ -147,22 +172,27 @@ bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
     return KScreen::Config::canBeApplied(config, mValidityFlags);
 }
 
-bool xrandrConfig::writeFile()
+bool xrandrConfig::writeFile(bool state)
 {
-    return writeFile(filePath());
+    mAddScreen = state;
+    return writeFile(filePath(), false);
 }
 
-bool xrandrConfig::writeFile(const QString &filePath)
+bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
     if (id().isEmpty()) {
         return false;
     }
+
     const KScreen::OutputList outputs = mConfig->outputs();
 
-    const auto oldConfig = readFile();
+
+    const auto oldConfig = readFile(state);
     KScreen::OutputList oldOutputs;
     if (oldConfig) {
-        return false;
+        if(!state && !mAddScreen)
+            return false;
+        mAddScreen = false;
         oldOutputs = oldConfig->data()->outputs();
     }
 
@@ -182,8 +212,17 @@ bool xrandrConfig::writeFile(const QString &filePath)
             continue;
         }
 
+        bool priState = false;
+        if (state){
+            if (priName.compare(output->name()) == 0){
+                priState = true;
+            }
+        } else {
+            priState = output->isPrimary();
+        }
+
         xrandrOutput::writeGlobalPart(output, info, oldOutput);
-        info[QStringLiteral("primary")] = output->isPrimary();
+        info[QStringLiteral("primary")] = priState; //
         info[QStringLiteral("enabled")] = output->isEnabled();
 
         auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {

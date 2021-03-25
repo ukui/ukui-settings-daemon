@@ -85,6 +85,7 @@ private:
     GdkScreen *acmeGetScreenFromEvent (XAnyEvent*);
     bool doAction(int);
 
+    void initShortcuts();
     /******************Functional class function(功能类函数)****************/
     void doTouchpadAction();
     void doSoundAction(int);

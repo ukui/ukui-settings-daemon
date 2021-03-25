@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -17,11 +22,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QApplication>
-#include <QApplication>
+#include <QDebug>
 #include <QMessageBox>
 #include <QProcess>
 #include <QX11Info>
 #include "xrandr-manager.h"
+
+#include <QOrientationReading>
+#include <memory>
+
+#include <KF5/KScreen/kscreen/config.h>
+#include <KF5/KScreen/kscreen/log.h>
+#include <KF5/KScreen/kscreen/output.h>
+#include <KF5/KScreen/kscreen/edid.h>
+#include <KF5/KScreen/kscreen/configmonitor.h>
+#include <KF5/KScreen/kscreen/getconfigoperation.h>
+#include <KF5/KScreen/kscreen/setconfigoperation.h>
+
+extern "C"{
+#include <glib.h>
+//#include <X11/Xlib.h>
+#include <X11/extensions/XInput2.h>
+#include <X11/extensions/XInput.h>
+#include <X11/extensions/Xrandr.h>
+#include <xorg/xserver-properties.h>
+#include <gudev/gudev.h>
+}
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
 #define XRANDR_ROTATION_KEY         "xrandr-rotations"
@@ -34,6 +60,10 @@
 #define DBUS_NAME  "org.ukui.SettingsDaemon"
 #define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
+
+#define LOGIN_DBUS_NAME     "org.freedesktop.login1"
+#define LOGIN_DBUS_PATH     "/org/freedesktop/login1"
+#define LOGIN_DBUS_INTER    "org.freedesktop.login1.Manager"
 
 typedef struct
 {
@@ -55,7 +85,7 @@ XrandrManager::XrandrManager()
 
     KScreen::Log::instance();
     QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
-    xrandrDbus *mDbus = new xrandrDbus();
+    mDbus = new xrandrDbus();
     new WaylandAdaptor(mDbus);
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
     if(sessionBus.registerService(DBUS_NAME)){
@@ -63,6 +93,12 @@ XrandrManager::XrandrManager()
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
     }
+    mLoginInter = new QDBusInterface(LOGIN_DBUS_NAME,
+                                     LOGIN_DBUS_PATH,
+                                     LOGIN_DBUS_INTER,
+                                     QDBusConnection::systemBus());
+    connect(mLoginInter, SIGNAL(PrepareForSleep(bool)),this,
+            SLOT(mPrepareForSleep(bool)));
 }
 
 void XrandrManager::getInitialConfig()
@@ -97,9 +133,10 @@ XrandrManager::~XrandrManager()
 
     if(time)
         delete time;
-
     if(mXrandrSetting)
         delete mXrandrSetting;
+    if(mLoginInter)
+        delete mLoginInter;
 }
 
 bool XrandrManager::XrandrManagerStart()
@@ -354,23 +391,10 @@ void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
 
 void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 {
-    QRect geometry;
-    QString name;
-
     mMonitoredConfig = std::move(config);
     //monitorsInit();
-
-    if (mMonitoredConfig->data()->primaryOutput().isNull()){
-        qDebug()<<"No primary screen output was found";
-        geometry = QRect(0, 0, 0 , 0);
-        name = "";
-    } else {
-        geometry = mMonitoredConfig->data()->primaryOutput()->geometry();
-        name     = mMonitoredConfig->data()->primaryOutput()->name();
-    }
-    callMethod(geometry, name);
-
     refreshConfig();
+    primaryScreenChange();
 }
 
 void XrandrManager::refreshConfig()
@@ -400,7 +424,8 @@ void XrandrManager::saveCurrentConfig()
     // in the "at least one enabled screen" check
 
     if (mMonitoredConfig->canBeApplied()) {
-        mMonitoredConfig->writeFile();
+        mMonitoredConfig->writeFile(mAddScreen);
+        mAddScreen = false;
         mMonitoredConfig->log();
     } else {
         qWarning() << "Config does not have at least one screen enabled, WILL NOT save this config, this is not what user wants.";
@@ -411,13 +436,14 @@ void XrandrManager::saveCurrentConfig()
 void XrandrManager::configChanged()
 {
     qDebug() << "Change detected";
+
     mMonitoredConfig->log();
 
     // Modes may have changed, fix-up current mode id
     bool changed = false;
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (output->isConnected() && output->isEnabled() && (output->currentMode().isNull() || (output->followPreferredMode() && output->currentModeId() != output->preferredModeId()))) {
-            qDebug() << "Current mode was" << output->currentModeId() << ", setting preferred mode" << output->preferredModeId();
+            //qDebug() << "Current mode was" << output->currentModeId() << ", setting preferred mode" << output->preferredModeId();
             output->setCurrentModeId(output->preferredModeId());
             changed = true;
         }
@@ -434,6 +460,7 @@ void XrandrManager::configChanged()
         connect(mSaveTimer, &QTimer::timeout, this, &XrandrManager::saveCurrentConfig);
     }
     mSaveTimer->start();
+    setMonitorForChanges(false);
 }
 
 void XrandrManager::setMonitorForChanges(bool enabled)
@@ -442,7 +469,7 @@ void XrandrManager::setMonitorForChanges(bool enabled)
         return;
     }
 
-    qDebug() << "Monitor for changes: " << enabled;
+    //qDebug() << "Monitor for changes: " << enabled;
     mMonitoring = enabled;
     if (mMonitoring) {
         connect(KScreen::ConfigMonitor::instance(), &KScreen::ConfigMonitor::configurationChanged,
@@ -453,9 +480,9 @@ void XrandrManager::setMonitorForChanges(bool enabled)
     }
 }
 
-void XrandrManager::applyKnownConfig()
+void XrandrManager::applyKnownConfig(bool state)
 {
-    std::unique_ptr<xrandrConfig> readInConfig = mMonitoredConfig->readFile();
+    std::unique_ptr<xrandrConfig> readInConfig = mMonitoredConfig->readFile(state);
 
     if (readInConfig) {
         doApplyConfig(std::move(readInConfig));
@@ -479,18 +506,22 @@ void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
 
 void XrandrManager::applyConfig()
 {
+
     if (!mMonitoredConfig){
         qDebug()<<"mMonitoredConfig  is nullptr";
         return;
     }
-    if (mMonitoredConfig->fileExists()) {
-        applyKnownConfig();
-        return;
+    if(mSleepState){
+        applyKnownConfig(true);
+        mSleepState = false;
+    }
+    else if (mMonitoredConfig->fileExists()) {
+        applyKnownConfig(false);
     }
     else {
         init_primary_screens(mMonitoredConfig->data());
     }
-    applyIdealConfig();
+//    applyIdealConfig();
 }
 
 void XrandrManager::outputConnectedChanged()
@@ -509,16 +540,9 @@ void XrandrManager::outputConnectedChanged()
 void XrandrManager::outputAdded(const KScreen::OutputPtr &output)
 {
     if (output->isConnected()) {
+        mAddScreen = true;
         mChangeCompressor->start();
     }
-    //QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
-//    if (!mMonitoredConfig->fileExists()){
-//        QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
-//                                                        QStringLiteral("/kscreen/") %
-//                                                        QStringLiteral("" /*"configs/"*/);
-//        QString hash = mMonitoredConfig->data()->connectedOutputsHash();
-//        writeFile(dir % hash);
-//    }
 }
 
 void XrandrManager::outputRemoved(int outputId)
@@ -533,6 +557,29 @@ void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
         QRect geometry = output->geometry();
         //callMethod(geometry, output->name());
     }
+}
+
+void XrandrManager::primaryScreenChange()
+{
+    QRect geometry;
+    QString name;
+    if (mMonitoredConfig->data()->primaryOutput().isNull()){
+        qDebug()<<"No primary screen output was found";
+        const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
+        for(auto output : outputs){
+            if (!output->isConnected() || !output->isEnabled() || !output->currentMode()) {
+                continue;
+            }
+            geometry = output->geometry();
+            name = output->name();
+            break;
+        }
+    }
+    else {
+        geometry = mMonitoredConfig->data()->primaryOutput()->geometry();
+        name     = mMonitoredConfig->data()->primaryOutput()->name();
+    }
+    callMethod(geometry, name);
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
@@ -575,6 +622,30 @@ void XrandrManager::monitorsInit()
             static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
     connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
             this, &XrandrManager::primaryOutputChanged);
+}
+
+void XrandrManager::mPrepareForSleep(bool state)
+{
+    if (!state){
+        g_usleep(1000*1000);
+        mSleepState = true;
+        mChangeCompressor->start();
+    } else {
+        mMonitoredConfig->setPriName(mDbus->priScreenName());
+        setMonitorForChanges(false);
+        QString dir = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
+                                                            QStringLiteral("/sleep-state/") %
+                                                           QStringLiteral("" /*"configs/"*/);
+        QString hash = mMonitoredConfig->data()->connectedOutputsHash();
+        QDir().mkpath(dir);
+        mMonitoredConfig->writeFile(dir % hash, true);
+    }
+    const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
+    for(auto output : outputs){
+        if (!output->isConnected() || !output->isEnabled() || !output->currentMode()) {
+            continue;
+        }
+    }
 }
 
 /**

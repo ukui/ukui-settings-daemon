@@ -80,10 +80,10 @@ static struct {
         Key *key;
 } keys[HANDLED_KEYS] = {
         { TOUCHPAD_KEY, "touchpad", NULL, NULL },
-        { MUTE_KEY, "volume-mute", NULL, NULL },
-        { VOLUME_DOWN_KEY, "volume-down", NULL, NULL },
-        { VOLUME_UP_KEY, "volume-up", NULL, NULL },
-        { MIC_MUTE_KEY, "mic-mute", NULL, NULL},
+//        { MUTE_KEY, "volume-mute", NULL, NULL },
+//        { VOLUME_DOWN_KEY, "volume-down", NULL, NULL },
+//        { VOLUME_UP_KEY, "volume-up", NULL, NULL },
+//        { MIC_MUTE_KEY, "mic-mute", NULL, NULL},
         { POWER_KEY, "power", NULL, NULL },
         { EJECT_KEY, "eject", NULL, NULL },
         { HOME_KEY, "home", NULL, NULL },
@@ -112,7 +112,7 @@ static struct {
         { MAGNIFIER_KEY, "magnifier", NULL, NULL },
         { SCREENREADER_KEY, "screenreader", NULL, NULL },
         { ON_SCREEN_KEYBOARD_KEY, "on-screen-keyboard", NULL, NULL },
-        { LOGOUT_KEY, "logout", NULL, NULL },
+//        { LOGOUT_KEY, "logout", NULL, NULL },
         { TERMINAL_KEY, "terminal", NULL, NULL },
         { TERMINAL_KEY_2, "terminal2", NULL, NULL },
         //{ SCREENSHOT_KEY, "screenshot", NULL, NULL },
