@@ -2231,13 +2231,12 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
         remove_touch_map(input_id);
     }
 
-    //if(NULL == map_to_output)
-    //{
+    if(NULL == map_to_output)
+    {
         sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_id, output_name);
         log_msg("buff is %s\n", buff);
         system(buff);
-    //}
-    #if 0
+    }
     else
     {
         sprintf(cId, "%d", input_id);
@@ -2249,7 +2248,6 @@ static void do_action(Display *dpy, int input_id, char *output_name, int remap)
         }
         log_msg("[%s%d] map_to_output %s %s\n", __FUNCTION__, __LINE__, cId, output_name);
     }
-    #endif
 
     TouchMapInfo *pTMInfo = g_new(TouchMapInfo, 1);
     strcpy(pTMInfo->cMonitorName, output_name);
@@ -2523,20 +2521,20 @@ static int get_mapBak_from_file(char *_cFileName, int *_pNum, MapInfoFromFile *p
     return Success;
 }
 
-static void remap_from_file(Display *_dpy)
+static void remap_from_file()
 {
-	if(NULL == _dpy)
-    {
-        printf("[%s%d] NULL ptr. \n", __FUNCTION__, __LINE__);
-        return;
-    }
-
     int     ret             = -1;
     int     i               = 0;
     int     mapNum          = 0;
     int     touchId         = 0;
     MapInfoFromFile stMapInfo[16];
     memset(stMapInfo, 0, sizeof(stMapInfo));
+    Display *pDpy = XOpenDisplay(NULL);
+	if(NULL == pDpy)
+    {
+        printf("[%s%d] NULL pDpy. \n", __FUNCTION__, __LINE__);
+        return;
+    }
 
 	char *pCfgPath = g_build_filename (g_get_user_config_dir (), MONITOR_SAVE_CONF_NAME, NULL);
 	//printf("[%s%d] pCfgPath[%s] \n", __FUNCTION__, __LINE__, pCfgPath);
@@ -2550,7 +2548,7 @@ static void remap_from_file(Display *_dpy)
 
     for(i = 0; i < mapNum; i++)
     {
-        ret = find_touchId_from_name(_dpy, stMapInfo[i].cTouchName,
+        ret = find_touchId_from_name(pDpy, stMapInfo[i].cTouchName,
         stMapInfo[i].cTouchSerial, &touchId);
         if(Success != ret)
         {
@@ -2560,9 +2558,11 @@ static void remap_from_file(Display *_dpy)
 
         if(check_monitor_connect(stMapInfo[i].cMonitorName))
         {
-            do_action(_dpy, touchId, stMapInfo[i].cMonitorName,True);
+            do_action(pDpy, touchId, stMapInfo[i].cMonitorName,True);
         }
     }
+
+    XCloseDisplay(pDpy);
     return;
 }
 
@@ -2825,9 +2825,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         /* 添加触摸屏鼠标设置 */
         set_touchscreen_cursor_rotation(screen,pop_flag);
 
-        Display *dpy = XOpenDisplay(NULL);
-        remap_from_file(dpy);
-        XCloseDisplay(dpy);
+        remap_from_file();
 
         /* poke mate-color-manager */
         apply_color_profiles ();
@@ -3535,7 +3533,7 @@ apply_default_configuration_from_file (UsdXrandrManager *manager, guint32 timest
 
 
 //IN: 触摸屏的ID
-static void set_touch_map(Display *pDisplay, int touchId)
+static void set_touch_map(int touchId)
 {
     char cName[64];
     int id = 0;
@@ -3544,22 +3542,22 @@ static void set_touch_map(Display *pDisplay, int touchId)
     Bool bPrimaryMapped = False; //主屏映射过标志
     char cPrimaryName[64];
     XRROutputInfo *pOutInfo = NULL;
-
-    get_primary_status(cPrimaryName, &bPrimaryMapped);
-    printf("[%s%d] name[%s] %d \n", __FUNCTION__, __LINE__, cPrimaryName, bPrimaryMapped);
-
+    Display *pDisplay = XOpenDisplay(NULL);
     if(NULL == pDisplay)
     {
         printf("[%s%d] pDisplay NULL\n", __FUNCTION__, __LINE__);
         return;
     }
+
+    get_primary_status(cPrimaryName, &bPrimaryMapped);
+    printf("[%s%d] name[%s] %d \n", __FUNCTION__, __LINE__, cPrimaryName, bPrimaryMapped);
+
     //该ID映射过则不再映射
     if(check_touch_map(touchId, cName))
     {
         printf("[%s%d] touchId[%d] has been mapped\n", __FUNCTION__, __LINE__, touchId);
-        return;
+        goto LEAVE;
     }
-
 
     int iXScreen = DefaultScreen(pDisplay);
     Window win = RootWindow(pDisplay, iXScreen);
@@ -3620,6 +3618,12 @@ static void set_touch_map(Display *pDisplay, int touchId)
         bMapOk = True;
     }
     log_msg("[%s %d] touchId[%d], bMap[%d] \n", __FUNCTION__, __LINE__, touchId, bMapOk);
+
+    if(NULL != pScreenRes)
+    XRRFreeScreenResources(pScreenRes);
+
+LEAVE:
+    XCloseDisplay(pDisplay);
     return;
 }
 static void listen_to_Xinput_Event()
@@ -3690,8 +3694,8 @@ static void listen_to_Xinput_Event()
                         log_msg("[%s%d] id=%ld \n",__FUNCTION__, __LINE__, pPreXDevInfo->id);
                         if(XInternAtom(pDisplay, XI_TOUCHSCREEN, True) == pPreXDevInfo->type)
                         {
-                            set_touch_map(pDisplay, pPreXDevInfo->id);
-                            remap_from_file(pDisplay);
+                            set_touch_map(pPreXDevInfo->id);
+                            remap_from_file();
                         }
                         break;
                     case XISlaveRemoved:
@@ -3796,9 +3800,7 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
         set_touchscreen_cursor_rotation(manager->priv->rw_screen,TRUE);
 
         printf("[%s%d] remap_from_file here \n", __FUNCTION__, __LINE__);
-        Display *dpy = XOpenDisplay(NULL);
-        remap_from_file(dpy);
-        XCloseDisplay(dpy);
+        remap_from_file();
 
         start_or_stop_icon (manager);
 
