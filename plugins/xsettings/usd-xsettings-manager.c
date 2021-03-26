@@ -548,6 +548,10 @@ xft_settings_set_xsettings (UkuiXSettingsManager *manager,
                                               g_str_equal (settings->rgba, "rgb") ? "lcddefault" : "none");
                 xsettings_manager_set_int (manager->priv->managers [i], "Gtk/CursorThemeSize", settings->cursor_size);
                 xsettings_manager_set_string (manager->priv->managers [i], "Gtk/CursorThemeName", settings->cursor_theme);
+                GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(),
+                                                               GDK_LEFT_PTR);
+                gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
+                g_object_unref(G_OBJECT(cursor));
         }
         ukui_settings_profile_end (NULL);
 }
@@ -628,7 +632,6 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
     if(!res)
         g_debug("Xresources File write failed ");
     /* end add by Shang Xiaoyang */
-
         update_property (add_string, "Xft.dpi",
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->scaled_dpi / 1024.0));
         update_property (add_string, "Xft.antialias",
@@ -690,17 +693,6 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
                 if (major >= 2) {
                     g_debug("set CursorNmae=%s", CursorsNames[i]);
                     XFixesSetCursorName(dpy, handle, CursorsNames[i]);
-
-                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
-                                                     CursorsNames[i],
-                                                     settings->cursor_size);
-
-                    GdkCursor *cursor = gdk_cursor_new_for_display(gdk_display_get_default(), GDK_LEFT_PTR);
-                    gdk_window_set_cursor(gdk_get_default_root_window(), cursor);
-                    gdk_x11_display_set_cursor_theme(gdk_display_get_default(),
-                                                     CursorsNames[i],
-                                                     settings->cursor_size);
-                    g_object_unref(G_OBJECT(cursor));
                 }
             }
             XFixesChangeCursorByName(dpy, handle, CursorsNames[i]);
@@ -963,6 +955,24 @@ setup_xsettings_managers (UkuiXSettingsManager *manager)
 
         return TRUE;
 }
+void send_session_dbus()
+{
+    GDBusConnection *con = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+    g_dbus_connection_call_sync (con,
+                                 "org.gnome.SessionManager",
+                                 "/org/gnome/SessionManager",
+                                 "org.gnome.SessionManager",
+                                 "startupfinished",
+                                 g_variant_new ("(ss)",
+                                                "ukui-settings-daemon",
+                                                "startupfinished"),
+                                 NULL,
+                                 G_DBUS_CALL_FLAGS_NONE,
+                                 -1,
+                                 NULL,
+                                 NULL);
+    g_object_unref (con);
+}
 
 gboolean
 ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
@@ -1029,6 +1039,8 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
         update_xft_settings (manager);
 
         start_fontconfig_monitor (manager);
+
+        send_session_dbus();
 
         overrides = g_settings_get_value (manager->priv->plugin_settings, XSETTINGS_OVERRIDE_KEY);
         for (i = 0; manager->priv->managers [i]; i++){

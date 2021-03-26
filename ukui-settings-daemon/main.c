@@ -497,6 +497,12 @@ is_running(const char *procname)
         }
 }
 
+void handler(int no)
+{
+    g_debug("catch SIGTERM signal, with exitcode %d", no);
+    exit(15);
+}
+
 int
 main (int argc, char *argv[])
 {
@@ -510,6 +516,7 @@ main (int argc, char *argv[])
 
         ukui_settings_profile_start (NULL);
 
+        signal(SIGTERM, handler);
         bindtextdomain (GETTEXT_PACKAGE, UKUI_SETTINGS_LOCALEDIR);
         bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
         textdomain (GETTEXT_PACKAGE);
