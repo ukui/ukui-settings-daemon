@@ -58,7 +58,7 @@ void LdsmTrashEmpty::windowLayoutInit()
     setWindowFlags(flags);
     setFixedSize(650,180);
     setWindowTitle(tr("Emptying the trash"));
-    setWindowIcon(QIcon("/new/prefix1/warning.png"));
+    setWindowIcon(QIcon::fromTheme("user-trash-full"));
     int dialog_width=width();
     int dialog_height=height();
     int rect_width=desk_rect.width();

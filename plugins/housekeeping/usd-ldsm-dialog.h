@@ -68,7 +68,7 @@ private:
     QString partition_name;
     QString mount_path;
 
-public Q_SLOTS:
+public:
     void checkButtonClicked(int);
     void checkButtonIgnore ();
     void checkButtonAnalyze ();

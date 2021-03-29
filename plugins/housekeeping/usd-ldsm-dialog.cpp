@@ -83,6 +83,7 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
     flags |=Qt::WindowCloseButtonHint;
     setWindowFlags(flags);
     setFixedSize(660,210);
+    setWindowIcon(QIcon::fromTheme("dialog-warning"));
     int dialog_width=width();
     int dialog_height=height();
     int rect_width=desk_rect.width();
@@ -120,12 +121,12 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
     ignore_button->setText(tr("Ignore"));
 
     if(this->has_trash){
-        trash_empty=new QPushButton(this);
+        trash_empty = new QPushButton(this);
         trash_empty->setGeometry(dialog_width-215,dialog_height-35,100,25);
         trash_empty->setText(tr("Empty Trash"));
     }
     if(display_baobab){
-        analyze_button=new QPushButton(this);
+        analyze_button = new QPushButton(this);
         analyze_button->setText(tr("Examine"));
         if(this->has_trash)
             analyze_button->setGeometry(dialog_width-320,dialog_height-35,100,25);
@@ -176,21 +177,24 @@ QString LdsmDialog::getCheckButtonText()
 
 void LdsmDialog::allConnectEvent(bool display_baobab)
 {
-    connect(ignore_check_button,SIGNAL(stateChanged(int)),
-            this,SLOT(checkButtonClicked(int)));
-    connect(ignore_button,SIGNAL(clicked()),
-            this,SLOT(checkButtonIgnore()));
-    if(has_trash)
-        connect(trash_empty,SIGNAL(clicked()),
-                this,SLOT(checkButtonTrashEmpty()));
-    if(display_baobab)
-        connect(analyze_button,SIGNAL(clicked()),
-                this,SLOT(checkButtonAnalyze()));
+    connect(ignore_check_button, &QCheckBox::stateChanged,
+            this,   &LdsmDialog::checkButtonClicked);
 
-    if(this->sender() == this->ignore_button)
-        qDebug()<<"Ignore button pressed!"<<endl;
+    connect(ignore_button, &QPushButton::clicked,
+            this,   &LdsmDialog::checkButtonIgnore);
+
+    if(has_trash)
+        connect(trash_empty, &QPushButton::clicked,
+                this,   &LdsmDialog::checkButtonTrashEmpty);
+
+    if(display_baobab)
+        connect(analyze_button, &QPushButton::clicked,
+                this, &LdsmDialog::checkButtonAnalyze);
+
+    if(sender() == ignore_button)
+        qDebug()<<"Ignore button pressed!";
     else
-        qDebug()<<"Other button pressed!"<<endl;
+        qDebug()<<"Other button pressed!";
 }
 
 //update gsettings "ignore-paths" key contents
@@ -228,32 +232,35 @@ void LdsmDialog::checkButtonClicked(int state)
 {
     QGSettings* settings;
     QStringList ignore_list;
+    QStringList ignoreStr;
     QList<QString>* ignore_paths;
     bool ignore,updated;
     int i;
     QList<QString>::iterator l;
-    QString paths_data;
-    ignore_paths=new QList<QString>();
-    settings=new QGSettings(SETTINGS_SCHEMA);
+
+    ignore_paths =new QList<QString>();
+    settings = new QGSettings(SETTINGS_SCHEMA);
     //get contents from "ignore-paths" key
-    ignore_list.append( settings->get(SETTINGS_IGNORE_PATHS).toString() );
+    if (!settings->get(SETTINGS_IGNORE_PATHS).toStringList().isEmpty())
+        ignore_list.append(settings->get(SETTINGS_IGNORE_PATHS).toStringList());
 
-    for(i=0;i<ignore_list.length();++i)
-        if(! ignore_list.at(i).isEmpty())
-            ignore_paths->push_back(ignore_list.at(i));
+    for(auto str: ignore_list){
+        if(!str.isEmpty())
+            ignore_paths->push_back(str);
+    }
 
-    ignore=state;
-    updated=update_ignore_paths(&ignore_paths,mount_path,ignore);
+    ignore = state;
+    updated = update_ignore_paths(&ignore_paths, mount_path, ignore);
 
     if(updated){
-        for(l=ignore_paths->begin();l!=ignore_paths->end();++l)
-            paths_data.append(*l);
+        for(l = ignore_paths->begin(); l != ignore_paths->end(); ++l){
+            ignoreStr.append(*l);
+        }
         //set latest contents to gsettings "ignore-paths" key
-        settings->set(SETTINGS_IGNORE_PATHS,QVariant::fromValue(paths_data));
+        settings->set(SETTINGS_IGNORE_PATHS, QVariant::fromValue(ignoreStr));
     }
     //free QList Memory
     if(ignore_paths){
-        //qDeleteAll(*ignore_paths);
         ignore_paths->clear();
     }
     delete settings;

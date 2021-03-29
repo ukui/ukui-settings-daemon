@@ -439,13 +439,18 @@ bool ukuiXSettingsManager::start()
         int screenNum = QGuiApplication::screens().length();
         for(int i = 0; i < screenNum; i++){
             QScreen *screen = QGuiApplication::screens().at(i);
-            qDebug()<<screen->geometry();
+            //qDebug()<<screen->geometry();
             if (screen->geometry().width() <= 1920 &&  screen->geometry().height() <= 1080)
                 state = true;
-            else
+            else {
                 state = false;
+                break;
+            }
         }
         if (state){
+            GSettings   *mGsettings;
+            mGsettings = (GSettings *)g_hash_table_lookup(this->gsettings, MOUSE_SCHEMA);
+            g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
             g_settings_set_double (gsettings, SCALING_FACTOR_KEY, 1.0);
         }
     }
