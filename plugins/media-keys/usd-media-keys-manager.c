@@ -1270,6 +1270,8 @@ do_action (UsdMediaKeysManager *manager,
                 do_shutdown_action (manager);
                 break;
 	case LOGOUT_KEY:
+	case LOGOUT_KEY1:
+	case LOGOUT_KEY2:
 		do_logout_action (manager);
 		break;
         case EJECT_KEY:
