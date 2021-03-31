@@ -72,7 +72,6 @@ void LdsmTrashEmpty::windowLayoutInit()
 
     first_text->setGeometry(66,20,560,30);
     font.setBold(true);
-    font.setPointSize(12);
     first_text->setFont(font);
     first_text->setText(tr("Empty all of the items from the trash?"));
     second_text->setGeometry(66,50,560,30*2);
@@ -80,9 +79,9 @@ void LdsmTrashEmpty::windowLayoutInit()
     second_text->setAlignment(Qt::AlignLeft);
     second_text->setText(tr("If you choose to empty the trash, all items in it will be permanently lost." \
                             "Please note that you can also delete them separately."));
-    cancel->setGeometry(dialog_width-120,dialog_height-35,100,25);
+    cancel->setGeometry(dialog_width-140,dialog_height-45,120,30);
     cancel->setText(tr("cancel"));
-    trash_empty->setGeometry(dialog_width-240,dialog_height-35,100,25);
+    trash_empty->setGeometry(dialog_width-270,dialog_height-45,120,30);
     trash_empty->setText(tr("Empty Trash"));
 }
 

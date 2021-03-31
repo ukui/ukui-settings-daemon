@@ -103,35 +103,34 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
     picture_label->setAlignment(Qt::AlignCenter);
     picture_label->setStyleSheet(QString("border-image:url(../ldsm_dialog/warning.png);"));
     //warning information text
-    primary_label->setGeometry(66,20,560,20);
-    second_label->setGeometry(66,50,560,20*2);
+    primary_label->setGeometry(66,20,560,30);
+    second_label->setGeometry(66,50,560,30*2);
     second_label->setWordWrap(true);
     second_label->setAlignment(Qt::AlignLeft);
 
     font.setBold(true);
-    font.setPointSize(12);
     primary_label->setFont(font);
     primary_label->setText(getPrimaryText());
     second_label->setText(getSecondText());
     //gsettings set box
-    ignore_check_button->setGeometry(66,100,300,20);
+    ignore_check_button->setGeometry(70,135,400,30);
     ignore_check_button->setText(getCheckButtonText());
 
-    ignore_button->setGeometry(dialog_width-110,dialog_height-35,100,25);
+    ignore_button->setGeometry(dialog_width-110,dialog_height-40,100,30);
     ignore_button->setText(tr("Ignore"));
 
     if(this->has_trash){
         trash_empty = new QPushButton(this);
-        trash_empty->setGeometry(dialog_width-215,dialog_height-35,100,25);
+        trash_empty->setGeometry(dialog_width-240,dialog_height-40,120,30);
         trash_empty->setText(tr("Empty Trash"));
     }
     if(display_baobab){
         analyze_button = new QPushButton(this);
         analyze_button->setText(tr("Examine"));
         if(this->has_trash)
-            analyze_button->setGeometry(dialog_width-320,dialog_height-35,100,25);
+            analyze_button->setGeometry(dialog_width-320,dialog_height-40,100,30);
         else
-            analyze_button->setGeometry(dialog_width-215,dialog_height-35,100,25);
+            analyze_button->setGeometry(dialog_width-215,dialog_height-40,100,30);
     }
 }
 
