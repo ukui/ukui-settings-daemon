@@ -974,6 +974,54 @@ void send_session_dbus()
     g_object_unref (con);
 }
 
+static void
+update_scale_settings (UkuiXSettingsManager *manager)
+{
+        GdkScreen   *screen;
+        GdkRectangle dest_left, dest_right;
+        int width , height, monitor, monitor_left, monitor_right, screen_num;
+        GSettings   *gsettings;
+        int          scale;
+        screen = gdk_screen_get_default();
+        width = gdk_screen_get_width(screen);
+        height = gdk_screen_get_height(screen);
+        screen_num = gdk_screen_get_n_monitors(screen);
+
+        monitor_left = gdk_screen_get_monitor_at_point(screen,0,0);
+        gdk_screen_get_monitor_geometry(screen, monitor_left, &dest_left);
+
+        if (screen_num > 1){
+            monitor_right = gdk_screen_get_monitor_at_point(screen,width,0);
+            gdk_screen_get_monitor_geometry(screen, monitor_right, &dest_right);
+        }
+
+        gsettings = g_hash_table_lookup(manager->priv->gsettings, XSETTINGS_PLUGIN_SCHEMA);
+        scale = g_settings_get_int (gsettings, XSETTINGS_SCALING_KEY);
+        if(scale > 1.0){
+            gboolean state = FALSE;
+            if (dest_left.width <= 1920 && dest_left.height <= 1080){
+                if (screen_num == 1) {
+                    state = TRUE;
+                }
+                else if (screen_num > 1 && dest_right.width <= 1920 && dest_right.height <= 1080){
+                    state = TRUE;
+                }
+                else {
+                    state = FALSE;
+                }
+            }
+            else{
+                state = FALSE;
+            }
+            if (state) {
+                GSettings   *mGsettings;
+                mGsettings = g_hash_table_lookup(manager->priv->gsettings, MOUSE_SCHEMA);
+                g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
+                g_settings_set_int (gsettings, XSETTINGS_SCALING_KEY, 1);
+            }
+        }
+}
+
 gboolean
 ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
                                GError               **error)
@@ -1035,6 +1083,8 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
         /* Plugin settings (GTK modules and Xft) */
         manager->priv->plugin_settings = g_settings_new (XSETTINGS_PLUGIN_SCHEMA);
         g_signal_connect_object (manager->priv->plugin_settings, "changed", G_CALLBACK (plugin_callback), manager, 0);
+
+        update_scale_settings (manager);
 
         update_xft_settings (manager);
 
