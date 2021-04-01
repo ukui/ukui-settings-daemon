@@ -1252,6 +1252,10 @@ do_action (UsdMediaKeysManager *manager,
         char *cmd;
         char *path;
 
+        gboolean shot_res = g_settings_get_boolean (manager->priv->screenshot_settings, RUNINGS_KEY);
+        if(shot_res)
+            return FALSE;
+
         switch (type) {
         case TOUCHPAD_KEY:
                 do_touchpad_action (manager);
@@ -1469,13 +1473,11 @@ acme_filter_events (GdkXEvent           *xevent,
 }
 
 static gboolean m_CtrlFlag = FALSE;
-static gboolean m_winFlag = FALSE;
 
 void key_release_str (UsdMediaKeysManager *manager,
                       char *key_str)
 {
     static gboolean ctrlFlag = FALSE;
-    static gboolean winFlag = FALSE;
     if (g_strcmp0(key_str, "Shift_L+Print")==0 ||
         g_strcmp0(key_str, "Shift_R+Print")==0 ){
         do_area_screenshot_action(manager);
@@ -1491,18 +1493,6 @@ void key_release_str (UsdMediaKeysManager *manager,
           do_system_monitor_action (manager);
           return;
     }
-
-    if(strncmp(key_str, "Super_L+", 8)==0 ||
-       strncmp(key_str, "Super_R+", 8)==0 )
-        winFlag = TRUE;
-
-    if(winFlag && g_strcmp0(key_str, "Super_L") == 0 ||
-       winFlag && g_strcmp0(key_str, "Super_R") == 0){
-        winFlag = FALSE;
-        return;
-    } else if (m_winFlag && g_strcmp0(key_str, "Super_L") == 0 || 
-               m_winFlag && g_strcmp0(key_str, "Super_R") == 0 )
-        return;
 
     if (strncmp(key_str, "Control_L+", 10) == 0 ||
         strncmp(key_str, "Control_R+", 10) == 0 )
@@ -1525,14 +1515,6 @@ void key_release_str (UsdMediaKeysManager *manager,
                                                          POINTER_KEY)));
     }
 
-    if (g_strcmp0 (key_str, "Super_L") == 0 ||
-        g_strcmp0 (key_str, "Super_R") == 0 )
-    {
-        gboolean sess_res = g_settings_get_boolean (manager->priv->session_settings, WIN_KEY);
-        gboolean shot_res = g_settings_get_boolean (manager->priv->screenshot_settings, RUNINGS_KEY);
-        if (!sess_res && !shot_res)
-            execute (manager, "ukui-menu", FALSE, FALSE);
-    }
 }
 
 void key_press_str (char *key_str)
@@ -1544,14 +1526,6 @@ void key_press_str (char *key_str)
     if(m_CtrlFlag && g_strcmp0(key_str, "Control_L") == 0 ||
        m_CtrlFlag && g_strcmp0(key_str, "Control_R") == 0 )
         m_CtrlFlag = FALSE;
-
-    if (strncmp(key_str, "Super_L+", 8) == 0 ||
-        strncmp(key_str, "Super_R+", 8) == 0 )
-        m_winFlag = TRUE;
-
-    if (m_winFlag && g_strcmp0(key_str, "Super_L") == 0 ||
-        m_winFlag && g_strcmp0(key_str, "Super_R") == 0 )
-        m_winFlag = FALSE;
 }
 
 void KeyReleaseModifier(UsdMediaKeysManager *manager,
