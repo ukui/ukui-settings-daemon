@@ -164,7 +164,6 @@ private:
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
-    bool               m_winFlag  = false;
     bool               m_ctrlFlag = false;
 };
 

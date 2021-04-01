@@ -166,7 +166,6 @@ void MediaKeysManager::mediaKeysStop()
 void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
 {
     QString KeyName;
-    static bool winFlag = false;
     static bool ctrlFlag = false;
 
     if (keyStr.compare("Shift_L+Print") == 0 ||
@@ -186,21 +185,6 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
         return;
     }
 
-    if (keyStr.length() >= 8)
-        KeyName = keyStr.left(8);
-
-    if(KeyName.compare("Super_L+") == 0 ||
-       KeyName.compare("Super_R+") == 0 )
-        winFlag = true;
-
-    if ((winFlag && keyStr.compare("Super_L") == 0 )||
-        (winFlag && keyStr.compare("Super_R") == 0 )){
-        winFlag = false;
-        return;
-    } else if((m_winFlag && keyStr.compare("Super_L") == 0 )||
-              (m_winFlag && keyStr.compare("Super_R") == 0 ))
-            return;
-
     if (keyStr.length() >= 10)
         KeyName = keyStr.left(10);
 
@@ -216,11 +200,6 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
               (m_ctrlFlag && keyStr.compare("Control_R") == 0 ))
             return;
 
-    if(keyStr.compare("Super_L") == 0 ||
-       keyStr.compare("Super_R") == 0 ){
-        if (!sessionSettings->get(WIN_KEY).toBool())
-            executeCommand("ukui-menu", nullptr);
-    }
     if (keyStr.compare("Control_L") == 0 ||
         keyStr.compare("Control_R") == 0)
         pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
@@ -229,19 +208,6 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
 void MediaKeysManager::XkbEventsPress(const QString &keyStr)
 {
     QString KeyName;
-
-    if (keyStr.length() >= 8)
-        KeyName = keyStr.left(8);
-
-    if(KeyName.compare("Super_L+") == 0 ||
-       KeyName.compare("Super_R+") == 0 )
-        m_winFlag = true;
-
-    if(m_winFlag && keyStr.compare("Super_L") == 0 ||
-       m_winFlag && keyStr.compare("Super_R") == 0 ){
-        m_winFlag = false;
-        return;
-    }
 
     if (keyStr.length() >= 10)
         KeyName = keyStr.left(10);
