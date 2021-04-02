@@ -92,6 +92,7 @@ public:
     void SetDevicepresenceHandler ();
     void SetMouseWheelSpeed (int speed);
     void SetMouseSettings();
+    void SetTouchSettings();
 
 private: 
     friend GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,

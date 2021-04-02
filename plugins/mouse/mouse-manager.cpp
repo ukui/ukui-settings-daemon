@@ -1659,7 +1659,11 @@ void MouseManager::SetMouseSettings ()
 
     SetMotionAll ();
     SetMiddleButtonAll (settings_mouse->get(KEY_MIDDLE_BUTTON_EMULATION).toBool());
+    SetMouseWheelSpeed (settings_mouse->get(KEY_MOUSE_WHEEL_SPEED).toInt());
+}
 
+void MouseManager::SetTouchSettings ()
+{
     SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
 
     SetTapToClickAll ();
@@ -1722,5 +1726,6 @@ void MouseManager::MouseManagerIdleCb()
 
     SetDevicepresenceHandler ();
     SetMouseSettings ();
+    SetTouchSettings ();
     SetLocatePointer (settings_mouse->get(KEY_MOUSE_LOCATE_POINTER).toBool());
 }
