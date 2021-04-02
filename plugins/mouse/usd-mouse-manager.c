@@ -1778,7 +1778,7 @@ set_mouse_settings (UsdMouseManager *manager)
         set_left_handed_all (manager, mouse_left_handed, touchpad_left_handed);
 
         set_motion_all (manager);
-        set_mouse_wheel_speed (manager, g_settings_get_int (smanager->priv->settings_mous, KEY_MOUSE_WHEEL_SPEED));
+        set_mouse_wheel_speed (manager, g_settings_get_int (manager->priv->settings_mouse, KEY_MOUSE_WHEEL_SPEED));
         //set_middle_button_all (g_settings_get_boolean (manager->priv->settings_mouse, KEY_MIDDLE_BUTTON_EMULATION));
 }
 
