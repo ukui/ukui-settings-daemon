@@ -19,6 +19,7 @@ usd_gschemas_in = \
 	org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.mpris.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.mouse.gschema.xml.in \
+	org.ukui.SettingsDaemon.plugins.sharing.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.smartcard.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.sound.gschema.xml.in \
 	org.ukui.SettingsDaemon.plugins.typing-break.gschema.xml.in \

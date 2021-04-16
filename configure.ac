@@ -59,11 +59,11 @@ dnl ---------------------------------------------------------------------------
 DBUS_GLIB_REQUIRED_VERSION=0.74
 GLIB_REQUIRED_VERSION=2.36.0
 GIO_REQUIRED_VERSION=2.26.0
-GTK_REQUIRED_VERSION=3.0.0
-MATE_DESKTOP_REQUIRED_VERSION=1.9.4
-LIBMATEKBD_REQUIRED_VERSION=1.7.0
+GTK_REQUIRED_VERSION=3.14.0
+MATE_DESKTOP_REQUIRED_VERSION=1.17.0
+LIBMATEKBD_REQUIRED_VERSION=1.17.0
 LIBNOTIFY_REQUIRED_VERSION=0.7.0
-LIBMATEMIXER_REQUIRED_VERSION=1.9.0
+LIBMATEMIXER_REQUIRED_VERSION=1.10.0
 
 EXTRA_COMPILE_WARNINGS(yes)
 
@@ -79,9 +79,9 @@ PKG_CHECK_MODULES(SETTINGS_DAEMON,
 
 PKG_CHECK_MODULES(SETTINGS_PLUGIN,
 	gtk+-3.0 >= $GTK_REQUIRED_VERSION
-	gio-2.0 >= $GIO_REQUIRED_VERSION
     gudev-1.0
     xtst
+	gio-2.0 >= $GIO_REQUIRED_VERSION
 	dbus-glib-1 >= $DBUS_GLIB_REQUIRED_VERSION
 )
 
@@ -463,6 +463,7 @@ plugins/keyboard/Makefile
 plugins/media-keys/Makefile
 plugins/mpris/Makefile
 plugins/mouse/Makefile
+plugins/sharing/Makefile
 plugins/smartcard/Makefile
 plugins/sound/Makefile
 plugins/typing-break/Makefile
@@ -484,6 +485,7 @@ data/org.ukui.SettingsDaemon.plugins.datetime.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.keybindings.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.keyboard.gschema.xml
+data/org.ukui.SettingsDaemon.plugins.sharing.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.mpris.gschema.xml
 data/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml

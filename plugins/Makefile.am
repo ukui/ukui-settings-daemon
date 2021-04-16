@@ -13,6 +13,7 @@ enabled_plugins =	\
 	media-keys	\
 	mpris		\
 	mouse		\
+	sharing		\
 	sound		\
 	typing-break	\
 	xrandr		\
