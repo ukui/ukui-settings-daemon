@@ -335,15 +335,15 @@ get_window_scale_auto ()
 /* Get the key value to set the zoom
  * 获取要设置缩放的键值
  */
-static int
+static double
 get_window_scale (UkuiXSettingsManager *manager)
 {
         GSettings   *gsettings;
-        gint         scale;
+        double         scale;
 
         /* Get scale factor from gsettings */
         gsettings = g_hash_table_lookup (manager->priv->gsettings, XSETTINGS_PLUGIN_SCHEMA);
-        scale = g_settings_get_int (gsettings, XSETTINGS_SCALING_KEY);
+        scale = g_settings_get_double (gsettings, XSETTINGS_SCALING_KEY);
 
         /* Auto-detect */
         if (scale == 0)
@@ -422,9 +422,9 @@ typedef struct
         gboolean    hinting;
 
         int         scaled_dpi;
-        int         window_scale;
-        
+        double      window_scale;
         int         dpi;
+
         char       *cursor_theme;
         int         cursor_size;
         const char *rgba;
@@ -445,7 +445,7 @@ xft_settings_get (UkuiXSettingsManager *manager,
         char      *hinting;
         char      *rgba_order;
         double     dpi;
-        gint       scale;
+        double     scale;
 
         mouse_gsettings = g_hash_table_lookup (manager->priv->gsettings, MOUSE_SCHEMA);
 
@@ -455,10 +455,17 @@ xft_settings_get (UkuiXSettingsManager *manager,
         dpi = get_dpi_from_gsettings_or_x_server (manager->priv->gsettings_font);
         scale = get_window_scale (manager);
 
+        if (scale >= 0 && scale <= 1.5) {
+            settings->window_scale = 1;
+        } else if (scale >= 1.75 && scale <= 2.5) {
+            settings->window_scale = 2;
+        } else if (scale >= 2.75) {
+            settings->window_scale = 3;
+        }
+
         settings->antialias = TRUE;
         settings->hinting = TRUE;
         settings->hintstyle = "hintslight";
-        settings->window_scale = scale;
         settings->dpi = dpi * 1024; /* Xft wants 1/1024ths of an inch */
         settings->scaled_dpi = dpi * scale * 1024;
 
