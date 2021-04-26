@@ -5,6 +5,10 @@ NULL =
 
 plugin_LTLIBRARIES = libmedia-keys.la
 
+themedir = $(pkgdatadir)/icons/scalable/status
+iconsdir = $(themedir)
+icons_DATA = \
+			 audio-volume-high.svg  audio-volume-low.svg  audio-volume-medium.svg  audio-volume-muted.svg
 BUILT_SOURCES = 			\
 	usd-media-keys-manager-glue.h	\
 	usd-marshal.h			\
@@ -137,7 +141,8 @@ EXTRA_DIST = 				\
 	usd-media-keys-manager.xml	\
 	usd-marshal.list		\
 	$(plugin_in_files)		\
-	$(gtkbuilder_DATA)
+	$(gtkbuilder_DATA)		\
+	$(icons_DATA)
 
 CLEANFILES = 			\
 	$(BUILT_SOURCES)	\

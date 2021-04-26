@@ -357,10 +357,10 @@ render_speaker (UsdMediaKeysWindow *window,
         int                icon_size;
         int                n;
         static const char *icon_names[] = {
-                "audio-volume-muted",
-                "audio-volume-low",
-                "audio-volume-medium",
-                "audio-volume-high",
+                "/usr/share/ukui-settings-daemon/icons/scalable/status/audio-volume-muted.svg",
+                "/usr/share/ukui-settings-daemon/icons/scalable/status/audio-volume-low.svg",
+                "/usr/share/ukui-settings-daemon/icons/scalable/status/audio-volume-medium.svg",
+                "/usr/share/ukui-settings-daemon/icons/scalable/status/audio-volume-high.svg",
                 NULL
         };
 
@@ -378,15 +378,13 @@ render_speaker (UsdMediaKeysWindow *window,
 
         icon_size = (int)width;
 
-        pixbuf = load_pixbuf (window, icon_names[n], icon_size);
-
+        pixbuf = gdk_pixbuf_new_from_file_at_size (icon_names[n], width, height, NULL);
         if (pixbuf == NULL) {
                 return FALSE;
         }
 
         gdk_cairo_set_source_pixbuf (cr, pixbuf, _x0, _y0);
         cairo_paint_with_alpha (cr, USD_OSD_WINDOW_FG_ALPHA);
-
         g_object_unref (pixbuf);
 
         return TRUE;
