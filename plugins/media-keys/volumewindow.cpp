@@ -132,12 +132,41 @@ int doubleToInt(double d)
         return I;
 }
 
+QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source)
+{
+    QColor gray(255,255,255);
+    QColor standard (0,0,0);
+    QImage img = source.toImage();
+    for (int x = 0; x < img.width(); x++) {
+        for (int y = 0; y < img.height(); y++) {
+            auto color = img.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                if (qAbs(color.red()-gray.red())<20 && qAbs(color.green()-gray.green())<20 && qAbs(color.blue()-gray.blue())<20) {
+                    color.setRed(255);
+                    color.setGreen(255);
+                    color.setBlue(255);
+                    img.setPixelColor(x, y, color);
+                }
+                else {
+                    color.setRed(255);
+                    color.setGreen(255);
+                    color.setBlue(255);
+                    img.setPixelColor(x, y, color);
+                }
+            }
+        }
+    }
+    return QPixmap::fromImage(img);
+}
+
 void VolumeWindow::dialogShow()
 {
     mLabel->clear();
     mLabel->setNum(doubleToInt(mVolumeLevel/655.35));
 
-    mBut->setIcon(QIcon::fromTheme(mIconName));
+    QSize iconSize(32, 32);
+    mBut->setIcon(QIcon(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)))));
+
     show();
     mTimer->start(2000);
 }

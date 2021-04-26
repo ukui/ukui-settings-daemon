@@ -29,6 +29,7 @@
 #include <QString>
 #include <QPushButton>
 #include <QLabel>
+#include <QObject>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class VolumeWindow;}
@@ -47,6 +48,7 @@ public:
     void setVolumeMuted(bool);
     void setVolumeLevel(int);
     void setVolumeRange(int, int);
+    QPixmap drawLightColoredPixmap(const QPixmap &source);
 
 private Q_SLOTS:
     void timeoutHandle();
