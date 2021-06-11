@@ -455,6 +455,7 @@ xft_settings_get (UkuiXSettingsManager *manager,
         dpi = get_dpi_from_gsettings_or_x_server (manager->priv->gsettings_font);
         scale = get_window_scale (manager);
 
+        /*
         if (scale >= 0 && scale <= 1.5) {
             settings->window_scale = 1;
         } else if (scale >= 1.75 && scale <= 2.5) {
@@ -462,6 +463,8 @@ xft_settings_get (UkuiXSettingsManager *manager,
         } else if (scale >= 2.75) {
             settings->window_scale = 3;
         }
+        */
+        settings->window_scale = scale;
 
         settings->antialias = TRUE;
         settings->hinting = TRUE;
@@ -540,14 +543,16 @@ xft_settings_set_xsettings (UkuiXSettingsManager *manager,
 {
         int i;
         ukui_settings_profile_start (NULL);
-
+        double scale = get_window_scale(manager);
+        if (scale >= 2.0)
+              scale = scale - 1.0;
         for (i = 0; manager->priv->managers [i]; i++) {
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/Antialias", settings->antialias);
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/Hinting", settings->hinting);
                 xsettings_manager_set_string (manager->priv->managers [i], "Xft/HintStyle", settings->hintstyle);
                 
                 xsettings_manager_set_int (manager->priv->managers [i], "Gdk/WindowScalingFactor", settings->window_scale);
-                xsettings_manager_set_int (manager->priv->managers [i], "Gdk/UnscaledDPI", settings->dpi);
+                xsettings_manager_set_int (manager->priv->managers [i], "Gdk/UnscaledDPI", (double)settings->dpi * scale);
                 xsettings_manager_set_int (manager->priv->managers [i], "Xft/DPI", settings->scaled_dpi);
                 
                 xsettings_manager_set_string (manager->priv->managers [i], "Xft/RGBA", settings->rgba);
@@ -1002,9 +1007,9 @@ update_scale_settings (UkuiXSettingsManager *manager)
             gdk_screen_get_monitor_geometry(screen, monitor_right, &dest_right);
         }
 
-        gsettings = g_hash_table_lookup(manager->priv->gsettings, XSETTINGS_PLUGIN_SCHEMA);
-        scale = g_settings_get_int (gsettings, XSETTINGS_SCALING_KEY);
-        if(scale > 1.0){
+        gsettings = g_settings_new (XSETTINGS_PLUGIN_SCHEMA);
+        scale = g_settings_get_double (gsettings, XSETTINGS_SCALING_KEY);
+        if(scale > 1.25){
             gboolean state = FALSE;
             if (dest_left.width <= 1920 && dest_left.height <= 1080){
                 if (screen_num == 1) {
@@ -1022,11 +1027,13 @@ update_scale_settings (UkuiXSettingsManager *manager)
             }
             if (state) {
                 GSettings   *mGsettings;
-                mGsettings = g_hash_table_lookup(manager->priv->gsettings, MOUSE_SCHEMA);
+                mGsettings = g_settings_new (MOUSE_SCHEMA);
                 g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
-                g_settings_set_int (gsettings, XSETTINGS_SCALING_KEY, 1);
+                g_settings_set_double (gsettings, XSETTINGS_SCALING_KEY, 1.0);
+                g_object_unref (mGsettings);
             }
         }
+        g_object_unref (gsettings);
 }
 
 gboolean
@@ -1039,6 +1046,8 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
 
         g_debug ("Starting xsettings manager");
         ukui_settings_profile_start (NULL);
+
+        update_scale_settings (manager);
 
         if (!setup_xsettings_managers (manager)) {
                 g_set_error (error, USD_XSETTINGS_ERROR,
@@ -1090,8 +1099,6 @@ ukui_xsettings_manager_start (UkuiXSettingsManager *manager,
         /* Plugin settings (GTK modules and Xft) */
         manager->priv->plugin_settings = g_settings_new (XSETTINGS_PLUGIN_SCHEMA);
         g_signal_connect_object (manager->priv->plugin_settings, "changed", G_CALLBACK (plugin_callback), manager, 0);
-
-        update_scale_settings (manager);
 
         update_xft_settings (manager);
 
