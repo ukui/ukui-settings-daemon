@@ -47,13 +47,11 @@ case $1 in
     if [ "$user" = $USER ]; then
         DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         if [ $(gsettings get org.ukui.peripherals-touchpad disable-on-external-mouse) = false ];then exit 1; fi
-        gsettings set org.ukui.peripherals-touchpad touchpad-enabled false
-        notify-send --hint=int:transient:1 "Touchpad disabled."' &
+        gsettings set org.ukui.peripherals-touchpad touchpad-enabled false' &
     else
       DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         if [ $(gsettings get org.ukui.peripherals-touchpad disable-on-external-mouse) = false ];then exit 1; fi
-        gsettings set org.ukui.peripherals-touchpad touchpad-enabled false
-        notify-send --hint=int:transient:1 "Touchpad disabled."' &
+        gsettings set org.ukui.peripherals-touchpad touchpad-enabled false' &
     fi ;;
   --on )
     # syndaemon run if run previously and not running now
@@ -66,13 +64,11 @@ case $1 in
     if [ "$user" = $USER ]; then
         DISPLAY=$display XAUTHORITY=$xauthority bash -c '\
         if [ $(gsettings get org.ukui.peripherals-touchpad disable-on-external-mouse) = false ];then exit 1; fi
-        gsettings set org.ukui.peripherals-touchpad touchpad-enabled true
-        notify-send --hint=int:transient:1 "Touchpad enabled."' &
+        gsettings set org.ukui.peripherals-touchpad touchpad-enabled true' &
     else
         DISPLAY=$display XAUTHORITY=$xauthority su $user - -c '\
         if [ $(gsettings get org.ukui.peripherals-touchpad disable-on-external-mouse) = false ];then exit 1; fi
-        gsettings set org.ukui.peripherals-touchpad touchpad-enabled true
-        notify-send --hint=int:transient:1 "Touchpad enabled."' &
+        gsettings set org.ukui.peripherals-touchpad touchpad-enabled true' &
     fi ;;
   * ) usage && exit
 esac
