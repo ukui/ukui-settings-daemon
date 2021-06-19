@@ -993,7 +993,7 @@ update_scale_settings (UkuiXSettingsManager *manager)
         GdkRectangle dest_left, dest_right;
         int width , height, monitor, monitor_left, monitor_right, screen_num;
         GSettings   *gsettings;
-        int          scale;
+        double       scale;
         screen = gdk_screen_get_default();
         width = gdk_screen_get_width(screen);
         height = gdk_screen_get_height(screen);
@@ -1028,7 +1028,7 @@ update_scale_settings (UkuiXSettingsManager *manager)
             if (state) {
                 GSettings   *mGsettings;
                 mGsettings = g_settings_new (MOUSE_SCHEMA);
-                g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
+                g_settings_set_int (mGsettings, CURSOR_SIZE_KEY, 24);
                 g_settings_set_double (gsettings, XSETTINGS_SCALING_KEY, 1.0);
                 g_object_unref (mGsettings);
             }
