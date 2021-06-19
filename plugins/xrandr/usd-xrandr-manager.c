@@ -1735,12 +1735,11 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         mate_rr_output_info_set_active (output, TRUE);
                         mate_rr_output_info_set_rotation (output, MATE_RR_ROTATION_0);
                         just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
-                        num ++;
                 } else if (!mate_rr_output_info_is_connected (output) && mate_rr_output_info_is_active (output))
                         mate_rr_output_info_set_active (output, FALSE);
         }
-
-        if (num > 0){
+        num = gdk_screen_get_n_monitors(gdk_screen_get_default());
+        if (num > 1){
             g_object_unref (config);
             config = make_clone_setup (priv->rw_screen);
             applicable = mate_rr_config_applicable (config, priv->rw_screen, NULL);
@@ -2750,7 +2749,6 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
 	    gboolean pop_flag = FALSE;
-
         if (!priv->running)
                 return;
 
@@ -3744,7 +3742,6 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                 log_close ();
                 return FALSE;
         }
-
         g_signal_connect (manager->priv->rw_screen, "changed", G_CALLBACK (on_randr_event), manager);
 
         log_msg ("State of screen at startup:\n");
@@ -3784,10 +3781,17 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
         }
 
         show_timestamps_dialog (manager, "Startup");
-        if (!apply_stored_configuration_at_startup (manager, GDK_CURRENT_TIME)) /* we don't have a real timestamp at startup anyway */
-                if (!apply_default_configuration_from_file (manager, GDK_CURRENT_TIME))
-                        if (!g_settings_get_boolean (manager->priv->settings, CONF_KEY_USE_XORG_MONITOR_SETTINGS))
+        if (!apply_stored_configuration_at_startup (manager, GDK_CURRENT_TIME)){ /* we don't have a real timestamp at startup anyway */
+                if (!apply_default_configuration_from_file (manager, GDK_CURRENT_TIME)){
+                        guint32 config_timestamp;
+                        mate_rr_screen_get_timestamps (manager->priv->rw_screen, NULL, &config_timestamp);
+                        auto_configure_outputs (manager, config_timestamp);
+                        ensure_current_configuration_is_saved();
+                        if (!g_settings_get_boolean (manager->priv->settings, CONF_KEY_USE_XORG_MONITOR_SETTINGS)){
                                 apply_default_boot_configuration (manager, GDK_CURRENT_TIME);
+			}
+		}
+	}
 
         log_msg ("State of screen after initial configuration:\n");
         log_screen (manager->priv->rw_screen);
