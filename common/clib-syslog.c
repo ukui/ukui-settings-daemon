@@ -266,12 +266,14 @@ void write_log_to_file(char *buf, __uint16_t buf_len)
     const char *pWeekName[7] = {"SUN.log","MON.log","TUE.log","WED.log","THU.log","FRI.log","SAT.log"};
     FILE *lockfp;
     int fd;
-
+    int writeLen = buf_len;
     int rtWeekDay;
     char logFileName[128];
     char logMsg[2048];
     time_t t;
     struct tm tmTime;
+
+    t = writeLen;
     time(&t);
 //    localtime_r(&t, tmTime);//虽然线程安全但是容易死锁
     memset(logMsg,0x00,sizeof(logMsg));
@@ -299,7 +301,7 @@ void write_log_to_file(char *buf, __uint16_t buf_len)
     //写并同步！
     lockfp = fdopen(fd,"w+");
     snprintf(logMsg,sizeof(logMsg),"{%d-%02d-%02d %02d:%02d:%02d}:%s\n",tmTime.tm_year+1970, tmTime.tm_mon+1, tmTime.tm_mday,tmTime.tm_hour, tmTime.tm_min,tmTime.tm_sec,buf);
-    write(fd,(const void*)logMsg,strlen(logMsg));
+   writeLen = write(fd,(const void*)logMsg,strlen(logMsg));
 
     printf("%s",logMsg);
 
@@ -365,11 +367,11 @@ void syslog_to_self_dir(int logLevel, const char *moduleName, const char *fileNa
 int CheckProcessAlive(const char *pName){
     int ret = 0;
     char Cmd[512] = {0};
-    char *pAck;
+    char *pAck = NULL;
     char CmdAck[12];
-
     FILE * pPipe;
 
+    ret = *pAck;
     if (strlen(pName) > 400) {
         return 0;
     }

@@ -30,27 +30,15 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define LOG_LEVEL LOG_DEBUG
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+
 #include<time.h>
-#if 1
-#ifdef QT_NO_DEBUG
-#define LOG_LEVEL LOG_INFO
-#else
-#define LOG_LEVEL LOG_DEBUG
-#endif
 
-#else
-//__FILE__
-#define LOG_LEVEL LOG_DEBUG
-#endif
-
-#if 0
-#define USD_LOG(logLevel,...) {\
-   syslog_info(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
-}
-#else
 #define USD_LOG(logLevel,...) {\
    syslog_to_self_dir(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }
@@ -64,8 +52,7 @@ extern "C" {
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
 #define USD_LOG_SHOW_PARAM4(a,b,c,d) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
 
-#define USD_LOG(logLevel,...) syslog_info(logLevel, "MODULE_NAME", __FILE__, __func__, __LINE__, ##__VA_ARGS__);
-#endif
+
 
 /*
 * 日志参数初始化
@@ -95,5 +82,7 @@ void syslog_to_self_dir(int logLevel, const char *moduleName, const char *fileNa
 int CheckProcessAlive(const char *pName);
 #ifdef __cplusplus
 }
-#endif
+#endif //__cplusplus
+
+
 #endif

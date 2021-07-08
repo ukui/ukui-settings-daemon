@@ -407,8 +407,6 @@ void XrandrManager::applyConfigTimerHandle()
 
         USD_LOG(LOG_DEBUG,"[coolDown]cool down ok,,");
 
-
-
         mApplyConfigTimer->stop();
         mScreenCanBeApply = XrandrManager::coolDownStart;
         break;
