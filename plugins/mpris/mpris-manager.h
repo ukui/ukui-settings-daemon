@@ -29,6 +29,16 @@
 /** undef 'signals' from qt,avoid conflict with Glib
  *  undef qt中的 'signals' 关键字，避免与 Glib 冲突
  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "clib-syslog.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 #ifdef signals
 #undef signals
 #endif

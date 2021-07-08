@@ -12,7 +12,7 @@ DEFINES += MOUSE_LIBRARY
 CONFIG += c++11 no_keywords link_pkgconfig plugin
 CONFIG += app_bunale
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"mouse\\\"
 
 
 

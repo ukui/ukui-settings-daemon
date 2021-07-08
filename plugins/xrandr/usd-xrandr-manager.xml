@@ -1,23 +1,41 @@
 <!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
 <node>
-  <interface name="org.ukui.SettingsDaemon.XRANDR">
-    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="usd_xrandr_manager"/>
-    <method name="ApplyConfiguration">
-      <!-- This method is implemented, but deprecated in favor of the
-      same method in the XRANDR-2 interface defined below. -->
+  <interface name="org.ukui.SettingsDaemon.wayland">
+    <signal name="screenPrimaryChanged">
+      <arg name="x" type="i" direction="out"/>
+      <arg name="y" type="i" direction="out"/>
+      <arg name="width" type="i" direction="out"/>
+      <arg name="height" type="i" direction="out"/>
+    </signal>
+    <signal name="brightnessDown">
+    </signal>
+    <signal name="brightnessUp">
+    </signal>
+    <method name="x">
+      <arg type="i" direction="out"/>
     </method>
-  </interface>
-
-  <interface name="org.ukui.SettingsDaemon.XRANDR_2">
-    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="usd_xrandr_manager_2"/>
-    <method name="ApplyConfiguration">
-      <!-- transient-parent window for the confirmation dialog; use 0
-      for no parent -->
-      <arg name="parent_window_id" type="x" direction="in"/>
-
-      <!-- Timestamp used to present the confirmation dialog and (in
-      the future) for the RANDR calls themselves -->
-      <arg name="timestamp" type="x" direction="in"/>
+    <method name="y">
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="width">
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="height">
+      <arg type="i" direction="out"/>
+    </method>
+    <method name="scale">
+      <arg type="d" direction="out"/>
+    </method>
+    <method name="priScreenName">
+      <arg type="s" direction="out"/>
+    </method>
+    <method name="priScreenChanged">
+      <arg type="i" direction="out"/>
+      <arg name="x" type="i" direction="in"/>
+      <arg name="y" type="i" direction="in"/>
+      <arg name="width" type="i" direction="in"/>
+      <arg name="height" type="i" direction="in"/>
+      <arg name="name" type="s" direction="in"/>
     </method>
   </interface>
 </node>

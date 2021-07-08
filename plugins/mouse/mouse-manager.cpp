@@ -97,7 +97,7 @@ MouseManager * MouseManager::MouseManagerNew()
 
 bool MouseManager::MouseManagerStart()
 {
-    CT_SYSLOG(LOG_DEBUG,"-- Mouse Start Manager --");
+    USD_LOG(LOG_DEBUG,"-- Mouse Start Manager --");
 
     if (!supports_xinput_devices()){
         qWarning("XInput is not supported, not applying any settings");
@@ -112,7 +112,7 @@ bool MouseManager::MouseManagerStart()
 void MouseManager::MouseManagerStop()
 {
 
-    syslog(LOG_DEBUG,"-- Stopping Mouse Manager --");
+    USD_LOG(LOG_DEBUG,"-- Stopping Mouse Manager --");
 
     SetLocatePointer(FALSE);
 
@@ -263,7 +263,7 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
 
         XCloseDevice (display, device);
     } catch (int str) {
-        CT_SYSLOG(LOG_DEBUG,"MOUSE: WRING ID: %d",str);
+        USD_LOG(LOG_DEBUG,"MOUSE: WRING ID: %d",str);
         return FALSE;
     }
     return rc == Success;
@@ -304,7 +304,7 @@ void property_set_bool (XDeviceInfo *device_info,
             qWarning ("Error while setting %s on \"%s\"", property_name, device_info->name);
 
     } catch (int x) {
-        CT_SYSLOG(LOG_DEBUG,"MOUSE:Error while setting %s on \"%s\"", property_name, device_info->name)
+        USD_LOG(LOG_DEBUG,"MOUSE:Error while setting %s on \"%s\"", property_name, device_info->name)
 
     }
 }
@@ -564,7 +564,7 @@ void MouseManager::SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
 
         g_free (buttons);
     } catch (int x) {
-        CT_SYSLOG(LOG_DEBUG,"MOUSE :error id %d",x);
+        USD_LOG(LOG_DEBUG,"MOUSE :error id %d",x);
         return;
     }
 }
@@ -693,7 +693,7 @@ void MouseManager::SetMotionLegacyDriver (XDeviceInfo     *device_info)
             if (device == NULL)
                 throw 1;
         } catch (int x) {
-            CT_SYSLOG(LOG_DEBUG,"%s: error id %d","MOUSE", x);
+            USD_LOG(LOG_DEBUG,"%s: error id %d","MOUSE", x);
             return;
         }
             settings = settings_mouse;
@@ -958,7 +958,7 @@ void set_middle_button_libinput (XDeviceInfo *device_info,
         property_set_bool (device_info, device, "libinput Middle Emulation Enabled", 0, middle_button);
         XCloseDevice (display, device);
     } catch (int x) {
-        CT_SYSLOG(LOG_DEBUG,"%s:error id %d","MOUSE",x);
+        USD_LOG(LOG_DEBUG,"%s:error id %d","MOUSE",x);
         return;
     }
 }

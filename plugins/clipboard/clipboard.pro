@@ -10,7 +10,7 @@ QT += gui
 CONFIG += no_keywords c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS  MODULE_NAME=\\\"clipboard\\\"
 
 include($$PWD/../../common/common.pri)
 

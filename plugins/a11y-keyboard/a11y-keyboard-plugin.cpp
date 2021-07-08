@@ -6,7 +6,7 @@ A11yKeyboardManager *A11yKeyboardPlugin::UsdA11yManager= nullptr;
 
 A11yKeyboardPlugin::A11yKeyboardPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"A11yKeyboardPlugin initializing ");
+    USD_LOG(LOG_DEBUG,"A11yKeyboardPlugin initializing ");
     if(nullptr == UsdA11yManager)
         UsdA11yManager = A11yKeyboardManager::A11KeyboardManagerNew();
 
@@ -21,10 +21,10 @@ A11yKeyboardPlugin::~A11yKeyboardPlugin()
 void A11yKeyboardPlugin::activate()
 {
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"ctivating A11y-Keyboard Plugin");
+    USD_LOG(LOG_DEBUG,"ctivating A11y-Keyboard Plugin");
     res = UsdA11yManager->A11yKeyboardManagerStart();
     if(!res)
-        CT_SYSLOG(LOG_ERR,"Unable to start A11y-Keyboard manager");
+        USD_LOG(LOG_ERR,"Unable to start A11y-Keyboard manager");
 }
 
 PluginInterface * A11yKeyboardPlugin::getInstance()
@@ -37,7 +37,7 @@ PluginInterface * A11yKeyboardPlugin::getInstance()
 
 void A11yKeyboardPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating A11y-Keyboard plugin");
+    USD_LOG(LOG_DEBUG,"Deactivating A11y-Keyboard plugin");
     UsdA11yManager->A11yKeyboardManagerStop();
 }
 

@@ -6,7 +6,7 @@
 QT += gui core widgets x11extras
 TARGET = a11y-keyboard
 TEMPLATE = lib
-DEFINES += A11YKEYBOARD_LIBRARY
+DEFINES += A11YKEYBOARD_LIBRARY MODULE_NAME=\\\"a11y-keyboard\\\"
 
 CONFIG += c++11 no_keywords link_pkgconfig plugin
 CONFIG += app_bunale

@@ -81,7 +81,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
     mDbusInterface = new QDBusInterface(DBUS_NAME,MEDIAKEYS_DBUS_PATH,MEDIAKEYS_DBUS_NAME,
                                         conn);
 
-   syslog (LOG_DEBUG,"Starting mpris manager");
+   USD_LOG(LOG_DEBUG,"Starting mpris manager");
 
     /* Register all the names we wish to watch.*/
     mDbusWatcher->setWatchedServices(busNames);
@@ -90,7 +90,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
     connect(mDbusWatcher,SIGNAL(serviceUnregistered(const QString&)),this,SLOT(serviceUnregisteredSlot(const QString&)));
 
     if(!mDbusInterface->isValid()){
-        syslog(LOG_ERR,"create %s failed",MEDIAKEYS_DBUS_NAME.toLatin1().data());
+        USD_LOG(LOG_ERR,"create %s failed",MEDIAKEYS_DBUS_NAME.toLatin1().data());
         return false;
     }
 
@@ -102,7 +102,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
      */
     response = mDbusInterface->call("GrabMediaPlayerKeys","UsdMpris");
     if(QDBusMessage::ErrorMessage == response.ReplyMessage){
-        syslog(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+        USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
         return false;
     }
 
@@ -120,7 +120,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
 
 void MprisManager::MprisManagerStop()
 {
-    syslog (LOG_DEBUG,"Stopping mpris manager");
+    USD_LOG(LOG_DEBUG,"Stopping mpris manager");
 
     delete mDbusInterface;
     mDbusInterface = nullptr;
@@ -154,7 +154,7 @@ void MprisManager::serviceRegisteredSlot(const QString& service)
 {
     QString realPlayername;
 
-    syslog (LOG_DEBUG,"MPRIS Name Registered: %s\n", service.toLatin1().data());
+    USD_LOG(LOG_DEBUG,"MPRIS Name Registered: %s\n", service.toLatin1().data());
 
     if(DBUS_NAME == service){
         return;
@@ -177,7 +177,7 @@ void MprisManager::serviceRegisteredSlot(const QString& service)
 void MprisManager::serviceUnregisteredSlot(const QString& service)
 {
     QString realPlayername;
-    syslog (LOG_DEBUG,"MPRIS Name Unregistered: %s\n", service.toLatin1().data());
+    USD_LOG(LOG_DEBUG,"MPRIS Name Unregistered: %s\n", service.toLatin1().data());
 
     if(DBUS_NAME == service){
         if(nullptr != mDbusInterface){
@@ -237,7 +237,7 @@ void MprisManager::keyPressed(QString application,QString operation)
     playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKey);
     response = QDBusConnection::sessionBus().call(playerMsg);
     if(response.type() == QDBusMessage::ErrorMessage)
-        syslog(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+        USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
 }
 
 

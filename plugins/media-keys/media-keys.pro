@@ -3,7 +3,7 @@
 # Project created by QtCreator 2020-06-16T09:30:00
 #
 #-------------------------------------------------
-QT += gui widgets svg x11extras dbus
+QT += gui widgets svg x11extras dbus KGlobalAccel
 TEMPLATE = lib
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
@@ -20,7 +20,7 @@ LIBS += \
 
 include($$PWD/../../common/common.pri)
 
-DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
+DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H _FORTIFY_SOURCE=2 MODULE_NAME=\\\"mediakeys\\\"
 
 SOURCES += \
         devicewindow.cpp     \

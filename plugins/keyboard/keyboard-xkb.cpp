@@ -41,12 +41,12 @@ static bool                   inited_ok = false;
 
 KeyboardXkb::KeyboardXkb()
 {
-    CT_SYSLOG(LOG_DEBUG,"Keyboard Xkb initializing!");
+    USD_LOG(LOG_DEBUG,"Keyboard Xkb initializing!");
 }
 
 KeyboardXkb::~KeyboardXkb()
 {
-    CT_SYSLOG(LOG_DEBUG,"Keyboard Xkb free");
+    USD_LOG(LOG_DEBUG,"Keyboard Xkb free");
     if(settings_desktop)
         delete settings_desktop;
     if(settings_kbd)
@@ -252,7 +252,7 @@ void KeyboardXkb::usd_keyboard_new_device (XklEngine * engine)
 
 void KeyboardXkb::usd_keyboard_xkb_init(KeyboardManager* kbd_manager)
 {
-    CT_SYSLOG(LOG_DEBUG,"init --- XKB");
+    USD_LOG(LOG_DEBUG,"init --- XKB");
     Display *display;
 
     display    = QX11Info::display();

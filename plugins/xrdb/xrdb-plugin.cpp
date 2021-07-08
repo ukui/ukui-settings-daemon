@@ -18,18 +18,19 @@
  */
 #include "xrdb-plugin.h"
 #include "xrdb-manager.h"
-#include "clib-syslog.h"
+
+
 
 XrdbPlugin* XrdbPlugin::mXrdbPlugin = nullptr;
 
 XrdbPlugin::XrdbPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"XrdbPlugin initializing!");
+    USD_LOG(LOG_DEBUG,"XrdbPlugin initializing!");
     m_pIXdbMgr = ukuiXrdbManager::ukuiXrdbManagerNew();
 }
 
 XrdbPlugin::~XrdbPlugin() {
-    CT_SYSLOG(LOG_DEBUG,"XrdbPlugin deconstructor!");
+    USD_LOG(LOG_DEBUG,"XrdbPlugin deconstructor!");
     if (m_pIXdbMgr) {
         delete m_pIXdbMgr;
     }
@@ -38,17 +39,17 @@ XrdbPlugin::~XrdbPlugin() {
 
 void XrdbPlugin::activate () {
     GError* error;
-    CT_SYSLOG(LOG_DEBUG,"Activating xrdn plugin!");
+    USD_LOG(LOG_DEBUG,"Activating xrdn plugin!");
 
     error = NULL;
     if(!m_pIXdbMgr->start(&error)){
-        CT_SYSLOG(LOG_DEBUG,"unable to start xrdb manager: %s",error->message);
+        USD_LOG(LOG_DEBUG,"unable to start xrdb manager: %s",error->message);
         g_error_free(error);
     }
 }
 
 void XrdbPlugin::deactivate () {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating xrdn plugin!");
+    USD_LOG(LOG_DEBUG,"Deactivating xrdn plugin!");
     m_pIXdbMgr->stop();
 }
 

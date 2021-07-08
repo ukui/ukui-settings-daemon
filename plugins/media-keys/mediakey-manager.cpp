@@ -20,21 +20,31 @@
 #include "mediakey-manager.h"
 #include "eggaccelerators.h"
 
+#include <KF5/KGlobalAccel/KGlobalAccel>
+
+#include "clib-syslog.h"
+
 MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
 const int VOLUMESTEP = 6;
 #define midValue(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))
 
-#define MEDIAKEY_SCHEMA "org.ukui.SettingsDaemon.plugins.media-keys"
+#define UKUI_DAEMON_NAME    "ukui-settings-daemon"
+#define MEDIAKEY_SCHEMA     "org.ukui.SettingsDaemon.plugins.media-keys"
 
-#define POINTER_SCHEMA  "org.ukui.SettingsDaemon.plugins.mouse"
-#define POINTER_KEY     "locate-pointer"
+#define POINTER_SCHEMA      "org.ukui.SettingsDaemon.plugins.mouse"
+#define POINTER_KEY         "locate-pointer"
 
-#define SESSION_SCHEMA  "org.ukui.session"
-#define WIN_KEY         "win-key-release"
+#define SESSION_SCHEMA      "org.ukui.session"
+#define SESSION_WIN_KEY     "win-key-release"
+
+#define SHOT_SCHEMA         "org.ukui.screenshot"
+#define SHOT_RUN_KEY        "isrunning"
 
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
+    mTimer = new QTimer(this);
+
     gdk_init(NULL,NULL);
     //session bus 会话总线
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -46,6 +56,7 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 
 MediaKeysManager::~MediaKeysManager()
 {
+    delete mTimer;
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -55,6 +66,23 @@ MediaKeysManager* MediaKeysManager::mediaKeysNew()
     return mManager;
 }
 
+bool MediaKeysManager::getScreenLockState()
+{
+    bool res = false;
+    QDBusMessage response = QDBusConnection::sessionBus().call(mDbusScreensaveMessage);
+    if (response.type() == QDBusMessage::ReplyMessage)
+    {
+        if(response.arguments().isEmpty() == false) {
+            bool value = response.arguments().takeFirst().toBool();
+            res = value;
+        }
+    } else {
+        USD_LOG(LOG_DEBUG, "GetLockState called failed");
+    }
+    return res;
+}
+
+
 bool MediaKeysManager::mediaKeysStart(GError*)
 {
     mate_mixer_init();
@@ -63,11 +91,13 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     mSettings = new QGSettings(MEDIAKEY_SCHEMA);
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
+    shotSettings = new QGSettings(SHOT_SCHEMA);
+    if (shotSettings->get(SHOT_RUN_KEY).toBool())
+        shotSettings->set(SHOT_RUN_KEY, false);
 
-    mScreenList = new QList<GdkScreen*>();
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
-    mExecCmd = new QProcess();
+//    mExecCmd = new QProcess();
     mManager->mStream = NULL;
     mManager->mControl = NULL;
     mManager->mInputControl = NULL;
@@ -80,30 +110,475 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     if(mate_mixer_is_initialized()){
         mContext = mate_mixer_context_new();
         g_signal_connect(mContext,"notify::state",
-                         G_CALLBACK(onContextStateNotify),this);
+                         G_CALLBACK(onContextStateNotify),mManager);
         g_signal_connect(mContext,"notify::default-input-stream",
-                         G_CALLBACK(onContextDefaultInputNotify),this);
+                         G_CALLBACK(onContextDefaultInputNotify),mManager);
         g_signal_connect(mContext,"notify::default-output-stream",
-                         G_CALLBACK(onContextDefaultOutputNotify),this);
+                         G_CALLBACK(onContextDefaultOutputNotify),mManager);
         g_signal_connect(mContext,"notify::removed",
-                         G_CALLBACK(onContextStreamRemoved),this);
+                         G_CALLBACK(onContextStreamRemoved),mManager);
 
         mate_mixer_context_open(mContext);
     }
 
-    initScreens();
-    initKbd();
+    //initScreens();
+    initShortcuts();
+    //initKbd();
     initXeventMonitor();
-    l = begin = mScreenList->begin();
-    end = mScreenList->end();
-    for(; l != end; ++l){
-        //syslog(LOG_DEBUG,"adding key filter for screen: %d",gdk_screen_get_number(*l));
-        gdk_window_add_filter(gdk_screen_get_root_window(*l),
-                                 (GdkFilterFunc)acmeFilterEvents,
-                                 NULL);
-    }
+
+//    gdk_window_add_filter(gdk_screen_get_root_window(gdk_screen_get_default()),
+//                             (GdkFilterFunc)acmeFilterEvents,
+//                             NULL);
+
+    mDbusScreensaveMessage = QDBusMessage::createMethodCall("org.ukui.ScreenSaver",
+                                                            "/",
+                                                            "org.ukui.ScreenSaver",
+                                                            "GetLockState");
 
     return true;
+}
+
+void MediaKeysManager::initShortcuts()
+{
+    /* touchpad */
+    QAction *touchpad= new QAction(this);
+    touchpad->setObjectName(QStringLiteral("Toggle touchpad"));
+    touchpad->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
+    KGlobalAccel::self()->setShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
+    connect(touchpad, &QAction::triggered, this, [this]() {
+        doAction(TOUCHPAD_KEY);
+    });
+    /* sound mute*/
+    QAction *volumeMute= new QAction(this);
+    volumeMute->setObjectName(QStringLiteral("Volume mute"));
+    volumeMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+    KGlobalAccel::self()->setShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+    connect(volumeMute, &QAction::triggered, this, [this]() {
+        doAction(MUTE_KEY);
+    });
+
+    /*sound down*/
+    QAction *volumeDown= new QAction(this);
+    volumeDown->setObjectName(QStringLiteral("Volume down"));
+    volumeDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+    KGlobalAccel::self()->setShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+    connect(volumeDown, &QAction::triggered, this, [this]() {
+        doAction(VOLUME_DOWN_KEY);
+    });
+
+    /*sound up*/
+    QAction *volumeUp= new QAction(this);
+    volumeUp->setObjectName(QStringLiteral("Volume up"));
+    volumeUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+    KGlobalAccel::self()->setShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+    connect(volumeUp, &QAction::triggered, this, [this]() {
+        doAction(VOLUME_UP_KEY);
+    });
+
+    /*mic mute*/
+    QAction *micMute= new QAction(this);
+    micMute->setObjectName(QStringLiteral("Mic mute"));
+    micMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+    KGlobalAccel::self()->setShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+    connect(micMute, &QAction::triggered, this, [this]() {
+        doAction(MIC_MUTE_KEY);
+    });
+    /*shutdown*/
+    QAction *powerDown= new QAction(this);
+    powerDown->setObjectName(QStringLiteral("Shut down"));
+    powerDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
+    KGlobalAccel::self()->setShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
+    connect(powerDown, &QAction::triggered, this, [this]() {
+        doAction(POWER_KEY);
+    });
+    /*TODO eject*/
+    QAction *eject= new QAction(this);
+    eject->setObjectName(QStringLiteral("Eject"));
+    eject->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(eject, QList<QKeySequence>{Qt::Key_Eject});
+    KGlobalAccel::self()->setShortcut(eject, QList<QKeySequence>{Qt::Key_Eject});
+    connect(eject, &QAction::triggered, this, [this]() {
+        doAction(EJECT_KEY);
+    });
+    /*home*/
+    QAction *home= new QAction(this);
+    home->setObjectName(QStringLiteral("Home folder"));
+    home->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(home, QList<QKeySequence>{Qt::Key_Explorer});
+    KGlobalAccel::self()->setShortcut(home, QList<QKeySequence>{Qt::Key_Explorer});
+    connect(home, &QAction::triggered, this, [this]() {
+        doAction(HOME_KEY);
+    });
+    /*media*/
+    QAction *media= new QAction(this);
+    media->setObjectName(QStringLiteral("Launch media player"));
+    media->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(media, QList<QKeySequence>{Qt::Key_LaunchMedia});
+    KGlobalAccel::self()->setShortcut(media, QList<QKeySequence>{Qt::Key_LaunchMedia});
+    connect(media, &QAction::triggered, this, [this]() {
+        doAction(MEDIA_KEY);
+    });
+    /*calculator*/
+    QAction *cal= new QAction(this);
+    cal->setObjectName(QStringLiteral("Open calculator"));
+    cal->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(cal, QList<QKeySequence>{Qt::Key_Calculator});
+    KGlobalAccel::self()->setShortcut(cal, QList<QKeySequence>{Qt::Key_Calculator});
+    connect(cal, &QAction::triggered, this, [this]() {
+        doAction(CALCULATOR_KEY);
+    });
+    /*search*/
+    QAction *search= new QAction(this);
+    search->setObjectName(QStringLiteral("Open search"));
+    search->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(search, QList<QKeySequence>{Qt::Key_Search});
+    KGlobalAccel::self()->setShortcut(search, QList<QKeySequence>{Qt::Key_Search});
+    connect(search, &QAction::triggered, this, [this]() {
+        doAction(GLOBAL_SEARCH_KEY);
+    });
+    /*email*/
+    QAction *mail= new QAction(this);
+    mail->setObjectName(QStringLiteral("Launch email client"));
+    mail->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(mail, QList<QKeySequence>{Qt::Key_MailForward});
+    KGlobalAccel::self()->setShortcut(mail, QList<QKeySequence>{Qt::Key_MailForward});
+    connect(mail, &QAction::triggered, this, [this]() {
+        doAction(EMAIL_KEY);
+    });
+    /*screensaver*/
+    QAction *screensaver= new QAction(this);
+    screensaver->setObjectName(QStringLiteral("Lock screen"));
+    screensaver->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
+    KGlobalAccel::self()->setShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
+    connect(screensaver, &QAction::triggered, this, [this]() {
+        doAction(SCREENSAVER_KEY);
+    });
+    /*screensaver2*/
+    QAction *screensaver2= new QAction(this);
+    screensaver2->setObjectName(QStringLiteral("Lock screens"));
+    screensaver2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(screensaver2, QList<QKeySequence>{Qt::META + Qt::Key_L});
+    KGlobalAccel::self()->setShortcut(screensaver2, QList<QKeySequence>{Qt::META + Qt::Key_L});
+    connect(screensaver2, &QAction::triggered, this, [this]() {
+        doAction(SCREENSAVER_KEY_2);
+    });
+    /*ukui-control-center*/
+    QAction *ukuiControlCenter= new QAction(this);
+    ukuiControlCenter->setObjectName(QStringLiteral("Open system setting"));
+    ukuiControlCenter->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(ukuiControlCenter, QList<QKeySequence>{Qt::META + Qt::Key_I});
+    KGlobalAccel::self()->setShortcut(ukuiControlCenter, QList<QKeySequence>{Qt::META + Qt::Key_I});
+    connect(ukuiControlCenter, &QAction::triggered, this, [this]() {
+        doAction(SETTINGS_KEY);
+    });
+    /*ukui-control-center2*/
+    QAction *ukuiControlCenter2= new QAction(this);
+    ukuiControlCenter2->setObjectName(QStringLiteral("Open system settings"));
+    ukuiControlCenter2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(ukuiControlCenter2, QList<QKeySequence>{Qt::Key_Tools});
+    KGlobalAccel::self()->setShortcut(ukuiControlCenter2, QList<QKeySequence>{Qt::Key_Tools});
+    connect(ukuiControlCenter2, &QAction::triggered, this, [this]() {
+        doAction(SETTINGS_KEY_2);
+    });
+    /*peony*/
+    QAction *peony= new QAction(this);
+    peony->setObjectName(QStringLiteral("Open file manager"));
+    peony->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(peony, QList<QKeySequence>{Qt::META + Qt::Key_E});
+    KGlobalAccel::self()->setShortcut(peony, QList<QKeySequence>{Qt::META + Qt::Key_E});
+    connect(peony, &QAction::triggered, this, [this]() {
+        doAction(FILE_MANAGER_KEY);
+    });
+    /*peony2*/
+    QAction *peony2= new QAction(this);
+    peony2->setObjectName(QStringLiteral("Open File manager "));
+    peony2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
+    KGlobalAccel::self()->setShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
+    connect(peony2, &QAction::triggered, this, [this]() {
+        doAction(FILE_MANAGER_KEY_2);
+    });
+    /*help*/
+    QAction *help= new QAction(this);
+    help->setObjectName(QStringLiteral("Launch help browser"));
+    help->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(help, QList<QKeySequence>{Qt::Key_Help});
+    KGlobalAccel::self()->setShortcut(help, QList<QKeySequence>{Qt::Key_Help});
+    connect(help, &QAction::triggered, this, [this]() {
+        doAction(HELP_KEY);
+    });
+    /*www*/
+    QAction *www= new QAction(this);
+    www->setObjectName(QStringLiteral("Launch help browser2"));
+    www->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(www, QList<QKeySequence>{Qt::Key_WWW});
+    KGlobalAccel::self()->setShortcut(www, QList<QKeySequence>{Qt::Key_WWW});
+    connect(www, &QAction::triggered, this, [this]() {
+        doAction(WWW_KEY);
+    });
+    /*media play*/
+    QAction *mediaPlay= new QAction(this);
+    mediaPlay->setObjectName(QStringLiteral("Play/Pause"));
+    mediaPlay->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(mediaPlay, QList<QKeySequence>{Qt::Key_MediaPlay});
+    KGlobalAccel::self()->setShortcut(mediaPlay, QList<QKeySequence>{Qt::Key_MediaPlay});
+    connect(mediaPlay, &QAction::triggered, this, [this]() {
+        doAction(PLAY_KEY);
+    });
+    /*media pause*/
+    QAction *mediaPause= new QAction(this);
+    mediaPause->setObjectName(QStringLiteral("Pause playback"));
+    mediaPause->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(mediaPause, QList<QKeySequence>{Qt::Key_MediaPause});
+    KGlobalAccel::self()->setShortcut(mediaPause, QList<QKeySequence>{Qt::Key_MediaPause});
+    connect(mediaPause, &QAction::triggered, this, [this]() {
+        doAction(PAUSE_KEY);
+    });
+    /*media stop*/
+    QAction *mediaStop= new QAction(this);
+    mediaStop->setObjectName(QStringLiteral("Stop playback"));
+    mediaStop->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
+    KGlobalAccel::self()->setShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
+    connect(mediaStop, &QAction::triggered, this, [this]() {
+        doAction(STOP_KEY);
+    });
+    /*media preious*/
+    QAction *mediaPre= new QAction(this);
+    mediaPre->setObjectName(QStringLiteral("Previous track"));
+    mediaPre->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
+    KGlobalAccel::self()->setShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
+    connect(mediaPre, &QAction::triggered, this, [this]() {
+        doAction(PREVIOUS_KEY);
+    });
+    /*media next*/
+    QAction *mediaNext= new QAction(this);
+    mediaNext->setObjectName(QStringLiteral("Next track"));
+    mediaNext->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
+    KGlobalAccel::self()->setShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
+    connect(mediaNext, &QAction::triggered, this, [this]() {
+        doAction(NEXT_KEY);
+    });
+    /*audio Rewind*/
+    QAction *audioRewind= new QAction(this);
+    audioRewind->setObjectName(QStringLiteral("Audio Rewind"));
+    audioRewind->setProperty("componentName",QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(audioRewind, QList<QKeySequence>{Qt::Key_AudioRewind});
+    KGlobalAccel::self()->setShortcut(audioRewind, QList<QKeySequence>{Qt::Key_AudioRewind});
+    connect(audioRewind, &QAction::triggered, this, [this]() {
+        doAction(REWIND_KEY);
+    });
+    /*audio Forward*/
+    QAction *audioForward= new QAction(this);
+    audioForward->setObjectName(QStringLiteral("Audio Forward"));
+    audioForward->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(audioForward, QList<QKeySequence>{Qt::Key_AudioForward});
+    KGlobalAccel::self()->setShortcut(audioForward, QList<QKeySequence>{Qt::Key_AudioForward});
+    connect(audioForward, &QAction::triggered, this, [this]() {
+        doAction(FORWARD_KEY);
+    });
+    /*audio Repeat*/
+    QAction *audioRepeat= new QAction(this);
+    audioRepeat->setObjectName(QStringLiteral("Audio Repeat"));
+    audioRepeat->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(audioRepeat, QList<QKeySequence>{Qt::Key_AudioRepeat});
+    KGlobalAccel::self()->setShortcut(audioRepeat, QList<QKeySequence>{Qt::Key_AudioRepeat});
+    connect(audioRepeat, &QAction::triggered, this, [this]() {
+        doAction(REPEAT_KEY);
+    });
+    /*audio random*/
+    QAction *audioRandom= new QAction(this);
+    audioRandom->setObjectName(QStringLiteral("Audio Random"));
+    audioRandom->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(audioRandom, QList<QKeySequence>{Qt::Key_AudioRandomPlay});
+    KGlobalAccel::self()->setShortcut(audioRandom, QList<QKeySequence>{Qt::Key_AudioRandomPlay});
+    connect(audioRandom, &QAction::triggered, this, [this]() {
+        doAction(RANDOM_KEY);
+    });
+    /*TODO magnifier*/
+    QAction *magnifier= new QAction(this);
+    magnifier->setObjectName(QStringLiteral("Toggle Magnifier"));
+    magnifier->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(magnifier, QList<QKeySequence>{});
+    KGlobalAccel::self()->setShortcut(magnifier, QList<QKeySequence>{});
+    connect(magnifier, &QAction::triggered, this, [this]() {
+        doAction(MAGNIFIER_KEY);
+    });
+    /*TODO screen reader*/
+    QAction *screenReader= new QAction(this);
+    screenReader->setObjectName(QStringLiteral("Toggle Screen Reader"));
+    screenReader->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(screenReader, QList<QKeySequence>{});
+    KGlobalAccel::self()->setShortcut(screenReader, QList<QKeySequence>{});
+    connect(screenReader, &QAction::triggered, this, [this]() {
+        doAction(SCREENREADER_KEY);
+    });
+    /*TODO on-screen keyboard*/
+    QAction *onScreenKeyboard= new QAction(this);
+    onScreenKeyboard->setObjectName(QStringLiteral("Toggle On-screen Keyboard"));
+    onScreenKeyboard->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(onScreenKeyboard, QList<QKeySequence>{});
+    KGlobalAccel::self()->setShortcut(onScreenKeyboard, QList<QKeySequence>{});
+    connect(onScreenKeyboard, &QAction::triggered, this, [this]() {
+        doAction(ON_SCREEN_KEYBOARD_KEY);
+    });
+    /*logout*/
+    QAction *logout= new QAction(this);
+    logout->setObjectName(QStringLiteral("Open shutdown interface"));
+    logout->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(logout, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Delete});
+    KGlobalAccel::self()->setShortcut(logout, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Delete });
+    connect(logout, &QAction::triggered, this, [this]() {
+        doAction(LOGOUT_KEY);
+    });
+
+    QAction *logout1= new QAction(this);
+    logout1->setObjectName(QStringLiteral("Open shutdown Interface "));
+    logout1->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(logout1, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Period});
+    KGlobalAccel::self()->setShortcut(logout1, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Period });
+    connect(logout1, &QAction::triggered, this, [this]() {
+        doAction(LOGOUT_KEY);
+    });
+
+    /*terminal*/
+    QAction *terminal= new QAction(this);
+    terminal->setObjectName(QStringLiteral("Open terminal"));
+    terminal->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
+    KGlobalAccel::self()->setShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
+    connect(terminal, &QAction::triggered, this, [this]() {
+        doAction(TERMINAL_KEY);
+    });
+    /*terminal2*/
+    QAction *terminal2= new QAction(this);
+    terminal2->setObjectName(QStringLiteral("Open Terminal"));
+    terminal2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(terminal2, QList<QKeySequence>{Qt::META + Qt::Key_T});
+    KGlobalAccel::self()->setShortcut(terminal2, QList<QKeySequence>{Qt::META + Qt::Key_T});
+    connect(terminal2, &QAction::triggered, this, [this]() {
+        doAction(TERMINAL_KEY);
+    });
+    /*screenshot*/
+    QAction *screenshot= new QAction(this);
+    screenshot->setObjectName(QStringLiteral("Take a screenshot"));
+    screenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
+    KGlobalAccel::self()->setShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
+    connect(screenshot, &QAction::triggered, this, [this]() {
+        if(!mTimer->isActive()){
+            mTimer->singleShot(1000, this, [=]() {
+                doAction(SCREENSHOT_KEY);
+            });
+        }
+    });
+    /*window screenshot*/
+    QAction *wScreenshot= new QAction(this);
+    wScreenshot->setObjectName(QStringLiteral("Take a screenshot of a window"));
+    wScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
+    KGlobalAccel::self()->setShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
+    connect(wScreenshot, &QAction::triggered, this, [this]() {
+        if(!mTimer->isActive()){
+            mTimer->singleShot(1000, this, [=]() {
+                doAction(WINDOW_SCREENSHOT_KEY);
+            });
+        }
+    });
+    /*area screenshot*/
+    QAction *aScreenshot= new QAction(this);
+    aScreenshot->setObjectName(QStringLiteral("Take a screenshot of an area"));
+    aScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
+    KGlobalAccel::self()->setShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
+    connect(aScreenshot, &QAction::triggered, this, [this]() {
+        if(!mTimer->isActive()){
+            mTimer->singleShot(1000, this, [=]() {
+                doAction(AREA_SCREENSHOT_KEY);
+            });
+        }
+    });
+    /*window switch*/
+    QAction *wSwitch= new QAction(this);
+    wSwitch->setObjectName(QStringLiteral("open windows switch"));
+    wSwitch->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(wSwitch, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_W});
+    KGlobalAccel::self()->setShortcut(wSwitch, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_W});
+    connect(wSwitch, &QAction::triggered, this, [this]() {
+        doAction(WINDOWSWITCH_KEY);
+    });
+    /*window switch2*/
+    QAction *wSwitch2= new QAction(this);
+    wSwitch2->setObjectName(QStringLiteral("Open Windows switch"));
+    wSwitch2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(wSwitch2, QList<QKeySequence>{Qt::META + Qt::Key_W});
+    KGlobalAccel::self()->setShortcut(wSwitch2, QList<QKeySequence>{Qt::META + Qt::Key_W});
+    connect(wSwitch2, &QAction::triggered, this, [this]() {
+        doAction(WINDOWSWITCH_KEY_2);
+    });
+    /*system monitor*/
+    QAction *monitor= new QAction(this);
+    monitor->setObjectName(QStringLiteral("Open the system monitor"));
+    monitor->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(monitor, QList<QKeySequence>{Qt::CTRL + Qt::SHIFT + Qt::Key_Escape});
+    KGlobalAccel::self()->setShortcut(monitor, QList<QKeySequence>{Qt::CTRL + Qt::SHIFT + Qt::Key_Escape});
+    connect(monitor, &QAction::triggered, this, [this]() {
+        doAction(SYSTEM_MONITOR_KEY);
+    });
+    /*internal edit*/
+    QAction *editor= new QAction(this);
+    editor->setObjectName(QStringLiteral("Open the internet connectionr"));
+    editor->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(editor, QList<QKeySequence>{Qt::META + Qt::Key_K});
+    KGlobalAccel::self()->setShortcut(editor, QList<QKeySequence>{Qt::META + Qt::Key_K});
+    connect(editor, &QAction::triggered, this, [this]() {
+        doAction(CONNECTION_EDITOR_KEY);
+    });
+    /*ukui search*/
+    QAction *ukuiSearch= new QAction(this);
+    ukuiSearch->setObjectName(QStringLiteral("Open UKUI Search"));
+    ukuiSearch->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(ukuiSearch, QList<QKeySequence>{Qt::META + Qt::Key_S});
+    KGlobalAccel::self()->setShortcut(ukuiSearch, QList<QKeySequence>{Qt::META + Qt::Key_S});
+    connect(ukuiSearch, &QAction::triggered, this, [this]() {
+        doAction(GLOBAL_SEARCH_KEY);
+    });
+    /*kylin display switch*/
+    QAction *dSwitch= new QAction(this);
+    dSwitch->setObjectName(QStringLiteral("Open kylin display switch"));
+    dSwitch->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
+    KGlobalAccel::self()->setShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
+    connect(dSwitch, &QAction::triggered, this, [this]() {
+        doAction(KDS_KEY);
+    });
+    /*kylin display switch2*/
+    QAction *dSwitch2= new QAction(this);
+    dSwitch2->setObjectName(QStringLiteral("open kylin display switch"));
+    dSwitch2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(dSwitch2, QList<QKeySequence>{Qt::Key_Display});
+    KGlobalAccel::self()->setShortcut(dSwitch2, QList<QKeySequence>{Qt::Key_Display});
+    connect(dSwitch2, &QAction::triggered, this, [this]() {
+        doAction(KDS_KEY2);
+    });
+    /*TODO Ukui Sidebar*/
+//    QAction *sideBar= new QAction(this);
+//    sideBar->setObjectName(QStringLiteral("Open ukui sidebar"));
+//    sideBar->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+//    KGlobalAccel::self()->setDefaultShortcut(sideBar, QList<QKeySequence>{});
+//    KGlobalAccel::self()->setShortcut(sideBar, QList<QKeySequence>{});
+//    connect(sideBar, &QAction::triggered, this, [this]() {
+//        //doAction();
+//    });
 }
 
 void MediaKeysManager::mediaKeysStop()
@@ -112,39 +587,35 @@ void MediaKeysManager::mediaKeysStop()
     bool needFlush;
     int i;
 
-    syslog(LOG_DEBUG,"Stooping media keys manager!");
+    USD_LOG(LOG_DEBUG, "Stooping media keys manager!");
 
-    delete mSettings;
-    mSettings = nullptr;
-    delete pointSettings;
-    pointSettings = nullptr;
-    delete sessionSettings;
-    sessionSettings = nullptr;
-    delete mExecCmd;
-    mExecCmd = nullptr;
-    delete mVolumeWindow;
-    mVolumeWindow = nullptr;
-    delete mDeviceWindow;
-    mDeviceWindow = nullptr;
-
+    if (mSettings)
+        delete mSettings;
+    if (pointSettings)
+        delete pointSettings;
+    if (sessionSettings)
+        delete sessionSettings;
+    if (shotSettings)
+        delete shotSettings;
+//    if (mExecCmd)
+//        delete mExecCmd;
+    if (mVolumeWindow)
+        delete mVolumeWindow;
+    if (mDeviceWindow)
+        delete mDeviceWindow;
     XEventMonitor::instance()->exit();
 
-    l = mScreenList->begin();
-    end = mScreenList->end();
-    for(; l != end; ++l)
-        gdk_window_remove_filter(gdk_screen_get_root_window(*l),
-                                 (GdkFilterFunc)acmeFilterEvents,
-                                 NULL);
-    mScreenList->clear();
-    delete  mScreenList;
-    mScreenList = nullptr;
+    /*
+    gdk_window_remove_filter(gdk_screen_get_root_window(gdk_screen_get_default()),
+                             (GdkFilterFunc)acmeFilterEvents,
+                             NULL);
 
     needFlush = false;
     gdk_x11_display_error_trap_push(gdk_display_get_default());
     for(i = 0; i < HANDLED_KEYS; ++i){
         if(keys[i].key){
             needFlush = true;
-            grab_key_unsafe(keys[i].key,false,mScreenList);
+            grab_key_unsafe(keys[i].key,false,nullptr);
             g_free(keys[i].key->keycodes);
             g_free(keys[i].key);
             keys[i].key = NULL;
@@ -155,12 +626,17 @@ void MediaKeysManager::mediaKeysStop()
         gdk_display_flush(gdk_display_get_default());
 
     gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
-
-    g_clear_object(&mStream);
-    g_clear_object(&mControl);
-    g_clear_object(&mInputControl);
-    g_clear_object(&mInputStream);
-    g_clear_object(&mContext);
+    */
+    if(mStream != NULL)
+        g_clear_object(&mStream);
+    if(mControl != NULL)
+        g_clear_object(&mControl);
+    if(mInputControl != NULL)
+        g_clear_object(&mInputControl);
+    if(mInputStream != NULL)
+        g_clear_object(&mInputStream);
+    if(mContext != NULL)
+        g_clear_object(&mContext);
 }
 
 void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
@@ -168,7 +644,8 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     QString KeyName;
     static bool ctrlFlag = false;
 
-    if (keyStr.compare("Shift_L+Print") == 0 ||
+    /*
+    if (keyStr.compare("Shift_L+Print") == 0 || 
         keyStr.compare("Shift_R+Print") == 0 ){
         executeCommand("kylin-screenshot", " gui");
         return;
@@ -180,10 +657,11 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     }
 
     if(keyStr.compare("Control_L+Shift_L+Escape") == 0 || 
-       keyStr.compare("Shift_L+Control_L+Escape") == 0 ){
-        doOpenMonitor();
-        return;
+       keyStr.compare("Shift_L+Control_L+Escape") == 0) {
+          executeCommand("ukui-system-monitor", nullptr);
+          return;
     }
+    */
 
     if (keyStr.length() >= 10)
         KeyName = keyStr.left(10);
@@ -238,15 +716,8 @@ void MediaKeysManager::initScreens()
     GdkScreen  *screen;
 
     display = gdk_display_get_default();
-
     screen = gdk_display_get_default_screen(display);
-    if(NULL != screen)
-        mScreenList->append(screen);
-
-    if(mScreenList->count() > 0)
-        mCurrentScreen = mScreenList->at(0);
-    else
-        mCurrentScreen = NULL;
+    mCurrentScreen = screen;
 }
 
 GdkFilterReturn
@@ -317,8 +788,10 @@ void MediaKeysManager::onContextStreamRemoved(MateMixerContext *context,
             mate_mixer_context_get_stream (mManager->mContext, name);
 
         if (stream == mManager->mStream) {
-            g_clear_object (&mManager->mStream);
-            g_clear_object (&mManager->mControl);
+            if(mManager->mStream  && mManager->mControl){
+                g_clear_object (&mManager->mStream);
+                g_clear_object (&mManager->mControl);
+            }
         }
     }
 }
@@ -330,7 +803,7 @@ void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
 
     inputStream = mate_mixer_context_get_default_input_stream (mManager->mContext);
     if (inputStream != NULL)
-        inputControl = mate_mixer_stream_get_default_control (inputStream);\
+        inputControl = mate_mixer_stream_get_default_control (inputStream);
 
     if(inputStream == mManager->mInputStream)
         return;
@@ -341,26 +814,27 @@ void MediaKeysManager::updateDefaultInput(MediaKeysManager *mManager)
     }
 
     if (inputControl != NULL) {
-        MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
+             MateMixerStreamControlFlags flags = mate_mixer_stream_control_get_flags (inputControl);
 
-        /* Do not use the stream if it is not possible to mute it or
-         * change the volume */
-        if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
-            !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
-                return;
+            /* Do not use the stream if it is not possible to mute it or
+             * change the volume */
+            if (!(flags & MATE_MIXER_STREAM_CONTROL_MUTE_WRITABLE) &&
+                !(flags & MATE_MIXER_STREAM_CONTROL_VOLUME_WRITABLE))
+                    return;
 
-        mManager->mInputStream = (MateMixerStream *)g_object_ref(inputStream);
-        mManager->mInputControl = (MateMixerStreamControl *)g_object_ref(inputControl);
-        qDebug ("Default input stream updated to %s",
-                 mate_mixer_stream_get_name (inputStream));
+            mManager->mInputStream = (MateMixerStream *)g_object_ref(inputStream);
+            mManager->mInputControl = (MateMixerStreamControl *)g_object_ref(inputControl);
+            USD_LOG(LOG_DEBUG, "Default input stream updated to %s",
+                     mate_mixer_stream_get_name (inputStream));
     } else
-            qDebug ("Default input stream unset");
+            USD_LOG(LOG_DEBUG, "Default input stream unset");
 }
 
 void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
 {
     MateMixerStream        *stream;
     MateMixerStreamControl *control = NULL;
+
 
     stream = mate_mixer_context_get_default_output_stream (mManager->mContext);
     if (stream != NULL)
@@ -384,34 +858,79 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
 
            mManager->mStream = (MateMixerStream *)g_object_ref(stream);
            mManager->mControl = (MateMixerStreamControl *)g_object_ref(control);
-           qDebug ("Default output stream updated to %s",
+           USD_LOG(LOG_DEBUG, "Default output stream updated to %s",
                     mate_mixer_stream_get_name (stream));
    } else
-           qDebug ("Default output stream unset");
+           USD_LOG(LOG_DEBUG, "Default output stream unset");
+    g_signal_connect ( G_OBJECT (mManager->mControl),
+                       "notify::volume",
+                       G_CALLBACK (onStreamControlVolumeNotify),
+                       mManager);
+    g_signal_connect ( G_OBJECT (mManager->mControl),
+                       "notify::mute",
+                       G_CALLBACK (onStreamControlMuteNotify),
+                       mManager);
+}
+
+
+/*!
+ * \brief
+ * \details
+ * 音量值更改
+ */
+void MediaKeysManager::onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager)
+{
+    MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
+    USD_LOG(LOG_DEBUG, "onStreamControlVolumeNotify control name: %s volume: %d",
+          mate_mixer_stream_control_get_name(control) ,  mate_mixer_stream_control_get_volume (control));
+    if(!MATE_MIXER_IS_STREAM(stream)){
+        USD_LOG(LOG_DEBUG,"Add exception handling ---------");
+        stream = mate_mixer_context_get_stream(mManager->mContext,mate_mixer_stream_control_get_name(control));
+        //使用命令重新设置音量
+        int volume = mate_mixer_stream_control_get_volume(control);
+        QString cmd = "pactl set-sink-volume "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(volume,10);
+        system(cmd.toLocal8Bit().data());
+    }
+}
+
+/*!
+ * \brief
+ * \details
+ * 静音通知
+ */
+void MediaKeysManager::onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager)
+{
+    MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
+    USD_LOG(LOG_DEBUG, "onStreamControlMuteNotify control name: %s volume: %d",
+          mate_mixer_stream_control_get_name(control) ,  mate_mixer_stream_control_get_mute (control));
+    if(!MATE_MIXER_IS_STREAM(stream)){
+        USD_LOG(LOG_DEBUG,"Add exception handling ---------");
+        stream = mate_mixer_context_get_stream(mManager->mContext,mate_mixer_stream_control_get_name(control));
+        //使用命令重新设置音量
+        bool isMuted = mate_mixer_stream_control_get_mute(control);
+        QString cmd = "pactl set-sink-mute "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(isMuted,10);
+        system(cmd.toLocal8Bit().data());
+    }
 }
 
 GdkScreen *
 MediaKeysManager::acmeGetScreenFromEvent (XAnyEvent *xanyev)
 {
     GdkWindow *window;
-    GdkScreen *screen;
-    QList<GdkScreen*>::iterator l,begin,end;
 
-    l = begin = mScreenList->begin();
-    end = mScreenList->end();
-    /* Look for which screen we're receiving events */
-    for (; l != end; ++l) {
-            screen = *l;
-            window = gdk_screen_get_root_window (screen);
+    window = gdk_screen_get_root_window (gdk_screen_get_default());
 
-            if (GDK_WINDOW_XID (window) == xanyev->window)
-                return screen;
-    }
+    if (GDK_WINDOW_XID (window) == xanyev->window)
+        return gdk_screen_get_default();
+
     return NULL;
 }
 
 bool MediaKeysManager::doAction(int type)
 {
+    if (getScreenLockState() || shotSettings->get(SHOT_RUN_KEY).toBool() || sessionSettings->get(SESSION_WIN_KEY).toBool())
+        return false;
+
     switch(type){
     case TOUCHPAD_KEY:
         doTouchpadAction();
@@ -552,8 +1071,9 @@ void MediaKeysManager::initKbd()
     int i;
     bool needFlush = false;
 
-    gdk_x11_display_error_trap_push(gdk_display_get_default());
-    connect(mSettings,SIGNAL(changed(const QString&)),this,SLOT(updateKbdCallback(const QString&)));
+//    gdk_x11_display_error_trap_push(gdk_display_get_default());
+    connect(mSettings, &QGSettings::changed,
+            this, &MediaKeysManager::updateKbdCallback);
 
     for(i = 0; i < HANDLED_KEYS; ++i){
         QString tmp,schmeasKey;
@@ -566,8 +1086,6 @@ void MediaKeysManager::initKbd()
             tmp = keys[i].hard_coded;
 
         if(!isValidShortcut(tmp)){
-            syslog(LOG_DEBUG,"Not a valid shortcut: '%s'(%s %s)",tmp.toLatin1().data(),
-                   keys[i].settings_key,keys[i].hard_coded);
             tmp.clear();
             continue;
         }
@@ -575,7 +1093,6 @@ void MediaKeysManager::initKbd()
         key = g_new0(Key,1);
         if(!egg_accelerator_parse_virtual(tmp.toLatin1().data(),&key->keysym,&key->keycodes,
                                           (EggVirtualModifierType*)&key->state)){
-            syslog(LOG_DEBUG,"Unable to parse: '%s'",tmp.toLatin1().data());
             tmp.clear();
             g_free(key);
             continue;
@@ -584,13 +1101,13 @@ void MediaKeysManager::initKbd()
         tmp.clear();
         keys[i].key = key;
         needFlush = true;
-        grab_key_unsafe(key,true,mScreenList);
+        grab_key_unsafe(key,true, nullptr);
     }
 
-    if(needFlush)
-        gdk_display_flush(gdk_display_get_default());
-    if(gdk_x11_display_error_trap_pop(gdk_display_get_default()))
-        syslog(LOG_WARNING,"Grab failed for some keys,another application may already have access the them.");
+//    if(needFlush)
+//        gdk_display_flush(gdk_display_get_default());
+//    if(gdk_x11_display_error_trap_pop(gdk_display_get_default()))
+//        qWarning("Grab failed for some keys,another application may already have access the them.");
 }
 
 void MediaKeysManager::updateKbdCallback(const QString &key)
@@ -611,7 +1128,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
 
             if (NULL != keys[i].key) {
                 needFlush = true;
-                grab_key_unsafe (keys[i].key, false, mScreenList);
+                grab_key_unsafe (keys[i].key, false, nullptr);
             }
 
             g_free (keys[i].key);
@@ -619,7 +1136,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
 
             /* We can't have a change in a hard-coded key */
             if(NULL != keys[i].settings_key){
-                syslog(LOG_DEBUG,"settings key value is NULL,exit!");
+                qWarning("settings key value is NULL,exit!");
                 //return;
             }
 
@@ -639,7 +1156,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
             }
 
             needFlush = true;
-            grab_key_unsafe (key, true, mScreenList);
+            grab_key_unsafe (key, true, nullptr);
             keys[i].key = key;
 
             tmp.clear();
@@ -650,7 +1167,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
     if (needFlush)
         gdk_display_flush (gdk_display_get_default());
     if (gdk_x11_display_error_trap_pop (gdk_display_get_default()))
-        syslog(LOG_WARNING,"Grab failed for some keys, another application may already have access the them.");
+        qWarning("Grab failed for some keys, another application may already have access the them.");
 }
 
 void MediaKeysManager::doTouchpadAction()
@@ -676,7 +1193,7 @@ void MediaKeysManager::doMicSoundAction()
     bool mute;
     mute = mate_mixer_stream_control_get_mute (mInputControl);
     mate_mixer_stream_control_set_mute(mInputControl, !mute);
-    mDeviceWindow->setAction (mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
     mDeviceWindow->dialogShow();
 }
 
@@ -694,15 +1211,16 @@ void MediaKeysManager::doSoundAction(int keyType)
     volumeStep = mSettings->get("volume-step").toInt();
     if(volumeStep <= 0 || volumeStep > 100)
         volumeStep = VOLUMESTEP;
+    volumeStep = (volumeStep * volumeMax) / 100;
 
     volume = volumeLast = mate_mixer_stream_control_get_volume(mControl);
     muted = mutedLast = mate_mixer_stream_control_get_mute(mControl);
 
     switch(keyType){
     case MUTE_KEY:
-        if(volume == volumeMin)
-            muted = true;
-        else
+        // if(volume == volumeMin) //HW需求：音量为0时也支持F4快捷键静音和解除静音
+        //     muted = true;
+        // else
             muted = !muted;
         break;
     case VOLUME_DOWN_KEY:
@@ -710,7 +1228,7 @@ void MediaKeysManager::doSoundAction(int keyType)
             volume = volumeMin;
             muted = true;
         }else{
-            volume -= volumeStep * 400;
+            volume -= volumeStep;
             muted = false;
         }
         if(volume < 300){
@@ -722,9 +1240,9 @@ void MediaKeysManager::doSoundAction(int keyType)
         if(muted){
             muted = false;
             if(volume <= (volumeMin + volumeStep))
-                volume = volumeMin + volumeStep * 400;
+                volume = volumeMin + volumeStep;
         }else
-            volume = midValue(volume + volumeStep * 400, volumeMin, volumeMax);
+            volume = midValue(volume + volumeStep, volumeMin, volumeMax);
         break;
     }
 
@@ -746,6 +1264,8 @@ void MediaKeysManager::doSoundAction(int keyType)
 
 void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundChanged)
 {
+    int v = volume/655.36;
+    USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
     mVolumeWindow->dialogShow();
@@ -815,7 +1335,7 @@ void MediaKeysManager::executeCommand(const QString& command,const QString& para
         //mExecCmd->execute(cmd + paramter);//mExecCmd->start(cmd + paramter);
     }
     else
-        syslog(LOG_DEBUG,"%s cannot found at system path!",command.toLatin1().data());
+        qWarning("%s cannot found at system path!",command.toLatin1().data());
 }
 
 void MediaKeysManager::doShutdownAction()
@@ -890,7 +1410,7 @@ void MediaKeysManager::doOpenCalcAction()
 
     tool1 = "galculator";
     tool2 = "mate-calc";
-    tool3 = "kylin-calculator";
+    tool3 = "gnome-calculator";
 
     if(binaryFileExists(tool1)){
         executeCommand(tool1,"");
@@ -946,7 +1466,6 @@ void MediaKeysManager::doOpenMonitor()
 {
     executeCommand("ukui-system-monitor","");
 }
-
 void MediaKeysManager::doOpenConnectionEditor()
 {
     executeCommand("nm-connection-editor","");
@@ -954,12 +1473,12 @@ void MediaKeysManager::doOpenConnectionEditor()
 
 void MediaKeysManager::doOpenUkuiSearchAction()
 {
-    executeCommand("ukui-search", " -s");
+    executeCommand("ukui-search"," -s");
 }
 
 void MediaKeysManager::doOpenKdsAction()
 {
-    executeCommand("kydisplayswitch", "");
+    executeCommand("kydisplayswitch","");
 }
 
 void MediaKeysManager::doUrlAction(const QString scheme)
@@ -971,14 +1490,14 @@ void MediaKeysManager::doUrlAction(const QString scheme)
 
     if (appInfo != NULL) {
        if (!g_app_info_launch (appInfo, NULL, NULL, &error)) {
-            syslog(LOG_DEBUG,"Could not launch '%s': %s",
+            qWarning("Could not launch '%s': %s",
                     g_app_info_get_commandline (appInfo),
                     error->message);
             g_object_unref (appInfo);
             g_error_free (error);
         }
     }else
-        syslog(LOG_DEBUG,"Could not find default application for '%s' scheme",
+        qWarning("Could not find default application for '%s' scheme",
                    scheme.toLatin1().data());
 }
 
@@ -1021,7 +1540,6 @@ void MediaKeysManager::GrabMediaPlayerKeys(QString app)
     if(true == containApp)
         removeMediaPlayerByApplication(app,curTime);
 
-    syslog(LOG_DEBUG,"org.ukui.SettingsDaemon.MediaKeys registering %s at %u",app.toLatin1().data(),curTime);
     MediaPlayer* newPlayer = new MediaPlayer;
     newPlayer->application = app;
     newPlayer->time = curTime;

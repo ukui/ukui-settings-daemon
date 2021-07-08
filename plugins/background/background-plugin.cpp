@@ -30,7 +30,7 @@ BackgroundPlugin::BackgroundPlugin()
 
 BackgroundPlugin::~BackgroundPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG, "background plugin free...");
+    USD_LOG(LOG_DEBUG, "background plugin free...");
     if(manager){
         delete manager;
         manager = nullptr;
@@ -54,7 +54,7 @@ void BackgroundPlugin::activate()
 
 void BackgroundPlugin::deactivate()
 {
-    CT_SYSLOG (LOG_DEBUG, "Deactivating background plugin");
+    USD_LOG (LOG_DEBUG, "Deactivating background plugin");
 }
 
 PluginInterface* createSettingsPlugin()

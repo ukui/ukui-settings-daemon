@@ -74,17 +74,21 @@ private:
     void initScreens();
     void initKbd();
     void initXeventMonitor();
+    bool getScreenLockState();
 
+    static void onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
+    static void onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
     static void onContextStateNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
-    static void onContextDefaultInputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
     static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+    static void onContextDefaultInputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
     static void onContextStreamRemoved(MateMixerContext*,char*,MediaKeysManager*);
-    static void updateDefaultInput(MediaKeysManager *);
     static void updateDefaultOutput(MediaKeysManager *);
+    static void updateDefaultInput(MediaKeysManager *);
     GdkScreen *acmeGetScreenFromEvent (XAnyEvent*);
     bool doAction(int);
 
+    void initShortcuts();
     /******************Functional class function(功能类函数)****************/
     void doTouchpadAction();
     void doSoundAction(int);
@@ -146,12 +150,14 @@ Q_SIGNALS:
 
 private:
     static MediaKeysManager* mManager;
+    QDBusMessage      mDbusScreensaveMessage;
+
     QTimer            *mTimer;
     QGSettings        *mSettings;
     QGSettings        *pointSettings;
     QGSettings        *sessionSettings;
+    QGSettings        *shotSettings;
 
-    QList<GdkScreen*> *mScreenList;     //GdkSCreen list
     QProcess          *mExecCmd;
     GdkScreen         *mCurrentScreen;  //current GdkScreen
 
@@ -164,6 +170,7 @@ private:
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
+
     bool               m_ctrlFlag = false;
 };
 

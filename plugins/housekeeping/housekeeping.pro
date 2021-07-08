@@ -6,7 +6,7 @@ DEFINES += HOUSEKEPPING_LIBRARY
 
 CONFIG += c++11 no_keywords link_pkgconfig plugin
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"houseKeeping\\\"
 
 include($$PWD/../../common/common.pri)
 

@@ -81,5 +81,5 @@ bool A11ySettingsManager::A11ySettingsManagerStart()
 
 void A11ySettingsManager::A11ySettingsMAnagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG,"Stopping a11y_settings manager");
+    USD_LOG(LOG_DEBUG,"Stopping a11y_settings manager");
 }

@@ -24,6 +24,12 @@
 #include <QScreen>
 #include <QX11Info>
 #include <QDebug>
+#include <QGSettings/qgsettings.h>
+#include "clib-syslog.h"
+
+#define DBUS_NAME       "org.ukui.SettingsDaemon"
+#define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
+#define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
 
 const QString allIconName[] = {
     "audio-volume-muted",
@@ -38,28 +44,73 @@ VolumeWindow::VolumeWindow(QWidget *parent)
     , ui(new Ui::VolumeWindow)
 {
     ui->setupUi(this);
+    mDbusXrandInter = new QDBusInterface(DBUS_NAME,
+                                         DBUS_PATH,
+                                         DBUS_INTERFACE,
+                                         QDBusConnection::sessionBus(), this);
+     if (!mDbusXrandInter->isValid()) {
+        USD_LOG(LOG_DEBUG, "stderr:%s\n",qPrintable(QDBusConnection::sessionBus().lastError().message()));
+    }
+    //监听dbus变化  更改主屏幕时，会进行信号发送
+    connect(mDbusXrandInter, SIGNAL(screenPrimaryChanged(int,int,int,int)),
+            this, SLOT(priScreenChanged(int,int,int,int)));
+
+    QGSettings *settings = new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
+    mScale = settings->get("scaling-factor").toDouble();
+    delete settings;
 }
 
 VolumeWindow::~VolumeWindow()
 {
     delete ui;
-    delete mVLayout;
-    delete mBarLayout;
-    delete mSvgLayout;
-    delete mBut;
-    delete mBar;
-    delete mTimer;
+    if (mBarLayout)
+        delete mBarLayout;
+    if (mSvgLayout)
+        delete mSvgLayout;
+    if (mBut)
+        delete mBut;
+    if (mBar)
+        delete mBar;
+    if (mVLayout)
+        delete mVLayout;
+    if (mTimer)
+        delete mTimer;
+}
+
+int VolumeWindow::getScreenGeometry(QString methodName)
+{
+    int res = 0;
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_NAME,
+                                                          DBUS_PATH,
+                                                          DBUS_INTERFACE,
+                                                          methodName);
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+    if (response.type() == QDBusMessage::ReplyMessage)
+    {
+        if(response.arguments().isEmpty() == false) {
+            int value = response.arguments().takeFirst().toInt();
+            res = value;
+        }
+    } else {
+        USD_LOG(LOG_DEBUG, "%s called failed", methodName.toLatin1().data());
+    }
+    return res;
+}
+
+/* 主屏幕变化监听函数 */
+void VolumeWindow::priScreenChanged(int x, int y, int width, int height)
+{
+    move(x*mScale + (width*0.01*mScale), y*mScale + (height*0.04*mScale));
 }
 
 void VolumeWindow::initWindowInfo()
 {
-    int num,screenWidth,screenHeight;
-    QScreen* currentScreen;
+    int x, y, screenWidth, screenHeight;
 
-    num = QX11Info::appScreen();                       //curent screen number 当前屏幕编号
-    currentScreen = QApplication::screens().at(num);   //current screen       当前屏幕
-    screenWidth = currentScreen->size().width();
-    screenHeight = currentScreen->size().height();
+    x = getScreenGeometry("x");
+    y = getScreenGeometry("y");
+    screenWidth = getScreenGeometry("width");
+    screenHeight = getScreenGeometry("height");
 
     //窗口性质
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
@@ -67,7 +118,7 @@ void VolumeWindow::initWindowInfo()
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
 
-    move(screenWidth*0.01,screenHeight*0.04);
+    move(x*mScale + (screenWidth*0.01*mScale), y*mScale + (screenHeight*0.04*mScale));
 
     //new memery
     mVLayout = new QVBoxLayout(this);
@@ -91,19 +142,22 @@ void VolumeWindow::initWindowInfo()
 void VolumeWindow::setWidgetLayout()
 {
     //窗口性质
-    setFixedSize(QSize(64,300));
+    setFixedSize(QSize(64,300) * mScale);
 
     //lable 音量键值
-    mLabel->setFixedSize(QSize(25, 25));
+    QFont font;
+    font.setPointSize(10 * mScale);
+    mLabel->setFixedSize(QSize(24, 24) * mScale);
+    mLabel->setFont(font);
     mLabel->setAlignment(Qt::AlignHCenter);
     mLabLayout->addWidget(mLabel);
 
     //button图片操作
-    mBut->setFixedSize(QSize(48,48));
-    mBut->setIconSize(QSize(32,32));
+    mBut->setFixedSize(QSize(48,48) * mScale);
+    mBut->setIconSize(QSize(32,32) * mScale);
     //音量条操作
     mBar->setOrientation(Qt::Vertical);
-    mBar->setFixedSize(QSize(10,200));
+    mBar->setFixedSize(QSize(10,200) * mScale);
     mBar->setTextVisible(false);
 //  mBar->setValue(volumeLevel/100);
     mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#708069}"
@@ -111,7 +165,7 @@ void VolumeWindow::setWidgetLayout()
 
     //音量调放入横向布局
     mBarLayout->addWidget(mBar);
-    mBarLayout->setContentsMargins(0,0,0,15);
+    mBarLayout->setContentsMargins(0,0,0,15 * mScale);
 
     //svg图片加到横向布局
     mSvgLayout->addWidget(mBut);
@@ -120,7 +174,7 @@ void VolumeWindow::setWidgetLayout()
     mVLayout->addLayout(mLabLayout);
     mVLayout->addLayout(mBarLayout);
     mVLayout->addLayout(mSvgLayout);
-    mVLayout->setGeometry(QRect(0,0,width(),height()));
+    mVLayout->setGeometry(QRect(0,0,width() * mScale, height() * mScale));
 }
 
 int doubleToInt(double d)
@@ -164,7 +218,8 @@ void VolumeWindow::dialogShow()
     mLabel->clear();
     mLabel->setNum(doubleToInt(mVolumeLevel/655.35));
 
-    QSize iconSize(32, 32);
+    QSize iconSize(32 * mScale,32 * mScale);
+
     mBut->setIcon(QIcon(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)))));
 
     show();
@@ -181,10 +236,11 @@ void VolumeWindow::setVolumeLevel(int level)
 {
     double percentage;
 
-    this->mVolumeLevel = level;
     mBar->reset();
-    mBar->setValue((mVolumeLevel-mMinVolume)/100);
     mIconName.clear();
+    mVolumeLevel = level;
+
+    mBar->setValue((mVolumeLevel-mMinVolume)/100);
 
     if(mVolumeMuted){
         mIconName = allIconName[0];

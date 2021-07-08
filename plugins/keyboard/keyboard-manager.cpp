@@ -70,7 +70,7 @@ KeyboardManager *KeyboardManager::KeyboardManagerNew()
 
 bool KeyboardManager::KeyboardManagerStart()
 {
-    CT_SYSLOG(LOG_DEBUG,"-- Keyboard Start Manager --");
+    USD_LOG(LOG_DEBUG,"-- Keyboard Start Manager --");
 
     time = new QTimer(this);
     connect(time,SIGNAL(timeout()),this,SLOT(start_keyboard_idle_cb()));
@@ -81,7 +81,7 @@ bool KeyboardManager::KeyboardManagerStart()
 
 void KeyboardManager::KeyboardManagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG,"-- Keyboard Stop Manager --");
+    USD_LOG(LOG_DEBUG,"-- Keyboard Stop Manager --");
 
     old_state = 0;
     numlock_set_xkb_state((NumLockState)old_state);
@@ -275,7 +275,7 @@ void apply_repeat (KeyboardManager *manager)
         }
         XSync (dpy, FALSE);
     } catch (int x) {
-        CT_SYSLOG(LOG_DEBUG,"ERROR");
+        USD_LOG(LOG_DEBUG,"ERROR");
     }
 }
 
@@ -355,7 +355,7 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         else
             numlockState = NUMLOCK_STATE_OFF;
 
-        //CT_SYSLOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
+        //USD_LOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
                   //old_state,lockedMods,numlockState);
         if (numlockState != old_state) {
                 settings->setEnum(KEY_NUMLOCK_STATE, numlockState);

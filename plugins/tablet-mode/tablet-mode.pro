@@ -6,7 +6,7 @@ CONFIG += c++11 plugin link_pkgconfig
 
 DEFINES += TABLETMODE_LIBRARY
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"tablet-mode\\\"
 
 include($$PWD/../../common/common.pri)
 

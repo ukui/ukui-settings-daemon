@@ -58,10 +58,10 @@ PluginManager::~PluginManager()
 PluginManager* PluginManager::getInstance()
 {
     if (nullptr == mPluginManager) {
-        CT_SYSLOG(LOG_DEBUG, "ukui settings manager will be created!")
+        USD_LOG(LOG_DEBUG, "ukui settings manager will be created!")
         mPluginManager = new PluginManager;
         if (!register_manager(*mPluginManager)) {
-            CT_SYSLOG(LOG_ERR, "register manager failed!");
+            USD_LOG(LOG_ERR, "register manager failed!");
             return nullptr;
         }
     }
@@ -84,7 +84,7 @@ bool PluginManager::managerStart()
 
     dir = g_dir_open ((char*)path.toUtf8().data(), 0, &error);
     if (NULL == dir) {
-        CT_SYSLOG(LOG_ERR, "%s", error->message);
+        USD_LOG(LOG_ERR, "%s", error->message);
         g_error_free(error);
         error = nullptr;
         return false;
@@ -104,18 +104,18 @@ bool PluginManager::managerStart()
             }
 
             if (mPlugin->contains(info)) {
-                CT_SYSLOG(LOG_DEBUG, "The list has contain this plugin, '%s'", ftmp.toUtf8().data());
+                USD_LOG(LOG_DEBUG, "The list has contain this plugin, '%s'", ftmp.toUtf8().data());
                 if (info != NULL) delete info;
             }
 
             // check plugin's schema
             schema = QString("%1.plugins.%2").arg(DEFAULT_SETTINGS_PREFIX).arg(info->getPluginLocation().toUtf8().data());
             if (is_schema (schema)) {
-                CT_SYSLOG(LOG_DEBUG, "right schema '%s'", schema.toUtf8().data());
+                USD_LOG(LOG_DEBUG, "right schema '%s'", schema.toUtf8().data());
                 info->setPluginSchema(schema);
                 mPlugin->insert(0, info);
             } else {
-                CT_SYSLOG(LOG_ERR, "Ignoring unknown schema '%s'", schema.toUtf8().data());
+                USD_LOG(LOG_ERR, "Ignoring unknown schema '%s'", schema.toUtf8().data());
                 if (info != NULL) delete info;
             }
         }
@@ -126,20 +126,20 @@ bool PluginManager::managerStart()
     //sort plugin
 	qSort(mPlugin->begin(),mPlugin->end(),sortPluginByPriority);
 
-    CT_SYSLOG(LOG_DEBUG, "Now Activity plugins ...");
+    USD_LOG(LOG_DEBUG, "Now Activity plugins ...");
     for (int i = 0; i < mPlugin->size(); ++i) {
         PluginInfo* info = mPlugin->at(i);
-        CT_SYSLOG(LOG_DEBUG, "start activity plugin: %s ...", info->getPluginName().toUtf8().data());
+        USD_LOG(LOG_DEBUG, "start activity plugin: %s ...", info->getPluginName().toUtf8().data());
         info->pluginActivate();
     }
-    CT_SYSLOG(LOG_DEBUG, "All plugins has been activited!");
+    USD_LOG(LOG_DEBUG, "All plugins has been activited!");
 
     return true;
 }
 
 void PluginManager::managerStop()
 {
-    CT_SYSLOG(LOG_DEBUG, "Stopping settings manager");
+    USD_LOG(LOG_DEBUG, "Stopping settings manager");
     while (!mPlugin->isEmpty()) {
         PluginInfo* plugin = mPlugin->takeFirst();
         plugin->pluginDeactivate();
@@ -152,7 +152,7 @@ void PluginManager::managerStop()
 
 bool PluginManager::managerAwake()
 {
-    CT_SYSLOG(LOG_DEBUG, "Awake called")
+    USD_LOG(LOG_DEBUG, "Awake called")
     return managerStart();
 }
 
@@ -179,16 +179,16 @@ static bool register_manager(PluginManager& pm)
 
     QDBusConnection bus = QDBusConnection::sessionBus();
     if (!bus.registerService(UKUI_SETTINGS_DAEMON_DBUS_NAME)) {
-        CT_SYSLOG(LOG_ERR, "error getting system bus: '%s'", bus.lastError().message().toUtf8().data());
+        USD_LOG(LOG_ERR, "error getting system bus: '%s'", bus.lastError().message().toUtf8().data());
         return false;
     }
 
     if (!bus.registerObject(UKUI_SETTINGS_DAEMON_DBUS_PATH, (QObject*)&pm, QDBusConnection::ExportAllSlots)) {
-        CT_SYSLOG(LOG_ERR, "regist settings manager error: '%s'", bus.lastError().message().toUtf8().data());
+        USD_LOG(LOG_ERR, "regist settings manager error: '%s'", bus.lastError().message().toUtf8().data());
         return false;
     }
 
-    CT_SYSLOG(LOG_DEBUG, "regist settings manager successful!");
+    USD_LOG(LOG_DEBUG, "regist settings manager successful!");
 
     return true;
 }

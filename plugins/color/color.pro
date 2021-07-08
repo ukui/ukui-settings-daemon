@@ -11,7 +11,7 @@ DEFINES += COLOR_LIBRARY
 
 CONFIG += c++11 link_pkgconfig no_keywords plugin app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"color\\\"
 
 include($$PWD/../../common/common.pri)
 

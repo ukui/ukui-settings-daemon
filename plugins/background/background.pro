@@ -8,9 +8,9 @@ QT += core widgets dbus x11extras gui
 TEMPLATE = lib
 TARGET = background
 
-CONFIG += no_keywords c++11 create_prl plugin link_pkgconfig debug
+CONFIG += no_keywords c++11 create_prl plugin link_pkgconfig app_bundle debug
 
-CONFIG += app_bundle
+DEFINES += MODULE_NAME=\\\"backGround\\\"
 
 include($$PWD/../../common/common.pri)
 

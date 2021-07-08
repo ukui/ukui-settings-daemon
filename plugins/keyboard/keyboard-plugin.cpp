@@ -24,14 +24,14 @@ KeyboardManager * KeyboardPlugin::UsdKeyboardManager=nullptr;
 
 KeyboardPlugin::KeyboardPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"KeyboardPlugin initializing!");
+    USD_LOG(LOG_DEBUG,"KeyboardPlugin initializing!");
     if(nullptr == UsdKeyboardManager)
         UsdKeyboardManager = KeyboardManager::KeyboardManagerNew();
 }
 
 KeyboardPlugin::~KeyboardPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"Keyboard plugin free");
+    USD_LOG(LOG_DEBUG,"Keyboard plugin free");
     if (UsdKeyboardManager){
         delete UsdKeyboardManager;
         UsdKeyboardManager =nullptr;
@@ -41,10 +41,10 @@ KeyboardPlugin::~KeyboardPlugin()
 void KeyboardPlugin::activate()
 {
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"Activating Keyboard Plugin");
+    USD_LOG(LOG_DEBUG,"Activating Keyboard Plugin");
     res = UsdKeyboardManager->KeyboardManagerStart();
     if(!res){
-        CT_SYSLOG(LOG_ERR,"Unable to start Keyboard Manager!")
+        USD_LOG(LOG_ERR,"Unable to start Keyboard Manager!")
     }
 
 }
@@ -59,7 +59,7 @@ PluginInterface * KeyboardPlugin::getInstance()
 
 void KeyboardPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating Keyboard Plugin");
+    USD_LOG(LOG_DEBUG,"Deactivating Keyboard Plugin");
     UsdKeyboardManager->KeyboardManagerStop();
 }
 

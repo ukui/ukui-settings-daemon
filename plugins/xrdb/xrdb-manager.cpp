@@ -52,7 +52,7 @@ ukuiXrdbManager* ukuiXrdbManager::ukuiXrdbManagerNew()
 
 bool ukuiXrdbManager::start(GError **error)
 {
-    syslog(LOG_DEBUG,"Starting xrdb manager!");
+    USD_LOG(LOG_DEBUG,"Starting xrdb manager!");
 
     settings = new QGSettings(SCHEMAS);
     allUsefulAdFiles = new QList<QString>();
@@ -71,7 +71,7 @@ bool ukuiXrdbManager::start(GError **error)
 
 void ukuiXrdbManager::stop()
 {
-    syslog(LOG_DEBUG,"Stopping xrdb manager!");
+    USD_LOG(LOG_DEBUG,"Stopping xrdb manager!");
     if(settings)
         delete settings;
     if(allUsefulAdFiles){
@@ -162,9 +162,9 @@ QList<QString>* ukuiXrdbManager::scanForFiles(GError** error)
                 return nullptr;
             }
         }else
-            syslog(LOG_INFO,"User's ad file not found at %s!",userAdDir.toLatin1().data());
+            USD_LOG(LOG_INFO,"User's ad file not found at %s!",userAdDir.toLatin1().data());
     }else
-        syslog(LOG_WARNING,"Cannot datermine user's home directory!");
+        USD_LOG(LOG_WARNING,"Cannot datermine user's home directory!");
 
     //After get all ad files,we handle it. 在得到所有的ad文件后，我们开始处理数据
     if(systemAdFileList->contains(GENERAL_AD))
@@ -233,7 +233,7 @@ void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
         g_set_error(error,G_FILE_ERROR,
                     G_FILE_ERROR_NOENT,
                     "%s does not exist!",tmpName);
-        //syslog(LOG_WARNING,"%s does not exist!",tmpName);
+        //USD_LOG(LOG_WARNING,"%s does not exist!",tmpName);
         return;
     }
 
@@ -241,7 +241,7 @@ void ukuiXrdbManager::appendXresourceFile(QString fileName,GError **error)
     appendFile(xResources,&localError);
     if(NULL != localError){
         g_propagate_error(error,localError);
-        //syslog(LOG_WARNING,"%s",localError->message);
+        //USD_LOG(LOG_WARNING,"%s",localError->message);
         localError = NULL;
     }
 }
@@ -271,7 +271,7 @@ child_watch_cb (int     pid,
     char *command = (char*)user_data;
 
     if (!WIFEXITED (status) || WEXITSTATUS (status)) {
-        syslog (LOG_WARNING,"Command %s failed", command);
+        USD_LOG(LOG_WARNING,"Command %s failed", command);
     }
 }
 
@@ -289,7 +289,7 @@ spawn_with_input (const char *command,
     argv = NULL;
     res = g_shell_parse_argv (command, NULL, &argv, NULL);
     if (! res) {
-        syslog (LOG_WARNING,"Unable to parse command: %s", command);
+        USD_LOG(LOG_WARNING,"Unable to parse command: %s", command);
         return;
     }
 
@@ -308,14 +308,14 @@ spawn_with_input (const char *command,
     g_strfreev (argv);
 
     if (! res) {
-        syslog(LOG_WARNING,"Could not execute %s: %s", command, error->message);
+        USD_LOG(LOG_WARNING,"Could not execute %s: %s", command, error->message);
         g_error_free (error);
         return;
     }
 
     if (input != NULL) {
         if (! write_all (inpipe, input, strlen (input))) {
-            syslog(LOG_WARNING,"Could not write input to %s", command);
+            USD_LOG(LOG_WARNING,"Could not write input to %s", command);
         }
         close (inpipe);
     }
@@ -347,7 +347,7 @@ void ukuiXrdbManager::applySettings(){
     error = NULL;
     scanForFiles(&error);
     if(NULL != error){
-        syslog(LOG_WARNING,"%s",error->message);
+        USD_LOG(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 
@@ -357,7 +357,7 @@ void ukuiXrdbManager::applySettings(){
         error = NULL;
         appendFile(allUsefulAdFiles->at(i),&error);
         if(NULL != error){
-            syslog(LOG_WARNING,"%s",error->message);
+            USD_LOG(LOG_WARNING,"%s",error->message);
             g_error_free(error);
         }
     }
@@ -366,14 +366,14 @@ void ukuiXrdbManager::applySettings(){
     error = NULL;
     appendXresourceFile(USER_X_RESOURCES,&error);
     if(NULL != error){
-        syslog(LOG_WARNING,"%s",error->message);
+        USD_LOG(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 
     error = NULL;
     appendXresourceFile(USER_X_DEFAULTS,&error);
     if(NULL != error){
-        syslog(LOG_WARNING,"%s",error->message);
+        USD_LOG(LOG_WARNING,"%s",error->message);
         g_error_free(error);
     }
 

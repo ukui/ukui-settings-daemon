@@ -501,7 +501,7 @@ bool KeybindingsManager::KeybindingsManagerStart()
 
 void KeybindingsManager::KeybindingsManagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG,"Stopping keybindings manager");
+    USD_LOG(LOG_DEBUG,"Stopping keybindings manager");
 
     if (client != NULL) {
             g_object_unref (client);

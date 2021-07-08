@@ -4,33 +4,39 @@
 #
 #-------------------------------------------------
 QT += gui
-QT += core xml widgets x11extras dbus
+QT += core xml widgets x11extras dbus KGlobalAccel
 
 TEMPLATE = lib
-DEFINES += XRANDR_LIBRARY
+DEFINES += XRANDR_LIBRARY _FORTIFY_SOURCE=2
 
 CONFIG += c++11 no_keywords link_pkgconfig plugin xrandr
 CONFIG += app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"xrandr\\\"
 
 include($$PWD/../../common/common.pri)
 
 PKGCONFIG += \
-            xrandr   \
-            x11      \
-            xi \
-            gtk+-3.0 \
-            glib-2.0 \
-            mate-desktop-2.0 \
-            gudev-1.0
+        Qt5Sensors  \
+        kscreen2    \
+        x11         \
+        xi          \
+        gudev-1.0
 
 SOURCES += \
+    xrandr-adaptor.cpp \
+    xrandr-config.cpp \
+    xrandr-dbus.cpp \
     xrandr-manager.cpp \
+    xrandr-output.cpp \
     xrandr-plugin.cpp
 
 HEADERS += \
+    xrandr-adaptor.h \
+    xrandr-config.h \
+    xrandr-dbus.h \
     xrandr-manager.h \
+    xrandr-output.h \
     xrandr-plugin.h
 
 xrandr_lib.path  = $${PLUGIN_INSTALL_DIRS}
