@@ -1707,7 +1707,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
         GList *just_turned_on;
         GList *l;
         int x;
-        int num = 0;
+        int num = 0, nums = 0;
         GError *error;
         gboolean applicable;
 
@@ -1735,11 +1735,12 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         mate_rr_output_info_set_active (output, TRUE);
                         mate_rr_output_info_set_rotation (output, MATE_RR_ROTATION_0);
                         just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
+                        nums = i;
                 } else if (!mate_rr_output_info_is_connected (output) && mate_rr_output_info_is_active (output))
                         mate_rr_output_info_set_active (output, FALSE);
         }
         num = gdk_screen_get_n_monitors(gdk_screen_get_default());
-        if (num > 1){
+        if (num >= 1 || nums > 1){
             g_object_unref (config);
             config = make_clone_setup (priv->rw_screen);
             applicable = mate_rr_config_applicable (config, priv->rw_screen, NULL);
@@ -2748,7 +2749,7 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         UsdXrandrManager *manager = USD_XRANDR_MANAGER (data);
         UsdXrandrManagerPrivate *priv = manager->priv;
         guint32 change_timestamp, config_timestamp;
-	    gboolean pop_flag = FALSE;
+        gboolean pop_flag = FALSE;
         if (!priv->running)
                 return;
 
@@ -2821,7 +2822,9 @@ on_randr_event (MateRRScreen *screen, gpointer data)
         }
 
         /* 添加触摸屏鼠标设置 */
-        set_touchscreen_cursor_rotation(screen,pop_flag);
+        if (pop_flag){
+            set_touchscreen_cursor_rotation(screen, pop_flag);
+        }
 
         remap_from_file();
 
@@ -3714,6 +3717,12 @@ static void listen_to_Xinput_Event()
     return ;
 }
 
+static void
+on_screen_size_changed (GdkScreen            *screen,
+                        UsdXrandrManager     *manager)
+{
+    set_touchscreen_cursor_rotation(manager->priv->rw_screen,FALSE);
+}
 gboolean
 usd_xrandr_manager_start (UsdXrandrManager *manager,
                           GError          **error)
@@ -3743,6 +3752,9 @@ usd_xrandr_manager_start (UsdXrandrManager *manager,
                 return FALSE;
         }
         g_signal_connect (manager->priv->rw_screen, "changed", G_CALLBACK (on_randr_event), manager);
+
+        g_signal_connect (gdk_screen_get_default(), "size-changed",
+                          G_CALLBACK (on_screen_size_changed), manager);
 
         log_msg ("State of screen at startup:\n");
         log_screen (manager->priv->rw_screen);
