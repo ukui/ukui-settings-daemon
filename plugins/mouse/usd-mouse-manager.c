@@ -1486,7 +1486,9 @@ static void
 set_disble_touchpad (XDeviceInfo *device_info, GSettings *settings)
 {
         gboolean  state;
-        if(strstr(device_info->name, "Mouse") != NULL && strstr(device_info->name, "USB") != NULL){
+        if(strstr(device_info->name, "Mouse") != NULL && strstr(device_info->name, "USB") != NULL ||
+           strstr(device_info->name, "Mouse") != NULL && strstr(device_info->name, "Wireless") != NULL ||
+           strstr(device_info->name, "Mouse") != NULL && strstr(device_info->name, "Receiver") != NULL ){
             state = g_settings_get_boolean (settings, KEY_TOUCHPAD_DISBLE_O_E_MOUSE);
             if(state){
                 g_settings_set_boolean (settings, KEY_TOUCHPAD_ENABLED, FALSE);
@@ -1791,7 +1793,7 @@ set_touchpad_settings (UsdMouseManager *manager)
 
     set_scrolling_all (manager->priv->settings_touchpad);
     set_natural_scroll_all (manager);
-    set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
+    //set_touchpad_enabled_all (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED));
 
     if (g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_DISBLE_O_E_MOUSE))
           set_plug_mouse_disble_touchpad (manager->priv->settings_touchpad);
