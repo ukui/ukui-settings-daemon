@@ -633,6 +633,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
 
     /* 添加DPI缩放至文件
      * Add DPI zoom to file */
+    /*
     gchar    *XreFilePath;
     gchar    *date;
     gboolean  res;
@@ -643,6 +644,7 @@ xft_settings_set_xresources (UkuiXftSettings *settings)
     res = g_file_set_contents(XreFilePath,date,strlen(date),NULL);
     if(!res)
         g_debug("Xresources File write failed ");
+    */
     /* end add by Shang Xiaoyang */
         update_property (add_string, "Xft.dpi",
                                 g_ascii_dtostr (dpibuf, sizeof (dpibuf), (double) settings->scaled_dpi / 1024.0));
@@ -1011,18 +1013,22 @@ update_scale_settings (UkuiXSettingsManager *manager)
         scale = g_settings_get_double (gsettings, XSETTINGS_SCALING_KEY);
         if(scale > 1.25){
             gboolean state = FALSE;
-            if (dest_left.width <= 1920 && dest_left.height <= 1080){
-                if (screen_num == 1) {
+            if (screen_num == 1){
+                if (dest_left.width < 1920 && dest_left.height < 1080){
+                    state = TRUE;
+                } else if (dest_left.width == 1920 && dest_left.height == 1080 && scale > 1.5){
                     state = TRUE;
                 }
-                else if (screen_num > 1 && dest_right.width <= 1920 && dest_right.height <= 1080){
-                    state = TRUE;
+            } else if (screen_num > 1){
+                if ((dest_left.width < 1920 && dest_left.height < 1080) ||
+                    (dest_right.width < 1920 && dest_right.height < 1080)) {
+                        state = TRUE;
+                } else if (((dest_left.width == 1920 && dest_left.height == 1080)    ||
+                            (dest_right.width == 1920 && dest_right.height == 1080)) &&
+                             scale > 1.5) {
+                        state = TRUE;
                 }
-                else {
-                    state = FALSE;
-                }
-            }
-            else{
+            } else {
                 state = FALSE;
             }
             if (state) {
