@@ -525,6 +525,7 @@ main (int argc, char *argv[])
         parse_args (&argc, &argv);
 
         /* Allows to enable/disable debug from GSettings only if it is not set from argument */
+        /*
         if (mate_gsettings_schema_exists (DEBUG_SCHEMA))
         {
                 debug_settings = g_settings_new (DEBUG_SCHEMA);
@@ -533,8 +534,9 @@ main (int argc, char *argv[])
 
 		        if (debug) {
 		            g_setenv ("G_MESSAGES_DEBUG", "all", FALSE);
-		}
+		        }
         }
+        */
 
         ukui_settings_profile_start ("opening gtk display");
         if (! gtk_init_check (NULL, NULL)) {
@@ -573,11 +575,11 @@ main (int argc, char *argv[])
                 goto out;
         }
 
-        set_session_over_handler (bus, manager);
+        //set_session_over_handler (bus, manager);
 
         /* If we aren't started by dbus then load the plugins
            automatically.  Otherwise, wait for an Awake etc. */
-        if (g_getenv ("DBUS_STARTER_BUS_TYPE") == NULL) {
+        //if (g_getenv ("DBUS_STARTER_BUS_TYPE") == NULL) {
                 error = NULL;
                 res = ukui_settings_manager_start (manager, &error);
                 if (! res) {
@@ -585,7 +587,7 @@ main (int argc, char *argv[])
                         g_error_free (error);
                         goto out;
                 }
-        }
+        //}
 
         if (do_timed_exit) {
                 g_timeout_add_seconds (30, (GSourceFunc) timed_exit_cb, NULL);

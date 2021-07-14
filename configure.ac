@@ -450,13 +450,9 @@ AC_OUTPUT([
 Makefile
 ukui-settings-daemon/Makefile
 plugins/Makefile
-plugins/a11y-keyboard/Makefile
-plugins/a11y-settings/Makefile
 plugins/background/Makefile
 plugins/clipboard/Makefile
 plugins/common/Makefile
-plugins/datetime/Makefile
-plugins/dummy/Makefile
 plugins/housekeeping/Makefile
 plugins/keybindings/Makefile
 plugins/keyboard/Makefile
@@ -464,9 +460,7 @@ plugins/media-keys/Makefile
 plugins/mpris/Makefile
 plugins/mouse/Makefile
 plugins/sharing/Makefile
-plugins/smartcard/Makefile
 plugins/sound/Makefile
-plugins/typing-break/Makefile
 plugins/xrandr/Makefile
 plugins/xrdb/Makefile
 plugins/xrdb/data/Makefile

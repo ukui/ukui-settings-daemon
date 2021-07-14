@@ -12,7 +12,7 @@
       <description>Whether this plugin would be activated by ukui-settings-daemon or not</description>
     </key>
     <key name="priority" type="i">
-      <default>1</default>
+      <default>2</default>
       <summary>Priority to use for this plugin</summary>
       <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
     </key>

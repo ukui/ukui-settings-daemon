@@ -1,12 +1,8 @@
 NULL =
 
 enabled_plugins =	\
-	a11y-keyboard	\
-	a11y-settings	\
 	background	\
 	clipboard	\
-	datetime	\
-	dummy		\
 	housekeeping	\
 	keybindings	\
 	keyboard	\
@@ -15,7 +11,6 @@ enabled_plugins =	\
 	mouse		\
 	sharing		\
 	sound		\
-	typing-break	\
 	xrandr		\
 	xrdb		\
 	xsettings	\
@@ -23,11 +18,11 @@ enabled_plugins =	\
 
 disabled_plugins = $(NULL)
 
-if SMARTCARD_SUPPORT
-enabled_plugins += smartcard
-else
-disabled_plugins += smartcard
-endif
+#if SMARTCARD_SUPPORT
+#enabled_plugins += smartcard
+#else
+#disabled_plugins += smartcard
+#endif
 
 SUBDIRS = common $(enabled_plugins)
 DIST_SUBDIRS = $(SUBDIRS) $(disabled_plugins)
