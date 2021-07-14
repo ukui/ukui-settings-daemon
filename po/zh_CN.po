@@ -279,8 +279,6 @@ msgid ""
 "is activated. A value of -1 is the system default."
 msgstr "启动触摸板运动加速前鼠标必须移动的像素点数。系统默认的值是 -1。"
 
-msgid "Mouse wheel speed"
-msgstr "鼠标滚轮速度"
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml.in.h:1
 #: ../data/org.ukui.SettingsDaemon.plugins.background.gschema.xml.in.h:1
@@ -938,13 +936,13 @@ msgstr "不再显示任何警告"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:80
 #, c-format
-msgid "The volume \"%s\" has only %s disk space remaining."
-msgstr "卷 \"%s\" 仅剩余 %s 硬盘空间。"
+msgid "The volume \"%s\" has only %s disk space remaining. (No file system reserved space)"
+msgstr "卷 \"%s\" 剩余硬盘空间不足 %s（不含文件系统预留空间）"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:83
 #, c-format
-msgid "This computer has only %s disk space remaining."
-msgstr "本计算机仅剩余 %s 硬盘空间。"
+msgid "This computer has only %s disk space remaining. (No file system reserved space)"
+msgstr "本计算机剩余硬盘空间不足 %s（不含文件系统预留空间）"
 
 #: ../plugins/housekeeping/usd-ldsm-dialog.c:99
 msgid ""

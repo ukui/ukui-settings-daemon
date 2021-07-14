@@ -71,16 +71,21 @@ static gchar*
 usd_ldsm_dialog_get_primary_text (UsdLdsmDialog *dialog)
 {
         gchar *primary_text, *free_space;
-	
+
         g_return_val_if_fail (USD_IS_LDSM_DIALOG (dialog), NULL);
-	
+
+	    if (dialog->priv->space_remaining > (gint64)1073741824)
+            dialog->priv->space_remaining = dialog->priv->space_remaining / 1.073741824;
+        else
+            dialog->priv->space_remaining = dialog->priv->space_remaining / 1.048576;
+
         free_space = g_format_size (dialog->priv->space_remaining);
 	
         if (dialog->priv->other_partitions) {
-                primary_text = g_strdup_printf (_("The volume \"%s\" has only %s disk space remaining."),
+                primary_text = g_strdup_printf (_("The volume \"%s\" has only %s disk space remaining. (No file system reserved space)"),
                                                 dialog->priv->partition_name, free_space);
         } else {
-                primary_text = g_strdup_printf (_("This computer has only %s disk space remaining."),
+                primary_text = g_strdup_printf (_("This computer has only %s disk space remaining. (No file system reserved space)"),
                                                 free_space);
         }
 	
