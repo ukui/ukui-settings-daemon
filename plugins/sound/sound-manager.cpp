@@ -41,9 +41,12 @@ SoundManager::~SoundManager()
 void
 sample_info_cb (pa_context *c, const pa_sample_info *i, int eol, void *userdata)
 {
+
     pa_operation *o;
-    if (!i)
+    if (!i) {
         return;
+    }
+
     USD_LOG(LOG_DEBUG,"Found sample %s", i->name);
 
     /* We only flush those samples which have an XDG sound name

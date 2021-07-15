@@ -44,6 +44,7 @@ const int VOLUMESTEP = 6;
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     mTimer = new QTimer(this);
+    mpulseAudioManager = new pulseAudioManager(this);
 
     gdk_init(NULL,NULL);
     //session bus 会话总线
@@ -679,8 +680,22 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
             return;
 
     if (keyStr.compare("Control_L") == 0 ||
-        keyStr.compare("Control_R") == 0)
-        pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
+            keyStr.compare("Control_R") == 0) {
+        if (pointSettings) {
+            try {
+               QStringList QGsettingskeys= pointSettings->keys();
+               if (QGsettingskeys.contains("locate-pointer")){
+                pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
+               }
+               else {
+                   USD_LOG(LOG_DEBUG,"schema contins key...");
+               }
+            }
+            catch(char *msg){
+
+            }
+        }
+    }
 }
 
 void MediaKeysManager::XkbEventsPress(const QString &keyStr)
@@ -928,8 +943,25 @@ MediaKeysManager::acmeGetScreenFromEvent (XAnyEvent *xanyev)
 
 bool MediaKeysManager::doAction(int type)
 {
+    static QTime startTime = QTime::currentTime();
+
+    int elapsed = 0;
+    static uint lastKeySym = 0x00;
+
     if (getScreenLockState() || shotSettings->get(SHOT_RUN_KEY).toBool() || sessionSettings->get(SESSION_WIN_KEY).toBool())
         return false;
+
+    if (lastKeySym == type){//考虑到一个应用针对多个快捷键，所以不能以按键值进行次数区分必须以序号进行区分，否则第二个以后的快捷键不生效
+        elapsed = startTime.msecsTo(QTime::currentTime());
+
+        if (elapsed>=0 && elapsed<120){//避免过快刷屏,必须大于，120ms执行一次,
+//            return false;    //goto FREE_DISPLAY;
+        }
+    }
+
+    startTime = QTime::currentTime();
+    lastKeySym = type;
+
 
     switch(type){
     case TOUCHPAD_KEY:
@@ -938,7 +970,8 @@ bool MediaKeysManager::doAction(int type)
     case MUTE_KEY:
     case VOLUME_DOWN_KEY:
     case VOLUME_UP_KEY:
-        doSoundAction(type);
+//        doSoundAction(type);
+        doSoundActionALSA(type);
         break;
     case MIC_MUTE_KEY:
         doMicSoundAction();
@@ -1196,6 +1229,46 @@ void MediaKeysManager::doMicSoundAction()
     mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
     mDeviceWindow->dialogShow();
 }
+void MediaKeysManager::doSoundActionALSA(int keyType)
+{
+    int  volumeStep = mSettings->get("volume-step").toInt();
+    int volume  = mpulseAudioManager->getVolume();
+    int muted  = mpulseAudioManager->getMute();
+    int volumeMin = 0;
+    int volumeMax = 65535;
+    switch(keyType){
+    case MUTE_KEY:
+
+            muted = !muted;
+        break;
+    case VOLUME_DOWN_KEY:
+        if(volume <= (volumeMin + volumeStep)){
+            volume = volumeMin;
+            muted = true;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
+        }else{
+            volume -= volumeStep;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
+            muted = false;
+        }
+        if(volume < 300){
+            volume = volumeMin;
+            muted = true;
+        }
+        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
+        break;
+    case VOLUME_UP_KEY:
+        if(muted){
+            muted = false;
+            if(volume <= (volumeMin + volumeStep))
+                volume = volumeMin + volumeStep;
+        }
+        break;
+    }
+
+     mpulseAudioManager->setMute(muted);
+     mpulseAudioManager->setVolume(volume);
+}
 
 void MediaKeysManager::doSoundAction(int keyType)
 {
@@ -1209,13 +1282,14 @@ void MediaKeysManager::doSoundAction(int keyType)
     volumeMin = mate_mixer_stream_control_get_min_volume(mControl);
     volumeMax = mate_mixer_stream_control_get_normal_volume(mControl);
     volumeStep = mSettings->get("volume-step").toInt();
+
     if(volumeStep <= 0 || volumeStep > 100)
         volumeStep = VOLUMESTEP;
     volumeStep = (volumeStep * volumeMax) / 100;
 
     volume = volumeLast = mate_mixer_stream_control_get_volume(mControl);
     muted = mutedLast = mate_mixer_stream_control_get_mute(mControl);
-
+    USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
     switch(keyType){
     case MUTE_KEY:
         // if(volume == volumeMin) //HW需求：音量为0时也支持F4快捷键静音和解除静音
@@ -1227,14 +1301,17 @@ void MediaKeysManager::doSoundAction(int keyType)
         if(volume <= (volumeMin + volumeStep)){
             volume = volumeMin;
             muted = true;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         }else{
             volume -= volumeStep;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
         if(volume < 300){
             volume = volumeMin;
             muted = true;
         }
+        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         break;
     case VOLUME_UP_KEY:
         if(muted){
@@ -1252,14 +1329,22 @@ void MediaKeysManager::doSoundAction(int keyType)
         else
             muted = mutedLast;
     }
+
     if(mate_mixer_stream_control_get_volume(mControl) != volume){
-        if(mate_mixer_stream_control_set_volume(mControl,volume))
+        if(mate_mixer_stream_control_set_volume(mControl,volume)) {
             soundChanged = true;
-        else
+            USD_LOG(LOG_DEBUG,"setok/// volume:%d",volume);
+        }
+        else {
             volume = volumeLast;
+            USD_LOG(LOG_DEBUG,"set fail.");
+        }
     }
-    mVolumeWindow->setVolumeRange(volumeMin,volumeMax);
+    USD_LOG(LOG_DEBUG,"volumeMin volume%d %d~%d get :%d",volume,volumeMin,volumeMax,mate_mixer_stream_control_get_volume(mControl) );
+    mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
     updateDialogForVolume(volume,muted,soundChanged);
+
+//    usleep(1500);
 }
 
 void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundChanged)

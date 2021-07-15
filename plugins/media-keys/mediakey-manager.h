@@ -36,6 +36,8 @@
 #include "devicewindow.h"
 #include "acme.h"
 #include "xeventmonitor.h"
+#include "pulseaudiomanager.h"
+
 #ifdef signals
 #undef signals
 #endif
@@ -92,6 +94,7 @@ private:
     /******************Functional class function(功能类函数)****************/
     void doTouchpadAction();
     void doSoundAction(int);
+    void doSoundActionALSA(int);
     void doMicSoundAction();
     void updateDialogForVolume(uint,bool,bool);
     void executeCommand(const QString&,const QString&);
@@ -149,6 +152,7 @@ Q_SIGNALS:
     void MediaPlayerKeyPressed(QString application,QString operation);
 
 private:
+    pulseAudioManager *mpulseAudioManager;
     static MediaKeysManager* mManager;
     QDBusMessage      mDbusScreensaveMessage;
 

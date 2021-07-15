@@ -16,7 +16,7 @@ PKGCONFIG += \
     libmatemixer
 
 LIBS += \
-    -lX11 -lXi
+    -lX11 -lXi -lpulse
 
 include($$PWD/../../common/common.pri)
 
@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H _FORTIFY_SOURCE=2 MO
 
 SOURCES += \
         devicewindow.cpp     \
+        pulseaudiomanager.cpp \
         volumewindow.cpp \
         mediakey-manager.cpp \
         mediakey-plugin.cpp
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     acme.h \
     devicewindow.h      \
+    pulseaudiomanager.h \
     volumewindow.h      \
     mediakey-manager.h  \
     mediakey-plugin.h

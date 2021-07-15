@@ -41,11 +41,11 @@
 
 extern "C"{
 #include <glib.h>
-//#include <X11/Xlib.h>
+#include <X11/Xlib.h>
 #include <X11/extensions/XInput2.h>
 #include <X11/extensions/XInput.h>
 #include <X11/extensions/Xrandr.h>
-#include <xorg/xserver-properties.h>
+//#include <xorg/xserver-properties.h>
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
 }
@@ -157,7 +157,7 @@ void XrandrManager::XrandrManagerStop()
 {
     USD_LOG(LOG_DEBUG, "Xrandr Manager Stop");
 }
-
+#if 0
 /*查找触摸屏设备ID*/
 static bool
 find_touchscreen_device(Display* display, XIDeviceInfo *dev)
@@ -352,10 +352,11 @@ void SetTouchscreenCursorRotation()
     }
     g_list_free(ts_devs);
 }
+#endif
 
 void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 {
-    SetTouchscreenCursorRotation();
+//    SetTouchscreenCursorRotation();
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
@@ -856,7 +857,7 @@ void XrandrManager::StartXrandrIdleCb()
 {
 
     time->stop();
-    SetTouchscreenCursorRotation();
+//    SetTouchscreenCursorRotation();
     mScreen = nullptr;
     mScreen = QApplication::primaryScreen();
     if(!mScreen)
