@@ -13,7 +13,7 @@ PKGCONFIG += \
     gio-2.0 \
     gtk+-3.0 \
     gsettings-qt \
-    libmatemixer
+   # libmatemixer
 
 LIBS += \
     -lX11 -lXi -lpulse

@@ -39,7 +39,7 @@ pulseAudioManager::~pulseAudioManager()
 //}
 
 
- void pulseAudioManager::PaContextStateCallback(pa_context* p_PaCtx, void* userdata)
+void pulseAudioManager::PaContextStateCallback(pa_context* p_PaCtx, void* userdata)
 {
      PulseAudioContextState* context_state = (PulseAudioContextState*)userdata;
      qDebug()<<"PaContextStateCallback......";
@@ -252,6 +252,16 @@ int pulseAudioManager::getVolume()
 
     qDebug()<<"getVolume"<<ret;
     return ret;
+}
+
+int pulseAudioManager::getMaxVolume()
+{
+    return PA_VOLUME_NORM;
+}
+
+int pulseAudioManager::getMinVolume()
+{
+    return PA_VOLUME_MUTED;
 }
 
 bool pulseAudioManager::getMuteAndVolume(int *volume, int *mute)

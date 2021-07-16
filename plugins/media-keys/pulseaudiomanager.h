@@ -30,6 +30,10 @@ public:
 
     int getVolume();
 
+    int getMaxVolume();
+
+    int getMinVolume();
+
     bool getMuteAndVolume(int *volume, int *mute);
 
     void paCvOperationHandle(pa_operation *paOp);

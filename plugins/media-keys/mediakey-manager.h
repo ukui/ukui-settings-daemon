@@ -48,7 +48,7 @@ extern "C"{
 #include <gio/gio.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
-#include <libmatemixer/matemixer.h>
+//#include <libmatemixer/matemixer.h>
 #include <X11/Xlib.h>
 #include "ukui-input-helper.h"
 }
@@ -78,13 +78,13 @@ private:
     void initXeventMonitor();
     bool getScreenLockState();
 
-    static void onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
-    static void onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
+//    static void onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
+//    static void onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
-    static void onContextStateNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
-    static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
-    static void onContextDefaultInputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
-    static void onContextStreamRemoved(MateMixerContext*,char*,MediaKeysManager*);
+//    static void onContextStateNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+//    static void onContextDefaultOutputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+//    static void onContextDefaultInputNotify(MateMixerContext*,GParamSpec*,MediaKeysManager*);
+//    static void onContextStreamRemoved(MateMixerContext*,char*,MediaKeysManager*);
     static void updateDefaultOutput(MediaKeysManager *);
     static void updateDefaultInput(MediaKeysManager *);
     GdkScreen *acmeGetScreenFromEvent (XAnyEvent*);
@@ -165,11 +165,11 @@ private:
     QProcess          *mExecCmd;
     GdkScreen         *mCurrentScreen;  //current GdkScreen
 
-    MateMixerStream   *mStream;
-    MateMixerContext  *mContext;
-    MateMixerStreamControl  *mControl;
-    MateMixerStream   *mInputStream;
-    MateMixerStreamControl  *mInputControl;
+//    MateMixerStream   *mStream;
+//    MateMixerContext  *mContext;
+//    MateMixerStreamControl  *mControl;
+//    MateMixerStream   *mInputStream;
+//    MateMixerStreamControl  *mInputControl;
 
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备

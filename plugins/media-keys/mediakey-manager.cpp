@@ -86,7 +86,7 @@ bool MediaKeysManager::getScreenLockState()
 
 bool MediaKeysManager::mediaKeysStart(GError*)
 {
-    mate_mixer_init();
+//    mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
     mSettings = new QGSettings(MEDIAKEY_SCHEMA);
@@ -99,28 +99,28 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
 //    mExecCmd = new QProcess();
-    mManager->mStream = NULL;
-    mManager->mControl = NULL;
-    mManager->mInputControl = NULL;
-    mManager->mInputStream  = NULL;
+//    mManager->mStream = NULL;
+//    mManager->mControl = NULL;
+//    mManager->mInputControl = NULL;
+//    mManager->mInputStream  = NULL;
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
 
 
-    if(mate_mixer_is_initialized()){
-        mContext = mate_mixer_context_new();
-        g_signal_connect(mContext,"notify::state",
-                         G_CALLBACK(onContextStateNotify),mManager);
-        g_signal_connect(mContext,"notify::default-input-stream",
-                         G_CALLBACK(onContextDefaultInputNotify),mManager);
-        g_signal_connect(mContext,"notify::default-output-stream",
-                         G_CALLBACK(onContextDefaultOutputNotify),mManager);
-        g_signal_connect(mContext,"notify::removed",
-                         G_CALLBACK(onContextStreamRemoved),mManager);
+//    if(mate_mixer_is_initialized()){
+//        mContext = mate_mixer_context_new();
+//        g_signal_connect(mContext,"notify::state",
+//                         G_CALLBACK(onContextStateNotify),mManager);
+//        g_signal_connect(mContext,"notify::default-input-stream",
+//                         G_CALLBACK(onContextDefaultInputNotify),mManager);
+//        g_signal_connect(mContext,"notify::default-output-stream",
+//                         G_CALLBACK(onContextDefaultOutputNotify),mManager);
+//        g_signal_connect(mContext,"notify::removed",
+//                         G_CALLBACK(onContextStreamRemoved),mManager);
 
-        mate_mixer_context_open(mContext);
-    }
+//        mate_mixer_context_open(mContext);
+//    }
 
     //initScreens();
     initShortcuts();
@@ -628,16 +628,16 @@ void MediaKeysManager::mediaKeysStop()
 
     gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
     */
-    if(mStream != NULL)
-        g_clear_object(&mStream);
-    if(mControl != NULL)
-        g_clear_object(&mControl);
-    if(mInputControl != NULL)
-        g_clear_object(&mInputControl);
-    if(mInputStream != NULL)
-        g_clear_object(&mInputStream);
-    if(mContext != NULL)
-        g_clear_object(&mContext);
+//    if(mStream != NULL)
+//        g_clear_object(&mStream);
+//    if(mControl != NULL)
+//        g_clear_object(&mControl);
+//    if(mInputControl != NULL)
+//        g_clear_object(&mInputControl);
+//    if(mInputStream != NULL)
+//        g_clear_object(&mInputStream);
+//    if(mContext != NULL)
+//        g_clear_object(&mContext);
 }
 
 void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
@@ -771,6 +771,7 @@ MediaKeysManager::acmeFilterEvents(GdkXEvent* xevent,GdkEvent* event,void* data)
 
     return GDK_FILTER_CONTINUE;
 }
+#if 0 //delete libmatemixer
 
 void MediaKeysManager::onContextStateNotify(MateMixerContext *context,
                                             GParamSpec       *pspec,
@@ -895,6 +896,7 @@ void MediaKeysManager::updateDefaultOutput(MediaKeysManager *mManager)
  */
 void MediaKeysManager::onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager)
 {
+#if 0
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
     USD_LOG(LOG_DEBUG, "onStreamControlVolumeNotify control name: %s volume: %d",
           mate_mixer_stream_control_get_name(control) ,  mate_mixer_stream_control_get_volume (control));
@@ -906,6 +908,7 @@ void MediaKeysManager::onStreamControlVolumeNotify (MateMixerStreamControl *cont
         QString cmd = "pactl set-sink-volume "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(volume,10);
         system(cmd.toLocal8Bit().data());
     }
+#endif
 }
 
 /*!
@@ -915,6 +918,7 @@ void MediaKeysManager::onStreamControlVolumeNotify (MateMixerStreamControl *cont
  */
 void MediaKeysManager::onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager)
 {
+#if 0
     MateMixerStream *stream = mate_mixer_stream_control_get_stream(control);
     USD_LOG(LOG_DEBUG, "onStreamControlMuteNotify control name: %s volume: %d",
           mate_mixer_stream_control_get_name(control) ,  mate_mixer_stream_control_get_mute (control));
@@ -926,8 +930,9 @@ void MediaKeysManager::onStreamControlMuteNotify (MateMixerStreamControl *contro
         QString cmd = "pactl set-sink-mute "+ QString(mate_mixer_stream_control_get_name(control)) +" "+ QString::number(isMuted,10);
         system(cmd.toLocal8Bit().data());
     }
+#endif
 }
-
+#endif  //delete matemixer
 GdkScreen *
 MediaKeysManager::acmeGetScreenFromEvent (XAnyEvent *xanyev)
 {
@@ -1223,22 +1228,31 @@ void MediaKeysManager::doTouchpadAction()
 
 void MediaKeysManager::doMicSoundAction()
 {
-    bool mute;
-    mute = mate_mixer_stream_control_get_mute (mInputControl);
-    mate_mixer_stream_control_set_mute(mInputControl, !mute);
-    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
-    mDeviceWindow->dialogShow();
+//    bool mute;
+//    mute = mate_mixer_stream_control_get_mute (mInputControl);
+//    mate_mixer_stream_control_set_mute(mInputControl, !mute);
+//    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+//    mDeviceWindow->dialogShow();
 }
 void MediaKeysManager::doSoundActionALSA(int keyType)
 {
-    int  volumeStep = mSettings->get("volume-step").toInt();
+    int last_volume;
+    bool lastmuted;
+    bool soundChanged = false;
+
+    int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
     int muted  = mpulseAudioManager->getMute();
+
     int volumeMin = 0;
-    int volumeMax = 65535;
+    int volumeMax = 100;
+
+    last_volume = volume;
+    lastmuted = muted;
+
+    USD_LOG(LOG_DEBUG,"volumeStep:%d",volumeStep);
     switch(keyType){
     case MUTE_KEY:
-
             muted = !muted;
         break;
     case VOLUME_DOWN_KEY:
@@ -1251,7 +1265,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
-        if(volume < 300){
+
+        if(volume == 0){
             volume = volumeMin;
             muted = true;
         }
@@ -1260,18 +1275,30 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     case VOLUME_UP_KEY:
         if(muted){
             muted = false;
-            if(volume <= (volumeMin + volumeStep))
-                volume = volumeMin + volumeStep;
         }
+
+        volume += volumeStep;
+        if (volume >= 100) {
+            volume = 100;
+        }
+
         break;
+    }
+
+    if ( last_volume != volume) {
+        soundChanged = true;
     }
 
      mpulseAudioManager->setMute(muted);
      mpulseAudioManager->setVolume(volume);
+
+     mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
+     updateDialogForVolume(volume,muted,soundChanged);
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
 {
+#if 0
     bool muted,mutedLast,soundChanged;  //是否静音，上一次值记录，是否改变
     int volume,volumeMin,volumeMax;    //当前音量值，最小音量值，最大音量值
     uint volumeStep,volumeLast;         //音量步长，上一次音量值
@@ -1343,13 +1370,13 @@ void MediaKeysManager::doSoundAction(int keyType)
     USD_LOG(LOG_DEBUG,"volumeMin volume%d %d~%d get :%d",volume,volumeMin,volumeMax,mate_mixer_stream_control_get_volume(mControl) );
     mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
     updateDialogForVolume(volume,muted,soundChanged);
-
+#endif
 //    usleep(1500);
 }
 
 void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundChanged)
 {
-    int v = volume/655.36;
+    int v = volume;
     USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
