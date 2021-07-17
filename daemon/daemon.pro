@@ -24,9 +24,6 @@ PKGCONFIG += \
         gobject-2.0\
         gmodule-2.0
 
-LIBS += \
-        -lmate-desktop-2
-
 SOURCES += \
         $$PWD/main.cpp\
         $$PWD/plugin-info.cpp\

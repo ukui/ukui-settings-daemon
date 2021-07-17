@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdio.h>
-#include <libmate-desktop/mate-gsettings.h>
+//#include <libmate-desktop/mate-gsettings.h>
 
 #include "clib-syslog.h"
 #include "plugin-manager.h"

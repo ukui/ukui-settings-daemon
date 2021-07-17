@@ -7,8 +7,10 @@ pa_cvolume g_SetPaCV;
 int g_mute;
 int g_volume;
 
+float g_balance = 0.0f;//声道平衡，设置之前先计算出先前的声道平衡值，设置时，带入计算即可。。
 char p_sinkName[128]="";
 int8_t g_testValue = 0;
+
 
 pulseAudioManager::pulseAudioManager(QObject *parent)
     :QObject(parent)
@@ -50,10 +52,8 @@ void pulseAudioManager::PaContextStateCallback(pa_context* p_PaCtx, void* userda
      case PA_CONTEXT_READY:
 
           *context_state = PulseAudioContextState::PULSE_CONTEXT_READY;
-           qDebug()<<" ok at..."<<__LINE__;
          break;
      default:
-         qDebug()<<" ok at..."<<__LINE__;
          break;
      }
 }
@@ -92,11 +92,12 @@ void pulseAudioManager::initPulseAudio()
         return ;
     }
 
-    p_PaOp= pa_context_get_sink_info_list(p_PaCtx, getSinkInfoCallback, NULL);
+    p_PaOp = pa_context_get_sink_info_list(p_PaCtx, getSinkInfoCallback, NULL);
 
     while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
+
 }
 
 void pulseAudioManager::contextDrainComplete(pa_context *ctx, void *userdata)
@@ -119,39 +120,46 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
     Q_UNUSED(userdata);
     Q_UNUSED(ctx);
 
-    g_testValue = 88;
 
     if (!success) {
         return;
     }
 
-    qDebug()<<"set volume ok..."<<__LINE__<<g_testValue;
+
 }
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
 {
     Q_UNUSED(ctx);
     Q_UNUSED(userdata);
+    pa_channel_map map;
+
 
 
     if (isLast != 0) {
         return;
     }
 
-    qDebug()<<"get volume ok..."<<si->name<<__LINE__;
+    map.channels = si->volume.channels;
+    map.map[0] = PA_CHANNEL_POSITION_LEFT;
+    map.map[1] = PA_CHANNEL_POSITION_RIGHT;
+
     g_GetPaCV.channels = si->volume.channels;
     g_mute = si->mute;
 
     for (int k = 0; k < si->volume.channels; k++) {
         g_GetPaCV.values[k]=si->volume.values[k];
+        USD_LOG(LOG_DEBUG,"channels:%d volume:%d", k,si->volume.values[k]);
     }
 
+    g_balance = pa_cvolume_get_balance(&g_GetPaCV,&map);
 
+    USD_LOG(LOG_DEBUG,"blance=%2.1f", g_balance);
 
     memset(p_sinkName,0x00,sizeof(p_sinkName));
     memcpy(p_sinkName,si->name,strlen(si->name));
 
-    qDebug()<<si->name<<si->n_volume_steps<<__LINE__;
+
 
 }
 
@@ -160,7 +168,8 @@ void pulseAudioManager::getSinkVolumeAndSetCallback(pa_context *ctx, const pa_si
     Q_UNUSED(si);
     Q_UNUSED(isLast);
 
-  qDebug()<<"set volume ok..."<<__LINE__;
+
+
   pa_operation_unref(pa_context_set_sink_volume_by_name(ctx, p_sinkName, (const pa_cvolume *)userdata, paActionDoneCallback, NULL));
 
 }
@@ -173,43 +182,67 @@ void pulseAudioManager::paCvOperationHandle(pa_operation *paOp)
 void pulseAudioManager::setVolume(int Volume)
 {
     Q_UNUSED(Volume);
-    g_SetPaCV.channels = g_GetPaCV.channels;
+    pa_channel_map map;
+
+    g_SetPaCV.channels = 2;
+    map.channels = g_SetPaCV.channels;
+    map.map[0] = PA_CHANNEL_POSITION_LEFT;
+    map.map[1] = PA_CHANNEL_POSITION_RIGHT;
+    USD_LOG(LOG_DEBUG,"set volume:%d",Volume);
 
     for (int k = 0; k < g_GetPaCV.channels; k++) {
-        g_SetPaCV.values[k] = (PA_VOLUME_NORM)/100*Volume;
+
+        USD_LOG(LOG_DEBUG,"channels:%d volume:%d",
+                k, g_SetPaCV.values[k]);
+
+        g_SetPaCV.values[k] = Volume;
+
+        USD_LOG(LOG_DEBUG,"channels:%d volume:%d",
+                k, g_SetPaCV.values[k]);
+
     }
 
-    qDebug()<<"SET volume .."<<p_sinkName<<Volume<<__LINE__;
-    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, &g_SetPaCV);
+
+    pa_cvolume *pcv = pa_cvolume_set_balance(&g_SetPaCV, &map, g_balance);
+
+    if (NULL == pcv) {
+        USD_LOG(LOG_ERR, "pa_cvolume_set_balance error!g_balance:%2.1f %d:%d",g_balance, g_GetPaCV.values[0], g_GetPaCV.values[1]);
+        return;
+    }
+
+    for (int k = 0; k < g_GetPaCV.channels; k++) {
+        USD_LOG(LOG_DEBUG,"channels:%d volume:%d g_balance:%2.1f,,%d",
+                k, g_SetPaCV.values[k],g_balance ,pcv->values[k], pcv->values[k]);
+    }
+
+    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, pcv);
 
     if (nullptr == p_PaOp) {
-        qDebug()<<"SET volume .."<<p_sinkName<<Volume<<__LINE__;
+        USD_LOG(LOG_ERR, "pa_context_get_sink_info_by_name error!");
         return;
     }
 
     while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
+
 }
 
 
 void pulseAudioManager::setMute(bool MuteState)
 {
     Q_UNUSED(MuteState);
-    g_testValue = 99;
-   p_PaOp = pa_context_set_sink_mute_by_name(p_PaCtx, p_sinkName, MuteState, paActionDoneCallback, NULL);
 
-   if ( nullptr == p_PaOp ) {
-       qDebug()<<"SET MuteState .."<<p_sinkName<<MuteState<<__LINE__;
-       return;
-   }
-    qDebug()<<"set volume ok..."<<__LINE__<<g_testValue;
-   while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
-       qDebug()<<"set volume ok..."<<__LINE__<<g_testValue;
-       pa_mainloop_iterate(p_PaMl, 1, nullptr);
-       qDebug()<<"set volume ok..."<<__LINE__<<g_testValue;
-   }
-    qDebug()<<"set volume ok..."<<__LINE__<<g_testValue;
+    p_PaOp = pa_context_set_sink_mute_by_name(p_PaCtx, p_sinkName, MuteState, paActionDoneCallback, NULL);
+
+    if ( nullptr == p_PaOp ) {
+
+        return;
+    }
+
+    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+    }
 }
 
 void pulseAudioManager::upVolume(int PerVolume)
@@ -232,6 +265,7 @@ bool pulseAudioManager::getMute()
     while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
+
     return g_mute;
 }
 
@@ -248,15 +282,19 @@ int pulseAudioManager::getVolume()
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
 
-    ret = (g_GetPaCV.values[0]*1.0/(PA_VOLUME_NORM/100));
-
-    qDebug()<<"getVolume"<<ret;
+    ret = g_GetPaCV.values[0]>g_GetPaCV.values[1] ?g_GetPaCV.values[0]:g_GetPaCV.values[1];
     return ret;
 }
 
 int pulseAudioManager::getMaxVolume()
 {
     return PA_VOLUME_NORM;
+}
+
+int pulseAudioManager::getStepVolume()
+{
+
+    return PA_VOLUME_NORM/100;
 }
 
 int pulseAudioManager::getMinVolume()

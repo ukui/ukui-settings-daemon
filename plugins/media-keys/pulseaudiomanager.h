@@ -7,6 +7,9 @@
 #include <pulse/pulseaudio.h>
 #include <pulse/simple.h>
 
+extern "C" {
+    #include "clib-syslog.h"
+}
 
 class pulseAudioManager : public QObject
 {
@@ -31,6 +34,8 @@ public:
     int getVolume();
 
     int getMaxVolume();
+
+    int getStepVolume();
 
     int getMinVolume();
 

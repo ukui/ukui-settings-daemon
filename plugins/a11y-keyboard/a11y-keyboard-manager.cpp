@@ -312,13 +312,13 @@ void A11yKeyboardManager::OnPreferencesDialogResponse(A11yKeyboardManager *manag
 void A11yKeyboardManager::OnStatusIconActivate(GtkStatusIcon *status_icon, A11yKeyboardManager *manager)
 {
     if (manager->preferences_dialog == NULL) {
-            manager->preferences_dialog = new A11yPreferencesDialog();
-            connect(manager->preferences_dialog,SIGNAL(response(A11yKeyboardManager)),manager,SLOT(OnPreferencesDialogResponse(A11yKeyboardManager)));
-            manager->preferences_dialog->show();
+        manager->preferences_dialog = new A11yPreferencesDialog();
+        connect(manager->preferences_dialog,SIGNAL(response(A11yKeyboardManager)),manager,SLOT(OnPreferencesDialogResponse(A11yKeyboardManager)));
+        manager->preferences_dialog->show();
     } else {
-            manager->preferences_dialog->close();
-            delete manager->preferences_dialog;
-            }
+        manager->preferences_dialog->close();
+        delete manager->preferences_dialog;
+    }
 }
 
 void A11yKeyboardManager::A11yKeyboardManagerEnsureStatusIcon(A11yKeyboardManager *manager)

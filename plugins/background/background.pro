@@ -18,7 +18,6 @@ PKGCONFIG += \
         gio-2.0 \
         gtk+-3.0 \
         glib-2.0 \
-        mate-desktop-2.0 \
         imlib2
 
 SOURCES += \
