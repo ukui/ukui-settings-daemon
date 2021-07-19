@@ -1243,6 +1243,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
     int muted  = mpulseAudioManager->getMute();
+
     int volumeCvStep = mpulseAudioManager->getStepVolume();
     int volumeMin = mpulseAudioManager->getMinVolume();
     int volumeMax = mpulseAudioManager->getMaxVolume();
@@ -1268,10 +1269,11 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             muted = false;
         }
 
-        if(volume == 0){
+        if(volume <= volumeMin){
             volume = volumeMin;
             muted = true;
         }
+
         USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         break;
     case VOLUME_UP_KEY:

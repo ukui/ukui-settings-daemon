@@ -299,7 +299,7 @@ int pulseAudioManager::getStepVolume()
 
 int pulseAudioManager::getMinVolume()
 {
-    return PA_VOLUME_MUTED;
+    return PA_VOLUME_NORM/500;
 }
 
 bool pulseAudioManager::getMuteAndVolume(int *volume, int *mute)
