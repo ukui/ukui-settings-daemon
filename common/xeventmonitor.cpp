@@ -110,6 +110,7 @@ void XEventMonitorPrivate::emitKeySignal(const char *member, xEvent *event)
     QMetaObject::invokeMethod(q_ptr, member,
                               Qt::AutoConnection,
                               Q_ARG(int, keyCode));
+
     QMetaObject::invokeMethod(q_ptr, member,
                               Qt::AutoConnection,
                               Q_ARG(QString, keyStrSplice));

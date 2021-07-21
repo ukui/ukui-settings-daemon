@@ -729,7 +729,8 @@ void MouseManager::SetMotionLegacyDriver (XDeviceInfo     *device_info)
 
     /* And threshold */
     motion_threshold = settings->get(KEY_MOTION_THRESHOLD).toInt();
-    qDebug()<<__func__<<" motion_threshold = "<<motion_threshold;
+//    qDebug()<<__func__<<" motion_threshold = "<<motion_threshold;
+    USD_LOG(LOG_DEBUG,"motion_threshold:%d", motion_threshold);
     /* Get the list of feedbacks for the device */
     states = XGetFeedbackControl (dpy, device, &num_feedbacks);
     if (states == NULL) {
@@ -748,7 +749,7 @@ void MouseManager::SetMotionLegacyDriver (XDeviceInfo     *device_info)
             feedback.accelNum   = numerator;
             feedback.accelDenom = denominator;
 
-            qDebug ("Setting accel %d/%d, threshold %d for device '%s'",
+            USD_LOG(LOG_DEBUG,"Setting accel %d/%d, threshold %d for device '%s'",
                      numerator, denominator, motion_threshold, device_info->name);
 
             XChangeFeedbackControl (dpy,
@@ -815,7 +816,8 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
         XCloseDevice (dpy, device);
 
     } catch (int x) {
-        qWarning("%s Error while setting accel speed on \"%s\"", device_info->name);
+        USD_LOG(LOG_ERR,"catch a bug...");
+//        qWarning("%s Error while setting accel speed on \"%s\"", device_info->name);
         return;
     }
 }
@@ -861,27 +863,31 @@ void MouseManager::SetMouseAccel(XDeviceInfo *device_info)
         XCloseDevice (dpy, device);
 
     } catch (int x) {
-        qWarning("%s Error while setting accel speed on \"%s\"", device_info->name);
+        USD_LOG(LOG_ERR,"catch a bug...");
+//        qWarning("%s Error while setting accel speed on \"%s\"", device_info->name);
         return;
     }
 }
 
-void MouseManager::SetMotion (XDeviceInfo    *device_info)
+void MouseManager::SetMotion (XDeviceInfo *device_info)
 {
-    if (property_exists_on_device (device_info, "libinput Accel Speed"))
+    if (property_exists_on_device (device_info, "libinput Accel Speed")) {
         SetMotionLibinput (device_info);
-    else
+    }
+    else {
         SetMotionLegacyDriver (device_info);
+    }
 
-    if(property_exists_on_device (device_info, "Device Accel Constant Deceleration"))
+    if(property_exists_on_device (device_info, "Device Accel Constant Deceleration")) {
         SetTouchpadMotionAccel(device_info);
+    }
 
     if(property_exists_on_device (device_info, "libinput Accel Profile Enabled")) {
         SetMouseAccel(device_info);
     }
 }
 
-void MouseManager::SetMotionAll ()
+void MouseManager::SetMotionAll()
 {
     XDeviceInfo *device_info = nullptr;
     int n_devices;
@@ -1384,7 +1390,7 @@ void set_natural_scroll_synaptics (XDeviceInfo *device_info,
 void set_natural_scroll_libinput (XDeviceInfo *device_info,
                                   bool       natural_scroll)
 {
-    qDebug ("Trying to set %s for \"%s\"",
+    USD_LOG (LOG_DEBUG,"Trying to set %s for \"%s\"",
             natural_scroll ? "natural (reverse) scroll" : "normal scroll",
             device_info->name);
     touchpad_set_bool (device_info, "libinput Natural Scrolling Enabled",
@@ -1718,10 +1724,9 @@ void MouseManager::MouseManagerIdleCb()
 
     time->stop();
 
-    QObject::connect(settings_mouse,SIGNAL(changed(QString)),
-                     this,SLOT(MouseCallback(QString)));
-    QObject::connect(settings_touchpad,SIGNAL(changed(QString)),
-                     this,SLOT(TouchpadCallback(QString)));
+    connect(settings_mouse, &QGSettings::changed, this, &MouseManager::MouseCallback);
+    connect(settings_touchpad, &QGSettings::changed, this, &MouseManager::TouchpadCallback);
+
     syndaemon_spawned = FALSE;
 
     SetDevicepresenceHandler ();
