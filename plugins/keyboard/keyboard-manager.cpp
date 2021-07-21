@@ -70,7 +70,7 @@ KeyboardManager *KeyboardManager::KeyboardManagerNew()
 
 bool KeyboardManager::KeyboardManagerStart()
 {
-    CT_SYSLOG(LOG_DEBUG,"-- Keyboard Start Manager --");
+    USD_LOG(LOG_DEBUG,"-- Keyboard Start Manager --");
 
     time = new QTimer(this);
     connect(time,SIGNAL(timeout()),this,SLOT(start_keyboard_idle_cb()));
@@ -81,7 +81,7 @@ bool KeyboardManager::KeyboardManagerStart()
 
 void KeyboardManager::KeyboardManagerStop()
 {
-    CT_SYSLOG(LOG_DEBUG,"-- Keyboard Stop Manager --");
+    USD_LOG(LOG_DEBUG,"-- Keyboard Stop Manager --");
 
     old_state = 0;
     numlock_set_xkb_state((NumLockState)old_state);
@@ -267,15 +267,16 @@ void apply_repeat (KeyboardManager *manager)
             XAutoRepeatOn (dpy);
             /* Use XKB in preference */
             rate_set = xkb_set_keyboard_autorepeat_rate (delay, rate);
-            if (!rate_set)
-                    qWarning ("Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
+            if (!rate_set) {
+                    USD_LOG(LOG_DEBUG,"Neither XKeyboard not Xfree86's keyboard extensions are available,\n"
                                "no way to support keyboard autorepeat rate settings");
+            }
         } else {
             XAutoRepeatOff (dpy);
         }
         XSync (dpy, FALSE);
     } catch (int x) {
-        CT_SYSLOG(LOG_DEBUG,"ERROR");
+        USD_LOG(LOG_ERR,"ERROR");
     }
 }
 
@@ -309,24 +310,24 @@ void KeyboardManager::apply_settings (QString keys)
         keys.compare(QString::fromLocal8Bit(KEY_BELL_PITCH)) == 0 ||
         keys.compare(QString::fromLocal8Bit(KEY_BELL_DURATION)) == 0 ||
         keys.compare(QString::fromLocal8Bit(KEY_BELL_MODE)) == 0) {
-                qDebug ("Bell setting '%s' changed, applying bell settings", key);
+                USD_LOG(LOG_DEBUG,"Bell setting '%s' changed, applying bell settings", key);
                 apply_bell (this);
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_NUMLOCK_REMEMBER)) == 0) {
-            qDebug ("Remember Num-Lock state '%s' changed, applying num-lock settings", key);
+             USD_LOG(LOG_DEBUG,"Remember Num-Lock state '%s' changed, applying num-lock settings", key);
             apply_numlock (this);
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_NUMLOCK_STATE)) == 0) {
-            qDebug ("Num-Lock state '%s' changed, will apply at next startup", key);
+             USD_LOG(LOG_DEBUG,"Num-Lock state '%s' changed, will apply at next startup", key);
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_REPEAT)) == 0 ||
                keys.compare(QString::fromLocal8Bit(KEY_RATE)) == 0 ||
                keys.compare(QString::fromLocal8Bit(KEY_DELAY)) == 0) {
-            qDebug ("Key repeat setting '%s' changed, applying key repeat settings", key);
+             USD_LOG(LOG_DEBUG,"Key repeat setting '%s' changed, applying key repeat settings", key);
             apply_repeat (this);
 
     } else {
-            qWarning ("Unhandled settings change, key '%s'", key);
+             USD_LOG(LOG_DEBUG,"Unhandled settings change, key '%s'", key);
     }
 }
 
@@ -355,8 +356,8 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         else
             numlockState = NUMLOCK_STATE_OFF;
 
-        //CT_SYSLOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
-                  //old_state,lockedMods,numlockState);
+        USD_LOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
+                  old_state,lockedMods,numlockState);
         if (numlockState != old_state) {
                 settings->setEnum(KEY_NUMLOCK_STATE, numlockState);
                 old_state = numlockState;
@@ -369,8 +370,8 @@ void KeyboardManager::numlock_install_xkb_callback ()
 {
     if (!have_xkb)
         return;
-    connect(XEventMonitor::instance(), SIGNAL(keyRelease(int)),
-            this, SLOT(XkbEventsFilter(int)));
+
+    connect(XEventMonitor::instance(), &XEventMonitor::keyRelease, this, &KeyboardManager::XkbEventsFilter);
 
 }
 
@@ -391,8 +392,7 @@ void KeyboardManager::start_keyboard_idle_cb ()
     /* apply current settings before we install the callback */
     usd_keyboard_manager_apply_settings (this);
 
-    connect(settings,SIGNAL(changed(QString)),this,
-            SLOT(apply_settings(QString)));
+    connect(settings, &QGSettings::changed, this, &KeyboardManager::apply_settings);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     numlock_install_xkb_callback();

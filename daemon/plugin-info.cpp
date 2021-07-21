@@ -43,20 +43,20 @@ PluginInfo::PluginInfo(QString& fileName)
 
     pluginFile = g_key_file_new();
     if (!g_key_file_load_from_file(pluginFile, (char*)fileName.toUtf8().data(), G_KEY_FILE_NONE, &error)) {
-        CT_SYSLOG(LOG_ERR, "Bad plugin file:'%s', error:'%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Bad plugin file:'%s', error:'%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
         g_object_unref(pluginFile);
         return;
     }
     if (!g_key_file_has_key(pluginFile, PLUGIN_GROUP, "IAge", &error)) {
-        CT_SYSLOG(LOG_ERR, "IAge key does not exist in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "IAge key does not exist in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
     /* Check IAge=2 */
     if (g_key_file_get_integer (pluginFile, PLUGIN_GROUP, "IAge", &error) != 0) {
-        CT_SYSLOG(LOG_ERR, "Wrong IAge in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Wrong IAge in file: %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -67,7 +67,7 @@ PluginInfo::PluginInfo(QString& fileName)
         mLocation = str;
     } else {
         g_free (str);
-        CT_SYSLOG(LOG_ERR, "Could not find 'Module' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find 'Module' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -76,7 +76,7 @@ PluginInfo::PluginInfo(QString& fileName)
     if (str != NULL) {
         mName = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find %s, error '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find %s, error '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -86,7 +86,7 @@ PluginInfo::PluginInfo(QString& fileName)
     if (str != NULL) {
         mDesc = QString(str);
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Description' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find 'Description' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -97,7 +97,7 @@ PluginInfo::PluginInfo(QString& fileName)
     if (nullptr != author) {
         for (int i = 0; author[i] != NULL; ++i) mAuthors->append(author[i]);
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Authors' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find 'Authors' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -109,7 +109,7 @@ PluginInfo::PluginInfo(QString& fileName)
     if (str != NULL) {
         mCopyright = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Copyright' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find 'Copyright' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
         g_object_unref(error);
         error = nullptr;
     }
@@ -119,7 +119,7 @@ PluginInfo::PluginInfo(QString& fileName)
     if (str != NULL) {
          mWebsite = str;
     } else {
-        CT_SYSLOG(LOG_ERR, "Could not find 'Website' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
+        USD_LOG(LOG_ERR, "Could not find 'Website' in %s, error: '%s'", fileName.toUtf8().data(), error->message);
 
         g_object_unref(error);
         error = nullptr;
@@ -148,8 +148,8 @@ bool PluginInfo::pluginActivate()
 {
     bool res = false;
 
-    if (!mAvailable) {CT_SYSLOG(LOG_DEBUG, "plugin is not available!") return false;}
-    if (mActive) {CT_SYSLOG(LOG_DEBUG, "plugin has activity!") return true;}
+    if (!mAvailable) {USD_LOG(LOG_DEBUG, "plugin is not available!") return false;}
+    if (mActive) {USD_LOG(LOG_DEBUG, "plugin has activity!") return true;}
 
     // load module
     if (nullptr == mPlugin) {
@@ -162,7 +162,7 @@ bool PluginInfo::pluginActivate()
         res = true;
     } else {
         res = false;
-        CT_SYSLOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
+        USD_LOG(LOG_ERR, "Error activating plugin '%s'", this->mName.toUtf8().data());
     }
 
     return res;
@@ -250,7 +250,7 @@ void PluginInfo::setPluginSchema(QString& schema)
     priority = mSettings->get("priority").toInt();
     if (priority > 0) this->mPriority = priority;
     if (!connect(mSettings, SIGNAL(changed(QString)), this, SLOT(pluginSchemaSlot(QString)))){
-        CT_SYSLOG(LOG_ERR, "plugin setting '%s', connect error!", schema.toUtf8().data());
+        USD_LOG(LOG_ERR, "plugin setting '%s', connect error!", schema.toUtf8().data());
     }
 }
 
@@ -269,9 +269,9 @@ bool loadPluginModule(PluginInfo& pinfo)
 {
     QString     path;
 
-    if (pinfo.mFile.isNull() || pinfo.mFile.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin file is error"); return false;}
-    if (pinfo.mLocation.isNull() || pinfo.mLocation.isEmpty()) {CT_SYSLOG(LOG_ERR, "Plugin location is error"); return false;}
-    if (!pinfo.mAvailable) {CT_SYSLOG(LOG_ERR, "Plugin is not available"); return false;}
+    if (pinfo.mFile.isNull() || pinfo.mFile.isEmpty()) {USD_LOG(LOG_ERR, "Plugin file is error"); return false;}
+    if (pinfo.mLocation.isNull() || pinfo.mLocation.isEmpty()) {USD_LOG(LOG_ERR, "Plugin location is error"); return false;}
+    if (!pinfo.mAvailable) {USD_LOG(LOG_ERR, "Plugin is not available"); return false;}
 
     QFile file(pinfo.mFile);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) return false;
@@ -280,19 +280,19 @@ bool loadPluginModule(PluginInfo& pinfo)
     l.pop_back();
     path = l.join("/") + "/lib" + pinfo.mLocation + ".so";
 
-    if (path.isEmpty() || path.isNull()) {syslog(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
+    if (path.isEmpty() || path.isNull()) {USD_LOG(LOG_ERR, "error module path:'%s'", path.toUtf8().data()); return false;}
 
     pinfo.mModule = new QLibrary(path);
     pinfo.mModule->setLoadHints(QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint);
     if (!(pinfo.mModule->load())) {
-        syslog(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
+        USD_LOG(LOG_ERR, "create module '%s' error:'%s'", path.toUtf8().data(), pinfo.mModule->errorString().toUtf8().data());
         pinfo.mAvailable = false;
         return false;
     }
     typedef PluginInterface* (*createPlugin) ();
     createPlugin p = (createPlugin)pinfo.mModule->resolve("createSettingsPlugin");
     if (!p) {
-        syslog(LOG_ERR, "create module class failed, error: '%s'", pinfo.mModule->errorString().toUtf8().data());
+        USD_LOG(LOG_ERR, "create module class failed, error: '%s'", pinfo.mModule->errorString().toUtf8().data());
         return false;
     }
     pinfo.mPlugin = (PluginInterface*)p();

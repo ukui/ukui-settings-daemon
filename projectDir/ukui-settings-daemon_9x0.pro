@@ -7,7 +7,6 @@ TEMPLATE = subdirs
 
 TRANSLATIONS += daemon/res/i18n/zh_CN.ts
 
-DEFINES += PLATFORAM_9X0
 
 CONFIG += ordered
 

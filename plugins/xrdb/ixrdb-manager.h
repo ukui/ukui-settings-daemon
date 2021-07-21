@@ -21,6 +21,16 @@
 
 #include <glib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "clib-syslog.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 class IXrdbManager {
 public:
     IXrdbManager(){};

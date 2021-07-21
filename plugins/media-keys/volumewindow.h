@@ -30,6 +30,9 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QObject>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusInterface>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class VolumeWindow;}
@@ -48,10 +51,13 @@ public:
     void setVolumeMuted(bool);
     void setVolumeLevel(int);
     void setVolumeRange(int, int);
+    int getScreenGeometry (QString methodName);
+
     QPixmap drawLightColoredPixmap(const QPixmap &source);
 
 private Q_SLOTS:
     void timeoutHandle();
+    void priScreenChanged(int x, int y, int width, int height);
 
 private:
     Ui::VolumeWindow *ui;
@@ -65,7 +71,9 @@ private:
     QPushButton  *mBut;
     QTimer       *mTimer;
     QString      mIconName;
+    QDBusInterface  *mDbusXrandInter;
 
+    double    mScale;
     int mVolumeLevel;
     int mMaxVolume,mMinVolume;
     bool mVolumeMuted;

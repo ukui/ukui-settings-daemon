@@ -53,7 +53,7 @@ HousekeepingPlugin::HousekeepingPlugin()
     if(userName.compare("lightdm") != 0){
         mHouseManager = new HousekeepingManager();
         if(!mHouseManager)
-            syslog(LOG_ERR,"Unable to start Housekeeping Manager!");
+            USD_LOG(LOG_ERR,"Unable to start Housekeeping Manager!");
     }
 }
 

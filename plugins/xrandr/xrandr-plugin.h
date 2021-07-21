@@ -21,7 +21,7 @@
 
 #include "plugin-interface.h"
 #include "xrandr-manager.h"
-
+#include <QGuiApplication>
 class XrandrPlugin : public PluginInterface
 {
 private:

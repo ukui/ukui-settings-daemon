@@ -14,7 +14,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 TEMPLATE = lib
 TARGET = xsettings
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"xsettings\\\"
 
 include($$PWD/../../common/common.pri)
 

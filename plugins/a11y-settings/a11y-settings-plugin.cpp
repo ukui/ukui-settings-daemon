@@ -23,7 +23,7 @@ PluginInterface* A11ySettingsPlugin::mInstance = nullptr;
 
 A11ySettingsPlugin::A11ySettingsPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"A11SettingsPlugin initializing!");
+    USD_LOG(LOG_DEBUG,"A11SettingsPlugin initializing!");
     settingsManager=A11ySettingsManager::A11ySettingsManagerNew();
 }
 
@@ -37,10 +37,10 @@ void A11ySettingsPlugin::activate()
 {
     bool res;
 
-    CT_SYSLOG(LOG_DEBUG,"Activating a11y-settings plugin");
+    USD_LOG(LOG_DEBUG,"Activating a11y-settings plugin");
     res=settingsManager->A11ySettingsManagerStart();
     if(!res){
-        CT_SYSLOG(LOG_WARNING,"Unable to start a11y-settings manager!");
+        USD_LOG(LOG_WARNING,"Unable to start a11y-settings manager!");
     }
 }
 
@@ -54,7 +54,7 @@ PluginInterface *A11ySettingsPlugin::getInstance()
 
 void A11ySettingsPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Deactivating a11y-settings plugin!");
+    USD_LOG(LOG_DEBUG,"Deactivating a11y-settings plugin!");
     settingsManager->A11ySettingsMAnagerStop();
 }
 

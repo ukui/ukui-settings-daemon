@@ -29,6 +29,9 @@
 #include <QAction>
 #include <QLabel>
 #include <QPushButton>
+#include <QDBusConnection>
+#include <QDBusMessage>
+#include <QDBusInterface>
 
 namespace Ui {
 class DeviceWindow;
@@ -44,18 +47,22 @@ public:
     void initWindowInfo();
     void setAction(const QString);
     void dialogShow();
+    int getScreenGeometry (QString methodName);
 
 private:
     void ensureSvgInfo(int*,int*,int*,int*);
 
 private Q_SLOTS:
     void timeoutHandle();
+    void priScreenChanged(int x, int y, int width, int height);
 
 private:
     Ui::DeviceWindow *ui;
+    double           mScale = 1;
     QString          mIconName;
     QPushButton      *mBut;
     QTimer           *mTimer;
+    QDBusInterface   *mDbusXrandInter;
 };
 
 #endif // DEVICEWINDOW_H

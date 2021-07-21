@@ -30,6 +30,10 @@
 #endif
 
 extern "C"{
+#include <pulse/pulseaudio.h>
+#include <stdlib.h>
+#include <syslog.h>
+#include "clib-syslog.h"
 #include <gio/gio.h>
 }
 

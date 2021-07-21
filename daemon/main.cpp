@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <stdio.h>
-#include <libmate-desktop/mate-gsettings.h>
+//#include <libmate-desktop/mate-gsettings.h>
 
 #include "clib-syslog.h"
 #include "plugin-manager.h"
@@ -77,7 +77,7 @@ int main (int argc, char* argv[])
         qDebug( "manager start error!");
         return 0;
     }
-    CT_SYSLOG(LOG_INFO, "ukui-settings-daemon started!");
+    USD_LOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
 
     if (manager)
@@ -97,7 +97,7 @@ static void parse_args (int argc, char *argv[])
         } else {
             if (argc > 1) {
                 print_help();
-                CT_SYSLOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
+                USD_LOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
                 exit(0);
             }
         }
@@ -126,7 +126,7 @@ static void stop_daemon ()
         QDBusPendingReply<> reply = pmd.managerStop();
         reply.waitForFinished();
         if (reply.isValid()) {
-            CT_SYSLOG(LOG_DEBUG, "stop current 'ukui-settings-daemon'");
+            USD_LOG(LOG_DEBUG, "stop current 'ukui-settings-daemon'");
         }
     }
 }

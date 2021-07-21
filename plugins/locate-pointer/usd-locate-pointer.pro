@@ -9,7 +9,7 @@ QT += core widgets x11extras
 CONFIG += c++11 console no_keywords link_pkgconfig plugin
 CONFIG -= app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"ULP\\\"
 
 PKGCONFIG += \
         gtk+-3.0 glib-2.0 x11

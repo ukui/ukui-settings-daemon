@@ -17,16 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "xrandr-plugin.h"
-#include <syslog.h>
+#include "clib-syslog.h"
 
 PluginInterface *XrandrPlugin::mInstance      = nullptr;
 XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
 
 XrandrPlugin::XrandrPlugin()
 {
-    syslog(LOG_ERR,"Xrandr Plugin initializing");
+    USD_LOG(LOG_DEBUG, "Xrandr Plugin initializing!");
     if(nullptr == mXrandrManager)
-        mXrandrManager = XrandrManager::XrandrManagerNew();
+        mXrandrManager = new XrandrManager();
 }
 
 XrandrPlugin::~XrandrPlugin()
@@ -39,11 +39,19 @@ XrandrPlugin::~XrandrPlugin()
 
 void XrandrPlugin::activate()
 {
-    syslog(LOG_ERR,"activating Xrandr plugins");
-    bool res;
+    bool res = QGuiApplication::platformName().startsWith(QLatin1String("wayland"));
+
+    if (true == res) {
+        USD_LOG(LOG_DEBUG, "wayland need't usd to manage the screen");
+        return;
+    }
+
+    USD_LOG(LOG_DEBUG, "activating Xrandr plugins");
+
     res = mXrandrManager->XrandrManagerStart();
-    if(!res)
-        syslog(LOG_ERR,"Unable to start Xrandr manager!");
+    if(!res) {
+        USD_LOG(LOG_ERR,"Unable to start Xrandr manager!");
+    }
 
 }
 
@@ -57,7 +65,7 @@ PluginInterface *XrandrPlugin::getInstance()
 
 void XrandrPlugin::deactivate()
 {
-    syslog(LOG_ERR,"Deactivating Xrandr plugin");
+    USD_LOG(LOG_ERR,"Deactivating Xrandr plugin");
     mXrandrManager->XrandrManagerStop();
 }
 

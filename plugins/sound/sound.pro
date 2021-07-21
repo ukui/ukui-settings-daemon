@@ -9,7 +9,7 @@ TARGET = sound
 
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"sound\\\"
 
 include($$PWD/../../common/common.pri)
 

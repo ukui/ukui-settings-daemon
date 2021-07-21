@@ -21,6 +21,10 @@
 #include <QDebug>
 #include <QPainter>
 #include <QBitmap>
+#include "clib-syslog.h"
+#define DBUS_NAME       "org.ukui.SettingsDaemon"
+#define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
+#define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
 
 const QString allIconName[] = {
     "gpm-brightness-lcd",
@@ -35,6 +39,17 @@ DeviceWindow::DeviceWindow(QWidget *parent) :
     ui(new Ui::DeviceWindow)
 {
     ui->setupUi(this);
+    mDbusXrandInter = new QDBusInterface(DBUS_NAME,
+                                         DBUS_PATH,
+                                         DBUS_INTERFACE,
+                                         QDBusConnection::sessionBus(), this);
+     if (!mDbusXrandInter->isValid()) {
+        USD_LOG(LOG_DEBUG, "stderr:%s\n",qPrintable(QDBusConnection::sessionBus().lastError().message()));
+    }
+    //监听dbus变化  更改主屏幕时，会进行信号发送
+    connect(mDbusXrandInter, SIGNAL(screenPrimaryChanged(int,int,int,int)),
+            this, SLOT(priScreenChanged(int,int,int,int)));
+    mScale = getScreenGeometry("scale");
 }
 
 DeviceWindow::~DeviceWindow()
@@ -46,10 +61,36 @@ DeviceWindow::~DeviceWindow()
     mTimer = nullptr;
 }
 
+/* 主屏幕变化监听函数 */
+void DeviceWindow::priScreenChanged(int x, int y, int Width, int Height)
+{
+    move((x + Width) * mScale - width() - 200,
+         (y + Height) * mScale - height() - 100);
+}
+
+int DeviceWindow::getScreenGeometry(QString methodName)
+{
+    int res = 0;
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_NAME,
+                                                          DBUS_PATH,
+                                                          DBUS_INTERFACE,
+                                                          methodName);
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+    if (response.type() == QDBusMessage::ReplyMessage)
+    {
+        if(response.arguments().isEmpty() == false) {
+            int value = response.arguments().takeFirst().toInt();
+            res = value;
+        }
+    } else {
+        USD_LOG(LOG_DEBUG, "%s called failed", methodName.toLatin1().data());
+    }
+    return res;
+}
+
 void DeviceWindow::initWindowInfo()
 {
-    int num,screenWidth,screenHeight;
-    QScreen* currentScreen;
+    int x, y, screenWidth, screenHeight;
 
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
@@ -57,10 +98,10 @@ void DeviceWindow::initWindowInfo()
     mBut = new QPushButton(this);
     mBut->setDisabled(true);
 
-    num = QX11Info::appScreen();                       //curent screen number 当前屏幕编号
-    currentScreen = QApplication::screens().at(num);   //current screen       当前屏幕
-    screenWidth = currentScreen->size().width();
-    screenHeight = currentScreen->size().height();
+    x = getScreenGeometry("x");
+    y = getScreenGeometry("y");
+    screenWidth = getScreenGeometry("width");
+    screenHeight = getScreenGeometry("height");
 
     setFixedSize(150,140);
     setWindowFlags(Qt::FramelessWindowHint |
@@ -82,8 +123,8 @@ void DeviceWindow::initWindowInfo()
     setWindowOpacity(0.7);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
-    move(screenWidth-width() - 200,
-         screenHeight-height() - 100);
+    move((x + screenWidth) * mScale - width() - 200,
+         (y + screenHeight) * mScale - height() - 100);
 }
 
 void DeviceWindow::setAction(const QString icon)

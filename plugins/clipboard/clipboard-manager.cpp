@@ -43,7 +43,7 @@ ClipboardManager::ClipboardManager(QObject *parent) : QThread(parent)
     gdk_init(NULL, NULL);
     GdkDisplay* display = gdk_display_get_default();
     if (nullptr == display) {
-        CT_SYSLOG(LOG_ERR, "get GdkDisplay error");
+        USD_LOG(LOG_ERR, "get GdkDisplay error");
         return;
     }
 
@@ -52,6 +52,7 @@ ClipboardManager::ClipboardManager(QObject *parent) : QThread(parent)
 
 ClipboardManager::~ClipboardManager()
 {
+
 }
 
 void target_data_unref (TargetData *data)
@@ -107,7 +108,7 @@ void ClipboardManager::run()
         init_atoms (mDisplay);
         /* check if there is a clipboard manager running */
         if (XGetSelectionOwner (mDisplay, XA_CLIPBOARD_MANAGER)) {
-            CT_SYSLOG(LOG_ERR, "Clipboard manager is already running.");
+            USD_LOG(LOG_ERR, "Clipboard manager is already running.");
             mExit = false;
             return;
         }

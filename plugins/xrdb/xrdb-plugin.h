@@ -22,6 +22,16 @@
 #include "plugin-interface.h"
 #include "ixrdb-manager.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "clib-syslog.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 class XrdbPlugin : public PluginInterface
 {
 

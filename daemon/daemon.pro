@@ -9,6 +9,7 @@ TARGET = ukui-settings-daemon
 QT += core gui dbus
 CONFIG += no_keywords link_prl link_pkgconfig c++11 debug
 CONFIG -= app_bundle
+DEFINES += MODULE_NAME=\\\"Daemon\\\"
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,9 +23,6 @@ PKGCONFIG += \
         gio-2.0\
         gobject-2.0\
         gmodule-2.0
-
-LIBS += \
-        -lmate-desktop-2
 
 SOURCES += \
         $$PWD/main.cpp\

@@ -19,12 +19,6 @@
 #include <QString>
 #include <QDir>
 
-extern "C"{
-#include <pulse/pulseaudio.h>
-#include <stdlib.h>
-#include <syslog.h>
-}
-
 #include "sound-manager.h"
 
 SoundManager* SoundManager::mSoundManager = nullptr;
@@ -32,12 +26,12 @@ SoundManager* SoundManager::mSoundManager = nullptr;
 SoundManager::SoundManager()
 {
     timer = new QTimer();
-    connect(timer,SIGNAL(timeout()),this,SLOT(flush_cb()));
+    connect(timer, &QTimer::timeout, this, &SoundManager::flush_cb);
 }
 
 SoundManager::~SoundManager()
 {
-    syslog(LOG_DEBUG,"SoundManager destructor!");
+    USD_LOG(LOG_DEBUG,"SoundManager destructor!");
     if(mSoundManager)
         delete mSoundManager;
 }
@@ -45,20 +39,25 @@ SoundManager::~SoundManager()
 void
 sample_info_cb (pa_context *c, const pa_sample_info *i, int eol, void *userdata)
 {
+
     pa_operation *o;
-    if (!i)
+    if (!i) {
+
+        USD_LOG(LOG_DEBUG,"can't find sample");
         return;
-    syslog(LOG_DEBUG,"Found sample %s", i->name);
+    }
+
+    USD_LOG(LOG_DEBUG,"Found sample %s", i->name);
 
     /* We only flush those samples which have an XDG sound name
      * attached, because only those originate from themeing  */
     if (!(pa_proplist_gets (i->proplist, PA_PROP_EVENT_ID)))
         return;
 
-    syslog(LOG_DEBUG,"Dropping sample %s from cache", i->name);
+    USD_LOG(LOG_DEBUG,"Dropping sample %s from cache", i->name);
 
     if (!(o = pa_context_remove_sample (c, i->name, NULL, NULL))) {
-        syslog(LOG_DEBUG,"pa_context_remove_sample (): %s", pa_strerror (pa_context_errno (c)));
+        USD_LOG(LOG_DEBUG,"pa_context_remove_sample (): %s", pa_strerror (pa_context_errno (c)));
         return;
     }
 
@@ -76,12 +75,12 @@ void flush_cache (void)
     pa_operation *o = NULL;
 
     if (!(ml = pa_mainloop_new ())) {
-        syslog(LOG_DEBUG,"Failed to allocate pa_mainloop");
+        USD_LOG(LOG_DEBUG,"Failed to allocate pa_mainloop");
         goto fail;
     }
 
     if (!(pl = pa_proplist_new ())) {
-        syslog(LOG_DEBUG,"Failed to allocate pa_proplist");
+        USD_LOG(LOG_DEBUG,"Failed to allocate pa_proplist");
         goto fail;
     }
 
@@ -90,7 +89,7 @@ void flush_cache (void)
     pa_proplist_sets (pl, PA_PROP_APPLICATION_ID, "org.ukui.SettingsDaemon");
 
     if (!(c = pa_context_new_with_proplist (pa_mainloop_get_api (ml), PACKAGE_NAME, pl))) {
-        syslog(LOG_DEBUG,"Failed to allocate pa_context");
+        USD_LOG(LOG_DEBUG,"Failed to allocate pa_context");
         goto fail;
     }
 
@@ -98,7 +97,7 @@ void flush_cache (void)
     pl = NULL;
 
     if (pa_context_connect (c, NULL, PA_CONTEXT_NOAUTOSPAWN, NULL) < 0) {
-        syslog(LOG_DEBUG,"pa_context_connect(): %s", pa_strerror (pa_context_errno (c)));
+        USD_LOG(LOG_DEBUG,"pa_context_connect(): %s", pa_strerror (pa_context_errno (c)));
         goto fail;
     }
 
@@ -106,19 +105,19 @@ void flush_cache (void)
     while (pa_context_get_state (c) != PA_CONTEXT_READY) {
 
         if (!PA_CONTEXT_IS_GOOD (pa_context_get_state (c))) {
-            syslog(LOG_DEBUG,"Connection failed: %s", pa_strerror (pa_context_errno (c)));
+            USD_LOG(LOG_DEBUG,"Connection failed: %s", pa_strerror (pa_context_errno (c)));
             goto fail;
         }
 
         if (pa_mainloop_iterate (ml, TRUE, NULL) < 0) {
-            syslog(LOG_DEBUG,"pa_mainloop_iterate() failed");
+            USD_LOG(LOG_DEBUG,"pa_mainloop_iterate() failed");
             goto fail;
         }
     }
 
     /* Enumerate all cached samples */
     if (!(o = pa_context_get_sample_info_list (c, sample_info_cb, NULL))) {
-        syslog(LOG_DEBUG,"pa_context_get_sample_info_list(): %s", pa_strerror (pa_context_errno (c)));
+        USD_LOG(LOG_DEBUG,"pa_context_get_sample_info_list(): %s", pa_strerror (pa_context_errno (c)));
         goto fail;
     }
 
@@ -127,17 +126,17 @@ void flush_cache (void)
     while (pa_operation_get_state (o) == PA_OPERATION_RUNNING || pa_context_is_pending (c)) {
 
         if (!PA_CONTEXT_IS_GOOD (pa_context_get_state (c))) {
-            syslog(LOG_DEBUG,"Connection failed: %s", pa_strerror (pa_context_errno (c)));
+            USD_LOG(LOG_DEBUG,"Connection failed: %s", pa_strerror (pa_context_errno (c)));
             goto fail;
         }
 
         if (pa_mainloop_iterate (ml, TRUE, NULL) < 0) {
-            syslog(LOG_DEBUG,"pa_mainloop_iterate() failed");
+            USD_LOG(LOG_DEBUG,"pa_mainloop_iterate() failed");
             goto fail;
         }
     }
 
-
+    USD_LOG(LOG_DEBUG,"send over...");
 fail:
     if (o) {
         pa_operation_cancel (o);
@@ -155,8 +154,10 @@ fail:
 
 bool SoundManager::flush_cb ()
 {
-    flush_cache ();
+    flush_cache();
     timer->stop();
+
+    USD_LOG(LOG_DEBUG,"sound it");
     return false;
 }
 
@@ -168,6 +169,8 @@ void SoundManager::trigger_flush ()
     /* We delay the flushing a bit so that we can coalesce
      * multiple changes into a single cache flush */
     timer->start(500);
+
+    USD_LOG(LOG_DEBUG,"sound it");
 }
 
 /* func: listen for org.mate.sound
@@ -199,8 +202,9 @@ SoundManager::register_directory_callback (const QString path,
 
 
     w = new QFileSystemWatcher();
+
     if(w->addPath(path)){
-        connect(w,SIGNAL(directoryChanged(const QString&)),this,SLOT(file_monitor_changed_cb(const QString&)));
+        connect(w,&QFileSystemWatcher::directoryChanged, this, &SoundManager::file_monitor_changed_cb);
         monitors->push_front(w);
         succ = true;
     }
@@ -217,44 +221,52 @@ bool SoundManager::SoundManagerStart (GError **error)
     int pathNum;
     int i;
 
-    syslog(LOG_DEBUG,"Starting sound manager");
+    USD_LOG(LOG_DEBUG,"Starting sound manager");
     monitors = new QList<QFileSystemWatcher*>();
 
     /* We listen for change of the selected theme ... */
     settings = new QGSettings(UKUI_SOUND_SCHEMA);
-    connect(settings,SIGNAL(changed(const QString&)),this,SLOT(gsettings_notify_cb(const QString&)));
 
+    connect(settings, &QGSettings::changed, this, &SoundManager::gsettings_notify_cb);
     /* ... and we listen to changes of the theme base directories
      * in $HOME ...*/
 
     homePath = QDir::homePath();
-    if ((env = getenv ("XDG_DATA_HOME")) && *env == '/')
+    if ((env = getenv ("XDG_DATA_HOME")) && *env == '/') {
         path = QString(env) + "/sounds";
-    else if (!homePath.isEmpty())
+    }
+    else if (!homePath.isEmpty()) {
         path = homePath + "/.local" + "/share" + "/sounds";
-    else
+    }
+    else {
         path = nullptr;
+    }
 
     if (!path.isNull() && !path.isEmpty()) {
+        USD_LOG(LOG_DEBUG,"ready register callback:%s",path.toLatin1().data());
         register_directory_callback (path, NULL);
     }
 
     /* ... and globally. */
-    if (!(dd = getenv ("XDG_DATA_DIRS")) || *dd == 0)
-            dd = "/usr/local/share:/usr/share";
+    if (!(dd = getenv ("XDG_DATA_DIRS")) || *dd == 0) {
+        dd = "/usr/local/share:/usr/share";
+    }
 
     pathList = QString(dd).split(":");
     pathNum = pathList.count();
 
-    for (i = 0; i < pathNum; ++i)
+    for (i = 0; i < pathNum; ++i) {
+        USD_LOG(LOG_DEBUG,"ready register callback:%s",pathList.at(i).toLatin1().data());
         register_directory_callback (pathList.at(i), NULL);
+    }
 
+    trigger_flush();
     return true;
 }
 
 void SoundManager::SoundManagerStop ()
 {
-    syslog(LOG_DEBUG,"Stopping sound manager");
+    USD_LOG(LOG_DEBUG,"Stopping sound manager");
 
     if (settings) {
         delete settings;

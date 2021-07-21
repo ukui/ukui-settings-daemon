@@ -24,14 +24,14 @@ KeybindingsManager *KeybindingsPlugin::mKeyManager=nullptr;
 
 KeybindingsPlugin::KeybindingsPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"KeybindingsPlugin initializing");
+    USD_LOG(LOG_DEBUG,"KeybindingsPlugin initializing");
     if(nullptr == mKeyManager)
         mKeyManager = KeybindingsManager::KeybindingsManagerNew();
 }
 
 KeybindingsPlugin::~KeybindingsPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"KeybindingsPlugin free");
+    USD_LOG(LOG_DEBUG,"KeybindingsPlugin free");
     if(mKeyManager){
         delete mKeyManager;
         mKeyManager = nullptr;
@@ -41,10 +41,10 @@ KeybindingsPlugin::~KeybindingsPlugin()
 void KeybindingsPlugin::activate()
 {
     bool res;
-    CT_SYSLOG(LOG_DEBUG,"Activating Keybindings");
+    USD_LOG(LOG_DEBUG,"Activating Keybindings");
     res = mKeyManager->KeybindingsManagerStart();
     if(!res)
-        CT_SYSLOG(LOG_ERR,"Unable to start Keybindings manager");
+        USD_LOG(LOG_ERR,"Unable to start Keybindings manager");
 }
 
 PluginInterface *KeybindingsPlugin::getInstance()
@@ -56,7 +56,7 @@ PluginInterface *KeybindingsPlugin::getInstance()
 
 void KeybindingsPlugin::deactivate()
 {
-    CT_SYSLOG(LOG_DEBUG,"Dectivating Keybindings Plugin");
+    USD_LOG(LOG_DEBUG,"Dectivating Keybindings Plugin");
     mKeyManager->KeybindingsManagerStop();
 }
 

@@ -22,13 +22,13 @@
 SoundPlugin* SoundPlugin::mSoundPlugin = nullptr;
 SoundPlugin::SoundPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"UsdSoundPlugin initializing!");
+    USD_LOG(LOG_DEBUG,"UsdSoundPlugin initializing!");
     soundManager = SoundManager::SoundManagerNew();
 }
 
 SoundPlugin::~SoundPlugin()
 {
-    CT_SYSLOG(LOG_DEBUG,"UsdSoundPlugin deconstructor!");
+    USD_LOG(LOG_DEBUG,"UsdSoundPlugin deconstructor!");
     if(soundManager)
         delete soundManager;
 }
@@ -36,17 +36,17 @@ SoundPlugin::~SoundPlugin()
 void SoundPlugin::activate ()
 {
         GError *error = NULL;
-        CT_SYSLOG(LOG_DEBUG,"Activating sound plugin!");
+        USD_LOG(LOG_DEBUG,"Activating sound plugin!");
 
         if (!soundManager->SoundManagerStart(&error)) {
-                CT_SYSLOG(LOG_DEBUG,"Unable to start sound manager: %s", error->message);
+                USD_LOG(LOG_DEBUG,"Unable to start sound manager: %s", error->message);
                 g_error_free (error);
         }
 }
 
 void SoundPlugin::deactivate ()
 {
-        CT_SYSLOG(LOG_DEBUG,"Deactivating sound plugin!");
+        USD_LOG(LOG_DEBUG,"Deactivating sound plugin!");
         soundManager->SoundManagerStop();
 }
 

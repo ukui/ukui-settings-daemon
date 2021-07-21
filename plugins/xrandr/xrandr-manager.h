@@ -1,6 +1,11 @@
 /* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
  * -*- coding: utf-8 -*-
  *
+ * Copyright (C) 2012 by Alejandro Fiestas Olivares <afiestas@kde.org>
+ * Copyright 2016 by Sebastian Kügler <sebas@kde.org>
+ * Copyright (c) 2018 Kai Uwe Broulik <kde@broulik.de>
+ *                    Work sponsored by the LiMux project of
+ *                    the city of Munich.
  * Copyright (C) 2020 KylinSoft Co., Ltd.
  *
  * This program is free software: you can redistribute it and/or modify
@@ -21,78 +26,95 @@
 
 #include <QObject>
 #include <QTimer>
-#include <QFile>
-#include <QDebug>
-#include <QDomDocument>
-#include <QtXml>
-#include <QX11Info>
+
 #include <QDBusConnection>
 #include <QDBusInterface>
-#include <QWidget>
-#include <QMultiMap>
-#include <QScreen>
 #include <QGSettings/qgsettings.h>
+#include <QScreen>
 
-#include <X11/Xlib.h>
-#include <X11/extensions/XInput2.h>
-#include <X11/extensions/XInput.h>
-#include <X11/extensions/Xrandr.h>
-#include <xorg/xserver-properties.h>
-#include <gudev/gudev.h>
+#include "xrandr-dbus.h"
+#include "xrandr-adaptor.h"
+#include "xrandr-config.h"
 
-extern "C" {
-#define MATE_DESKTOP_USE_UNSTABLE_API
-#include <libmate-desktop/mate-rr.h>
-#include <libmate-desktop/mate-rr-config.h>
-#include <libmate-desktop/mate-rr-labeler.h>
-#include <libmate-desktop/mate-desktop-utils.h>
-}
 
 class XrandrManager: public QObject
 {
     Q_OBJECT
-private:
-    XrandrManager();
-    XrandrManager(XrandrManager&)=delete;
-    XrandrManager&operator=(const XrandrManager&)=delete;
+    Q_CLASSINFO("D-Bus Interface", "org.kde.KScreen")
+
 public:
-    ~XrandrManager();
-    static XrandrManager *XrandrManagerNew();
+    XrandrManager();
+    ~XrandrManager() override;
+
+
+    //coolDownStart 1.5->>coolDowning3.5->coolDownStart
+    //coolDownStart 1.5->>coolDowning3.5(有事件)->coolDownRun-》coolDownStart
+    enum ScreenCanBeApplyStatus {
+        coolDownStart,//可以开始执行1.5s计时，超时后应用配置
+        coolDownOverAndRun,    //CD结束后立刻应用配置（配置文件已更新）
+        coolDowning,        //冷却中（只更新配置，不应用配置）
+    };
+public:
     bool XrandrManagerStart();
     void XrandrManagerStop();
-
-public Q_SLOTS:
     void StartXrandrIdleCb ();
-    void RotationChangedEvent(QString);
+    void monitorsInit();
+    void changeScreenPosition();
+    void applyConfig();
+    void applyKnownConfig(bool state);
+    void applyIdealConfig();
+    void outputConnectedChanged();
+    void doApplyConfig(const KScreen::ConfigPtr &config);
+    void doApplyConfig(std::unique_ptr<xrandrConfig> config);
+    void refreshConfig();
 
-public:
-    bool ReadMonitorsXml();
-    bool SetScreenSize(Display  *dpy, Window root, int width, int height);
-    void RestoreBackupConfiguration(XrandrManager *manager,
-                                    const char    *backup_filename,
-                                    const char    *intended_filename,
-                                    unsigned int   timestamp);
-    static void OnRandrEvent (MateRRScreen *screen, gpointer data);
-    static void AutoConfigureOutputs (XrandrManager *manager,
-                                      unsigned int  timestamp);
-    static bool ApplyConfigurationFromFilename   (XrandrManager *manager,
-                                                  const char    *filename,
-                                                  unsigned int   timestamp);
-    static bool ApplyStoredConfigurationAtStartup(XrandrManager *manager,
-                                                  unsigned int timestamp);
-    static void monitorSettingsScreenScale (MateRRScreen *screen);
-    static void oneScaleLogoutDialog(QGSettings *settings);
-    static void twoScaleLogoutDialog(QGSettings *settings);
+
+    void saveCurrentConfig();
+    void setMonitorForChanges(bool enabled);
+    static void printScreenApplyFailReason(KScreen::ConfigPtr KsData);
+    void outputAdded(const KScreen::OutputPtr &output);
+    void outputRemoved(int outputId);
+    void primaryOutputChanged(const KScreen::OutputPtr &output);
+    void orientationChangedProcess(Qt::ScreenOrientation orientation);
+    void init_primary_screens(KScreen::ConfigPtr config);
+
+    void primaryScreenChange();
+    void callMethod(QRect geometry, QString name);
+    void calingPeonyProcess();
+    bool pretreatScreenInfo();
+public Q_SLOTS:
+    void configChanged();
+    void mPrepareForSleep(bool);
+    void RotationChangedEvent(QString);
+    void applyConfigTimerHandle();
+
+Q_SIGNALS:
+    // DBus
+    void outputConnected(const QString &outputName);
+    void unknownOutputConnected(const QString &outputName);
 
 private:
-    QTimer                *time;
-    QGSettings            *mXrandrSetting;
-    static XrandrManager  *mXrandrManager;
-    MateRRScreen          *mScreen;
 
-protected:
-    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
-    QMultiMap<QString, int>     mIntDate;
+    Q_ENUM(ScreenCanBeApplyStatus)
+    Q_INVOKABLE void getInitialConfig();
+    QTimer                *time;
+    QTimer                *mSaveTimer;
+    QTimer                *mChangeCompressor;
+    QTimer                *mApplyConfigTimer;
+    QGSettings            *mXrandrSetting;
+    QGSettings            *mXsettings;
+    double                 mScale = 1.0;
+    QDBusInterface        *mLoginInter;
+    std::unique_ptr<xrandrConfig> mMonitoredConfig;
+    KScreen::ConfigPtr mConfig;
+    xrandrDbus *mDbus;
+    bool mMonitoring;
+    bool mConfigDirty = true;
+    bool mSleepState = false;
+    bool mAddScreen = false;
+    QScreen *mScreen;
+    bool mStartingUp = true;
+    ScreenCanBeApplyStatus mScreenCanBeApply = XrandrManager::coolDownStart;
 };
 
 #endif // XRANDRMANAGER_H

@@ -3,7 +3,7 @@
 # Project created by QtCreator 2020-06-16T09:30:00
 #
 #-------------------------------------------------
-QT += gui widgets svg x11extras dbus
+QT += gui widgets svg x11extras dbus KGlobalAccel
 TEMPLATE = lib
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
@@ -13,17 +13,18 @@ PKGCONFIG += \
     gio-2.0 \
     gtk+-3.0 \
     gsettings-qt \
-    libmatemixer
+   # libmatemixer
 
 LIBS += \
-    -lX11 -lXi
+    -lX11 -lXi -lpulse
 
 include($$PWD/../../common/common.pri)
 
-DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H
+DEFINES += QT_DEPRECATED_WARNINGS HAVE_X11_EXTENSIONS_XKB_H _FORTIFY_SOURCE=2 MODULE_NAME=\\\"mediakeys\\\"
 
 SOURCES += \
         devicewindow.cpp     \
+        pulseaudiomanager.cpp \
         volumewindow.cpp \
         mediakey-manager.cpp \
         mediakey-plugin.cpp
@@ -31,6 +32,7 @@ SOURCES += \
 HEADERS += \
     acme.h \
     devicewindow.h      \
+    pulseaudiomanager.h \
     volumewindow.h      \
     mediakey-manager.h  \
     mediakey-plugin.h

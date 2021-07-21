@@ -12,7 +12,7 @@ TARGET = a11y-settings
 CONFIG += c++11 plugin link_pkgconfig
 CONFIG -= app_bundle
 
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS  MODULE_NAME=\\\"a11y-settings\\\"
 
 include($$PWD/../../common/common.pri)
 
