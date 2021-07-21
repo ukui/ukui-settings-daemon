@@ -19,8 +19,6 @@
 #include <QString>
 #include <QDir>
 
-
-
 #include "sound-manager.h"
 
 SoundManager* SoundManager::mSoundManager = nullptr;
@@ -28,7 +26,7 @@ SoundManager* SoundManager::mSoundManager = nullptr;
 SoundManager::SoundManager()
 {
     timer = new QTimer();
-    connect(timer,SIGNAL(timeout()),this,SLOT(flush_cb()));
+    connect(timer, &QTimer::timeout, this, &SoundManager::flush_cb);
 }
 
 SoundManager::~SoundManager()
@@ -44,6 +42,8 @@ sample_info_cb (pa_context *c, const pa_sample_info *i, int eol, void *userdata)
 
     pa_operation *o;
     if (!i) {
+
+        USD_LOG(LOG_DEBUG,"can't find sample");
         return;
     }
 
@@ -136,7 +136,7 @@ void flush_cache (void)
         }
     }
 
-
+    USD_LOG(LOG_DEBUG,"send over...");
 fail:
     if (o) {
         pa_operation_cancel (o);
@@ -154,8 +154,10 @@ fail:
 
 bool SoundManager::flush_cb ()
 {
-    flush_cache ();
+    flush_cache();
     timer->stop();
+
+    USD_LOG(LOG_DEBUG,"sound it");
     return false;
 }
 
@@ -167,6 +169,8 @@ void SoundManager::trigger_flush ()
     /* We delay the flushing a bit so that we can coalesce
      * multiple changes into a single cache flush */
     timer->start(500);
+
+    USD_LOG(LOG_DEBUG,"sound it");
 }
 
 /* func: listen for org.mate.sound
@@ -198,8 +202,9 @@ SoundManager::register_directory_callback (const QString path,
 
 
     w = new QFileSystemWatcher();
+
     if(w->addPath(path)){
-        connect(w,SIGNAL(directoryChanged(const QString&)),this,SLOT(file_monitor_changed_cb(const QString&)));
+        connect(w,&QFileSystemWatcher::directoryChanged, this, &SoundManager::file_monitor_changed_cb);
         monitors->push_front(w);
         succ = true;
     }
@@ -221,33 +226,41 @@ bool SoundManager::SoundManagerStart (GError **error)
 
     /* We listen for change of the selected theme ... */
     settings = new QGSettings(UKUI_SOUND_SCHEMA);
-    connect(settings,SIGNAL(changed(const QString&)),this,SLOT(gsettings_notify_cb(const QString&)));
 
+    connect(settings, &QGSettings::changed, this, &SoundManager::gsettings_notify_cb);
     /* ... and we listen to changes of the theme base directories
      * in $HOME ...*/
 
     homePath = QDir::homePath();
-    if ((env = getenv ("XDG_DATA_HOME")) && *env == '/')
+    if ((env = getenv ("XDG_DATA_HOME")) && *env == '/') {
         path = QString(env) + "/sounds";
-    else if (!homePath.isEmpty())
+    }
+    else if (!homePath.isEmpty()) {
         path = homePath + "/.local" + "/share" + "/sounds";
-    else
+    }
+    else {
         path = nullptr;
+    }
 
     if (!path.isNull() && !path.isEmpty()) {
+        USD_LOG(LOG_DEBUG,"ready register callback:%s",path.toLatin1().data());
         register_directory_callback (path, NULL);
     }
 
     /* ... and globally. */
-    if (!(dd = getenv ("XDG_DATA_DIRS")) || *dd == 0)
-            dd = "/usr/local/share:/usr/share";
+    if (!(dd = getenv ("XDG_DATA_DIRS")) || *dd == 0) {
+        dd = "/usr/local/share:/usr/share";
+    }
 
     pathList = QString(dd).split(":");
     pathNum = pathList.count();
 
-    for (i = 0; i < pathNum; ++i)
+    for (i = 0; i < pathNum; ++i) {
+        USD_LOG(LOG_DEBUG,"ready register callback:%s",pathList.at(i).toLatin1().data());
         register_directory_callback (pathList.at(i), NULL);
+    }
 
+    trigger_flush();
     return true;
 }
 

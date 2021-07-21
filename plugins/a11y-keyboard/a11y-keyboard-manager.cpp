@@ -161,6 +161,7 @@ XkbDescRec * A11yKeyboardManager::GetXkbDescRec()
 
         return desc;
 }
+
 static bool SetCtrlFromSettings (XkbDescRec   *desc,
                                  QGSettings  *settings,
                                  char const   *key,
@@ -245,16 +246,16 @@ void A11yKeyboardManager::SetServerFromSettings(A11yKeyboardManager *manager)
                              manager->settings,
                              "slowkeys-enable",
                              XkbSlowKeysMask)) {
-            desc->ctrls->ax_options = SetClear (manager->settings->get("slowkeys-beep-press").toBool(),
+            desc->ctrls->ax_options = SetClear(manager->settings->get("slowkeys-beep-press").toBool(),
                                                  desc->ctrls->ax_options,
                                                  XkbAccessXFeedbackMask | XkbAX_SKPressFBMask);
-            desc->ctrls->ax_options = SetClear (manager->settings->get("slowkeys-beep-accept").toBool(),
+            desc->ctrls->ax_options = SetClear(manager->settings->get("slowkeys-beep-accept").toBool(),
                                                  desc->ctrls->ax_options,
                                                  XkbAccessXFeedbackMask | XkbAX_SKAcceptFBMask);
-            desc->ctrls->ax_options = SetClear (manager->settings->get("slowkeys-beep-reject").toBool(),
+            desc->ctrls->ax_options = SetClear(manager->settings->get("slowkeys-beep-reject").toBool(),
                                                  desc->ctrls->ax_options,
                                                  XkbAccessXFeedbackMask | XkbAX_SKRejectFBMask);
-            desc->ctrls->slow_keys_delay = GetInt (manager->settings,
+            desc->ctrls->slow_keys_delay = GetInt(manager->settings,
                                                     "slowkeys-delay");
             /* anything larger than 500 seems to loose all keyboard input */
             if (desc->ctrls->slow_keys_delay > 500)
@@ -267,16 +268,16 @@ void A11yKeyboardManager::SetServerFromSettings(A11yKeyboardManager *manager)
                              "stickykeys-enable",
                              XkbStickyKeysMask)) {
             desc->ctrls->ax_options |= XkbAX_LatchToLockMask;
-            desc->ctrls->ax_options = SetClear (manager->settings->get("stickykeys-two-key-off").toBool(),
+            desc->ctrls->ax_options = SetClear(manager->settings->get("stickykeys-two-key-off").toBool(),
                                                  desc->ctrls->ax_options,
                                                  XkbAccessXFeedbackMask | XkbAX_TwoKeysMask);
-            desc->ctrls->ax_options = SetClear (manager->settings->get("stickykeys-modifier-beep").toBool(),
+            desc->ctrls->ax_options = SetClear(manager->settings->get("stickykeys-modifier-beep").toBool(),
                                                  desc->ctrls->ax_options,
                                                  XkbAccessXFeedbackMask | XkbAX_StickyKeysFBMask);
     }
 
     /* toggle keys */
-    desc->ctrls->ax_options = SetClear (manager->settings->get("togglekeys-enable").toBool(),
+    desc->ctrls->ax_options = SetClear(manager->settings->get("togglekeys-enable").toBool(),
                                          desc->ctrls->ax_options,
                                          XkbAccessXFeedbackMask | XkbAX_IndicatorFBMask);
 
@@ -334,7 +335,7 @@ void A11yKeyboardManager::A11yKeyboardManagerEnsureStatusIcon(A11yKeyboardManage
 
 void A11yKeyboardManager::MaybeShowStatusIcon(A11yKeyboardManager *manager)
 {
-    bool     show;
+    bool show;
     /* for now, show if accessx is enabled */
     show = manager->settings->get("enable").toBool();
 
@@ -342,13 +343,12 @@ void A11yKeyboardManager::MaybeShowStatusIcon(A11yKeyboardManager *manager)
             return;
     */
     A11yKeyboardManagerEnsureStatusIcon (manager);
-    //gtk_status_icon_set_visible (manager->status_icon, show);
+
 }
 
 void A11yKeyboardManager::KeyboardCallback(QString key)
 {
     SetServerFromSettings (this);
-    //MaybeShowStatusIcon (this);
 }
 
 bool A11yKeyboardManager::XkbEnabled (A11yKeyboardManager *manager)

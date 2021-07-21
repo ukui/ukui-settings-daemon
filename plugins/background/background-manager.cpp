@@ -44,17 +44,12 @@ void BackgroundManager::initGSettings(){
     bSettingOld = new QGSettings(BACKGROUND);
     Filename = bSettingOld->get(PICTURE_FILE_NAME).toString();
 
-    connect(bSettingOld, SIGNAL(changed(QString)),
-            this, SLOT(setup_Background(QString)));
 
-    connect(qApp,SIGNAL(screenAdded(QScreen *)),
-            this, SLOT(screenAddedProcess(QScreen*)));
+    connect(bSettingOld, &QGSettings::changed, this, &BackgroundManager::setup_Background);
+    connect(qApp, &QApplication::screenAdded, this, &BackgroundManager::screenAddedProcess);
+    connect(qApp, &QApplication::screenRemoved, this, &BackgroundManager::screenRemovedProcess);
+    connect(m_screen, &QScreen::virtualGeometryChanged, this, &BackgroundManager::virtualGeometryChangedProcess);
 
-    connect(qApp, SLOT(screenRemoved(QScreen *)),
-            this, SLOT(screenRemovedProcess(QScreen *)));
-
-    connect(m_screen, &QScreen::virtualGeometryChanged, this,
-            &BackgroundManager::virtualGeometryChangedProcess);
 }
 
 void BackgroundManager::SetBackground()
@@ -70,7 +65,7 @@ void BackgroundManager::SetBackground()
 
     img = imlib_load_image(Filename.toLatin1().data());
     if (!img) {
-        qDebug("%s:Unable to load image\n", Filename.toLatin1().data());
+        USD_LOG(LOG_DEBUG,"%s:Unable to load image\n", Filename.toLatin1().data());
         return ;
     }
     imlib_context_set_image(img);
@@ -94,6 +89,7 @@ void BackgroundManager::SetBackground()
     imlib_context_set_colormap(DefaultColormapOfScreen(scn));
     imlib_context_set_drawable(pix);
     ScnNum = QApplication::screens().length();
+
     for(int i = 0; i < ScnNum; i++){
         screen =  QApplication::screens().at(i);
         //qDebug()<<screen->geometry();
@@ -102,6 +98,7 @@ void BackgroundManager::SetBackground()
                                                screen->geometry().width() *2,
                                                screen->geometry().height() * 2);
     }
+
     XSetWindowBackgroundPixmap(dpy, root, pix);
     XClearWindow(dpy, root);
 

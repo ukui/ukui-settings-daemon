@@ -11,6 +11,7 @@ A11yKeyboardPlugin::A11yKeyboardPlugin()
         UsdA11yManager = A11yKeyboardManager::A11KeyboardManagerNew();
 
 }
+
 A11yKeyboardPlugin::~A11yKeyboardPlugin()
 {
     if(UsdA11yManager){
@@ -18,6 +19,7 @@ A11yKeyboardPlugin::~A11yKeyboardPlugin()
         UsdA11yManager = nullptr;
     }
 }
+
 void A11yKeyboardPlugin::activate()
 {
     bool res;

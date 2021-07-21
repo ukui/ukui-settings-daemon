@@ -24,6 +24,16 @@
 #include <QScreen>
 #include <X11/Xlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include "clib-syslog.h"
+
+#ifdef __cplusplus
+}
+#endif
+
 class BackgroundManager : public QObject
 {
     Q_OBJECT

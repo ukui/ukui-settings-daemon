@@ -39,11 +39,19 @@ XrandrPlugin::~XrandrPlugin()
 
 void XrandrPlugin::activate()
 {
+    bool res = QGuiApplication::platformName().startsWith(QLatin1String("wayland"));
+
+    if (true == res) {
+        USD_LOG(LOG_DEBUG, "wayland need't usd to manage the screen");
+        return;
+    }
+
     USD_LOG(LOG_DEBUG, "activating Xrandr plugins");
-    bool res;
+
     res = mXrandrManager->XrandrManagerStart();
-    if(!res)
+    if(!res) {
         USD_LOG(LOG_ERR,"Unable to start Xrandr manager!");
+    }
 
 }
 

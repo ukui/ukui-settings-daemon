@@ -52,6 +52,7 @@ ClipboardManager::ClipboardManager(QObject *parent) : QThread(parent)
 
 ClipboardManager::~ClipboardManager()
 {
+
 }
 
 void target_data_unref (TargetData *data)
