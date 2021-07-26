@@ -18,8 +18,8 @@
 
 extern "C"{
     #include <unistd.h>
-    #include "usd_log.h"
-    #include "KylinDefine.h"
+    #include "clib-syslog.h"
+//    #include "KylinDefine.h"
 }
 
 class MonitorInputTask : public QObject

@@ -7,9 +7,12 @@ TEMPLATE = subdirs
 
 TRANSLATIONS += daemon/res/i18n/zh_CN.ts
 
-DEFINES += PLATFORAM_9X0
+DEFINES += PLATFORAM_9X0 debug
 
 CONFIG += ordered
+
+QMAKE_CXXFLAGS += "-g"
+
 
 SUBDIRS += \
     $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro  \

@@ -104,7 +104,7 @@ bool MouseManager::MouseManagerStart()
         return TRUE;
     }
     time = new QTimer(this);
-    connect(time,SIGNAL(timeout()),this,SLOT(MouseManagerIdleCb()));
+    connect(time, &QTimer::timeout, this, &MouseManager::MouseManagerIdleCb);
     time->start();
     return true;
 }
@@ -249,6 +249,7 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
     unsigned char *data;
     Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
     prop = property_from_name (property_name);
+
     if (!prop)
             return FALSE;
     try {
@@ -266,6 +267,7 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
         USD_LOG(LOG_DEBUG,"MOUSE: WRING ID: %d",str);
         return FALSE;
     }
+
     return rc == Success;
 }
 
@@ -598,7 +600,7 @@ void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
         XFreeDeviceList (device_info);
 }
 
-void MouseManager::SetMotionLibinput (XDeviceInfo     *device_info)
+void MouseManager::SetMotionLibinput (XDeviceInfo *device_info)
 {
     XDevice *device;
     Atom prop;
@@ -1479,7 +1481,7 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
             settings->set(KEY_TOUCHPAD_ENABLED, false);
             return true;
         }else {
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
+//            settings->set(KEY_TOUCHPAD_ENABLED, true);
             return true;
         }
     }

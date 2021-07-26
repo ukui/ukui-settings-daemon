@@ -158,6 +158,7 @@ static void capslock_set_xkb_state(gboolean lock_state)
     XkbLockModifiers (dpy, XkbUseCoreKbd, caps_mask, lock_state ? caps_mask : 0);
     XSync (dpy, FALSE);
 }
+
 static unsigned numlock_NumLock_modifier_mask (void)
 {
     Display *dpy = QX11Info::display();

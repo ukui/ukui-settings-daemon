@@ -21,7 +21,7 @@
 #include <QDebug>
 #include "plugin-interface.h"
 #include "autoBrightness-manager.h"
-
+#include "clib-syslog.h"
 class AutoBrightnessPlugin : public PluginInterface
 {
 private:

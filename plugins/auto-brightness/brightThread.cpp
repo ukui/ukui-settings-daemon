@@ -1,5 +1,5 @@
 #include "brightThread.h"
-#include <QGSettings>
+#include <QGSettings/QGSettings>
 #include <QByteArray>
 #include <QDebug>
 #include <QMutexLocker>

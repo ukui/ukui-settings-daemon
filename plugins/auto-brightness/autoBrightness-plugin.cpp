@@ -38,11 +38,11 @@ AutoBrightnessPlugin::~AutoBrightnessPlugin()
 
 void AutoBrightnessPlugin::activate()
 {
-    qDebug("Activating AutoBrightness plugins");
+    USD_LOG(LOG_DEBUG,"Activating AutoBrightness plugins");
     bool res;
     res = mAutoBrightnessManager->AutoBrightnessManagerStart();
     if(!res)
-        qWarning("Unable to start AutoBrightness manager");
+        USD_LOG(LOG_ERR,"Unable to start AutoBrightness manager");
 }
 
 PluginInterface *AutoBrightnessPlugin::getInstance()

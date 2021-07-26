@@ -159,7 +159,9 @@ bool PluginManager::managerAwake()
 static bool is_item_in_schema (const char* const* items, QString& item)
 {
     while (*items) {
-       if (g_strcmp0 (*items++, item.toLatin1().data()) == 0) return true;
+       if (g_strcmp0 (*items++, item.toLatin1().data()) == 0) {
+           return true;
+       }
     }
     return false;
 }

@@ -9,6 +9,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.font-rendering.gschema.xml.in \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.auto-brightness.gschema.xml    \
     $$PWD/org.ukui.SettingsDaemon.plugins.background.gschema.xml    \
     $$PWD/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml     \
     $$PWD/org.ukui.SettingsDaemon.plugins.color.gschema.xml         \
@@ -24,6 +25,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml        \
     $$PWD/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml   \
     $$PWD/org.ukui.peripherals-keyboard.gschema.xml         \
+    $$PWD/org.ukui.SettingsDaemon.plugins.xinput.gschema.xml   \
     $$PWD/org.ukui.peripherals-mouse.gschema.xml            \
     $$PWD/org.ukui.peripherals-touchpad.gschema.xml         \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml      \
@@ -52,6 +54,7 @@ zh_CN.files = $$PWD/ukui-settings-daemon.mo
 INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN
 
 DISTFILES += \
+    $$PWD/auto-brightness.ukui-settings-plugin  \
     $$PWD/a11y-settings.ukui-settings-plugin \
     $$PWD/a11y-keyboard.ukui-settings-plugin \
     $$PWD/background.ukui-settings-plugin    \
@@ -67,4 +70,5 @@ DISTFILES += \
     $$PWD/tablet-mode.ukui-settings-plugin   \
     $$PWD/xrdb.ukui-settings-plugin          \
     $$PWD/xrandr.ukui-settings-plugin        \
-    $$PWD/xsettings.ukui-settings-plugin
+    $$PWD/xsettings.ukui-settings-plugin    \
+    $$PWD/xinput.ukui-settings-plugin

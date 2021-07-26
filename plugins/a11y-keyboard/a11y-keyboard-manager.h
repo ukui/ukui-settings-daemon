@@ -51,7 +51,7 @@ public:
 public Q_SLOTS:
     void  StartA11yKeyboardIdleCb();
     void  KeyboardCallback(QString);
-    void  OnPreferencesDialogResponse(A11yKeyboardManager *manager);
+    void  OnPreferencesDialogResponse();
     void  ax_stickykeys_response(QAbstractButton *button);
     void  ax_slowkeys_response (QAbstractButton *button);
 
@@ -106,7 +106,7 @@ private:
     bool                        SlowkeysShortcutVal;
     QMessageBox                 *StickykeysAlert;
     QMessageBox                 *SlowkeysAlert;
-    A11yPreferencesDialog       *preferences_dialog;
+    A11yPreferencesDialog       *preferences_dialog=nullptr;
     //GtkStatusIcon               *status_icon;
     XkbDescRec                  *OriginalXkbDesc;
     QGSettings                  *settings;

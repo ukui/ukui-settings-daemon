@@ -7,7 +7,7 @@
 #include <QThread>
 
 extern "C"{
-    #include "usd_log.h"
+    #include "clib-syslog.h"
 }
 
 class XinputPlugin : public PluginInterface

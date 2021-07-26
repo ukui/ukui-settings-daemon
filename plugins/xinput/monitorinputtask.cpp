@@ -54,8 +54,8 @@ void MonitorInputTask::ListeningToInputEvent()
     Display *display = NULL;
     // open display
 
-    PEEK_XOpenDisplay(display);
-
+//    PEEK_XOpenDisplay(display);
+    display = XOpenDisplay(NULL);
 
 
    // display = XOpenDisplay(NULL);

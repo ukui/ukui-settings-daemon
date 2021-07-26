@@ -249,7 +249,8 @@ void PluginInfo::setPluginSchema(QString& schema)
     this->mEnabled = mSettings->get("active").toBool();
     priority = mSettings->get("priority").toInt();
     if (priority > 0) this->mPriority = priority;
-    if (!connect(mSettings, SIGNAL(changed(QString)), this, SLOT(pluginSchemaSlot(QString)))){
+
+    if (!connect(mSettings, &QGSettings::changed, this, &PluginInfo::pluginSchemaSlot)) {
         USD_LOG(LOG_ERR, "plugin setting '%s', connect error!", schema.toUtf8().data());
     }
 }

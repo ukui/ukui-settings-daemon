@@ -7,7 +7,7 @@
 #include "monitorinputtask.h"
 
 extern "C"{
-    #include "usd_log.h"
+    #include "clib-syslog.h"
 }
 
 class QGSettings;

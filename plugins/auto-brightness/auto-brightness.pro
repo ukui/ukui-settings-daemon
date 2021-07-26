@@ -4,9 +4,9 @@ TEMPLATE = lib
 
 CONFIG += c++11 plugin link_pkgconfig
 
-DEFINES += TABLETMODE_LIBRARY
+DEFINES += TABLETMODE_LIBRARY QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"backGround\\\"
 
-DEFINES += QT_DEPRECATED_WARNINGS
+
 
 include($$PWD/../../common/common.pri)
 
@@ -16,8 +16,7 @@ INCLUDEPATH += \
 
 PKGCONFIG += \
             xrandr x11 \
-            glib-2.0 \
-            gsettings-qt
+            glib-2.0
 
 SOURCES += \
     autoBrightness-manager.cpp \
