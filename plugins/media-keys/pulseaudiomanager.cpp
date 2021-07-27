@@ -50,7 +50,6 @@ void pulseAudioManager::PaContextStateCallback(pa_context* p_PaCtx, void* userda
      case PA_CONTEXT_FAILED:
      case PA_CONTEXT_TERMINATED:
      case PA_CONTEXT_READY:
-
           *context_state = PulseAudioContextState::PULSE_CONTEXT_READY;
          break;
      default:

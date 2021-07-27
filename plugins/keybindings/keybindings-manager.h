@@ -42,10 +42,12 @@
 #include <gtk/gtk.h>
 #include <X11/keysym.h>
 #include <gio/gio.h>
-#include <dconf.h>
+
 extern "C"{
 #include "ukui-keygrab.h"
 #include "eggaccelerators.h"
+#include "dconf-util.h"
+#include <dconf.h>
 }
 
 typedef struct {
@@ -93,6 +95,8 @@ private:
     DConfClient *client;
     GSList   *binding_list;
     QList<GdkScreen*> *screens;
+
+    QGSettings *dconfSet;
 
 };
 

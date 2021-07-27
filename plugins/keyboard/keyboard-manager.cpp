@@ -158,6 +158,7 @@ static void capslock_set_xkb_state(gboolean lock_state)
     XkbLockModifiers (dpy, XkbUseCoreKbd, caps_mask, lock_state ? caps_mask : 0);
     XSync (dpy, FALSE);
 }
+
 static unsigned numlock_NumLock_modifier_mask (void)
 {
     Display *dpy = QX11Info::display();
@@ -228,6 +229,7 @@ void apply_numlock (KeyboardManager *manager)
     settings = manager->settings;
     rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
     manager->old_state = settings->getEnum(KEY_NUMLOCK_STATE);
+
     try {
         if (rnumlock) {
             numlock_set_xkb_state ((NumLockState)manager->old_state);
@@ -260,6 +262,7 @@ void apply_repeat (KeyboardManager *manager)
     repeat  = manager->settings->get(KEY_REPEAT).toBool();
     rate    = manager->settings->get(KEY_RATE).toInt();
     delay   = manager->settings->get(KEY_DELAY).toInt();
+
     try {
         if (repeat) {
             gboolean rate_set = FALSE;
@@ -274,6 +277,7 @@ void apply_repeat (KeyboardManager *manager)
         } else {
             XAutoRepeatOff (dpy);
         }
+
         XSync (dpy, FALSE);
     } catch (int x) {
         USD_LOG(LOG_ERR,"ERROR");
@@ -297,12 +301,15 @@ void KeyboardManager::apply_settings (QString keys)
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     bool rnumlock;
     rnumlock = settings->get(KEY_NUMLOCK_REMEMBER).toBool();
+
     if (rnumlock == 0 || key == NULL) {
         if (have_xkb && rnumlock) {
             numlock_set_xkb_state (numlock_get_settings_state (settings));
             capslock_set_xkb_state(settings->get(KEY_CAPSLOCK_STATE).toBool());
+            USD_LOG(LOG_DEBUG,"apply keyboard ok.");
         }
     }
+
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
     if (keys.compare(QString::fromLocal8Bit(KEY_CLICK)) == 0||
@@ -329,6 +336,7 @@ void KeyboardManager::apply_settings (QString keys)
     } else {
              USD_LOG(LOG_DEBUG,"Unhandled settings change, key '%s'", key);
     }
+
 }
 
 void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *manager)
@@ -345,12 +353,14 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         Display *display = XOpenDisplay(NULL);
 
         XkbGetIndicatorState(display, XkbUseCoreKbd, &lockedMods);
+
         if(lockedMods == 1 || lockedMods == 3){
             settings->set(KEY_CAPSLOCK_STATE,true);
         }
         else{
             settings->set(KEY_CAPSLOCK_STATE,false);
         }
+
         if(lockedMods == 2 || lockedMods==3)
             numlockState = NUMLOCK_STATE_ON;
         else
@@ -358,10 +368,12 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
 
         USD_LOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
                   old_state,lockedMods,numlockState);
+
         if (numlockState != old_state) {
                 settings->setEnum(KEY_NUMLOCK_STATE, numlockState);
                 old_state = numlockState;
         }
+
         XCloseDisplay (display);
     }
 }
@@ -371,7 +383,8 @@ void KeyboardManager::numlock_install_xkb_callback ()
     if (!have_xkb)
         return;
 
-    connect(XEventMonitor::instance(), &XEventMonitor::keyRelease, this, &KeyboardManager::XkbEventsFilter);
+    connect(XEventMonitor::instance(), static_cast<void (XEventMonitor::*)(int)>(&XEventMonitor::keyRelease),
+            this, &KeyboardManager::XkbEventsFilter);
 
 }
 
@@ -383,7 +396,7 @@ void KeyboardManager::start_keyboard_idle_cb ()
     XEventMonitor::instance()->start();
 
     /* Essential - xkb initialization should happen before */
-    mKeyXkb->usd_keyboard_xkb_init (this);
+     mKeyXkb->usd_keyboard_xkb_init (this);
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     numlock_xkb_init (this);
@@ -396,7 +409,6 @@ void KeyboardManager::start_keyboard_idle_cb ()
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     numlock_install_xkb_callback();
-
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
 }

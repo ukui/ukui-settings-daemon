@@ -12,3 +12,10 @@ A11yPreferencesDialog::~A11yPreferencesDialog()
 {
     delete ui;
 }
+
+void A11yPreferencesDialog::closeEvent(QCloseEvent *event)
+{
+    Q_UNUSED(event);
+    USD_LOG(LOG_DEBUG,"dialog had close");
+    Q_EMIT singalCloseWidget();
+}

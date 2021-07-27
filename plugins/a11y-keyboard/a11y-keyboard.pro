@@ -8,7 +8,7 @@ TARGET = a11y-keyboard
 TEMPLATE = lib
 DEFINES += A11YKEYBOARD_LIBRARY MODULE_NAME=\\\"a11y-keyboard\\\"
 
-CONFIG += c++11 no_keywords link_pkgconfig plugin
+CONFIG += c++11 no_keywords link_pkgconfig plugin debug
 CONFIG += app_bunale
 
 DEFINES += QT_DEPRECATED_WARNINGS

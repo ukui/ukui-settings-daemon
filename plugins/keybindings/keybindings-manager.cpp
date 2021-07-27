@@ -20,14 +20,16 @@
 #include "keybindings-manager.h"
 #include "config.h"
 #include "clib-syslog.h"
-#include "dconf-util.h"
+
 #include <gio/gdesktopappinfo.h>
 #include <QMessageBox>
 #include <QScreen>
 
 
+
 #define DESKTOP_APP_DIR "/usr/share/applications/"
-#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
+#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/"
+//#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
 #define CUSTOM_KEYBINDING_SCHEMA  "org.ukui.control-center.keybinding"
 
 KeybindingsManager *KeybindingsManager::mKeybinding = nullptr;
@@ -287,13 +289,15 @@ void KeybindingsManager::binding_unregister_keys (KeybindingsManager *manager)
 {
     GSList *li;
     bool need_flush = FALSE;
+    USD_LOG(LOG_DEBUG,"run here...");
     gdk_x11_display_error_trap_push (gdk_display_get_default());
     try {
         for (li = manager->binding_list; li != NULL; li = li->next) {
             Binding *binding = (Binding *) li->data;
-
+            USD_LOG(LOG_DEBUG,"run here...");
             if (binding->key.keycodes) {
                 need_flush = TRUE;
+
                 grab_key_unsafe (&binding->key, FALSE, manager->screens);
             }
         }
@@ -425,7 +429,9 @@ void KeybindingsManager::bindings_callback (DConfClient  *client,
                                             gchar        *tag,
                                             KeybindingsManager *manager)
 {
-    qDebug ("keybindings: received 'changed' signal from dconf");
+    Q_UNUSED(client);
+    Q_UNUSED(changes);
+    USD_LOG(LOG_DEBUG,"keybindings: received 'changed' signal from dconf. gchar:%s changes:%s tag:%s ",prefix, changes[0], tag);
 
     binding_unregister_keys (manager);
     bindings_get_entries (manager);
@@ -480,7 +486,7 @@ bool KeybindingsManager::KeybindingsManagerStart()
         XSelectInput (xdpy, xwindow, atts.your_event_mask | KeyPressMask);
         gdk_x11_display_error_trap_pop_ignored(gdk_display_get_default());
     } catch (int) {
-
+        USD_LOG(LOG_DEBUG,"had a error in here...");
     }
     screens = new QList<GdkScreen*>();
     get_screens_list ();
@@ -492,10 +498,48 @@ bool KeybindingsManager::KeybindingsManagerStart()
     /* Link to dconf, receive a shortcut key change signal from dconf
      * 链接dconf, 从dconf收到更改快捷键信号
      */
-    client = dconf_client_new ();
-    dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
-    g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
+    {
+        char ** childs;
+        int len;
+        QList<char *> vals;
 
+        client = dconf_client_new ();
+        dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
+        g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
+#if 0 //无效，无法使用gsetings的方法监控dconf
+        childs = dconf_client_list (client, GSETTINGS_KEYBINDINGS_DIR, &len);
+
+        for (int i = 0; childs[i] != NULL; i++){
+            USD_LOG(LOG_DEBUG,"val:%s",childs[i]);
+            if (dconf_is_rel_dir (childs[i], NULL))
+            {
+                USD_LOG(LOG_DEBUG,"val:");
+                char * val = g_strdup (childs[i]);
+                vals.append(val);
+                USD_LOG(LOG_DEBUG,"val:%s",val);
+            }
+        }
+
+        USD_LOG(LOG_DEBUG,"len:%d",len);
+        for (char * path : vals){
+            USD_LOG(LOG_DEBUG,"val:%s",path);
+            char tempbuf[128]="";
+
+            memcpy(tempbuf, GSETTINGS_KEYBINDINGS_DIR, strlen(GSETTINGS_KEYBINDINGS_DIR));
+            strcat(tempbuf, path);
+            USD_LOG(LOG_DEBUG,"path:%s, tempbuf%s",path, tempbuf);
+            const QByteArray ba(GSETTINGS_KEYBINDINGS_DIR,strlen(GSETTINGS_KEYBINDINGS_DIR));
+            const QByteArray bba(tempbuf,strlen(tempbuf));
+
+            USD_LOG(LOG_DEBUG,"ba[%s] bba[%s]",ba.data(),bba.data());
+
+            QGSettings * settings = new QGSettings(ba, bba);
+            connect(settings, &QGSettings::changed, this, [=] (const QString &key){
+                USD_LOG(LOG_DEBUG,"key=%s",key.toLatin1().data());
+            });
+        }
+#endif
+    }
     return true;
 }
 

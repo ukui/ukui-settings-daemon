@@ -86,8 +86,9 @@ bool MprisManager::MprisManagerStart (GError           **error)
     /* Register all the names we wish to watch.*/
     mDbusWatcher->setWatchedServices(busNames);
     mDbusWatcher->addWatchedService(DBUS_NAME);
-    connect(mDbusWatcher,SIGNAL(serviceRegistered(const QString&)),this,SLOT(serviceRegisteredSlot(const QString&)));
-    connect(mDbusWatcher,SIGNAL(serviceUnregistered(const QString&)),this,SLOT(serviceUnregisteredSlot(const QString&)));
+
+    connect(mDbusWatcher, &QDBusServiceWatcher::serviceRegistered, this, &MprisManager::serviceRegisteredSlot);
+    connect(mDbusWatcher, &QDBusServiceWatcher::serviceUnregistered, this, &MprisManager::serviceUnregisteredSlot);
 
     if(!mDbusInterface->isValid()){
         USD_LOG(LOG_ERR,"create %s failed",MEDIAKEYS_DBUS_NAME.toLatin1().data());
@@ -100,6 +101,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
      *  通过QDBusInterface的方式创建一个dbus方法调用。这里我们调用的方法是来自org.ukui.SettingsDaemon.MediaKeys的
      *  GrabMediaPlayerKeys(QString), 你可以在media-keys插件内的mprismanager.cpp找到它的定义
      */
+
     response = mDbusInterface->call("GrabMediaPlayerKeys","UsdMpris");
     if(QDBusMessage::ErrorMessage == response.ReplyMessage){
         USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());

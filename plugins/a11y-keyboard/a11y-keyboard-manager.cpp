@@ -8,7 +8,7 @@ static GdkFilterReturn DevicepresenceFilter (GdkXEvent *xevent, GdkEvent  *event
 GdkFilterReturn CbXkbEventFilter (GdkXEvent  *xevent, GdkEvent *ignored1, A11yKeyboardManager *manager);
 
 A11yKeyboardManager *A11yKeyboardManager::mA11yKeyboard=nullptr;
-
+//TODO:需要给出设置界面的呼出窗口(MaybeShowStatusIcon)，并且需要针对功能进行完善 by Leon Sun 2021年07月24日15:17:44
 A11yKeyboardManager::A11yKeyboardManager(QObject *parent) : QObject(parent)
 {
     time     = new QTimer(this);
@@ -30,7 +30,8 @@ bool A11yKeyboardManager::A11yKeyboardManagerStart()
 {
     qDebug(" A11y Keyboard Manager Start ");
 
-    connect(time,SIGNAL(timeout()),this,SLOT(StartA11yKeyboardIdleCb()));
+
+    connect(time, &QTimer::timeout, this, &A11yKeyboardManager::StartA11yKeyboardIdleCb);
     time->start();
 
     return true;
@@ -281,10 +282,10 @@ void A11yKeyboardManager::SetServerFromSettings(A11yKeyboardManager *manager)
                                          desc->ctrls->ax_options,
                                          XkbAccessXFeedbackMask | XkbAX_IndicatorFBMask);
 
-    /*
-    qDebug ("CHANGE to : 0x%x", desc->ctrls->enabled_ctrls);
-    qDebug ("CHANGE to : 0x%x (2)", desc->ctrls->ax_options);
-    */
+
+    USD_LOG(LOG_DEBUG,"CHANGE to : 0x%x", desc->ctrls->enabled_ctrls);
+    USD_LOG(LOG_DEBUG,"CHANGE to : 0x%x (2)", desc->ctrls->ax_options);
+
     gdk_x11_display_error_trap_push (gdk_display_get_default());
     XkbSetControls (GDK_DISPLAY_XDISPLAY(gdk_display_get_default()),
                     XkbSlowKeysMask         |
@@ -304,17 +305,24 @@ void A11yKeyboardManager::SetServerFromSettings(A11yKeyboardManager *manager)
     gdk_x11_display_error_trap_pop_ignored (gdk_display_get_default());
 }
 
-void A11yKeyboardManager::OnPreferencesDialogResponse(A11yKeyboardManager *manager)
+void A11yKeyboardManager::OnPreferencesDialogResponse()
 {
-    manager->preferences_dialog->close();
-    delete manager->preferences_dialog;
+    USD_LOG(LOG_DEBUG,"get close dialog signal");
+    this->preferences_dialog->close();
+    preferences_dialog->deleteLater();
 }
+
 
 void A11yKeyboardManager::OnStatusIconActivate(GtkStatusIcon *status_icon, A11yKeyboardManager *manager)
 {
+
     if (manager->preferences_dialog == NULL) {
+
         manager->preferences_dialog = new A11yPreferencesDialog();
-        connect(manager->preferences_dialog,SIGNAL(response(A11yKeyboardManager)),manager,SLOT(OnPreferencesDialogResponse(A11yKeyboardManager)));
+
+//        connect(manager->preferences_dialog,SIGNAL(response(A11yKeyboardManager)),manager,SLOT(OnPreferencesDialogResponse(A11yKeyboardManager)));
+        connect(manager->preferences_dialog, &A11yPreferencesDialog::singalCloseWidget, manager, &A11yKeyboardManager::OnPreferencesDialogResponse);
+
         manager->preferences_dialog->show();
     } else {
         manager->preferences_dialog->close();
@@ -811,6 +819,9 @@ void A11yKeyboardManager::AxStickykeysWarningPost (A11yKeyboardManager *manager,
         }
 }
 
+/*
+ *
+*/
 
 void A11yKeyboardManager::SetSettingsFromServer(A11yKeyboardManager *manager)
 {
@@ -935,14 +946,15 @@ void A11yKeyboardManager::StartA11yKeyboardIdleCb()
 {
     unsigned int event_mask;
 
-    qDebug("Starting a11y_keyboard manager");
-
+    USD_LOG(LOG_DEBUG, "Starting a11y_keyboard manager");
+//    OnStatusIconActivate(NULL,this); just for show config form.
     time->stop();
 
     if (!XkbEnabled (this))
         goto out;
 
-    connect(settings,SIGNAL(changed(QString)),this,SLOT(KeyboardCallback(QString)));
+
+    connect(settings, &QGSettings::changed, this, &A11yKeyboardManager::KeyboardCallback);
     SetDevicepresenceHandler (this);
 
     /* Save current xkb state so we can restore it on exit

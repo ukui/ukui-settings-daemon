@@ -30,7 +30,7 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
-#include <syslog.h>
+#include "clib-syslog.h"
 #define MOUSE_SCHEMA          "org.ukui.peripherals-mouse"
 #define INTERFACE_SCHEMA      "org.mate.interface"
 #define SOUND_SCHEMA          "org.mate.sound"
@@ -270,7 +270,7 @@ xsettings_callback (GSettings             *gsettings,
     TranslationEntry *trans;
     int               i;
     GVariant         *value;
-    syslog(LOG_ERR,"%s  key=%s",__func__,key);
+    USD_LOG(LOG_ERR,"%s  key=%s",__func__,key);
     if (g_str_equal (key, CURSOR_THEME_KEY)||
         g_str_equal (key, CURSOR_SIZE_KEY )||
         g_str_equal (key,SCALING_FACTOR_KEY)){
