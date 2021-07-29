@@ -420,6 +420,7 @@ void
 usd_keyboard_manager_apply_settings (UsdKeyboardManager *manager)
 {
         apply_settings (manager->priv->settings, NULL, manager);
+        apply_repeat (manager);
 }
 
 static gboolean
