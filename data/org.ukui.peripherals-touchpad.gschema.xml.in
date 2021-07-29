@@ -16,7 +16,7 @@
       <description>Set this to TRUE to be able to send mouse clicks by tapping on the touchpad.</description>
     </key>
     <key name="vertical-edge-scrolling" type="b">
-      <default>true</default>
+      <default>false</default>
       <summary>Enable vertical edge scrolling</summary>
       <description>Set this to TRUE to allow vertical edge scrolling</description>
     </key>

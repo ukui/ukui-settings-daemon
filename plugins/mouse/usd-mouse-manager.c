@@ -938,12 +938,15 @@ set_disable_w_typing_synaptics (UsdMouseManager *manager,
                 GError *error = NULL;
                 char *args[6];
 
-                if (manager->priv->syndaemon_spawned)
-                        return;
+                if (manager->priv->syndaemon_spawned){
+                    kill (manager->priv->syndaemon_pid, SIGHUP);
+                    g_spawn_close_pid (manager->priv->syndaemon_pid);
+                    manager->priv->syndaemon_spawned = FALSE;
+                }
 
                 args[0] = "syndaemon";
                 args[1] = "-i";
-                args[2] = "0.5";
+                args[2] = "0.3";
                 args[3] = "-K";
                 args[4] = "-R";
                 args[5] = NULL;
@@ -1492,6 +1495,7 @@ set_disble_touchpad (XDeviceInfo *device_info, GSettings *settings)
             state = g_settings_get_boolean (settings, KEY_TOUCHPAD_DISBLE_O_E_MOUSE);
             if(state){
                 g_settings_set_boolean (settings, KEY_TOUCHPAD_ENABLED, FALSE);
+                system("killall syndaemon");
             }else {
                 g_settings_set_boolean (settings, KEY_TOUCHPAD_ENABLED, TRUE);
             }
@@ -1867,6 +1871,8 @@ touchpad_callback (GSettings          *settings,
                 set_natural_scroll_all (manager);
         } else if (g_strcmp0 (key, KEY_TOUCHPAD_ENABLED) == 0) {
                 set_touchpad_enabled_all (g_settings_get_boolean (settings, key));
+                if (g_settings_get_boolean (settings, KEY_TOUCHPAD_DISABLE_W_TYPING) && g_settings_get_boolean (settings, key))
+                    set_disable_w_typing (manager, TRUE);
         } else if ((g_strcmp0 (key, KEY_MOTION_ACCELERATION) == 0)
                 || (g_strcmp0 (key, KEY_MOTION_THRESHOLD) == 0)) {
                 set_motion_all (manager);
@@ -1893,6 +1899,9 @@ usd_mouse_manager_idle_cb (UsdMouseManager *manager)
         manager->priv->mAreaTop  = 0;
         manager->priv->settings_mouse = g_settings_new (UKUI_MOUSE_SCHEMA);
         manager->priv->settings_touchpad = g_settings_new (UKUI_TOUCHPAD_SCHEMA);
+
+        if (!g_settings_get_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED))
+             g_settings_set_boolean (manager->priv->settings_touchpad, KEY_TOUCHPAD_ENABLED, TRUE);
 
         g_signal_connect (manager->priv->settings_mouse, "changed",
                           G_CALLBACK (mouse_callback), manager);
