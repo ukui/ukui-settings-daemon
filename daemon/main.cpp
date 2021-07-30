@@ -46,6 +46,7 @@ void handler(int no)
 }
 int main (int argc, char* argv[])
 {
+
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
@@ -57,6 +58,8 @@ int main (int argc, char* argv[])
     PluginManager*  manager = nullptr;
     qDebug( "ukui-settings-daemon starting ...");
     QApplication app(argc, argv);
+
+
 
     signal(SIGTERM, handler);
     QApplication::setQuitOnLastWindowClosed(false);
@@ -72,11 +75,14 @@ int main (int argc, char* argv[])
     if (!manager) {
         return 0;
     }
+
+
     bool res = manager->managerStart();
     if (!res) {
         qDebug( "manager start error!");
         return 0;
     }
+
     USD_LOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();
 

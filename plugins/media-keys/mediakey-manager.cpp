@@ -98,38 +98,18 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
-//    mExecCmd = new QProcess();
-//    mManager->mStream = NULL;
-//    mManager->mControl = NULL;
-//    mManager->mInputControl = NULL;
-//    mManager->mInputStream  = NULL;
+
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
 
 
-//    if(mate_mixer_is_initialized()){
-//        mContext = mate_mixer_context_new();
-//        g_signal_connect(mContext,"notify::state",
-//                         G_CALLBACK(onContextStateNotify),mManager);
-//        g_signal_connect(mContext,"notify::default-input-stream",
-//                         G_CALLBACK(onContextDefaultInputNotify),mManager);
-//        g_signal_connect(mContext,"notify::default-output-stream",
-//                         G_CALLBACK(onContextDefaultOutputNotify),mManager);
-//        g_signal_connect(mContext,"notify::removed",
-//                         G_CALLBACK(onContextStreamRemoved),mManager);
 
-//        mate_mixer_context_open(mContext);
-//    }
 
-    //initScreens();
+
     initShortcuts();
-    //initKbd();
-    initXeventMonitor();
 
-//    gdk_window_add_filter(gdk_screen_get_root_window(gdk_screen_get_default()),
-//                             (GdkFilterFunc)acmeFilterEvents,
-//                             NULL);
+    initXeventMonitor();
 
     mDbusScreensaveMessage = QDBusMessage::createMethodCall("org.ukui.ScreenSaver",
                                                             "/",

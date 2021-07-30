@@ -34,6 +34,13 @@
 #include <string.h>
 #include <errno.h>
 
+
+
+extern "C"{
+#include "ukui-keygrab.h"
+#include "eggaccelerators.h"
+#include "dconf-util.h"
+#include <dconf.h>
 #include <locale.h>
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -42,12 +49,6 @@
 #include <gtk/gtk.h>
 #include <X11/keysym.h>
 #include <gio/gio.h>
-
-extern "C"{
-#include "ukui-keygrab.h"
-#include "eggaccelerators.h"
-#include "dconf-util.h"
-#include <dconf.h>
 }
 
 typedef struct {
@@ -75,7 +76,7 @@ public:
 public:
     static void bindings_callback (DConfClient  *client,
                                    gchar        *prefix,
-                                   GStrv        changes,
+                                   const gchar **changes,
                                    gchar        *tag,
                                    KeybindingsManager *manager);
 
@@ -97,7 +98,7 @@ private:
     QList<GdkScreen*> *screens;
 
     QGSettings *dconfSet;
-
+    GMainLoop *loop;
 };
 
 #endif // KEYBINDINGSMANAGER_H

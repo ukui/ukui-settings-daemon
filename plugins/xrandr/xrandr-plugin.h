@@ -22,6 +22,7 @@
 #include "plugin-interface.h"
 #include "xrandr-manager.h"
 #include <QGuiApplication>
+#include <QX11Info>
 class XrandrPlugin : public PluginInterface
 {
 private:

@@ -28,7 +28,7 @@
 
 
 #define DESKTOP_APP_DIR "/usr/share/applications/"
-#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/"
+#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/session/"
 //#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
 #define CUSTOM_KEYBINDING_SCHEMA  "org.ukui.control-center.keybinding"
 
@@ -414,7 +414,22 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
     }
     return GDK_FILTER_CONTINUE;
 }
+static void
+show_path (DConfClient *client, const gchar *path)
+{
+  if (dconf_is_key (path, NULL))
+    {
+      g_autoptr(GVariant) value = NULL;
+      g_autofree gchar *value_str = NULL;
 
+      value = dconf_client_read (client, path);
+
+      if (value != NULL)
+        value_str = g_variant_print (value, TRUE);
+
+      USD_LOG(LOG_DEBUG,"  %s\n", value_str != NULL ? value_str : "unset");
+    }
+}
 /**
  * @brief KeybindingsManager::bindings_callback  dconf监听快捷键改变回调函数
  * @param client
@@ -425,13 +440,29 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
  */
 void KeybindingsManager::bindings_callback (DConfClient  *client,
                                             gchar        *prefix,
-                                            GStrv        changes,
+                                            const gchar **changes,
                                             gchar        *tag,
                                             KeybindingsManager *manager)
 {
     Q_UNUSED(client);
     Q_UNUSED(changes);
+
+    if (strncmp(GSETTINGS_KEYBINDINGS_DIR,prefix,strlen(GSETTINGS_KEYBINDINGS_DIR))) {
+        USD_LOG(LOG_DEBUG,"keybindings: received 'changed' signal from dconf. gchar:%s changes:%s tag:%s break..",prefix, changes[0], tag);
+        return;
+    }
+
     USD_LOG(LOG_DEBUG,"keybindings: received 'changed' signal from dconf. gchar:%s changes:%s tag:%s ",prefix, changes[0], tag);
+
+
+    for (const gchar **item = changes; *changes; ++changes)
+      {
+        g_autofree gchar *full = NULL;
+
+        full = g_strconcat (prefix, *item, NULL);
+        USD_LOG (LOG_DEBUG,"prefix%s full%s\n", prefix, full);
+        show_path (client, full);
+      }
 
     binding_unregister_keys (manager);
     bindings_get_entries (manager);
@@ -503,9 +534,13 @@ bool KeybindingsManager::KeybindingsManagerStart()
         int len;
         QList<char *> vals;
 
-        client = dconf_client_new ();
-        dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
-        g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
+//        client = dconf_client_new ();
+//        dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
+//        g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
+
+
+//        dconf_client_watch_sync (client, GSETTINGS_KEYBINDINGS_DIR);
+
 #if 0 //无效，无法使用gsetings的方法监控dconf
         childs = dconf_client_list (client, GSETTINGS_KEYBINDINGS_DIR, &len);
 

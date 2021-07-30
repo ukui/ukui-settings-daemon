@@ -9,7 +9,7 @@ TARGET = keybindings
 TEMPLATE = lib
 DEFINES += KEYBINDINGS_LIBRARY
 
-CONFIG += c++11 no_keywords link_pkgconfig plugin debug
+CONFIG += c++11 no_keywords link_pkgconfig plugin
 
 DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"keybindings\\\"
 
