@@ -32,7 +32,7 @@ const QString MEDIAKEYS_DBUS_PATH = DBUS_PATH + "/MediaKeys";
 
 /* Number of media players supported.
  * Correlates to the number of elements in BUS_NAMES */
-const int NUM_BUS_NAMES = 16;
+
 
 /* Names to we want to watch */
 const QStringList busNames ={"org.mpris.MediaPlayer2.audacious",
@@ -66,7 +66,7 @@ MprisManager::~MprisManager()
 
 }
 
-bool MprisManager::MprisManagerStart (GError           **error)
+bool MprisManager::MprisManagerStart (GError **error)
 {
     QStringList list;
     QDBusConnection conn = QDBusConnection::sessionBus();
@@ -116,6 +116,7 @@ bool MprisManager::MprisManagerStart (GError           **error)
      */
     connect(mDbusInterface,SIGNAL(MediaPlayerKeyPressed(QString,QString)),
             this,SLOT(keyPressed(QString,QString)));
+//    connect(mDbusInterface, &QDBusInterface::)
 
     return true;
 }
@@ -148,7 +149,7 @@ MprisManager* MprisManager::MprisManagerNew()
  */
 QString getPlayerName(const QString& name)
 {
-    QString ret_name=name.section(".",3,4);
+    QString ret_name=name.section(".", 3, 4);
     return ret_name;
 }
 
@@ -230,16 +231,20 @@ void MprisManager::keyPressed(QString application,QString operation)
     if(mprisKey.isNull())
        return;
 
+
     mprisHead = mPlayerQuque->head();
     mprisName = MPRIS_PREFIX + mprisHead;
 
     /* create a dbus method call by QDBusMessage, the @mprisName is a member of @busNames
      * 通过QDBusMessage的方式创建一个dbus方法调用，@mprisName 来自于 @busNames
      */
+    USD_LOG(LOG_DEBUG,"mprisHead:%s mpriName:%s.",mprisHead.toLatin1().data(),mprisName.toLatin1().data());
     playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKey);
     response = QDBusConnection::sessionBus().call(playerMsg);
-    if(response.type() == QDBusMessage::ErrorMessage)
+
+    if(response.type() == QDBusMessage::ErrorMessage) {
         USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+    }
 }
 
 

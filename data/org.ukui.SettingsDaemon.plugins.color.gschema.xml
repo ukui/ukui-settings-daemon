@@ -41,5 +41,25 @@
       <summary>The last detected position</summary>
       <description>When location services are available this represents the last detected location. The default value is an invalid value to ensure it is always updated at startup.</description>
     </key>
+    <key name="night-light-allday" type="b">
+      <default>false</default>
+      <summary>Open night light all day</summary>
+      <description>(intel)At any time, night mode is open.</description>
+    </key>
+    <key name="theme-schedule-automatic" type="b">
+      <default>false</default>
+      <summary>Use the sunrise and sunset to set theme</summary>
+      <description>(intel)Calculate the sunrise and sunset times, and set the theme automatically.</description>
+    </key>
+    <key name="night-light-schedule-automatic-from" type="d">
+      <default>18.00</default>
+      <summary>The start time</summary>
+      <description>(intel)When “night-light-schedule-automatic” is enabled, calculate this start time in hours from midnight.</description>
+    </key>
+    <key name="night-light-schedule-automatic-to" type="d">
+      <default>7.00</default>
+      <summary>The end time</summary>
+      <description>(intel)When “night-light-schedule-automatic” is enabled, calculate this end time in hours from midnight.</description>
+    </key>
   </schema>
 </schemalist>

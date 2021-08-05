@@ -48,6 +48,7 @@ public:
 
 public Q_SLOTS:
     void SettingsChangedCb(QString);
+    void checkTime();
 
 public:
     void StartGeoclue();
@@ -67,11 +68,8 @@ public:
     void NightLightSetTemperatureInternal (double temperature);
     void NightLightSetTemperature(double temperature);
     static bool NightLightSmoothCb (ColorManager *manager);
-    static bool NightLightRecheckCb(ColorManager *manager);
     void NightLightSetActive(bool active);
     bool UpdateCachedSunriseSunset();
-    static void PollTimeoutCreate(ColorManager *manager);
-    static void PollTimeoutDestroy(ColorManager *manager);
 
 private:
     static ColorManager *mColorManager;
@@ -79,6 +77,8 @@ private:
     ColorState          *mColorState;
 
     QGSettings *settings;
+    QGSettings *gtk_settings;
+    QGSettings *qt_settings;
     bool        forced;
     GSource    *source;
     bool        geoclue_enabled;

@@ -24,7 +24,16 @@ XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
 
 XrandrPlugin::XrandrPlugin()
 {
-    USD_LOG(LOG_DEBUG, "Xrandr Plugin initializing!");
+
+
+    if (UsdBaseClass::isWayland()) {
+        QString str = "/usr/bin/peony-qt-desktop -b";
+        QProcess::startDetached(str);
+
+        USD_LOG(LOG_DEBUG, "disable xrandr in wayland...");
+        return;
+    }
+    USD_LOG(LOG_DEBUG, "Xrandr Plugin initializing!:%s",QGuiApplication::platformName().toLatin1().data());
     if(nullptr == mXrandrManager)
         mXrandrManager = new XrandrManager();
 }

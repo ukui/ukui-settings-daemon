@@ -58,6 +58,7 @@ public:
 private Q_SLOTS:
     void timeoutHandle();
     void priScreenChanged(int x, int y, int width, int height);
+    void geometryChangedHandle();
 
 private:
     Ui::VolumeWindow *ui;
@@ -73,7 +74,7 @@ private:
     QString      mIconName;
     QDBusInterface  *mDbusXrandInter;
 
-    double    mScale;
+    double    mScale = 1.0;
     int mVolumeLevel;
     int mMaxVolume,mMinVolume;
     bool mVolumeMuted;

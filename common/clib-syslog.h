@@ -52,7 +52,8 @@ extern "C" {
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
 #define USD_LOG_SHOW_PARAM4(a,b,c,d) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
 
-
+#define CHECK_PROJECT(A) ifdef A
+#define CHECK_OVER  endif
 
 /*
 * 日志参数初始化
@@ -80,6 +81,7 @@ void syslog_to_self_dir(int logLevel, const char *moduleName, const char *fileNa
 * 检测进程是否存在
 */
 int CheckProcessAlive(const char *pName);
+
 #ifdef __cplusplus
 }
 #endif //__cplusplus

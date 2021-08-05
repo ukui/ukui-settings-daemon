@@ -98,38 +98,18 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
-//    mExecCmd = new QProcess();
-//    mManager->mStream = NULL;
-//    mManager->mControl = NULL;
-//    mManager->mInputControl = NULL;
-//    mManager->mInputStream  = NULL;
+
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
 
 
-//    if(mate_mixer_is_initialized()){
-//        mContext = mate_mixer_context_new();
-//        g_signal_connect(mContext,"notify::state",
-//                         G_CALLBACK(onContextStateNotify),mManager);
-//        g_signal_connect(mContext,"notify::default-input-stream",
-//                         G_CALLBACK(onContextDefaultInputNotify),mManager);
-//        g_signal_connect(mContext,"notify::default-output-stream",
-//                         G_CALLBACK(onContextDefaultOutputNotify),mManager);
-//        g_signal_connect(mContext,"notify::removed",
-//                         G_CALLBACK(onContextStreamRemoved),mManager);
 
-//        mate_mixer_context_open(mContext);
-//    }
 
-    //initScreens();
+
     initShortcuts();
-    //initKbd();
-    initXeventMonitor();
 
-//    gdk_window_add_filter(gdk_screen_get_root_window(gdk_screen_get_default()),
-//                             (GdkFilterFunc)acmeFilterEvents,
-//                             NULL);
+    initXeventMonitor();
 
     mDbusScreensaveMessage = QDBusMessage::createMethodCall("org.ukui.ScreenSaver",
                                                             "/",
@@ -349,6 +329,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
     KGlobalAccel::self()->setShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
     connect(mediaStop, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"stop_key...");
         doAction(STOP_KEY);
     });
     /*media preious*/
@@ -358,6 +339,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
     KGlobalAccel::self()->setShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
     connect(mediaPre, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"PREVIOUS_KEY...");
         doAction(PREVIOUS_KEY);
     });
     /*media next*/
@@ -368,6 +350,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
     connect(mediaNext, &QAction::triggered, this, [this]() {
         doAction(NEXT_KEY);
+        USD_LOG(LOG_DEBUG,"NEXT_KEY...");
     });
     /*audio Rewind*/
     QAction *audioRewind= new QAction(this);

@@ -45,11 +45,10 @@ extern "C"{
 #include <X11/extensions/XInput2.h>
 #include <X11/extensions/XInput.h>
 #include <X11/extensions/Xrandr.h>
-//#include <xorg/xserver-properties.h>
+#include <xorg/xserver-properties.h>
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
 }
-
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
 #define XRANDR_ROTATION_KEY         "xrandr-rotations"
@@ -93,13 +92,14 @@ XrandrManager::XrandrManager()
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
     }
+
     mLoginInter = new QDBusInterface(LOGIN_DBUS_NAME,
                                      LOGIN_DBUS_PATH,
                                      LOGIN_DBUS_INTER,
                                      QDBusConnection::systemBus());
+
     connect(mLoginInter, SIGNAL(PrepareForSleep(bool)),this,
             SLOT(mPrepareForSleep(bool)));
-
 
 
     mApplyConfigTimer = new QTimer(this);
@@ -110,28 +110,37 @@ void XrandrManager::getInitialConfig()
 {
     connect(new KScreen::GetConfigOperation, &KScreen::GetConfigOperation::finished,
             this, [this](KScreen::ConfigOperation* op) {
+
         if (op->hasError()) {
             USD_LOG(LOG_DEBUG, "Error getting initial configuration %s" ,op->errorString().toLatin1().data());
             return;
         }
+
+        USD_LOG(LOG_DEBUG,"usd xrandr init over...");
+
         if (mMonitoredConfig) {
-            if(mMonitoredConfig->data()){
+            if(mMonitoredConfig->data()) {
                 KScreen::ConfigMonitor::instance()->removeConfig(mMonitoredConfig->data());
                 for (const KScreen::OutputPtr &output : mMonitoredConfig->data()->outputs()) {
                     output->disconnect(this);
                 }
                 mMonitoredConfig->data()->disconnect(this);
+                USD_LOG(LOG_DEBUG,"usd xrandr init over...");
             }
             mMonitoredConfig = nullptr;
         }
 
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
-        //qDebug()<<mMonitoredConfig->data().data() << "is ready";
+
         monitorsInit();
         applyConfig();
-        calingPeonyProcess();
+
+        USD_LOG(LOG_DEBUG,"usd xrandr init over...");
+//        calingPeonyProcess();
     });
+
+    USD_LOG(LOG_DEBUG,"usd xrandr init over...");
 }
 
 XrandrManager::~XrandrManager()
@@ -157,7 +166,7 @@ void XrandrManager::XrandrManagerStop()
 {
     USD_LOG(LOG_DEBUG, "Xrandr Manager Stop");
 }
-#if 0
+#if 1
 /*查找触摸屏设备ID*/
 static bool
 find_touchscreen_device(Display* display, XIDeviceInfo *dev)
@@ -248,12 +257,14 @@ bool checkMatch(int output_width,  int output_height,
     w_diff = ABS (1 - ((double) output_width / input_width));
     h_diff = ABS (1 - ((double) output_height / input_height));
 
-    printf("w_diff is %f, h_diff is %f\n", w_diff, h_diff);
+    USD_LOG(LOG_ERR, "w_diff is %f, h_diff is %f\n", w_diff, h_diff);
 
-    if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF)
+    if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF) {
         return true;
-    else
+    }
+    else {
         return false;
+    }
 }
 
 /* Here to run command xinput
@@ -261,11 +272,10 @@ bool checkMatch(int output_width,  int output_height,
 */
 void doAction (char *input_name, char *output_name)
 {
-    char buff[100];
+    char buff[128]="";
     sprintf(buff, "xinput --map-to-output \"%s\" \"%s\"", input_name, output_name);
 
-    printf("buff is %s\n", buff);
-
+    USD_LOG(LOG_ERR, "buff is %s\n", buff);
     QProcess::execute(buff);
 }
 
@@ -284,7 +294,7 @@ void SetTouchscreenCursorRotation()
 
     if (!g_list_length (ts_devs))
     {
-        fprintf(stdin, "No touchscreen find...\n");
+        USD_LOG(LOG_ERR, "No touchscreen find...");
         return;
     }
 
@@ -293,14 +303,14 @@ void SetTouchscreenCursorRotation()
     if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
         !XRRQueryVersion (dpy, &major, &minor))
     {
-        fprintf (stderr, "RandR extension missing\n");
+        USD_LOG(LOG_ERR, "RandR extension missing");
         return;
     }
 
     xscreen = DefaultScreen (dpy);
     root = RootWindow (dpy, xscreen);
 
-    if ( major >= 1 && minor >= 5)
+    if (major >= 1 && minor >= 5)
     {
         res = XRRGetScreenResources (dpy, root);
         if (!res)
@@ -310,7 +320,7 @@ void SetTouchscreenCursorRotation()
         {
             XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
             if (!output_info){
-                fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
+                USD_LOG(LOG_ERR, "Could not get output 0x%lx information", res->outputs[o]);
                 continue;
             }
 
@@ -347,7 +357,7 @@ void SetTouchscreenCursorRotation()
         }
     }else {
         g_list_free(ts_devs);
-        fprintf(stderr, "xrandr extension too low\n");
+        USD_LOG(LOG_ERR, "xrandr extension too low");
         return;
     }
     g_list_free(ts_devs);
@@ -356,7 +366,9 @@ void SetTouchscreenCursorRotation()
 
 void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 {
-//    SetTouchscreenCursorRotation();
+    USD_LOG(LOG_DEBUG,"ready map touch device");
+    SetTouchscreenCursorRotation();
+     USD_LOG(LOG_DEBUG,"map touch device over");
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
@@ -557,7 +569,6 @@ void XrandrManager::configChanged()
         refreshConfig();
     }
 
-
     // Reset timer, delay the writeback
     if (!mSaveTimer) {
         mSaveTimer = new QTimer(this);
@@ -565,22 +576,9 @@ void XrandrManager::configChanged()
         mSaveTimer->setSingleShot(true);
         connect(mSaveTimer, &QTimer::timeout, this, &XrandrManager::saveCurrentConfig);
     }
+     mSaveTimer->start();
+     setMonitorForChanges(false);
 
-    if (1) {
-        if (XrandrManager::coolDownStart == mScreenCanBeApply) {
-            mApplyConfigTimer->start(1500);
-            USD_LOG(LOG_DEBUG,"[coolDown]refresh config and start a timer!");
-        }
-        else {
-            mApplyConfigTimer->start(1500);
-            USD_LOG(LOG_DEBUG,"[coolDown]start a timer whit coolDownUsed");
-            mScreenCanBeApply = XrandrManager::coolDownOverAndRun;
-        }
-    }
-    else {//原有实现方案，
-        mSaveTimer->start();
-        setMonitorForChanges(false);
-    }
 }
 
 void XrandrManager::setMonitorForChanges(bool enabled)
@@ -677,7 +675,7 @@ void XrandrManager::applyConfig()
         saveCurrentConfig();
         USD_LOG(LOG_DEBUG,"apply unknown config");
     }
-//    applyIdealConfig();
+
 }
 
 void XrandrManager::outputConnectedChanged()
@@ -756,7 +754,6 @@ void XrandrManager::primaryScreenChange()
             if (!output->isConnected() || !output->isEnabled() || !output->currentMode()) {
                 continue;
             }
-
             geometry = output->geometry();
             name = output->name();
             break;
@@ -789,7 +786,7 @@ void XrandrManager::callMethod(QRect geometry, QString name)
     int w = ceil(geometry.width()/mScale);
     int h = ceil(geometry.height()/mScale);
     message << x<< y << w << h << name;
-    USD_LOG(LOG_DEBUG, "%s: x= %d, y=%d, width = %d, height = %d",__func__, x, y, w, h);
+    USD_LOG(LOG_DEBUG, "x= %d, y=%d, width = %d, height = %d", x, y, w, h);
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
     if (response.type() != QDBusMessage::ReplyMessage){
         USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
@@ -857,14 +854,13 @@ void XrandrManager::StartXrandrIdleCb()
 {
 
     time->stop();
-//    SetTouchscreenCursorRotation();
-    mScreen = nullptr;
     mScreen = QApplication::primaryScreen();
-    if(!mScreen)
-        mScreen = QApplication::screens().at(0);
 
-    connect(mXrandrSetting,SIGNAL(changed(QString)),this,
-            SLOT(RotationChangedEvent(QString)));
-    connect(mScreen, &QScreen::orientationChanged, this,
-            &XrandrManager::orientationChangedProcess);
+    if(!mScreen) {
+        mScreen = QApplication::screens().at(0);
+    }
+
+    connect(mXrandrSetting, &QGSettings::changed, this, &XrandrManager::RotationChangedEvent);
+
+    connect(mScreen, &QScreen::orientationChanged, this, &XrandrManager::orientationChangedProcess);
 }

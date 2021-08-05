@@ -56,7 +56,13 @@ VolumeWindow::VolumeWindow(QWidget *parent)
             this, SLOT(priScreenChanged(int,int,int,int)));
 
     QGSettings *settings = new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
-    mScale = settings->get("scaling-factor").toDouble();
+
+    if (settings) {
+        mScale = settings->get("scaling-factor").toDouble();
+        mScale = mScale<1? 1.0:mScale;
+    }
+
+
     delete settings;
 }
 
@@ -103,22 +109,38 @@ void VolumeWindow::priScreenChanged(int x, int y, int width, int height)
     move(x*mScale + (width*0.01*mScale), y*mScale + (height*0.04*mScale));
 }
 
+
+void VolumeWindow::geometryChangedHandle()
+{
+    int x=QApplication::primaryScreen()->geometry().x();
+    int y=QApplication::primaryScreen()->geometry().y();
+    int width = QApplication::primaryScreen()->size().width();
+    int height = QApplication::primaryScreen()->size().height();
+
+    USD_LOG(LOG_DEBUG,"getchangehandle....%dx%d at(%d,%d)",width,height,x,y);
+    priScreenChanged(x,y,width,height);
+}
+
+
 void VolumeWindow::initWindowInfo()
 {
     int x, y, screenWidth, screenHeight;
 
-    x = getScreenGeometry("x");
-    y = getScreenGeometry("y");
-    screenWidth = getScreenGeometry("width");
-    screenHeight = getScreenGeometry("height");
+    x=QApplication::primaryScreen()->geometry().x();
+    y=QApplication::primaryScreen()->geometry().y();
+    screenWidth = QApplication::primaryScreen()->size().width();
+    screenHeight = QApplication::primaryScreen()->size().height();
+
+    connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &VolumeWindow::geometryChangedHandle);
 
     //窗口性质
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
-    setWindowOpacity(0.8);          //设置透明度
+//    setWindowOpacity(0.8);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
 
-    move(x*mScale + (screenWidth*0.01*mScale), y*mScale + (screenHeight*0.04*mScale));
+    move((x + screenWidth) * mScale - width() - 200,
+         (y + screenHeight) * mScale - height() - 100);
 
     //new memery
     mVLayout = new QVBoxLayout(this);
@@ -143,7 +165,7 @@ void VolumeWindow::setWidgetLayout()
 {
     //窗口性质
     setFixedSize(QSize(64,300) * mScale);
-
+    setStyleSheet("background:#394073");
     //lable 音量键值
     QFont font;
     font.setPointSize(10 * mScale);
@@ -160,8 +182,8 @@ void VolumeWindow::setWidgetLayout()
     mBar->setFixedSize(QSize(10,200) * mScale);
     mBar->setTextVisible(false);
 //  mBar->setValue(volumeLevel/100);
-    mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#708069}"
-                       "QProgressBar::chunk{border-radius:5px;background:white}");
+    mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#2e335c}"
+                       "QProgressBar::chunk{border-radius:5px;background:#d5d6de}");
 
     //音量调放入横向布局
     mBarLayout->addWidget(mBar);
