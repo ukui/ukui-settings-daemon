@@ -44,6 +44,7 @@ void handler(int no)
     qDebug()<<"catch SIGTERM signal, with exitcode "<< no;
     exit(15);
 }
+
 int main (int argc, char* argv[])
 {
 

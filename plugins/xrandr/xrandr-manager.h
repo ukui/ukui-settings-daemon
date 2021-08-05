@@ -35,7 +35,7 @@
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
-
+#include "usd_base_class.h"
 
 class XrandrManager: public QObject
 {
@@ -112,7 +112,7 @@ private:
     bool mConfigDirty = true;
     bool mSleepState = false;
     bool mAddScreen = false;
-    QScreen *mScreen;
+    QScreen *mScreen = nullptr;
     bool mStartingUp = true;
     ScreenCanBeApplyStatus mScreenCanBeApply = XrandrManager::coolDownStart;
 };

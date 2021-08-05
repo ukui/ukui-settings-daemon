@@ -19,10 +19,14 @@
 #ifndef XRANDRPLUGIN_H
 #define XRANDRPLUGIN_H
 
-#include "plugin-interface.h"
-#include "xrandr-manager.h"
 #include <QGuiApplication>
 #include <QX11Info>
+
+
+#include "plugin-interface.h"
+#include "xrandr-manager.h"
+#include "usd_base_class.h"
+
 class XrandrPlugin : public PluginInterface
 {
 private:

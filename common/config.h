@@ -1,3 +1,5 @@
+#ifndef USD_CONFIG_H
+#define USD_CONFIG_H
 /* config.h.  Generated from config.h.in by configure.  */
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
@@ -125,3 +127,4 @@
 
 /* Define to 1 if the X Window System is missing or not being used. */
 /* #undef X_DISPLAY_MISSING */
+#endif //USD_CONFIG_H

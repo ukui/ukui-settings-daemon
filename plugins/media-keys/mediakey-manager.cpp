@@ -329,6 +329,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
     KGlobalAccel::self()->setShortcut(mediaStop, QList<QKeySequence>{Qt::Key_MediaStop});
     connect(mediaStop, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"stop_key...");
         doAction(STOP_KEY);
     });
     /*media preious*/
@@ -338,6 +339,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
     KGlobalAccel::self()->setShortcut(mediaPre, QList<QKeySequence>{Qt::Key_MediaPrevious});
     connect(mediaPre, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"PREVIOUS_KEY...");
         doAction(PREVIOUS_KEY);
     });
     /*media next*/
@@ -348,6 +350,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
     connect(mediaNext, &QAction::triggered, this, [this]() {
         doAction(NEXT_KEY);
+        USD_LOG(LOG_DEBUG,"NEXT_KEY...");
     });
     /*audio Rewind*/
     QAction *audioRewind= new QAction(this);

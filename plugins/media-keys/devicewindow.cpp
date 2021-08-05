@@ -49,6 +49,7 @@ DeviceWindow::DeviceWindow(QWidget *parent) :
     //监听dbus变化  更改主屏幕时，会进行信号发送
     connect(mDbusXrandInter, SIGNAL(screenPrimaryChanged(int,int,int,int)),
             this, SLOT(priScreenChanged(int,int,int,int)));
+
     mScale = getScreenGeometry("scale");
 }
 
