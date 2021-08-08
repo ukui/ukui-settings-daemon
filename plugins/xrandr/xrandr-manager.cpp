@@ -52,9 +52,12 @@ extern "C"{
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
 #define XRANDR_ROTATION_KEY         "xrandr-rotations"
+#define XRANDR_PC_ROTATION_KEY0     "xrandr-pc-rotation0"
+#define XRANDR_PC_ROTATION_KEY1     "xrandr-pc-rotation1"
 #define XRANDR_PRI_KEY              "primary"
 #define XSETTINGS_SCHEMA            "org.ukui.SettingsDaemon.plugins.xsettings"
 #define XSETTINGS_KEY_SCALING       "scaling-factor"
+#define TABLET_MODE_KEY         "tablet-mode"
 
 #define MAX_SIZE_MATCH_DIFF         0.05
 
@@ -376,9 +379,11 @@ void XrandrManager::RotationChangedEvent(QString key)
 {
     int angle;
 
-    if(key != XRANDR_ROTATION_KEY)
+    if(key != XRANDR_ROTATION_KEY || key != XRANDR_PC_ROTATION_KEY0){
         return;
+    }
 
+    if ()
     angle = mXrandrSetting->getEnum(XRANDR_ROTATION_KEY);
     USD_LOG(LOG_DEBUG, "angle = %d", angle);
 
