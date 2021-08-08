@@ -32,7 +32,7 @@ private:
     QThread *m_pManagerThread;
     QMutex m_runningMutex;
     MonitorInputTask *m_pMonitorInputTask;
-    QGSettings* m_settings;
+    QGSettings* m_penSettings = nullptr;
 
 private Q_SLOTS:
     void onSlaveAdded(int device_id);
@@ -48,7 +48,7 @@ private Q_SLOTS:
 private:
     void SetPenRotation(int device_id);
     QQueue<int> GetPenDevice();
-    void initSettings();
+    bool initSettings();
 };
 
 #endif // XINPUTMANAGER_H

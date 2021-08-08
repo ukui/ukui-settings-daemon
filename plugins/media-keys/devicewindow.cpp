@@ -66,12 +66,22 @@ DeviceWindow::~DeviceWindow()
 void DeviceWindow::priScreenChanged(int x, int y, int Width, int Height)
 {
     int ax,ay;
-    ax = x+width - this->width() - 200*mScale;
-    ay = y+height - this->height() - 100*mScale;
+    ax = x+Width - this->width() - 200*mScale;
+    ay = y+Height - this->height() - 100*mScale;
     move(ax,ay);
 
     USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
 
+}
+void DeviceWindow::geometryChangedHandle()
+{
+    int x=QApplication::primaryScreen()->geometry().x();
+    int y=QApplication::primaryScreen()->geometry().y();
+    int width = QApplication::primaryScreen()->size().width();
+    int height = QApplication::primaryScreen()->size().height();
+
+    USD_LOG(LOG_DEBUG,"getchangehandle....%dx%d at(%d,%d)",width,height,x,y);
+    priScreenChanged(x,y,width,height);
 }
 
 int DeviceWindow::getScreenGeometry(QString methodName)
