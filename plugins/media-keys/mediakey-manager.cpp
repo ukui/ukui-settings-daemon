@@ -1211,11 +1211,11 @@ void MediaKeysManager::doTouchpadAction()
 
 void MediaKeysManager::doMicSoundAction()
 {
-//    bool mute;
+    bool mute;
 //    mute = mate_mixer_stream_control_get_mute (mInputControl);
 //    mate_mixer_stream_control_set_mute(mInputControl, !mute);
-//    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
-//    mDeviceWindow->dialogShow();
+    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mDeviceWindow->dialogShow();
 }
 void MediaKeysManager::doSoundActionALSA(int keyType)
 {
