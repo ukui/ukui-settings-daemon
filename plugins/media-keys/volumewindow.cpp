@@ -106,7 +106,12 @@ int VolumeWindow::getScreenGeometry(QString methodName)
 /* 主屏幕变化监听函数 */
 void VolumeWindow::priScreenChanged(int x, int y, int width, int height)
 {
-    move(x*mScale + (width*0.01*mScale), y*mScale + (height*0.04*mScale));
+    ax = x + (width*0.01*mScale);
+    ay = y + (height*0.04*mScale);
+    move(ax, ay);
+
+    USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
+
 }
 
 
@@ -124,14 +129,10 @@ void VolumeWindow::geometryChangedHandle()
 
 void VolumeWindow::initWindowInfo()
 {
-    int x, y, screenWidth, screenHeight;
-
-    x=QApplication::primaryScreen()->geometry().x();
-    y=QApplication::primaryScreen()->geometry().y();
-    screenWidth = QApplication::primaryScreen()->size().width();
-    screenHeight = QApplication::primaryScreen()->size().height();
 
     connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &VolumeWindow::geometryChangedHandle);
+    connect(static_cast<QApplication *>(QCoreApplication::instance()),
+              &QApplication::primaryScreenChanged, this, &VolumeWindow::geometryChangedHandle);
 
     //窗口性质
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
@@ -139,8 +140,7 @@ void VolumeWindow::initWindowInfo()
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
 
-    move((x + screenWidth) * mScale - width() - 200,
-         (y + screenHeight) * mScale - height() - 100);
+
 
     //new memery
     mVLayout = new QVBoxLayout(this);
@@ -157,7 +157,11 @@ void VolumeWindow::initWindowInfo()
 
     mVolumeLevel = 0;
     mVolumeMuted = false;
+
+    geometryChangedHandle();//had move action
+
     setWidgetLayout();
+
 }
 
 //上下留出10个空间,音量条与svg图片之间留出10个空间
