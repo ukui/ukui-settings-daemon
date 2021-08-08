@@ -383,7 +383,6 @@ void XrandrManager::RotationChangedEvent(QString key)
         return;
     }
 
-    if ()
     angle = mXrandrSetting->getEnum(XRANDR_ROTATION_KEY);
     USD_LOG(LOG_DEBUG, "angle = %d", angle);
 
