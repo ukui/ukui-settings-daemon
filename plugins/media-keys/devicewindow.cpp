@@ -65,8 +65,13 @@ DeviceWindow::~DeviceWindow()
 /* 主屏幕变化监听函数 */
 void DeviceWindow::priScreenChanged(int x, int y, int Width, int Height)
 {
-    move((x + Width) * mScale - width() - 200,
-         (y + Height) * mScale - height() - 100);
+    int ax,ay;
+    ax = x+width - this->width() - 200*mScale;
+    ay = y+height - this->height() - 100*mScale;
+    move(ax,ay);
+
+    USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
+
 }
 
 int DeviceWindow::getScreenGeometry(QString methodName)
@@ -91,7 +96,6 @@ int DeviceWindow::getScreenGeometry(QString methodName)
 
 void DeviceWindow::initWindowInfo()
 {
-    int x, y, screenWidth, screenHeight;
 
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
@@ -99,10 +103,12 @@ void DeviceWindow::initWindowInfo()
     mBut = new QPushButton(this);
     mBut->setDisabled(true);
 
-    x = getScreenGeometry("x");
-    y = getScreenGeometry("y");
-    screenWidth = getScreenGeometry("width");
-    screenHeight = getScreenGeometry("height");
+
+
+    connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &DeviceWindow::geometryChangedHandle);
+    connect(static_cast<QApplication *>(QCoreApplication::instance()),
+            &QApplication::primaryScreenChanged, this, &DeviceWindow::geometryChangedHandle);
+
 
     setFixedSize(150,140);
     setWindowFlags(Qt::FramelessWindowHint |
@@ -124,8 +130,8 @@ void DeviceWindow::initWindowInfo()
     setWindowOpacity(0.7);          //设置透明度
     setPalette(QPalette(Qt::black));//设置窗口背景色
     setAutoFillBackground(true);
-    move((x + screenWidth) * mScale - width() - 200,
-         (y + screenHeight) * mScale - height() - 100);
+
+    geometryChangedHandle();
 }
 
 void DeviceWindow::setAction(const QString icon)
