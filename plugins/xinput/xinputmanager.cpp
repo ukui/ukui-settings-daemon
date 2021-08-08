@@ -25,16 +25,18 @@ void XinputManager::init()
     m_pMonitorInputTask->moveToThread(m_pManagerThread);
 
     // init pen settings
-    initSettings();
+    if ( false == initSettings()) {
+        return ;
+    }
 
     // init settings monitor
-    connect(m_settings, SIGNAL(changed(QString)), this, SLOT(updateSettings(QString)));
+    connect(m_penSettings, SIGNAL(changed(QString)), this, SLOT(updateSettings(QString)));
 }
 
 XinputManager::~XinputManager()
 {
-    if (m_settings)
-        delete m_settings;
+    if (m_penSettings)
+        delete m_penSettings;
 }
 
 void XinputManager::start()
@@ -115,15 +117,17 @@ void XinputManager::onSlaveAdded(int device_id)
 }
 
 
-void XinputManager::initSettings()
+bool XinputManager::initSettings()
 {
     if (!QGSettings::isSchemaInstalled(UKUI_CONTROL_CENTER_PEN_SCHEMA)) {
         qWarning() << "[XinputManager][init]: Can not find schema org.ukui.control-center.pen!";
-        return;
+        return false;
     }
-    m_settings = new QGSettings(UKUI_CONTROL_CENTER_PEN_SCHEMA);
+    m_penSettings = new QGSettings(UKUI_CONTROL_CENTER_PEN_SCHEMA);
 
     updateButtonMap();
+
+    return true;
 }
 
 void XinputManager::updateSettings(QString key)
@@ -147,7 +151,7 @@ void XinputManager::updateButtonMap()
     //! and the modified mapping is 1334567
     //! The numbers in this refer to button 2 being mapped to button 3
     while (deviceQue.size()) {
-        if (m_settings->get(RIGHT_CLICK_KEY).value<bool>()) {
+        if (m_penSettings->get(RIGHT_CLICK_KEY).value<bool>()) {
             command = QString("xinput set-button-map %1 1 3 3").arg(deviceQue.dequeue());
         }
         else {

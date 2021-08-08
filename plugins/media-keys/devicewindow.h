@@ -55,7 +55,7 @@ private:
 private Q_SLOTS:
     void timeoutHandle();
     void priScreenChanged(int x, int y, int width, int height);
-
+    void geometryChangedHandle();
 private:
     Ui::DeviceWindow *ui;
     double           mScale = 1;

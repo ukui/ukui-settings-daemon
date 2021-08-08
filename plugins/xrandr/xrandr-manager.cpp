@@ -39,6 +39,7 @@
 #include <KF5/KScreen/kscreen/getconfigoperation.h>
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
 
+#include "usd_base_class.h"
 extern "C"{
 #include <glib.h>
 #include <X11/Xlib.h>
@@ -85,8 +86,7 @@ XrandrManager::XrandrManager()
     mXsettings = new QGSettings(XSETTINGS_SCHEMA);
     mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
 
-    KScreen::Log::instance();
-    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+
     mDbus = new xrandrDbus();
     new WaylandAdaptor(mDbus);
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -101,12 +101,15 @@ XrandrManager::XrandrManager()
                                      LOGIN_DBUS_INTER,
                                      QDBusConnection::systemBus());
 
-    connect(mLoginInter, SIGNAL(PrepareForSleep(bool)),this,
-            SLOT(mPrepareForSleep(bool)));
+    if (false == UsdBaseClass::isWayland()) {
+        KScreen::Log::instance();
+        QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+        connect(mLoginInter, SIGNAL(PrepareForSleep(bool)),this,
+                SLOT(mPrepareForSleep(bool)));
 
-
-    mApplyConfigTimer = new QTimer(this);
-    connect(mApplyConfigTimer, &QTimer::timeout, this, &XrandrManager::applyConfigTimerHandle);
+        mApplyConfigTimer = new QTimer(this);
+        connect(mApplyConfigTimer, &QTimer::timeout, this, &XrandrManager::applyConfigTimerHandle);
+    }
 }
 
 void XrandrManager::getInitialConfig()
@@ -140,7 +143,6 @@ void XrandrManager::getInitialConfig()
         applyConfig();
 
         USD_LOG(LOG_DEBUG,"usd xrandr init over...");
-//        calingPeonyProcess();
     });
 
     USD_LOG(LOG_DEBUG,"usd xrandr init over...");
@@ -774,7 +776,7 @@ void XrandrManager::primaryScreenChange()
         name     = mMonitoredConfig->data()->primaryOutput()->name();
     }
 
-    callMethod(geometry, name);
+//    callMethod(geometry, name);
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
@@ -817,8 +819,9 @@ void XrandrManager::monitorsInit()
     connect(mConfig.data(), &KScreen::Config::outputRemoved,
             this, &XrandrManager::outputRemoved,
             static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
-//    connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
-//            this, &XrandrManager::primaryOutputChanged);
+    connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
+            this, &XrandrManager::primaryOutputChanged);
+
 }
 
 void XrandrManager::mPrepareForSleep(bool state)

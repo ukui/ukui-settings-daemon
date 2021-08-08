@@ -106,6 +106,7 @@ int VolumeWindow::getScreenGeometry(QString methodName)
 /* 主屏幕变化监听函数 */
 void VolumeWindow::priScreenChanged(int x, int y, int width, int height)
 {
+    int ax,ay;
     ax = x + (width*0.01*mScale);
     ay = y + (height*0.04*mScale);
     move(ax, ay);
