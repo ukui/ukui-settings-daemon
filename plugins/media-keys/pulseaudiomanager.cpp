@@ -9,8 +9,9 @@ int g_volume;
 
 float g_balance = 0.0f;//声道平衡，设置之前先计算出先前的声道平衡值，设置时，带入计算即可。。
 char p_sinkName[128]="";
+char p_sourceName[128]="";
 int8_t g_testValue = 0;
-
+bool m_sourceMute = false;
 
 pulseAudioManager::pulseAudioManager(QObject *parent)
     :QObject(parent)
@@ -44,7 +45,6 @@ pulseAudioManager::~pulseAudioManager()
 void pulseAudioManager::PaContextStateCallback(pa_context* p_PaCtx, void* userdata)
 {
      PulseAudioContextState* context_state = (PulseAudioContextState*)userdata;
-     qDebug()<<"PaContextStateCallback......";
 
      switch (pa_context_get_state(p_PaCtx)) {
      case PA_CONTEXT_FAILED:
@@ -97,11 +97,11 @@ void pulseAudioManager::initPulseAudio()
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
 
-//    p_PaOp = pa_context_get_source_info_list(p_PaCtx, getSinkInfoCallback, NULL);
+    p_PaOp = pa_context_get_source_info_list(p_PaCtx, getSourceInfoCallback, NULL);
 
-//    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
-//        pa_mainloop_iterate(p_PaMl, 1, nullptr);
-//    }
+    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+    }
 
 
 }
@@ -134,10 +134,21 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
 
 }
 
-//void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
-//{
+void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_info *so, int isLast, void *userdata)
+{
+    Q_UNUSED(ctx);
+    Q_UNUSED(userdata);
 
-//}
+    if (isLast != 0) {
+        return;
+    }
+
+    memset(p_sourceName,0x00,sizeof(p_sinkName));
+    memcpy(p_sourceName,so->name,strlen(so->name));
+    m_sourceMute = so->mute;
+    USD_LOG(LOG_DEBUG, "pa source info:%s mute %d",p_sourceName,m_sourceMute);
+
+}
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
 {
@@ -323,10 +334,27 @@ bool pulseAudioManager::getMuteAndVolume(int *volume, int *mute)
 
 bool pulseAudioManager::getSourceMute()
 {
-//    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, source_name, source_toggle_mute_callback, NULL);
+    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, p_sourceName, getSourceInfoCallback, NULL);
+
+    if (nullptr == p_PaOp) {
+        return 0;
+    }
+
+    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+    }
 }
 
 void pulseAudioManager::setSourceMute(bool Mute)
 {
+   pa_context_set_source_mute_by_name(p_PaCtx, p_sourceName, Mute, paActionDoneCallback, NULL);
 
+   if ( nullptr == p_PaOp ) {
+
+       return;
+   }
+
+   while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+       pa_mainloop_iterate(p_PaMl, 1, nullptr);
+   }
 }

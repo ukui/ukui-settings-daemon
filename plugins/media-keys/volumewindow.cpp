@@ -284,7 +284,6 @@ void VolumeWindow::setVolumeLevel(int level)
         mIconName = allIconName[2];
     else
         mIconName = allIconName[3];
-    //qDebug()<<percentage<<" "<<(double)50096/65536<<" "<<mIconName<<endl;
 }
 
 void VolumeWindow::setVolumeRange(int min, int max)

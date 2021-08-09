@@ -47,6 +47,7 @@ public:
 
     void setSourceMute(bool Mute);
 
+
 //    pulseAudioManager* getIntance();
    static void PaContextStateCallback(pa_context* pa_ctx, void* userdata);
    static void getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata);
@@ -56,6 +57,7 @@ public:
    static void completeAction();
    static void paActionDoneCallback(pa_context *ctx, int success, void *userdata);
 
+   static void getSourceInfoCallback(pa_context *ctx, const pa_source_info *si, int isLast, void *userdata);
 private:
 
     enum class PulseAudioContextState {
