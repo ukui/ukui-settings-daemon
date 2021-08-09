@@ -868,6 +868,8 @@ void XrandrManager::StartXrandrIdleCb()
     }
 
     connect(mXrandrSetting, &QGSettings::changed, this, &XrandrManager::RotationChangedEvent);
-
     connect(mScreen, &QScreen::orientationChanged, this, &XrandrManager::orientationChangedProcess);
+
+
+
 }

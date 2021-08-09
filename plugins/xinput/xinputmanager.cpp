@@ -120,9 +120,10 @@ void XinputManager::onSlaveAdded(int device_id)
 bool XinputManager::initSettings()
 {
     if (!QGSettings::isSchemaInstalled(UKUI_CONTROL_CENTER_PEN_SCHEMA)) {
-        qWarning() << "[XinputManager][init]: Can not find schema org.ukui.control-center.pen!";
+        USD_LOG(LOG_DEBUG,"Can not find schema org.ukui.control-center.pen!");
         return false;
     }
+
     m_penSettings = new QGSettings(UKUI_CONTROL_CENTER_PEN_SCHEMA);
 
     updateButtonMap();
