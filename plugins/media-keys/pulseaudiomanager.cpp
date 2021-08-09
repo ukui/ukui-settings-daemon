@@ -97,6 +97,13 @@ void pulseAudioManager::initPulseAudio()
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
 
+//    p_PaOp = pa_context_get_source_info_list(p_PaCtx, getSinkInfoCallback, NULL);
+
+//    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+//        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+//    }
+
+
 }
 
 void pulseAudioManager::contextDrainComplete(pa_context *ctx, void *userdata)
@@ -126,6 +133,11 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
 
 
 }
+
+//void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
+//{
+
+//}
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
 {
@@ -309,3 +321,12 @@ bool pulseAudioManager::getMuteAndVolume(int *volume, int *mute)
     *mute = g_mute;
 }
 
+bool pulseAudioManager::getSourceMute()
+{
+//    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, source_name, source_toggle_mute_callback, NULL);
+}
+
+void pulseAudioManager::setSourceMute(bool Mute)
+{
+
+}
