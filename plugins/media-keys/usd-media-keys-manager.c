@@ -1252,6 +1252,7 @@ do_open_ukui_search_action(UsdMediaKeysManager *manager)
                                  &gerr);
     if (gerr) {
         execute (manager, "ukui-search -s",FALSE,FALSE);
+        g_error_free (gerr);
     }
     g_object_unref (con);
 
