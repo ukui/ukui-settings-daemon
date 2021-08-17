@@ -1236,7 +1236,25 @@ do_connection_editor_action (UsdMediaKeysManager *manager)
 static void
 do_open_ukui_search_action(UsdMediaKeysManager *manager)
 {
-         execute (manager, "ukui-search -s",FALSE,FALSE);
+    GError *gerr = NULL;
+
+    GDBusConnection *con = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+    g_dbus_connection_call_sync (con,
+                                 "com.ukui.search.service",
+                                 "/",
+                                 "org.ukui.search.service",
+                                 "showWindow",
+                                 NULL,
+                                 NULL,
+                                 G_DBUS_CALL_FLAGS_NONE,
+                                 -1,
+                                 NULL,
+                                 &gerr);
+    if (gerr) {
+        execute (manager, "ukui-search -s",FALSE,FALSE);
+    }
+    g_object_unref (con);
+
 }
 
 static void
