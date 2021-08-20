@@ -1237,7 +1237,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     last_volume = volume;
     lastmuted = muted;
 
-    USD_LOG(LOG_DEBUG,"volumeStep:%d",volumeStep);
+
     switch(keyType){
     case MUTE_KEY:
             muted = !muted;
@@ -1246,10 +1246,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
         if(volume <= (volumeMin + volumeStep)){
             volume = volumeMin;
             muted = true;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         }else{
             volume -= volumeStep;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
 
@@ -1258,7 +1256,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             muted = true;
         }
 
-        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
+
         break;
     case VOLUME_UP_KEY:
         if(muted){
@@ -1366,7 +1364,7 @@ void MediaKeysManager::doSoundAction(int keyType)
 void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundChanged)
 {
     int v = volume;
-    USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
+//    USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
     mVolumeWindow->dialogShow();
@@ -1574,7 +1572,19 @@ void MediaKeysManager::doOpenConnectionEditor()
 
 void MediaKeysManager::doOpenUkuiSearchAction()
 {
-    executeCommand("ukui-search"," -s");
+    QDBusMessage message =
+            QDBusMessage::createMethodCall("com.ukui.search.service",
+                                           "/",
+                                           "org.ukui.search.service",
+                                           "showWindow");
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() != QDBusMessage::ReplyMessage){
+        USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
+        executeCommand("ukui-search"," -s");
+    }
+
 }
 
 void MediaKeysManager::doOpenKdsAction()

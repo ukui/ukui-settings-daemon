@@ -110,9 +110,6 @@ void VolumeWindow::priScreenChanged(int x, int y, int width, int height)
     ax = x + (width*0.01*mScale);
     ay = y + (height*0.04*mScale);
     move(ax, ay);
-
-    USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
-
 }
 
 

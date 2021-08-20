@@ -90,25 +90,21 @@ XrandrManager::XrandrManager()
     mDbus = new xrandrDbus();
     new WaylandAdaptor(mDbus);
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
+
     if(sessionBus.registerService(DBUS_NAME)){
         sessionBus.registerObject(DBUS_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
     }
 
-    mLoginInter = new QDBusInterface(LOGIN_DBUS_NAME,
-                                     LOGIN_DBUS_PATH,
-                                     LOGIN_DBUS_INTER,
-                                     QDBusConnection::systemBus());
-
     if (false == UsdBaseClass::isWayland()) {
+
         KScreen::Log::instance();
         QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
-        connect(mLoginInter, SIGNAL(PrepareForSleep(bool)),this,
-                SLOT(mPrepareForSleep(bool)));
 
         mApplyConfigTimer = new QTimer(this);
         connect(mApplyConfigTimer, &QTimer::timeout, this, &XrandrManager::applyConfigTimerHandle);
+
     }
 }
 
@@ -131,6 +127,7 @@ void XrandrManager::getInitialConfig()
                     output->disconnect(this);
                 }
                 mMonitoredConfig->data()->disconnect(this);
+
                 USD_LOG(LOG_DEBUG,"usd xrandr init over...");
             }
             mMonitoredConfig = nullptr;
@@ -373,7 +370,7 @@ void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 {
     USD_LOG(LOG_DEBUG,"ready map touch device");
     SetTouchscreenCursorRotation();
-     USD_LOG(LOG_DEBUG,"map touch device over");
+    USD_LOG(LOG_DEBUG,"map touch device over");
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
@@ -403,42 +400,13 @@ void XrandrManager::RotationChangedEvent(QString key)
 void XrandrManager::applyIdealConfig()
 {
     const bool showOsd = mMonitoredConfig->data()->connectedOutputs().count() > 1 && !mStartingUp;
-    //qDebug()<<"show Sod  is "<<showOsd;
 }
 
 void XrandrManager::applyConfigTimerHandle()
 {
-    switch (mScreenCanBeApply) {
-    case XrandrManager::coolDownStart:
-
-        USD_LOG(LOG_DEBUG,"[coolDown]start run and enter coolDowning");
-//        refreshConfig();
-        setMonitorForChanges(false);
-        applyConfig();
-        primaryScreenChange();
-        mSaveTimer->start();
-
-
-        mApplyConfigTimer->start(500);
-        mScreenCanBeApply = XrandrManager::coolDowning;
-        break;
-    case XrandrManager::coolDowning:
-
-        USD_LOG(LOG_DEBUG,"[coolDown]cool down ok,,");
-
-        mApplyConfigTimer->stop();
-        mScreenCanBeApply = XrandrManager::coolDownStart;
-        break;
-    case XrandrManager::coolDownOverAndRun:
-        mSaveTimer->start();
-        setMonitorForChanges(false);
-        mScreenCanBeApply = XrandrManager::coolDowning;
-        USD_LOG(LOG_DEBUG,"[coolDown]cool down ok and run a new config");
-        return;
-    default:
-        USD_LOG(LOG_ERR,"[coolDown]plz check screen apply status");
-        break;
-    }
+    setMonitorForChanges(false);
+    applyConfig();
+    primaryScreenChange();
 }
 
 void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
@@ -590,6 +558,7 @@ void XrandrManager::configChanged()
 void XrandrManager::setMonitorForChanges(bool enabled)
 {
     if (mMonitoring == enabled) {
+        USD_LOG(LOG_DEBUG, "Monitor for changes: %d", enabled);
         return;
     }
 
@@ -660,28 +629,6 @@ void XrandrManager::changeScreenPosition()
 
 void XrandrManager::applyConfig()
 {
-
-    if (!mMonitoredConfig){
-        USD_LOG(LOG_DEBUG, "mMonitoredConfig  is nullptr");
-        return;
-    }
-
-    if(mSleepState){
-
-        applyKnownConfig(false);//休眠模式与普通模式使用同一个配置文件
-        mSleepState = false;
-    }
-    else if (mMonitoredConfig->fileExists()) {
-        USD_LOG(LOG_DEBUG,"apply known config:%s", mMonitoredConfig->filePath().toLatin1().data());
-        applyKnownConfig(false);
-    }
-    else {
-        changeScreenPosition();
-        init_primary_screens(mMonitoredConfig->data());
-        saveCurrentConfig();
-        USD_LOG(LOG_DEBUG,"apply unknown config");
-    }
-
 }
 
 void XrandrManager::outputConnectedChanged()
@@ -700,6 +647,7 @@ void XrandrManager::outputConnectedChanged()
 void XrandrManager::outputAdded(const KScreen::OutputPtr &output)
 {
 
+    USD_LOG(LOG_DEBUG,".");
     USD_LOG_SHOW_OUTPUT(output);
     if (false == mMonitoredConfig->data()->outputs().contains(output->id())) {
         mMonitoredConfig->data()->addOutput(output->clone());
@@ -714,7 +662,7 @@ void XrandrManager::outputAdded(const KScreen::OutputPtr &output)
 
 void XrandrManager::outputRemoved(int outputId)
 {
-
+    USD_LOG(LOG_DEBUG,".");
     if (true == mMonitoredConfig->data()->outputs().contains(outputId)) {
            mMonitoredConfig->data()->removeOutput(outputId);
            USD_LOG(LOG_DEBUG,"d had't removed...%doutputId", mMonitoredConfig->data()->outputs().count() );
@@ -739,13 +687,7 @@ void XrandrManager::outputRemoved(int outputId)
 void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output) {
     Q_ASSERT(mConfig);
 
-    USD_LOG(LOG_DEBUG,"primary output changed %d",output.isNull());
-    int index = output.isNull() ? 0 : output->id();
-
-    if(index != 0) {
-        QRect geometry = output->geometry();
-        //callMethod(geometry, output->name());
-    }
+    USD_LOG_SHOW_OUTPUT(output);
 }
 
 void XrandrManager::primaryScreenChange()
@@ -776,49 +718,39 @@ void XrandrManager::primaryScreenChange()
         name     = mMonitoredConfig->data()->primaryOutput()->name();
     }
 
-//    callMethod(geometry, name);
+
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
 {
-    QDBusMessage message =
-            QDBusMessage::createMethodCall(DBUS_NAME,
-                                           DBUS_PATH,
-                                           DBUS_INTER,
-                                           "priScreenChanged");
 
-    int x = ceil(geometry.x()/mScale);
-    int y = ceil(geometry.y()/mScale);
-    int w = ceil(geometry.width()/mScale);
-    int h = ceil(geometry.height()/mScale);
-    message << x<< y << w << h << name;
-    USD_LOG(LOG_DEBUG, "x= %d, y=%d, width = %d, height = %d", x, y, w, h);
-    QDBusMessage response = QDBusConnection::sessionBus().call(message);
-    if (response.type() != QDBusMessage::ReplyMessage){
-        USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
-    }
 }
 
 void XrandrManager::monitorsInit()
 {
-    mChangeCompressor->setInterval(10);
-    mChangeCompressor->setSingleShot(true);
-    connect(mChangeCompressor, &QTimer::timeout, this, &XrandrManager::applyConfig);
+
     if (mConfig) {
+        USD_LOG(LOG_DEBUG,"disable all output......");
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
-            output->disconnect(this);
+            if (nullptr != output) {
+                output->disconnect(this);
+            }
         }
+
         mConfig->disconnect(this);
     }
+
     mConfig = mMonitoredConfig->data();
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
+
     connect(mConfig.data(), &KScreen::Config::outputAdded,
-            this, &XrandrManager::outputAdded), Qt::UniqueConnection;
+            this, &XrandrManager::outputAdded);
+
     connect(mConfig.data(), &KScreen::Config::outputRemoved,
-            this, &XrandrManager::outputRemoved,
-            static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+            this, &XrandrManager::outputRemoved);
+
     connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
             this, &XrandrManager::primaryOutputChanged);
 
@@ -869,7 +801,5 @@ void XrandrManager::StartXrandrIdleCb()
 
     connect(mXrandrSetting, &QGSettings::changed, this, &XrandrManager::RotationChangedEvent);
     connect(mScreen, &QScreen::orientationChanged, this, &XrandrManager::orientationChangedProcess);
-
-
 
 }
