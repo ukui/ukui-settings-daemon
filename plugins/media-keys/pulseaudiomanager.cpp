@@ -146,7 +146,6 @@ void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_i
     memset(p_sourceName,0x00,sizeof(p_sinkName));
     memcpy(p_sourceName,so->name,strlen(so->name));
     m_sourceMute = so->mute;
-    USD_LOG(LOG_DEBUG, "pa source info:%s mute %d",p_sourceName,m_sourceMute);
 
 }
 
@@ -171,12 +170,11 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
 
     for (int k = 0; k < si->volume.channels; k++) {
         g_GetPaCV.values[k]=si->volume.values[k];
-        USD_LOG(LOG_DEBUG,"channels:%d volume:%d", k,si->volume.values[k]);
+
     }
 
     g_balance = pa_cvolume_get_balance(&g_GetPaCV,&map);
 
-    USD_LOG(LOG_DEBUG,"blance=%2.1f", g_balance);
 
     memset(p_sinkName,0x00,sizeof(p_sinkName));
     memcpy(p_sinkName,si->name,strlen(si->name));
@@ -210,17 +208,12 @@ void pulseAudioManager::setVolume(int Volume)
     map.channels = g_SetPaCV.channels;
     map.map[0] = PA_CHANNEL_POSITION_LEFT;
     map.map[1] = PA_CHANNEL_POSITION_RIGHT;
-    USD_LOG(LOG_DEBUG,"set volume:%d",Volume);
+
 
     for (int k = 0; k < g_GetPaCV.channels; k++) {
 
-        USD_LOG(LOG_DEBUG,"channels:%d volume:%d",
-                k, g_SetPaCV.values[k]);
 
         g_SetPaCV.values[k] = Volume;
-
-        USD_LOG(LOG_DEBUG,"channels:%d volume:%d",
-                k, g_SetPaCV.values[k]);
 
     }
 
@@ -232,10 +225,7 @@ void pulseAudioManager::setVolume(int Volume)
         return;
     }
 
-    for (int k = 0; k < g_GetPaCV.channels; k++) {
-        USD_LOG(LOG_DEBUG,"channels:%d volume:%d g_balance:%2.1f,,%d",
-                k, g_SetPaCV.values[k],g_balance ,pcv->values[k], pcv->values[k]);
-    }
+
 
     p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, pcv);
 
