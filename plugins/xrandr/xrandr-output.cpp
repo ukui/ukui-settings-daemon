@@ -284,6 +284,7 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
         // output data read from global output file
         return;
     }
+    USD_LOG_SHOW_OUTPUT(output);
     // output data read directly from info
     readInGlobalPartFromInfo(output, info);
 }
@@ -295,29 +296,34 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     // to be able to tell apart multiple identical outputs, these need special treatment
     QStringList duplicateIds;
     {
-    QStringList allIds;
-    allIds.reserve(outputs.count());
-    for (const KScreen::OutputPtr &output : outputs) {
-        const auto outputId = output->hash();
-        if (allIds.contains(outputId) && !duplicateIds.contains(outputId)) {
-            duplicateIds << outputId;
+        QStringList allIds;
+        allIds.reserve(outputs.count());
+        for (const KScreen::OutputPtr &output : outputs) {
+            const auto outputId = output->hash();
+            if (allIds.contains(outputId) && !duplicateIds.contains(outputId)) {
+                duplicateIds << outputId;
+            }
+            allIds << outputId;
         }
-        allIds << outputId;
-    }
     }
 
     for (const KScreen::OutputPtr &output : outputs) {
         if (!output->isConnected()) {
             output->setEnabled(false);
+            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().data());
             continue;
         }
+
         const auto outputId = output->hash();
         bool infoFound = false;
+
         for (const auto &variantInfo : outputsInfo) {
             const QVariantMap info = variantInfo.toMap();
             if (outputId != info[QStringLiteral("id")].toString()) {
+                USD_LOG(LOG_DEBUG,"skip it...%s", output->name().data());
                 continue;
             }
+
             if (!output->name().isEmpty() && duplicateIds.contains(outputId)) {
                 // We may have identical outputs connected, these will have the same id in the config
                 // in order to find the right one, also check the output's name (usually the connector)
@@ -328,6 +334,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
                     continue;
                 }
             }
+            USD_LOG(LOG_DEBUG,"..%s setok...", output->name().data());
             infoFound = true;
             readIn(output, info);//, control.getOutputRetention(output));
             break;

@@ -112,6 +112,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     if (!mConfig) {
         return nullptr;
     }
+
     std::unique_ptr<xrandrConfig> config = std::unique_ptr<xrandrConfig>(new xrandrConfig(mConfig->clone()));
     config->setValidityFlags(mValidityFlags);
 
@@ -152,6 +153,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
         }
 
         if (!output->isPositionable()) {
+            USD_LOG(LOG_DEBUG,"can't positionable..");
             continue;
         }
 
@@ -161,7 +163,6 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
 
             const QPoint pos(0,0);
             output->setPos(std::move(pos));
-
             USD_LOG(LOG_DEBUG,"set %s at %dx%d size %dx%d",output->name().toLatin1().data(), output->pos().x(), output->pos().y(),
                     output->currentMode()->size().width(),output->currentMode()->size().height());
         }

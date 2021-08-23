@@ -86,7 +86,7 @@ public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);
     void RotationChangedEvent(QString);
-    void applyConfigTimerHandle();
+//    void applyConfigTimerHandle();
 
 Q_SIGNALS:
     // DBus
@@ -97,16 +97,16 @@ private:
 
     Q_ENUM(ScreenCanBeApplyStatus)
     Q_INVOKABLE void getInitialConfig();
-    QTimer                *time;
-    QTimer                *mSaveTimer;
-    QTimer                *mChangeCompressor;
-    QTimer                *mApplyConfigTimer;
-    QGSettings            *mXrandrSetting;
-    QGSettings            *mXsettings;
+    QTimer                *mAcitveTime = nullptr;
+    QTimer                *mSaveTimer = nullptr;
+    QTimer                *mChangeCompressor = nullptr;
+    QTimer                *mApplyConfigTimer = nullptr;
+    QGSettings            *mXrandrSetting = nullptr;
+    QGSettings            *mXsettings = nullptr;
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
-    std::unique_ptr<xrandrConfig> mMonitoredConfig;
-    KScreen::ConfigPtr mConfig;
+    std::unique_ptr<xrandrConfig> mMonitoredConfig = nullptr;
+    KScreen::ConfigPtr mConfig = nullptr;
     xrandrDbus *mDbus;
     bool mMonitoring;
     bool mConfigDirty = true;
