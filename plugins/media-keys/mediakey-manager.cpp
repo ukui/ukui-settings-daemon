@@ -93,8 +93,11 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
     shotSettings = new QGSettings(SHOT_SCHEMA);
-    if (shotSettings->get(SHOT_RUN_KEY).toBool())
-        shotSettings->set(SHOT_RUN_KEY, false);
+
+    if (shotSettings->keys().contains(SHOT_RUN_KEY)){
+        if (shotSettings->get(SHOT_RUN_KEY).toBool())
+            shotSettings->set(SHOT_RUN_KEY, false);
+    }
 
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();

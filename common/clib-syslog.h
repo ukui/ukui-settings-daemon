@@ -47,6 +47,11 @@ extern "C" {
     output->name().toLatin1().data(), output->isConnected()? "connect":"disconnect", output->isEnabled()? "Enale":"Disable",    \
         output->currentModeId().toLatin1().data(), output->pos().x(), output->pos().y(),output->id())
 
+
+#define USD_LOG_SHOW_OUTPUT_NOID(output) USD_LOG(LOG_DEBUG,":%s (%s)(%s) use [%s] mode at (%dx%d) ",  \
+    output->name().toLatin1().data(), output->isConnected()? "connect":"disconnect", output->isEnabled()? "Enale":"Disable",    \
+        output->currentModeId().toLatin1().data(), output->pos().x(), output->pos().y())
+
 #define USD_LOG_SHOW_PARAM1(a) USD_LOG(LOG_DEBUG,"%s : %d",#a,a)
 #define USD_LOG_SHOW_PARAM2(a,b) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a,a,#b, b)
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
