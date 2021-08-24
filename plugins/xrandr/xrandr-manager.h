@@ -82,6 +82,7 @@ public:
     void callMethod(QRect geometry, QString name);
     void calingPeonyProcess();
     bool pretreatScreenInfo();
+    void outputChangedHandle(KScreen::Output *senderOutput);
 public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);

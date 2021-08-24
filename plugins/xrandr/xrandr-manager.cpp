@@ -469,6 +469,45 @@ void XrandrManager::callMethod(QRect geometry, QString name)
     Q_UNUSED(name);
 }
 
+
+void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
+{
+    USD_LOG_SHOW_OUTPUT(senderOutput);
+      Q_FOREACH (auto mode, senderOutput->modes()) {
+            USD_LOG(LOG_DEBUG,"size(%dx%d@%f) id:%s",mode->size().width(),mode->size().height(), mode->refreshRate(), mode->id().toLatin1().data());
+      }
+
+    Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+       USD_LOG_SHOW_OUTPUT(output);
+
+       if (output->name()==senderOutput->name()) {
+           output->setConnected(senderOutput->isConnected());
+           output->setModes(senderOutput->modes());
+           USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
+       }
+
+    }
+
+    if (false == mMonitoredConfig->fileExists()) {
+        if (senderOutput->isConnected()) {
+            senderOutput->setEnabled(senderOutput->isConnected());
+            senderOutput->setPos(QPoint(1920,0));
+        }
+        mMonitoredConfig->writeFile(true);//首次接入，
+
+    } else {
+
+        mMonitoredConfig = mMonitoredConfig->readFile(false);
+
+//        KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
+        auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+        op->exec();
+
+        USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
+
+    }
+}
+
 void XrandrManager::monitorsInit()
 {
     if (mConfig) {
@@ -481,48 +520,61 @@ void XrandrManager::monitorsInit()
 
     mConfig = std::move(mMonitoredConfig->data());
 
-    USD_LOG(LOG_DEBUG,".");
+    USD_LOG(LOG_DEBUG,"config...:%s.",mMonitoredConfig->filePath().toLatin1().data());
 
 
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
 
-        connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
+//        connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
 
-            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
+//            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+//            USD_LOG_SHOW_OUTPUT(senderOutput);
 
-//            auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
-//            op->exec();
-//            std::unique_ptr<xrandrConfig> readInConfig = mMonitoredConfig->readFile(false);
 
-//            mMonitoredConfig = std::move(readInConfig);
+//            Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+//               USD_LOG_SHOW_OUTPUT(output);
+//               if (output->name()==senderOutput->name()) {
+//                   output->setConnected(senderOutput->isConnected());
+//                   USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
+//               }
+//            }
 
-//            KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
+//            if (false == mMonitoredConfig->fileExists()) {
+//                if (senderOutput->isConnected()) {
+//                    senderOutput->setEnabled(senderOutput->isConnected());
+//                    senderOutput->setPos(QPoint(1920,0));
+//                }
 
-            Q_FOREACH(const KScreen::ModePtr &mode, senderOutput->modes()) {
+//                mMonitoredConfig->writeFile(true);//首次接入，
+//            } else {
 
-            }
+//                mMonitoredConfig = mMonitoredConfig->readFile(false);
 
-            if (false == mMonitoredConfig->fileExists()) {
-                if (senderOutput->isConnected()) {
-                    senderOutput->setEnabled(senderOutput->isConnected());
-                    senderOutput->setPos(QPoint(1920,0));
-                }
-                mMonitoredConfig->writeFile(true);//首次接入，
-            } else {
-                USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
-            }
 
-            for (const KScreen::OutputPtr &output: mConfig->outputs()) {
-                USD_LOG_SHOW_OUTPUT(output);
-            }
-        });
+//                 KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
+
+//                 connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
+//                         &KScreen::SetConfigOperation::finished,
+//                         this, [this]() {
+
+//                     USD_LOG(LOG_DEBUG,"setMonitorForChanges to true %d",mConfigDirty);
+
+//                 });
+
+
+
+//                 Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+//                    USD_LOG_SHOW_OUTPUT(output);
+//                 }
+//                USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
+//            }
+
+//        });
 
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
-            KScreen::Output *output1 = static_cast<KScreen::Output*> (sender());
-            USD_LOG(LOG_DEBUG,"outputChanged:%s",output1->name().toLatin1().data());
-            USD_LOG_SHOW_OUTPUT(output1);
+            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+            outputChangedHandle(senderOutput);
         });
 
         connect(output.data(), &KScreen::Output::scaleChanged, this, [this](){
