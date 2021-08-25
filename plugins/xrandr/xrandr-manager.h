@@ -83,6 +83,7 @@ public:
     void calingPeonyProcess();
     bool pretreatScreenInfo();
     void outputChangedHandle(KScreen::Output *senderOutput);
+    void outputConnectedWithoutConfigFile(KScreen::Output *senderOutput ,char outputCount);
 public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);

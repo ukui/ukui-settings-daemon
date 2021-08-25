@@ -113,6 +113,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     int enabledOutputsCount = 0;
 
     if (!mConfig) {
+        USD_LOG(LOG_ERR,"config is nullptr...");
         return nullptr;
     }
 
@@ -128,6 +129,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
             file.setFileName(configsDirPath() % fileName);
         }
         if (!file.open(QIODevice::ReadOnly)) {
+             USD_LOG(LOG_ERR,"config is nullptr...");
             //qDebug() << "failed to open file" << file.fileName();
             return nullptr;
         }
@@ -139,6 +141,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
             file.setFileName(sleepDirPath() % fileName);
         }
         if (!file.open(QIODevice::ReadOnly)) {
+             USD_LOG(LOG_ERR,"config is nullptr...");
             //qDebug() << "failed to open file" << file.fileName();
             return nullptr;
         }

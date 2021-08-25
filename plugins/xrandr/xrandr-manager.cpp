@@ -470,46 +470,128 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 }
 
 
+/*
+ *
+ *接入时没有配置文件的处理流程：
+ * 单屏：最优分辨率。
+ * 多屏幕：镜像模式。
+ *
+*/
+void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput, char outputCount)
+{
+    QString bigestModeId;
+    QString bigestPrimaryModeId;
+    int rtResolution = 0;
+    int bigestResolution = 0;
+
+    if (1 == outputCount) {//单屏接入时需要设置模式，主屏
+        newOutput->setCurrentModeId(newOutput->preferredModeId());
+        newOutput->setPrimary(true);
+    } else {
+
+        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
+            if (output->isPrimary()){
+                Q_FOREACH (auto primaryMode, output->modes()) {
+                    Q_FOREACH (auto newOutputMode, newOutput->modes()) {
+
+                        if (primaryMode->size().width() == newOutputMode->size().width() &&
+                                primaryMode->size().height() == newOutputMode->size().height())
+                        {
+//                            rtModeId = newOutputMode;
+
+                            rtResolution = primaryMode->size().width() * primaryMode->size().height();
+
+                            if (rtResolution > bigestResolution){
+                                bigestModeId = newOutputMode->id();
+                                bigestPrimaryModeId = primaryMode->id();
+                            }
+                        }
+
+                    }//end  Q_FOREACH (auto newOutputMode, newOutput->modes())
+                }//end  Q_FOREACH (auto primaryMode, output->modes())
+            }//end if (output->isPrimary())
+        }//end  Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()
+
+
+
+
+        if (!bigestResolution) {
+            USD_LOG(LOG_DEBUG, "can't find the same resolution in outputs.so use bigest resolution.");
+
+            Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
+                if (output->isPrimary()){
+                    output->setCurrentModeId(output->preferredModeId());
+                    USD_LOG(LOG_DEBUG, "primary output mode:%s",output->preferredModeId().toLatin1().data());
+                    break;
+                }
+            }
+
+             newOutput->setEnabled(newOutput->isConnected());
+             newOutput->setCurrentModeId(newOutput->preferredModeId());
+             USD_LOG(LOG_DEBUG, "newOutput output mode:%s",newOutput->preferredModeId().toLatin1().data());
+
+        } else {
+
+            Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
+                if (output->isPrimary()){
+                    output->setCurrentModeId(bigestPrimaryModeId);
+                    break;
+                }
+            }
+            newOutput->setEnabled(newOutput->isConnected());
+            newOutput->setCurrentModeId(bigestModeId);
+        }
+
+    }
+}
+
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
+    char outputConnectCount = 0;
     USD_LOG_SHOW_OUTPUT(senderOutput);
-      Q_FOREACH (auto mode, senderOutput->modes()) {
-            USD_LOG(LOG_DEBUG,"size(%dx%d@%f) id:%s",mode->size().width(),mode->size().height(), mode->refreshRate(), mode->id().toLatin1().data());
-      }
 
     Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-       USD_LOG_SHOW_OUTPUT(output);
+        USD_LOG_SHOW_OUTPUT(output);
 
-       if (output->name()==senderOutput->name()) {
-           output->setConnected(senderOutput->isConnected());
-           output->setModes(senderOutput->modes());
+        if (output->name()==senderOutput->name()) {//这里只设置connect，enbale由配置设置。
+            output->setConnected(senderOutput->isConnected());
+
+            if (0 == output->modes().count()) {
+                output->setModes(senderOutput->modes());
+            }
            USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
        }
 
+        if (output->isConnected()) {
+            outputConnectCount++;
+        }
     }
 
     if (false == mMonitoredConfig->fileExists()) {
+        USD_LOG(LOG_DEBUG,"config  %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
         if (senderOutput->isConnected()) {
             senderOutput->setEnabled(senderOutput->isConnected());
-            senderOutput->setPos(QPoint(1920,0));
         }
+
+        outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
+
         mMonitoredConfig->writeFile(true);//首次接入，
 
     } else {
 
         mMonitoredConfig = mMonitoredConfig->readFile(false);
 
-//        KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
-        auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
-        op->exec();
-
         USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
-
     }
+
+    auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+    op->exec();
+
 }
 
 void XrandrManager::monitorsInit()
 {
+    char connectedOutputCount = 0;
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
@@ -526,51 +608,12 @@ void XrandrManager::monitorsInit()
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
 
-//        connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
+        if (output->isConnected()){
+            connectedOutputCount++;
+        }
 
-//            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
-
-
-//            Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-//               USD_LOG_SHOW_OUTPUT(output);
-//               if (output->name()==senderOutput->name()) {
-//                   output->setConnected(senderOutput->isConnected());
-//                   USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
-//               }
-//            }
-
-//            if (false == mMonitoredConfig->fileExists()) {
-//                if (senderOutput->isConnected()) {
-//                    senderOutput->setEnabled(senderOutput->isConnected());
-//                    senderOutput->setPos(QPoint(1920,0));
-//                }
-
-//                mMonitoredConfig->writeFile(true);//首次接入，
-//            } else {
-
-//                mMonitoredConfig = mMonitoredConfig->readFile(false);
-
-
-//                 KScreen::ConfigMonitor::instance()->addConfig(mMonitoredConfig->data());
-
-//                 connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
-//                         &KScreen::SetConfigOperation::finished,
-//                         this, [this]() {
-
-//                     USD_LOG(LOG_DEBUG,"setMonitorForChanges to true %d",mConfigDirty);
-
-//                 });
-
-
-
-//                 Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-//                    USD_LOG_SHOW_OUTPUT(output);
-//                 }
-//                USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
-//            }
-
-//        });
+        connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
+        });
 
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -601,6 +644,7 @@ void XrandrManager::monitorsInit()
         });
 
     }
+
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
 
     connect(mMonitoredConfig->data().data(), &KScreen::Config::outputAdded,
@@ -610,6 +654,26 @@ void XrandrManager::monitorsInit()
             static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
     connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
             this, &XrandrManager::primaryOutputChanged);
+
+    if (mMonitoredConfig->fileExists()){
+        mMonitoredConfig = mMonitoredConfig->readFile(false);
+        auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+        op->exec();
+    } else {
+
+        for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
+            USD_LOG_SHOW_OUTPUT(output);
+            if (output->isConnected() && false == output->isEnabled()) {
+                outputChangedHandle(output.data());
+            }
+        }
+
+    }
+
+    for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
+        USD_LOG_SHOW_OUTPUT(output);
+    }
+
 
 }
 
