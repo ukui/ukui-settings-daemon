@@ -8,7 +8,7 @@ public:
     UsdBaseClass();
     ~UsdBaseClass();
 
-static bool isIntel();
+static bool isTablet();
 
 static bool isMasterSP1();
 

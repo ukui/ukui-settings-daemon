@@ -673,8 +673,6 @@ void XrandrManager::monitorsInit()
     for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
     }
-
-
 }
 
 void XrandrManager::mPrepareForSleep(bool state)
@@ -688,8 +686,6 @@ void XrandrManager::mPrepareForSleep(bool state)
  */
 void XrandrManager::StartXrandrIdleCb()
 {
-
-
     mAcitveTime->stop();
 //    SetTouchscreenCursorRotation();
 
