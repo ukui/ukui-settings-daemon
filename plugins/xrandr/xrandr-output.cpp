@@ -70,11 +70,18 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
 
     const KScreen::ModeList modes = output->modes();
     KScreen::ModePtr matchingMode;
+
+    if (modes.count()<1) {
+        USD_LOG(LOG_DEBUG, "%s mode count = 0.",output->name().toLatin1().data());
+    }
+
     for(const KScreen::ModePtr &mode : modes) {
         if (mode->size() != size) {
+            USD_LOG(LOG_DEBUG,"%dx%d(id:%s) != %dx%d",mode->size().width(),mode->size().height(),mode->id().toLatin1().data(),size.width(),size.height());
             continue;
         }
         if (!qFuzzyCompare(mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat())) {
+            USD_LOG(LOG_DEBUG,"%f != %f",mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat());
             continue;
         }
         //qDebug() << "\tFound: " << mode->id() << " " << mode->size() << "@" << mode->refreshRate();
@@ -280,13 +287,16 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
     output->setPrimary(info[QStringLiteral("primary")].toBool());
     output->setEnabled(info[QStringLiteral("enabled")].toBool());
 
+
     if (readInGlobal(output)) {
+        USD_LOG(LOG_DEBUG,"out it....");
         // output data read from global output file
         return;
     }
     USD_LOG_SHOW_OUTPUT(output);
     // output data read directly from info
     readInGlobalPartFromInfo(output, info);
+    USD_LOG_SHOW_OUTPUT(output)
 }
 
 void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &outputsInfo)
@@ -310,7 +320,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     for (const KScreen::OutputPtr &output : outputs) {
         if (!output->isConnected()) {
             output->setEnabled(false);
-            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().data());
+            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
             continue;
         }
 
@@ -320,7 +330,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
         for (const auto &variantInfo : outputsInfo) {
             const QVariantMap info = variantInfo.toMap();
             if (outputId != info[QStringLiteral("id")].toString()) {
-                USD_LOG(LOG_DEBUG,"skip it...%s", output->name().data());
+                USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
                 continue;
             }
 
@@ -330,11 +340,13 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
                 const auto metadata = info[QStringLiteral("metadata")].toMap();
                 const auto outputName = metadata[QStringLiteral("name")].toString();
                 if (output->name() != outputName) {
+                     USD_LOG(LOG_DEBUG,"%s != %s",output->name(), outputName);
                     // was a duplicate id, but info not for this output
                     continue;
                 }
             }
-            USD_LOG(LOG_DEBUG,"..%s setok...", output->name().data());
+
+            USD_LOG(LOG_DEBUG,"..%s ready set...", output->name().toLatin1().data());
             infoFound = true;
             readIn(output, info);//, control.getOutputRetention(output));
             break;

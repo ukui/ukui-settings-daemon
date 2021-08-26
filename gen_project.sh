@@ -1,15 +1,17 @@
 #!/bin/bash
 
-branch_name=( "master" "9x0" "intel" )
+branch_name=( "master" "9x0" "tablet" )
 get_branch=0
 
 projectDir="projectDir"
 
 source_project_name="$projectDir/ukui-settings-daemon_[_project_name].pro"
 source_control_name="$projectDir/control_[_project_name]"
+source_common_name="$projectDir/common_[_project_name].pri"
 
 dest_project_name=""
 dest_control_name=""
+dest_common_name=""
 
 control_name=""
 
@@ -38,28 +40,39 @@ elif [ $get_branch -eq 2 ]; then
 	echo "退回完毕"
 	dest_project_name=${source_project_name//"_[_project_name]"/}
 	dest_control_name=${source_control_name//"_[_project_name]"/}
+	dest_common_name=${source_control_name//"_[_project_name]"/}
 	
 	dest_project_name=${dest_project_name//"$projectDir/"/}
 	dest_control_name=${dest_control_name//"$projectDir/"/"debian/"}
+	dest_common_name=${dest_common_name//"_[_project_name]"/"common/"}
 	
 	source_project_name=${source_project_name//"[_project_name]"/$project_name}
 	source_control_name=${source_control_name//"[_project_name]"/$project_name}
+	source_common_name=${source_common_name//"[_project_name]"/$project_name}
+	
 	
 	mv -v $dest_project_name $source_project_name
 	mv -v $dest_control_name $source_control_name
-	
+	mv -v $dest_common_name $source_common_name
 else 
 	dest_project_name=${source_project_name//"_[_project_name]"/}
 	dest_control_name=${source_control_name//"_[_project_name]"/}
+	dest_common_name=${source_common_name//"_[_project_name]"/}
+	
 	
 	dest_project_name=${dest_project_name//"$projectDir/"/}
 	dest_control_name=${dest_control_name//"$projectDir/"/"debian/"}
+	dest_common_name=${dest_common_name//"$projectDir/"/"common/"}
+	
 	
 	source_project_name=${source_project_name//"[_project_name]"/$project_name}
 	source_control_name=${source_control_name//"[_project_name]"/$project_name}
+	source_common_name=${source_common_name//"[_project_name]"/$project_name}
+	
 	
 	cp -v $source_project_name $dest_project_name
 	cp -v $source_control_name $dest_control_name
+	cp -v $source_common_name $dest_common_name
 	
 	echo "生成 $project_name 版本完成 :$dest_project_name " 
 fi

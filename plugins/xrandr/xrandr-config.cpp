@@ -78,6 +78,9 @@ bool xrandrConfig::fileExists() const
     return (QFile::exists(configsDirPath() % id()) || QFile::exists(configsDirPath() % mFixedConfigFileName));
 }
 
+/*
+ * state:是否读取睡眠配置
+*/
 std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool state)
 {
     bool res = false;
@@ -110,6 +113,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     int enabledOutputsCount = 0;
 
     if (!mConfig) {
+        USD_LOG(LOG_ERR,"config is nullptr...");
         return nullptr;
     }
 
@@ -125,6 +129,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
             file.setFileName(configsDirPath() % fileName);
         }
         if (!file.open(QIODevice::ReadOnly)) {
+             USD_LOG(LOG_ERR,"config is nullptr...");
             //qDebug() << "failed to open file" << file.fileName();
             return nullptr;
         }
@@ -136,6 +141,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
             file.setFileName(sleepDirPath() % fileName);
         }
         if (!file.open(QIODevice::ReadOnly)) {
+             USD_LOG(LOG_ERR,"config is nullptr...");
             //qDebug() << "failed to open file" << file.fileName();
             return nullptr;
         }
@@ -146,13 +152,14 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     xrandrOutput::readInOutputs(config->data(), outputs); //不可用
 
     QSize screenSize;
+
     for (const auto &output : config->data()->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
         if (output->isEnabled()) {
             enabledOutputsCount++;
         }
 
-        if (!output->isPositionable()) {
+        if (!output->isConnected()) {
             USD_LOG(LOG_DEBUG,"can't positionable..");
             continue;
         }
@@ -178,8 +185,8 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
             screenSize.setHeight(geom.y() + geom.height());
         }
         USD_LOG_SHOW_OUTPUT(output);
-        USD_LOG(LOG_DEBUG,"set screen %dx%d at start at %dx%d by %s, screensize(%dx%d)"
-                ,geom.width(),geom.height(),geom.x(),geom.y(), state ? "sleep":"normal",screenSize.width(),screenSize.height());
+        USD_LOG(LOG_DEBUG,"set %s %dx%d at start at %dx%d by %s, screensize(%dx%d)"
+                ,output->name().toLatin1().data(),geom.width(),geom.height(),geom.x(),geom.y(), state ? "sleep":"normal",screenSize.width(),screenSize.height());
     }
 
     config->data()->screen()->setCurrentSize(screenSize);
