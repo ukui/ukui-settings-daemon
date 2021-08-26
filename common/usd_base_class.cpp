@@ -30,14 +30,6 @@ bool UsdBaseClass::isTablet()
     return false;
 }
 
-bool UsdBaseClass::isIntel()
-{
-#ifdef USD_TABLET
-    return true;
-#endif
-    return false;
-}
-
 bool UsdBaseClass::is9X0()
 {
 #ifdef USD_9X0
