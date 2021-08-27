@@ -663,8 +663,14 @@ void XrandrManager::monitorsInit()
 
         for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
             USD_LOG_SHOW_OUTPUT(output);
-            if (output->isConnected() && false == output->isEnabled()) {
+            if (1==connectedOutputCount){
                 outputChangedHandle(output.data());
+                break;
+            }
+            else {
+                if (output->isConnected() && false == output->isEnabled()) {
+                    outputChangedHandle(output.data());
+                }
             }
         }
 

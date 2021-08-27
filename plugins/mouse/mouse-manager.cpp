@@ -1098,6 +1098,7 @@ void MouseManager::MouseCallback (QString keys)
                (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0) ||
                (keys.compare(QString::fromLocal8Bit(KEY_MOUSE_ACCEL)) == 0)){
         SetMotionAll ();
+        USD_LOG(LOG_DEBUG,".......");
     } else if (keys.compare(QString::fromLocal8Bit(KEY_MIDDLE_BUTTON_EMULATION))==0){
         SetMiddleButtonAll (settings_mouse->get(keys).toBool());
 
@@ -1105,6 +1106,8 @@ void MouseManager::MouseCallback (QString keys)
         SetLocatePointer (settings_mouse->get(keys).toBool());
     } else if(keys.compare(QString::fromLocal8Bit(KEY_MOUSE_WHEEL_SPEED)) == 0 ) {
         SetMouseWheelSpeed (settings_mouse->get(keys).toInt());
+    }else{
+        USD_LOG(LOG_DEBUG,"keys:is skip..k%s", keys.toLatin1().data());
     }
 }
 
@@ -1636,15 +1639,24 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_NATURAL_SCROLL)) == 0) {
         SetNaturalScrollAll ();                             //设置上移下滚或上移上滚
+        USD_LOG(LOG_DEBUG,"set %s",KEY_TOUCHPAD_NATURAL_SCROLL);
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ENABLED)) == 0) {
         SetTouchpadEnabledAll (settings_touchpad->get(keys).toBool());//设置触摸板开关
 
-    } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION)) == 0)
-            || (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD)) == 0)) {
+    } else if ((keys.compare((KEY_MOTION_ACCELERATION)) == 0)
+            || (keys.compare((KEY_MOTION_THRESHOLD)) == 0)) {
+        USD_LOG(LOG_DEBUG,".");
         SetMotionAll ();                                    //设置鼠标速度
+        USD_LOG(LOG_DEBUG,".");
+    }else if (0 == QString::compare(keys, QString(KEY_MOTION_ACCELERATION), Qt::CaseInsensitive)||
+              0 == QString::compare(keys, QString(KEY_MOTION_THRESHOLD), Qt::CaseInsensitive)){
+        SetMotionAll ();                                    //设置鼠标速度
+        USD_LOG(LOG_DEBUG,"Qstring.");
 
-    } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DISBLE_O_E_MOUSE)) == 0) {
+    }else if (keys == "motion-acceleration" || keys==KEY_MOTION_THRESHOLD){
+        USD_LOG(LOG_DEBUG,"Qstring.==");
+    }else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DISBLE_O_E_MOUSE)) == 0) {
         SetPlugMouseDisbleTouchpad(settings_touchpad);      //设置插入鼠标时禁用触摸板
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DOUBLE_CLICK_DRAG)) == 0){
@@ -1655,6 +1667,8 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_MOUSE_SENSITVITY)) == 0){
 
+    } else {
+        USD_LOG(LOG_DEBUG,"keys:is skip..k%s", keys.toLatin1().data(),keys.toLatin1().data());
     }
 }
 
@@ -1726,8 +1740,11 @@ void MouseManager::MouseManagerIdleCb()
 
     time->stop();
 
-    connect(settings_mouse, &QGSettings::changed, this, &MouseManager::MouseCallback);
-    connect(settings_touchpad, &QGSettings::changed, this, &MouseManager::TouchpadCallback);
+//    connect(settings_mouse, &QGSettings::changed, this, &MouseManager::MouseCallback);
+    //    connect(settings_touchpad, &QGSettings::changed, this, &MouseManager::TouchpadCallback);
+
+    QObject::connect(settings_mouse,SIGNAL(changed(QString)),  this,SLOT(MouseCallback(QString)));
+    QObject::connect(settings_touchpad,SIGNAL(changed(QString)),this,SLOT(TouchpadCallback(QString)));
 
     syndaemon_spawned = FALSE;
 

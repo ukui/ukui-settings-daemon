@@ -1096,9 +1096,9 @@ void MediaKeysManager::initKbd()
     bool needFlush = false;
 
 //    gdk_x11_display_error_trap_push(gdk_display_get_default());
-    connect(mSettings, &QGSettings::changed,
+    QObject::connect(mSettings, &QGSettings::changed,
             this, &MediaKeysManager::updateKbdCallback);
-
+    connect(mSettings, SIGNAL(changed(QString)), this, SLOT(updateKbdCallback(QString)));
     for(i = 0; i < HANDLED_KEYS; ++i){
         QString tmp,schmeasKey;
         Key* key;

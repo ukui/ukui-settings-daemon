@@ -227,7 +227,8 @@ bool SoundManager::SoundManagerStart (GError **error)
     /* We listen for change of the selected theme ... */
     settings = new QGSettings(UKUI_SOUND_SCHEMA);
 
-    connect(settings, &QGSettings::changed, this, &SoundManager::gsettings_notify_cb);
+//    QObject::connect(settings, &QGSettings::changed, this, &SoundManager::gsettings_notify_cb);
+    connect(settings, SIGNAL(changed(QString)), this, SLOT(gsettings_notify_cb(QString)));
     /* ... and we listen to changes of the theme base directories
      * in $HOME ...*/
 
