@@ -270,16 +270,18 @@ xsettings_callback (GSettings             *gsettings,
     TranslationEntry *trans;
     int               i;
     GVariant         *value;
-    USD_LOG(LOG_ERR,"%s  key=%s",__func__,key);
+
     if (g_str_equal (key, CURSOR_THEME_KEY)||
-        g_str_equal (key, CURSOR_SIZE_KEY )||
-        g_str_equal (key,SCALING_FACTOR_KEY)){
+            g_str_equal (key, CURSOR_SIZE_KEY )||
+            g_str_equal (key,SCALING_FACTOR_KEY)){
         xft_callback (NULL, key, manager);
+        USD_LOG(LOG_ERR," key=%s",key);
         return;
     }
 
     trans = find_translation_entry (gsettings, key);
     if (trans == NULL) {
+         USD_LOG(LOG_ERR,"can't find   key:%s",key);
         return;
     }
 

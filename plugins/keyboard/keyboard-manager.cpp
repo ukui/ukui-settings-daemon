@@ -383,8 +383,10 @@ void KeyboardManager::numlock_install_xkb_callback ()
     if (!have_xkb)
         return;
 
-    connect(XEventMonitor::instance(), static_cast<void (XEventMonitor::*)(int)>(&XEventMonitor::keyRelease),
-            this, &KeyboardManager::XkbEventsFilter);
+//    connect(XEventMonitor::instance(), static_cast<void (XEventMonitor::*)(int)>(&XEventMonitor::keyRelease),
+//            this, &KeyboardManager::XkbEventsFilter);
+    connect(XEventMonitor::instance(), SIGNAL(keyRelease(int)),
+            this, SLOT(XkbEventsFilter(int)));
 
 }
 
@@ -405,7 +407,9 @@ void KeyboardManager::start_keyboard_idle_cb ()
     /* apply current settings before we install the callback */
     usd_keyboard_manager_apply_settings (this);
 
-    connect(settings, &QGSettings::changed, this, &KeyboardManager::apply_settings);
+//    QObject::connect(settings, &QGSettings::changed, this, &KeyboardManager::apply_settings);
+
+    connect(settings,SIGNAL(changed(QString)),this,SLOT(apply_settings(QString)));
 
 #ifdef HAVE_X11_EXTENSIONS_XKB_H
     numlock_install_xkb_callback();

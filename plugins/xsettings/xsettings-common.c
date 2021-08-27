@@ -161,7 +161,6 @@ xsettings_list_free (XSettingsList *list)
 
         xsettings_setting_free (list->setting);
         free (list);
-
         list = next;
     }
 }

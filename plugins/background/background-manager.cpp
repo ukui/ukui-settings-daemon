@@ -45,10 +45,16 @@ void BackgroundManager::initGSettings(){
     Filename = bSettingOld->get(PICTURE_FILE_NAME).toString();
 
 
-    connect(bSettingOld, &QGSettings::changed, this, &BackgroundManager::setup_Background);
-    connect(qApp, &QApplication::screenAdded, this, &BackgroundManager::screenAddedProcess);
-    connect(qApp, &QApplication::screenRemoved, this, &BackgroundManager::screenRemovedProcess);
-    connect(m_screen, &QScreen::virtualGeometryChanged, this, &BackgroundManager::virtualGeometryChangedProcess);
+//    QObject::connect(bSettingOld, &QGSettings::changed, this, &BackgroundManager::setup_Background);
+//    QObject::connect(qApp, &QApplication::screenAdded, this, &BackgroundManager::screenAddedProcess);
+//    QObject::connect(qApp, &QApplication::screenRemoved, this, &BackgroundManager::screenRemovedProcess);
+//    QObject::connect(m_screen, &QScreen::virtualGeometryChanged, this, &BackgroundManager::virtualGeometryChangedProcess);
+
+    connect(bSettingOld, SIGNAL(changed(QString)),this, SLOT(setup_Background(QString)));
+    connect(qApp,SIGNAL(screenAdded(QScreen *)),this, SLOT(screenAddedProcess(QScreen*)));
+    connect(qApp, SLOT(screenRemoved(QScreen *)),this, SLOT(screenRemovedProcess(QScreen *)));
+    connect(m_screen, &QScreen::virtualGeometryChanged, this,&BackgroundManager::virtualGeometryChangedProcess);
+
 
 }
 
