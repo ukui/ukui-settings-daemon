@@ -28,6 +28,7 @@ SUBDIRS += \
     $$PWD/plugins/xrdb/xrdb.pro                 \
     $$PWD/plugins/xsettings/xsettings.pro       \
     $$PWD/plugins/locate-pointer/usd-locate-pointer.pro \
+    $$PWD/plugins/kds/kds.pro\
     $$PWD/daemon/daemon.pro
 
 include($$PWD/data/data.pri)

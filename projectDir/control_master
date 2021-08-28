@@ -35,6 +35,14 @@ Build-Depends: debhelper-compat (=12),
                libimlib2-dev,
                xserver-xorg-dev,
                libgudev-1.0-dev,
+ 			   libxcb1-dev,
+               libxcb-util-dev,
+               libx11-dev,
+               libkf5windowsystem-dev,
+               libkf5screen-dev,
+               libxkbcommon-dev,
+			   libkf5globalaccel-dev,
+			   libqt5x11extras5-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
