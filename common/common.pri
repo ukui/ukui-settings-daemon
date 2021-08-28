@@ -6,7 +6,7 @@ INCLUDEPATH += -I $$PWD/
 
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/ukui-settings-daemon
 
-DEFINES += USD_9X0
+DEFINES += USD_master
 
 EXTRA_CFLAGS +=-Wno-date-time
 
