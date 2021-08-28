@@ -57,9 +57,9 @@ int main (int argc, char* argv[])
 #endif
 
     PluginManager*  manager = nullptr;
-    qDebug( "ukui-settings-daemon starting ...");
     QApplication app(argc, argv);
 
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
 
     signal(SIGTERM, handler);

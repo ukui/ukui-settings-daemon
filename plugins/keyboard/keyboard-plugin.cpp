@@ -41,7 +41,7 @@ KeyboardPlugin::~KeyboardPlugin()
 void KeyboardPlugin::activate()
 {
     bool res;
-    USD_LOG(LOG_DEBUG,"Activating Keyboard Plugin");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
     res = UsdKeyboardManager->KeyboardManagerStart();
     if(!res){
         USD_LOG(LOG_ERR,"Unable to start Keyboard Manager!")

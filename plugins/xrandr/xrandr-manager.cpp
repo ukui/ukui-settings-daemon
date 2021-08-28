@@ -483,13 +483,35 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
     QString bigestPrimaryModeId;
     int rtResolution = 0;
     int bigestResolution = 0;
-
+    bool hadPrimary = false;
     if (1 == outputCount) {//单屏接入时需要设置模式，主屏
         newOutput->setCurrentModeId(newOutput->preferredModeId());
         newOutput->setPrimary(true);
     } else {
 
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
+            if (output->isPrimary()){
+                hadPrimary = true;
+            }
+        }
+
+        if (!hadPrimary){
+            Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
+                 if (output->isConnected() && output->isEnabled()){
+                     output->setPrimary(true);
+
+                     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+                     op->exec();
+
+                     USD_LOG(LOG_DEBUG,"can't find primary screen set %s is primary..",output->name().toLatin1().data());
+                     break;
+                 }
+            }
+        }
+
+        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
+            USD_LOG_SHOW_OUTPUT(output);
+
             if (output->isPrimary()){
                 Q_FOREACH (auto primaryMode, output->modes()) {
                     Q_FOREACH (auto newOutputMode, newOutput->modes()) {
@@ -505,11 +527,21 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
                                 bigestModeId = newOutputMode->id();
                                 bigestPrimaryModeId = primaryMode->id();
                             }
-                        }
+                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
+                                    primaryMode->size().width(),primaryMode->size().height(),
+                                    newOutputMode->size().width(), newOutputMode->size().height());
+                        }/*else {
+                            USD_LOG(LOG_DEBUG,"bad..p_width:%d p_height:%d n_width:%d n_height:%d",
+                                    primaryMode->size().width(),primaryMode->size().height(),
+                                    newOutputMode->size().width(), newOutputMode->size().height());
+                        }*/
 
                     }//end  Q_FOREACH (auto newOutputMode, newOutput->modes())
                 }//end  Q_FOREACH (auto primaryMode, output->modes())
             }//end if (output->isPrimary())
+            else {
+                USD_LOG(LOG_DEBUG,"%s is't primary..",output->name().toLatin1().data());
+            }
         }//end  Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()
 
 
@@ -517,7 +549,8 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
 
         if (!bigestResolution) {
             USD_LOG(LOG_DEBUG, "can't find the same resolution in outputs.so use bigest resolution.");
-
+            auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+            op->exec();
             Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
                 if (output->isPrimary()){
                     output->setCurrentModeId(output->preferredModeId());
@@ -529,6 +562,7 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
              newOutput->setEnabled(newOutput->isConnected());
              newOutput->setCurrentModeId(newOutput->preferredModeId());
              USD_LOG(LOG_DEBUG, "newOutput output mode:%s",newOutput->preferredModeId().toLatin1().data());
+             USD_LOG_SHOW_OUTPUT(newOutput);
 
         } else {
 
@@ -540,6 +574,8 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
             }
             newOutput->setEnabled(newOutput->isConnected());
             newOutput->setCurrentModeId(bigestModeId);
+//            USD_LOG(LOG_DEBUG,"");
+            USD_LOG_SHOW_OUTPUT(newOutput);
         }
 
     }
@@ -584,6 +620,9 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
     }
 
+    Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+        USD_LOG_SHOW_OUTPUT(output);
+    }
     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
     op->exec();
 

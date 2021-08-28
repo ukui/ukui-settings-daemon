@@ -41,7 +41,8 @@ MousePlugin::~MousePlugin()
 void MousePlugin::activate()
 {
     bool res;
-    USD_LOG(LOG_DEBUG,"Activating Mouse plugin");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
     res = UsdMouseManager->MouseManagerStart();
     if(!res){
         USD_LOG(LOG_ERR,"Unable to start Mouse manager!");

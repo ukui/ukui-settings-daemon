@@ -18,7 +18,8 @@
  */
 #include <QDebug>
 #include "ukui-xsettings-plugin.h"
-#include <syslog.h>
+#include "clib-syslog.h"
+
 PluginInterface *XSettingsPlugin::mInstance =nullptr;
 ukuiXSettingsManager *XSettingsPlugin::m_pukuiXsettingManager = nullptr;
 
@@ -38,10 +39,13 @@ XSettingsPlugin::~XSettingsPlugin()
 void XSettingsPlugin::activate()
 {
     bool res;
+
     res = m_pukuiXsettingManager->start();
     if (!res) {
         qWarning ("Unable to start XSettingsPlugin manager");
     }
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
 }
 
 void XSettingsPlugin::deactivate()

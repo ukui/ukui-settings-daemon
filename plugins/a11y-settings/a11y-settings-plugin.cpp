@@ -37,7 +37,7 @@ void A11ySettingsPlugin::activate()
 {
     bool res;
 
-    USD_LOG(LOG_DEBUG,"Activating a11y-settings plugin");
+    USD_LOG(LOG_DEBUG,"Activating a11y-settings plugincompilation time:[%s] [%s]",__DATE__,__TIME__);
     res=settingsManager->A11ySettingsManagerStart();
     if(!res){
         USD_LOG(LOG_WARNING,"Unable to start a11y-settings manager!");

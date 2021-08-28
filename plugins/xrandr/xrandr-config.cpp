@@ -149,7 +149,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
 
     QJsonDocument parser;
     QVariantList outputs = parser.fromJson(file.readAll()).toVariant().toList();
-    xrandrOutput::readInOutputs(config->data(), outputs); //不可用
+    xrandrOutput::readInOutputs(config->data(), outputs);
 
     QSize screenSize;
 

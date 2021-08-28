@@ -18,13 +18,13 @@
  */
 #include <QDebug>
 #include "color-plugin.h"
-
+#include "clib-syslog.h"
 PluginInterface *ColorPlugin::mInstance      = nullptr;
 ColorManager    *ColorPlugin::mColorManager  = nullptr;
 
 ColorPlugin::ColorPlugin()
 {
-    qDebug()<<"Color Plugin initializing";
+    USD_LOG(LOG_DEBUG,"Color Plugin initializing");
     if(nullptr == mColorManager)
         mColorManager = ColorManager::ColorManagerNew();
 }
@@ -38,7 +38,8 @@ ColorPlugin::~ColorPlugin()
 }
 void ColorPlugin::activate()
 {
-    qDebug("activating Color plugins");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
     bool res = mColorManager->ColorManagerStart();
     if(!res)
         qWarning("Unable to start Color manager!");
