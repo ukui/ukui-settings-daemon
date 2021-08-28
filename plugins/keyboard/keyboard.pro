@@ -35,10 +35,12 @@ LIBS += \
 SOURCES += \
     keyboard-manager.cpp \
     keyboard-plugin.cpp \
+    keyboard-widget.cpp \
     keyboard-xkb.cpp
 
 HEADERS += \
     keyboard-manager.h \
+    keyboard-widget.h \
     keyboard-xkb.h \
     keyboard-plugin.h
 
@@ -46,3 +48,6 @@ keyboard_lib.path = $${PLUGIN_INSTALL_DIRS}
 keyboard_lib.files = $$OUT_PWD/libkeyboard.so
 
 INSTALLS += keyboard_lib
+
+FORMS += \
+    keyboardwidget.ui

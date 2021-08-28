@@ -19,8 +19,16 @@
 #include "keyboard-manager.h"
 #include "clib-syslog.h"
 #include "config.h"
+#include "rfkillswitch.h"
 
 #define USD_KEYBOARD_SCHEMA  "org.ukui.peripherals-keyboard"
+
+#define UKCCOSD_SCHEMA "org.ukui.control-center.osd"
+#define KYCCOSD_SCHEMA "org.kylin.control-center.osd"
+#define KDSOSD_SCHEMA "org.ukui.kds.osd"
+
+#define SHOW_TIP_KEY "show-lock-tip"
+
 #define KEY_REPEAT           "repeat"
 #define KEY_CLICK            "click"
 #define KEY_RATE             "rate"
@@ -50,6 +58,29 @@ KeyboardManager::KeyboardManager(QObject * parent)
     if(mKeyXkb == nullptr)
         mKeyXkb = new KeyboardXkb;
     settings = new QGSettings(USD_KEYBOARD_SCHEMA);
+
+    stInstalled = true;
+
+    const QByteArray id(UKCCOSD_SCHEMA);
+    const QByteArray idd(KYCCOSD_SCHEMA);
+    const QByteArray iid(KDSOSD_SCHEMA);
+
+    ifaceScreenSaver = new QDBusInterface("org.ukui.ScreenSaver", \
+                                          "/", \
+                                          "org.ukui.ScreenSaver", \
+                                          QDBusConnection::sessionBus());
+
+
+    if (QGSettings::isSchemaInstalled(id)){
+        ksettings = new QGSettings(id);
+    } else if (QGSettings::isSchemaInstalled(idd)){
+        ksettings = new QGSettings(idd);
+    } else if (QGSettings::isSchemaInstalled(iid)){
+        ksettings = new QGSettings(iid);
+    } else {
+        stInstalled = false;
+    }
+    m_capsWidget = new KeyboardWidget();
 }
 
 KeyboardManager::~KeyboardManager()
@@ -346,36 +377,117 @@ void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *mana
 
 void KeyboardManager::XkbEventsFilter(int keyCode)
 {
+    USD_LOG(LOG_DEBUG,"keyevent  keyCode '%d'", keyCode);
+
+    Display *display = XOpenDisplay(NULL);
     NumLockState numlockState;
-    if(keyCode == 66 || keyCode == 77)
+    bool capsLockState;
+    if(keyCode == 77)
     {
-        unsigned int lockedMods;
-        Display *display = XOpenDisplay(NULL);
+        unsigned int numLockedMods;
 
-        XkbGetIndicatorState(display, XkbUseCoreKbd, &lockedMods);
+        XkbGetIndicatorState(display, XkbUseCoreKbd, &numLockedMods);
 
-        if(lockedMods == 1 || lockedMods == 3){
-            settings->set(KEY_CAPSLOCK_STATE,true);
-        }
-        else{
-            settings->set(KEY_CAPSLOCK_STATE,false);
-        }
 
-        if(lockedMods == 2 || lockedMods==3)
+        if(numLockedMods == 2 || numLockedMods==3)
+        {
             numlockState = NUMLOCK_STATE_ON;
-        else
-            numlockState = NUMLOCK_STATE_OFF;
 
+        }
+        else
+        {
+            numlockState = NUMLOCK_STATE_OFF;
+        }
         USD_LOG(LOG_ERR,"old_state=%d,locked_mods=%d,numlockState=%d",
-                  old_state,lockedMods,numlockState);
+                  old_state,numLockedMods,numlockState);
 
         if (numlockState != old_state) {
                 settings->setEnum(KEY_NUMLOCK_STATE, numlockState);
                 old_state = numlockState;
         }
 
-        XCloseDisplay (display);
+        if (stInstalled && !ksettings->get(SHOW_TIP_KEY).toBool()){
+            qWarning("MediaKey Tip is Closed\n");
+            return;
+        }
+
+        if (ifaceScreenSaver->isValid()){
+            QDBusReply<bool>reply = ifaceScreenSaver->call("GetLockState");
+            if (reply.isValid()){
+                if (reply.value()){
+                    qWarning("MediaKey Tip is Closed because ScreenLock\n");
+                    return;
+                }
+            }
+        }
+        if(numlockState)
+        {
+            m_capsWidget->setIcons("ukui-numlock-on");
+            m_capsWidget->showWidget();
+        }
+        else
+        {
+            m_capsWidget->setIcons("ukui-numlock-off");
+            m_capsWidget->showWidget();
+        }
+
+    }else if(keyCode == 66)
+    {
+        unsigned int capsLockedMods;
+        XkbGetIndicatorState(display, XkbUseCoreKbd, &capsLockedMods);
+
+        if(capsLockedMods == 1 || capsLockedMods == 3){
+            settings->set(KEY_CAPSLOCK_STATE,true);
+            capsLockState = true;
+
+        }
+        else{
+            settings->set(KEY_CAPSLOCK_STATE,false);
+            capsLockState = false;
+
+        }
+        if (stInstalled && !ksettings->get(SHOW_TIP_KEY).toBool()){
+            qWarning("MediaKey Tip is Closed\n");
+            return;
+        }
+
+        if (ifaceScreenSaver->isValid()){
+            QDBusReply<bool>reply = ifaceScreenSaver->call("GetLockState");
+            if (reply.isValid()){
+                if (reply.value()){
+                    qWarning("MediaKey Tip is Closed because ScreenLock\n");
+                    return;
+                }
+            }
+        }
+        if(capsLockState)
+        {
+            m_capsWidget->setIcons("ukui-capslock-on");
+            m_capsWidget->showWidget();
+
+        }
+        else
+        {
+            m_capsWidget->setIcons("ukui-capslock-off");
+            m_capsWidget->showWidget();
+        }
+
     }
+    if (keyCode == 255)
+    {
+        int flightState = RfkillSwitch::instance()->getCurrentFlightMode();
+        USD_LOG(LOG_DEBUG,"getCurrentFlightMode %d",flightState);
+
+
+        if(flightState == -1)
+        {
+            return;
+        }
+
+        m_capsWidget->setIcons(flightState?"ukui-airplane-mode-on":"ukui-airplane-mode-off");
+        m_capsWidget->showWidget();
+    }
+    XCloseDisplay (display);
 }
 
 void KeyboardManager::numlock_install_xkb_callback ()

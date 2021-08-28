@@ -167,7 +167,7 @@ void VolumeWindow::setWidgetLayout()
 {
     //窗口性质
     setFixedSize(QSize(64,300) * mScale);
-    setStyleSheet("background:#394073");
+//    setStyleSheet("background:#394073");
     //lable 音量键值
     QFont font;
     font.setPointSize(10 * mScale);
@@ -183,9 +183,13 @@ void VolumeWindow::setWidgetLayout()
     mBar->setOrientation(Qt::Vertical);
     mBar->setFixedSize(QSize(10,200) * mScale);
     mBar->setTextVisible(false);
-//  mBar->setValue(volumeLevel/100);
-    mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#2e335c}"
-                       "QProgressBar::chunk{border-radius:5px;background:#d5d6de}");
+
+
+/*  mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#2e335c}"
+                       "QProgressBar::chunk{border-radius:5px;background:#d5d6de}")*/;
+
+    mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#708069}"
+                        "QProgressBar::chunk{border-radius:5px;background:white}");
 
     //音量调放入横向布局
     mBarLayout->addWidget(mBar);

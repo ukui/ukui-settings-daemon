@@ -70,6 +70,7 @@ enum {
         GLOBAL_SEARCH_KEY,
         KDS_KEY,
         KDS_KEY2,
+        WLAN_KEY,
         HANDLED_KEYS,
 };
 

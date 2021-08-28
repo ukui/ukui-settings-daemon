@@ -22,6 +22,11 @@
 #include <QObject>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QWidget>
+
+#include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusReply>
 
 #include <QTimer>
 #include <QtX11Extras/QX11Info>
@@ -31,6 +36,7 @@
 
 #include "xeventmonitor.h"
 #include "keyboard-xkb.h"
+#include "keyboard-widget.h"
 
 #ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
 #include <X11/extensions/xf86misc.h>
@@ -80,8 +86,13 @@ private:
     bool                    have_xkb;
     int                     xkb_event_base;
     QGSettings             *settings;
+    QGSettings             *ksettings;
     int                     old_state;
+    bool                    stInstalled;
 
+    KeyboardWidget*         m_capsWidget;
+
+    QDBusInterface * ifaceScreenSaver;
 };
 
 #endif // KEYBOARDMANAGER_H

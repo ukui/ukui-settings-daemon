@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>img/clone.png</file>
+        <file>img/extend.png</file>
+        <file>img/main.png</file>
+        <file>img/phone.png</file>
+        <file>img/selected.png</file>
+        <file>img/vice.png</file>
+        <file>zh_CN.qm</file>
+    </qresource>
+</RCC>
