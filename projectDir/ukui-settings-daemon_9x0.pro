@@ -11,11 +11,11 @@ TRANSLATIONS += daemon/res/i18n/zh_CN.ts
 CONFIG += ordered
 
 SUBDIRS += \
-    $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro  \
-    $$PWD/plugins/a11y-settings/a11y-settings.pro  \
-    $$PWD/plugins/background/background.pro        \
+#    $$PWD/plugins/a11y-keyboard/a11y-keyboard.pro  \
+#    $$PWD/plugins/a11y-settings/a11y-settings.pro  \
+#    $$PWD/plugins/background/background.pro        \
     $$PWD/plugins/clipboard/clipboard.pro          \
-    $$PWD/plugins/color/color.pro                  \
+#    $$PWD/plugins/color/color.pro                  \
     $$PWD/plugins/housekeeping/housekeeping.pro    \
     $$PWD/plugins/keyboard/keyboard.pro         \
     $$PWD/plugins/keybindings/keybindings.pro   \
