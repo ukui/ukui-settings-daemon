@@ -23,7 +23,7 @@ A11yKeyboardPlugin::~A11yKeyboardPlugin()
 void A11yKeyboardPlugin::activate()
 {
     bool res;
-    USD_LOG(LOG_DEBUG,"ctivating A11y-Keyboard Plugin");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
     res = UsdA11yManager->A11yKeyboardManagerStart();
     if(!res)
         USD_LOG(LOG_ERR,"Unable to start A11y-Keyboard manager");

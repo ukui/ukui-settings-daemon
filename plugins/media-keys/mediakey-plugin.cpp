@@ -48,7 +48,8 @@ PluginInterface *MediakeyPlugin::getInstance()
 void MediakeyPlugin::activate()
 {
     GError *error = NULL;
-    USD_LOG(LOG_ERR, "activating mediakey plugin ...");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
 
     if (!mManager->mediaKeysStart(error)) {
             USD_LOG(LOG_DEBUG,"Unable to start media-keys manager: %s", error->message);

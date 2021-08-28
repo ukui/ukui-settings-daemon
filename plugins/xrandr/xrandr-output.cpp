@@ -65,7 +65,6 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
     const QVariantMap modeInfo = info[QStringLiteral("mode")].toMap();
     const QVariantMap modeSize = modeInfo[QStringLiteral("size")].toMap();
     const QSize size = QSize(modeSize[QStringLiteral("width")].toInt(), modeSize[QStringLiteral("height")].toInt());
-
     //qDebug() << "Finding a mode for" << size << "@" << modeInfo[QStringLiteral("refresh")].toFloat();
 
     const KScreen::ModeList modes = output->modes();
@@ -293,6 +292,7 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
         // output data read from global output file
         return;
     }
+
     USD_LOG_SHOW_OUTPUT(output);
     // output data read directly from info
     readInGlobalPartFromInfo(output, info);

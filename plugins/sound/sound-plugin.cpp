@@ -36,7 +36,8 @@ SoundPlugin::~SoundPlugin()
 void SoundPlugin::activate ()
 {
         GError *error = NULL;
-        USD_LOG(LOG_DEBUG,"Activating sound plugin!");
+        USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
 
         if (!soundManager->SoundManagerStart(&error)) {
                 USD_LOG(LOG_DEBUG,"Unable to start sound manager: %s", error->message);

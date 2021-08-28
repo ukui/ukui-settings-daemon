@@ -39,7 +39,7 @@ XrdbPlugin::~XrdbPlugin() {
 
 void XrdbPlugin::activate () {
     GError* error;
-    USD_LOG(LOG_DEBUG,"Activating xrdn plugin!");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
     error = NULL;
     if(!m_pIXdbMgr->start(&error)){

@@ -16,7 +16,6 @@ SOURCES += \
         $$PWD/clib-syslog.c             \
         $$PWD/QGSettings/qconftype.cpp  \
         $$PWD/QGSettings/qgsettings.cpp \
-        $$PWD/rfkillswitch.cpp \
         $$PWD/usd_base_class.cpp \
         $$PWD/xeventmonitor.cpp         \
         $$PWD/eggaccelerators.c         \
@@ -28,7 +27,6 @@ HEADERS += \
         $$PWD/plugin-interface.h        \
         $$PWD/QGSettings/qconftype.h    \
         $$PWD/QGSettings/qgsettings.h   \
-        $$PWD/rfkillswitch.h \
         $$PWD/usd_base_class.h \
         $$PWD/xeventmonitor.h           \
         $$PWD/eggaccelerators.h         \

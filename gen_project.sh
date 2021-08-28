@@ -1,5 +1,15 @@
 #!/bin/bash
 
+#sample:
+#生成：
+#./gen_project.sh master
+#./gen_project.sh 9x0
+#./gen_project.sh tablet
+#改动放回源文件夹
+#./gen_project.sh back master
+#./gen_project.sh back 9x0
+#./gen_project.sh back tabletster
+
 branch_name=( "master" "9x0" "tablet" )
 get_branch=0
 
@@ -13,7 +23,6 @@ dest_project_name=""
 dest_control_name=""
 dest_common_name=""
 
-control_name=""
 
 for name in ${branch_name[*]}
 do
@@ -40,20 +49,23 @@ elif [ $get_branch -eq 2 ]; then
 	echo "退回完毕"
 	dest_project_name=${source_project_name//"_[_project_name]"/}
 	dest_control_name=${source_control_name//"_[_project_name]"/}
-	dest_common_name=${source_control_name//"_[_project_name]"/}
+	dest_common_name=${source_common_name//"_[_project_name]"/}
 	
 	dest_project_name=${dest_project_name//"$projectDir/"/}
 	dest_control_name=${dest_control_name//"$projectDir/"/"debian/"}
-	dest_common_name=${dest_common_name//"_[_project_name]"/"common/"}
+	dest_common_name=${dest_common_name//"$projectDir/"/"common/"}
 	
 	source_project_name=${source_project_name//"[_project_name]"/$project_name}
 	source_control_name=${source_control_name//"[_project_name]"/$project_name}
 	source_common_name=${source_common_name//"[_project_name]"/$project_name}
 	
+	echo $dest_common_name
+	echo $source_common_name
+	cp -v $dest_project_name $source_project_name
+	cp -v $dest_control_name $source_control_name
+	cp -v $dest_common_name $source_common_name
 	
-	mv -v $dest_project_name $source_project_name
-	mv -v $dest_control_name $source_control_name
-	mv -v $dest_common_name $source_common_name
+	echo "退回完毕"
 else 
 	dest_project_name=${source_project_name//"_[_project_name]"/}
 	dest_control_name=${source_control_name//"_[_project_name]"/}

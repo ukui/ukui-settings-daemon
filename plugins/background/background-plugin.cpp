@@ -48,8 +48,8 @@ PluginInterface *BackgroundPlugin::getInstance()
 
 void BackgroundPlugin::activate()
 {
-    syslog (LOG_ERR, "Activating background plugin");
-    manager->BackgroundManagerStart();
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+     manager->BackgroundManagerStart();
 }
 
 void BackgroundPlugin::deactivate()

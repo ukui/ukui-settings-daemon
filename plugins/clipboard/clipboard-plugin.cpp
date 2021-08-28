@@ -38,7 +38,8 @@ PluginInterface *ClipboardPlugin::getInstance()
 
 void ClipboardPlugin::activate()
 {
-    if (nullptr != mManager) mManager->managerStart();
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+      if (nullptr != mManager) mManager->managerStart();
 }
 
 void ClipboardPlugin::deactivate()
