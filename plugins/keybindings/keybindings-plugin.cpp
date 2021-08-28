@@ -41,7 +41,8 @@ KeybindingsPlugin::~KeybindingsPlugin()
 void KeybindingsPlugin::activate()
 {
     bool res;
-    USD_LOG(LOG_DEBUG,"Activating Keybindings");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
     res = mKeyManager->KeybindingsManagerStart();
     if(!res)
         USD_LOG(LOG_ERR,"Unable to start Keybindings manager");

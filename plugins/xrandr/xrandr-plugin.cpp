@@ -55,7 +55,8 @@ void XrandrPlugin::activate()
         return;
     }
 
-    USD_LOG(LOG_DEBUG, "activating Xrandr plugins");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
 
     res = mXrandrManager->XrandrManagerStart();
     if(!res) {

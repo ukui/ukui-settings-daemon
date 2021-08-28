@@ -8,6 +8,7 @@ PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/ukui-settings-daemon
 
 DEFINES += USD_9X0
 
+EXTRA_CFLAGS +=-Wno-date-time
 
 PKGCONFIG += glib-2.0  gio-2.0 libxklavier x11 xrandr xtst atk gdk-3.0 gtk+-3.0 xi
 QMAKE_CXXFLAGS +=  -Wno-unused-parameter

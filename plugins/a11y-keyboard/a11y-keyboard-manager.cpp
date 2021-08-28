@@ -28,7 +28,7 @@ A11yKeyboardManager * A11yKeyboardManager::A11KeyboardManagerNew()
 
 bool A11yKeyboardManager::A11yKeyboardManagerStart()
 {
-    qDebug(" A11y Keyboard Manager Start ");
+    USD_LOG(LOG_DEBUG," %s Manager Start compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
 
     connect(time, &QTimer::timeout, this, &A11yKeyboardManager::StartA11yKeyboardIdleCb);

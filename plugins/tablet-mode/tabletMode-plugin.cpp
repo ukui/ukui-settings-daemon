@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include "tabletMode-plugin.h"
+#include "clib-syslog.h"
 
 PluginInterface *TabletModePlugin::mInstance       = nullptr;
 TabletModeManager *TabletModePlugin::mTableManager = nullptr;
@@ -38,7 +39,8 @@ TabletModePlugin::~TabletModePlugin()
 
 void TabletModePlugin::activate()
 {
-    qDebug("Activating Tablet mode plugins");
+    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
     bool res;
     res = mTableManager->TabletModeManagerStart();
     if(!res)

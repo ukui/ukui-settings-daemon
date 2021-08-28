@@ -38,7 +38,8 @@ void MprisPlugin::activate()
 {
         gboolean res;
         GError  *error;
-        USD_LOG(LOG_DEBUG,"Activating mpris plugin");
+        USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+
 
         error = NULL;
         res = mprisManager->MprisManagerStart(&error);
