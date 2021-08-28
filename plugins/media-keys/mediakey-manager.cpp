@@ -23,6 +23,7 @@
 #include <KF5/KGlobalAccel/KGlobalAccel>
 
 #include "clib-syslog.h"
+#include "rfkillswitch.h"
 
 MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
@@ -93,11 +94,11 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
     shotSettings = new QGSettings(SHOT_SCHEMA);
-
     if (shotSettings->keys().contains(SHOT_RUN_KEY)){
-        if (shotSettings->get(SHOT_RUN_KEY).toBool())
-            shotSettings->set(SHOT_RUN_KEY, false);
-    }
+            if (shotSettings->get(SHOT_RUN_KEY).toBool())
+                shotSettings->set(SHOT_RUN_KEY, false);
+        }
+
 
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
@@ -124,6 +125,16 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
 void MediaKeysManager::initShortcuts()
 {
+    /* WLAN */
+    QAction *wlan= new QAction(this);
+    wlan->setObjectName(QStringLiteral("Toggle wlan"));
+    wlan->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
+    KGlobalAccel::self()->setShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
+    connect(wlan, &QAction::triggered, this, [this]() {
+        doAction(WLAN_KEY);
+    });
+
     /* touchpad */
     QAction *touchpad= new QAction(this);
     touchpad->setObjectName(QStringLiteral("Toggle touchpad"));
@@ -632,7 +643,7 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     static bool ctrlFlag = false;
 
     /*
-    if (keyStr.compare("Shift_L+Print") == 0 || 
+    if (keyStr.compare("Shift_L+Print") == 0 ||
         keyStr.compare("Shift_R+Print") == 0 ){
         executeCommand("kylin-screenshot", " gui");
         return;
@@ -643,7 +654,7 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
         return;
     }
 
-    if(keyStr.compare("Control_L+Shift_L+Escape") == 0 || 
+    if(keyStr.compare("Control_L+Shift_L+Escape") == 0 ||
        keyStr.compare("Shift_L+Control_L+Escape") == 0) {
           executeCommand("ukui-system-monitor", nullptr);
           return;
@@ -1074,6 +1085,10 @@ bool MediaKeysManager::doAction(int type)
     case KDS_KEY2:
         doOpenKdsAction();
         break;
+    case WLAN_KEY:
+        doWlanAction();
+
+        break;
     default:
         break;
     }
@@ -1098,7 +1113,10 @@ void MediaKeysManager::initKbd()
 //    gdk_x11_display_error_trap_push(gdk_display_get_default());
     QObject::connect(mSettings, &QGSettings::changed,
             this, &MediaKeysManager::updateKbdCallback);
+
     connect(mSettings, SIGNAL(changed(QString)), this, SLOT(updateKbdCallback(QString)));
+
+
     for(i = 0; i < HANDLED_KEYS; ++i){
         QString tmp,schmeasKey;
         Key* key;
@@ -1240,7 +1258,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     last_volume = volume;
     lastmuted = muted;
 
-
+    USD_LOG(LOG_DEBUG,"volumeStep:%d",volumeStep);
     switch(keyType){
     case MUTE_KEY:
             muted = !muted;
@@ -1249,8 +1267,10 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
         if(volume <= (volumeMin + volumeStep)){
             volume = volumeMin;
             muted = true;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         }else{
             volume -= volumeStep;
+            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
 
@@ -1259,7 +1279,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             muted = true;
         }
 
-
+        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         break;
     case VOLUME_UP_KEY:
         if(muted){
@@ -1367,7 +1387,7 @@ void MediaKeysManager::doSoundAction(int keyType)
 void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundChanged)
 {
     int v = volume;
-//    USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
+    USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
     mVolumeWindow->dialogShow();
@@ -1576,23 +1596,35 @@ void MediaKeysManager::doOpenConnectionEditor()
 void MediaKeysManager::doOpenUkuiSearchAction()
 {
     QDBusMessage message =
-            QDBusMessage::createMethodCall("com.ukui.search.service",
-                                           "/",
-                                           "org.ukui.search.service",
-                                           "showWindow");
+                QDBusMessage::createMethodCall("com.ukui.search.service",
+                                               "/",
+                                               "org.ukui.search.service",
+                                               "showWindow");
 
-    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+        QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
-    if (response.type() != QDBusMessage::ReplyMessage){
-        USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
-        executeCommand("ukui-search"," -s");
-    }
+        if (response.type() != QDBusMessage::ReplyMessage){
+            USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
+            executeCommand("ukui-search"," -s");
+        }
 
 }
 
 void MediaKeysManager::doOpenKdsAction()
 {
     executeCommand("kydisplayswitch","");
+}
+
+void MediaKeysManager::doWlanAction()
+{
+    int wlanState = RfkillSwitch::instance()->getCurrentWlanMode();
+
+    if(wlanState == -1)
+    {
+        return;
+    }
+    mDeviceWindow->setAction(wlanState ? "ukui-wifi-on" : "ukui-wifi-off");
+    mDeviceWindow->dialogShow();
 }
 
 void MediaKeysManager::doUrlAction(const QString scheme)

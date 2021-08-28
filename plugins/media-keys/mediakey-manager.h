@@ -121,6 +121,8 @@ private:
     void doWindowSwitchAction();
     void doOpenUkuiSearchAction();
     void doOpenKdsAction();
+    void doWlanAction();
+
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);

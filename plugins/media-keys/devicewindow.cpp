@@ -66,8 +66,8 @@ DeviceWindow::~DeviceWindow()
 void DeviceWindow::priScreenChanged(int x, int y, int Width, int Height)
 {
     int ax,ay;
-    ax = x+Width - this->width() - 200*mScale;
-    ay = y+Height - this->height() - 100*mScale;
+    ax = x+Width - this->width() - 200;
+    ay = y+Height - this->height() - 50;
     move(ax,ay);
 
     USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
@@ -120,7 +120,7 @@ void DeviceWindow::initWindowInfo()
             &QApplication::primaryScreenChanged, this, &DeviceWindow::geometryChangedHandle);
 
 
-    setFixedSize(150,140);
+    setFixedSize(72,72);
     setWindowFlags(Qt::FramelessWindowHint |
                    Qt::Tool |
                    Qt::WindowStaysOnTopHint |
@@ -131,14 +131,12 @@ void DeviceWindow::initWindowInfo()
     bmp.fill();
     QPainter p(&bmp);
     p.setPen(Qt::NoPen);
-    p.setBrush(Qt::black);
+    p.setBrush(QColor("#232426"));
     p.setRenderHint(QPainter::Antialiasing);
-    p.drawRoundedRect(bmp.rect(),6,6);
+    p.drawRoundedRect(bmp.rect(),12,12);
     setMask(bmp);
 
-
-    setWindowOpacity(0.7);          //设置透明度
-    setPalette(QPalette(Qt::black));//设置窗口背景色
+    setPalette(QPalette(QColor("#232426")));//设置窗口背景色
     setAutoFillBackground(true);
 
     geometryChangedHandle();
@@ -164,8 +162,8 @@ void DeviceWindow::dialogShow()
 
     ensureSvgInfo(&svgWidth,&svgHeight,&svgX,&svgY);
 
-    mBut->setFixedSize(QSize(144,144));
-    mBut->setIconSize(QSize(120,120));
+    mBut->setFixedSize(this->size());
+    mBut->setIconSize(QSize(48,48));
 
     mBut->setIcon(QIcon::fromTheme(mIconName));
 
