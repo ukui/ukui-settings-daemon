@@ -1,0 +1,91 @@
+Source: ukui-settings-daemon
+Section: x11
+Priority: optional
+Maintainer: Kylin Team <team+kylin@tracker.debian.org>
+Uploaders: handsome_feng <jianfengli@ubuntukylin.com>
+Build-Depends: debhelper-compat (=12),
+               pkg-config,
+               intltool,
+               qt5-qmake,
+               qtchooser,
+               qtbase5-dev,
+               qtbase5-dev-tools,
+               qttools5-dev-tools,
+               libgsettings-qt-dev,
+               libqt5x11extras5-dev,
+               libqt5sensors5-dev,
+               libkf5config-dev,
+               libqt5svg5-dev,
+               libxklavier-dev,
+               libxtst-dev,
+               libmate-desktop-dev,
+               libgnome-desktop-3-dev,
+               libmatemixer-dev,
+               libmatekbd-dev,
+               libpulse-dev,
+               libwnck-3-dev,
+               libcanberra-gtk3-dev,
+               libcanberra-gtk-common-dev,
+               libcanberra-dev,
+               libwayland-client0,
+               libnotify-dev,
+               libgeoclue-2-dev,
+               libcolord-dev,
+               liblcms2-dev,
+               libimlib2-dev,
+               xserver-xorg-dev,
+               libgudev-1.0-dev,
+Standards-Version: 4.5.0
+Rules-Requires-Root: no
+Homepage: http://www.ukui.org/
+Vcs-Git: https://github.com/ukui/ukui-settings-daemon.git
+Vcs-Browser: https://github.com/ukui/ukui-settings-daemon
+
+
+Package: ukui-settings-daemon
+Architecture: any
+Depends: mate-desktop-common (>= 1.18),
+         ukui-settings-daemon-common (= ${source:Version}),
+         imwheel,
+         ukui-polkit,
+         x11-xserver-utils,
+         xserver-xorg-input-synaptics [!s390x],
+         libglib2.0-bin,
+         ${misc:Depends},
+         ${shlibs:Depends},
+Description: daemon handling the UKUI session settings
+ This package contains the daemon which is responsible for setting the
+ various parameters of a UKUI session and the applications that run
+ under it. It handles the following kinds of settings:
+ .
+  * Keyboard: layout, accessibility options, shortcuts, media keys
+  * Clipboard management
+  * Theming: background, icons, GTK+ applications
+  * Cleanup of unused files
+  * Mouse: cursors, speed, accessibility options
+  * Startup of other daemons: screensaver, sound daemon
+  * Typing break
+ .
+ It also sets various application settings through X resources and
+ freedesktop.org XSETTINGS.
+
+Package: ukui-settings-daemon-common
+Architecture: all
+Depends: ${misc:Depends},
+Description: daemon handling the UKUI session settings (common files)
+ This package contains the daemon which is responsible for setting the
+ various parameters of a UKUI session and the applications that run
+ under it. It handles the following kinds of settings:
+ .
+  * Keyboard: layout, accessibility options, shortcuts, media keys
+  * Clipboard management
+  * Theming: background, icons, GTK+ applications
+  * Cleanup of unused files
+  * Mouse: cursors, speed, accessibility options
+  * Startup of other daemons: screensaver, sound daemon
+  * Typing break
+ .
+ It also sets various application settings through X resources and
+ freedesktop.org XSETTINGS.
+ .
+ This package contains the architecture independent files.
