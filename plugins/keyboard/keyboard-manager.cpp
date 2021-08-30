@@ -80,7 +80,7 @@ KeyboardManager::KeyboardManager(QObject * parent)
     } else {
         stInstalled = false;
     }
-    m_capsWidget = new KeyboardWidget();
+    m_statusWidget = new KeyboardWidget();
 }
 
 KeyboardManager::~KeyboardManager()
@@ -89,6 +89,8 @@ KeyboardManager::~KeyboardManager()
     delete settings;
     if(time)
         delete time;
+    delete m_statusWidget;
+    delete ksettings;
 }
 
 KeyboardManager *KeyboardManager::KeyboardManagerNew()
@@ -422,13 +424,13 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         }
         if(numlockState)
         {
-            m_capsWidget->setIcons("ukui-numlock-on");
-            m_capsWidget->showWidget();
+            m_statusWidget->setIcons("ukui-numlock-on");
+            m_statusWidget->showWidget();
         }
         else
         {
-            m_capsWidget->setIcons("ukui-numlock-off");
-            m_capsWidget->showWidget();
+            m_statusWidget->setIcons("ukui-numlock-off");
+            m_statusWidget->showWidget();
         }
 
     }else if(keyCode == 66)
@@ -462,14 +464,14 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         }
         if(capsLockState)
         {
-            m_capsWidget->setIcons("ukui-capslock-on");
-            m_capsWidget->showWidget();
+            m_statusWidget->setIcons("ukui-capslock-on");
+            m_statusWidget->showWidget();
 
         }
         else
         {
-            m_capsWidget->setIcons("ukui-capslock-off");
-            m_capsWidget->showWidget();
+            m_statusWidget->setIcons("ukui-capslock-off");
+            m_statusWidget->showWidget();
         }
 
     }
@@ -484,8 +486,8 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
             return;
         }
 
-        m_capsWidget->setIcons(flightState?"ukui-airplane-mode-on":"ukui-airplane-mode-off");
-        m_capsWidget->showWidget();
+        m_statusWidget->setIcons(flightState?"ukui-airplane-mode-on":"ukui-airplane-mode-off");
+        m_statusWidget->showWidget();
     }
     XCloseDisplay (display);
 }

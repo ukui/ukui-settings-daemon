@@ -90,7 +90,7 @@ private:
     int                     old_state;
     bool                    stInstalled;
 
-    KeyboardWidget*         m_capsWidget;
+    KeyboardWidget*         m_statusWidget;
 
     QDBusInterface * ifaceScreenSaver;
 };

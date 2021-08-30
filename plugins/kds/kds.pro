@@ -20,13 +20,15 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 include (qtsingleapplication/qtsingleapplication.pri)
 
-LIBS += -lX11
+LIBS += -lX11 -lgsettings-qt
 
 
 CONFIG += link_pkgconfig
 CONFIG += C++11
 
 PKGCONFIG += mate-desktop-2.0 \
+
+PKGCONFIG += glib-2.0  gio-2.0 libxklavier x11 xrandr xtst atk gdk-3.0 gtk+-3.0 xi
 
 
 # You can also make your code fail to compile if you use deprecated APIs.
@@ -54,12 +56,14 @@ SOURCES += \
     kdswidget.cpp \
         main.cpp \
         widget.cpp \
-    expendbutton.cpp
+    expendbutton.cpp \
+    xeventmonitor.cpp
 
 HEADERS += \
     kdswidget.h \
         widget.h \
-    expendbutton.h
+    expendbutton.h \
+    xeventmonitor.h
 
 FORMS += \
         kdswidget.ui \

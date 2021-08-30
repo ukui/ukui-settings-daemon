@@ -23,6 +23,7 @@
 #include <QWidget>
 #include <QKeyEvent>
 #include <QButtonGroup>
+#include <QGSettings/QGSettings>
 
 #ifdef signals
 #undef signals
@@ -79,9 +80,19 @@ private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
 
+    bool           m_superPresss;
+
+    QGSettings     *m_scaleSetting;
+
+    double         m_scale;
+
 protected:
-    bool event(QEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void keyReleaseEvent(QKeyEvent *event);
+public slots:
+    void XkbButtonEvent(int,int);
+
+
 
 private:
     bool _getCloneSize(int * width, int * height);
