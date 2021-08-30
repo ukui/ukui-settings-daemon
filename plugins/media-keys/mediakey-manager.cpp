@@ -59,6 +59,8 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
+    delete mVolumeWindow;
+    delete mDeviceWindow;
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -1612,7 +1614,7 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 
 void MediaKeysManager::doOpenKdsAction()
 {
-    executeCommand("kydisplayswitch","");
+         executeCommand("kydisplayswitch","");
 }
 
 void MediaKeysManager::doWlanAction()

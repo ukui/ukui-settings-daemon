@@ -50,15 +50,12 @@ int main(int argc, char *argv[])
         QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
         QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
     }
-
     QString id = QString("kds" + QLatin1String(getenv("DISPLAY")));
-
     QtSingleApplication app(id, argc, argv);
     if (app.isRunning()){
         app.sendMessage("hello world!");
         return 0; /* EXIT_SUCCESS */
     }
-
     QTranslator qtTranslator;
     qtTranslator.load(QString(":/%1").arg(QLocale::system().name()));
     app.installTranslator(&qtTranslator);

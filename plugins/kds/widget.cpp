@@ -28,6 +28,8 @@
 #include <kwindowsystem.h>
 
 #include "expendbutton.h"
+#include "qtsingleapplication.h"
+#include "xeventmonitor.h"
 
 #define TITLEHEIGHT 90
 #define OPTIONSHEIGHT 70
@@ -40,11 +42,16 @@
 #define ALLMODESID 4
 
 
+#define XSETTINGS_SCHEMA            "org.ukui.SettingsDaemon.plugins.xsettings"
+#define XSETTINGS_KEY_SCALING       "scaling-factor"
+
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    m_superPresss = false;
 
 }
 
@@ -52,6 +59,7 @@ Widget::~Widget()
 {
     delete ui;
     delete ukcciface;
+    delete m_scaleSetting;
 }
 
 void Widget::beginSetup(){
@@ -63,6 +71,9 @@ void Widget::beginSetup(){
                                    "/",
                                    "org.ukui.ukcc.session.interface",
                                    QDBusConnection::sessionBus());
+    m_scaleSetting = new QGSettings(XSETTINGS_SCHEMA);
+    m_scale = m_scaleSetting->get(XSETTINGS_KEY_SCALING).toDouble();
+
 
     /* 不在任务栏显示图标 */
     KWindowSystem::setState(winId(), NET::SkipTaskbar | NET::SkipPager);
@@ -77,6 +88,10 @@ void Widget::beginSetup(){
     setupConnect();
 
     initCurrentStatus(getCurrentStatus());
+
+    connect(XEventMonitor::instance(), SIGNAL(buttonPress(int,int)),
+            this, SLOT(XkbButtonEvent(int,int)));
+    XEventMonitor::instance()->start();
 }
 
 void Widget::initData(){
@@ -774,25 +789,11 @@ void Widget::msgReceiveAnotherOne(const QString &msg){
 }
 
 void Widget::receiveButtonClick(int x, int y){
-//    qDebug() << "receive button press " << x << y;
+    qDebug() << "receive button press " << x << y;
     if (!this->geometry().contains(x, y)){
         close();
     }
 
-}
-
-
-bool Widget::event(QEvent* event)
-{
-    if(event->type() == QEvent::ActivationChange)
-    {
-        if(QApplication::activeWindow() != this)
-        {
-            close();
-            return true;
-        }
-    }
-    return QWidget::event(event);
 }
 
 void Widget::keyPressEvent(QKeyEvent* event)
@@ -810,9 +811,46 @@ void Widget::keyPressEvent(QKeyEvent* event)
         case Qt::Key_Enter:
             confirmCurrentOption();
             break;
+        case Qt::Key_Meta:
+            m_superPresss = true;
+            break;
+        case Qt::Key_Display:
+            nextSelectedOption();
+
+            break;
+
+        case Qt::Key_P:
+            if(m_superPresss)
+            {
+                nextSelectedOption();
+
+            }else
+            {
+                close();
+            }
+            break;
         default:
             close();
             break;
     }
 }
+
+void Widget::keyReleaseEvent(QKeyEvent *event)
+{
+        switch (event->key())
+        {
+            case Qt::Key_Meta:
+            m_superPresss = false;
+
+                break;
+            default:
+                break;
+        }
+}
+
+void Widget::XkbButtonEvent(int x,int y)
+{
+    receiveButtonClick( x/m_scale, y/m_scale);
+}
+
 

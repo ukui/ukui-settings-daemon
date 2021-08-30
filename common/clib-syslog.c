@@ -368,10 +368,10 @@ int CheckProcessAlive(const char *pName){
     int ret = 0;
     char Cmd[512] = {0};
     char *pAck = NULL;
-    char CmdAck[12];
+    char CmdAck[120];
     FILE * pPipe;
 
-    ret = *pAck;
+//    ret = *pAck;
     if (strlen(pName) > 400) {
         return 0;
     }
