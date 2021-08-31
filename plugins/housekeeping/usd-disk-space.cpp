@@ -51,10 +51,8 @@ DIskSpace::DIskSpace()
     ignore_paths = NULL;
     done = FALSE;
 
-    //    connect(ldsm_timeout_cb, &QTimer::timeout,
-    //            this, &DIskSpace::ldsm_check_all_mounts);
-
-    connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
+    connect(ldsm_timeout_cb, &QTimer::timeout,
+            this, &DIskSpace::ldsm_check_all_mounts);
 
     ldsm_timeout_cb->start();
 
@@ -637,10 +635,8 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
         //return;
     }
     usdLdsmGetConfig();
-//    QObject::connect(settings, &QGSettings::changed,
-//            this,    &DIskSpace::usdLdsmUpdateConfig);
-
- connect(settings,SIGNAL(changed(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
+    connect(settings, &QGSettings::changed,
+            this,    &DIskSpace::usdLdsmUpdateConfig);
 
 #if GLIB_CHECK_VERSION (2, 44, 0)
     ldsm_monitor = g_unix_mount_monitor_get ();

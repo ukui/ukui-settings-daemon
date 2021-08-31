@@ -86,8 +86,6 @@ bool HousekeepingPlugin::isTrialMode()
 
 void HousekeepingPlugin::activate()
 {
-    USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
-
     if(isTrialMode())
         return;
     if(userName.compare("lightdm") != 0){
