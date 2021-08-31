@@ -379,7 +379,7 @@ void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *mana
 
 void KeyboardManager::XkbEventsFilter(int keyCode)
 {
-    USD_LOG(LOG_DEBUG,"keyevent  keyCode '%d'", keyCode);
+//    USD_LOG(LOG_DEBUG,"keyevent  keyCode '%d'", keyCode);
 
     Display *display = XOpenDisplay(NULL);
     NumLockState numlockState;
