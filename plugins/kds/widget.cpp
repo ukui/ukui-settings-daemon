@@ -847,9 +847,11 @@ void Widget::keyReleaseEvent(QKeyEvent *event)
                 break;
         }
 }
+/*鼠标坐标点在窗口外时关闭*/
 
 void Widget::XkbButtonEvent(int x,int y)
 {
+
     receiveButtonClick( x/m_scale, y/m_scale);
 }
 
