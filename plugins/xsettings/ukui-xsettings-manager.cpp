@@ -228,9 +228,42 @@ static void terminate_cb (void *data)
     exit(0);//gtk_main_quit ();
 }
 
+void setScreenScale()
+{
+    GSettings   *gsettings;
+    double       scale;
+    gsettings =g_settings_new(XSETTINGS_PLUGIN_SCHEMA);
+    scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
+    if(scale > 1.25){
+        bool state = false;
+        for(QScreen *screen : QGuiApplication::screens())
+        {
+            if (screen->geometry().width() < 1920 &&  screen->geometry().height() < 1080){
+                state = true;
+            }
+            else if ((screen->geometry().width() == 1920) &&
+                     (screen->geometry().height() == 1080) &&
+                     (scale > 1.5)) {
+                state = true;
+            }
+            else
+                state = false;
+        }
+        if (state){
+            GSettings   *mGsettings;
+            mGsettings = g_settings_new(MOUSE_SCHEMA);
+            g_settings_set_int (mGsettings, CURSOR_SIZE_KEY, 24);
+            g_settings_set_double (gsettings, SCALING_FACTOR_KEY, 1.0);
+            g_object_unref(mGsettings);
+        }
+    }
+    g_object_unref(gsettings);
+}
+
 ukuiXSettingsManager::ukuiXSettingsManager()
 {
     gdk_init(NULL,NULL);
+    setScreenScale();
     pManagers=nullptr;
     gsettings=nullptr;
     gsettings_font=nullptr;
@@ -391,10 +424,9 @@ bool ukuiXSettingsManager::start()
 {
     guint        i;
     GList       *list, *l;
-    syslog(LOG_ERR,"Xsettings manager start");
+
 
     if (!setup_xsettings_managers (this)) {
-        qDebug ("Could not initialize xsettings manager.");
         USD_XSETTINGS_ERROR;
         return false;
     }
@@ -421,7 +453,7 @@ bool ukuiXSettingsManager::start()
         gsettings = (GSettings *)g_hash_table_lookup ( this->gsettings,
                                                        translations[i].gsettings_schema);
         if (gsettings == NULL) {
-            g_warning ("Schemas '%s' has not been setup", translations[i].gsettings_schema);
+            USD_LOG(LOG_DEBUG,"Schemas '%s' has not been setup", translations[i].gsettings_schema);
             continue;
         }
         val = g_settings_get_value (gsettings, translations[i].gsettings_key);
@@ -431,31 +463,6 @@ bool ukuiXSettingsManager::start()
 
     this->gsettings_font = g_settings_new (FONT_RENDER_SCHEMA);
     g_signal_connect (this->gsettings_font, "changed", G_CALLBACK (xft_callback), this);
-
-    GSettings   *gsettings;
-    double       scale;
-    gsettings = (GSettings *)g_hash_table_lookup(this->gsettings, XSETTINGS_PLUGIN_SCHEMA);
-    scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
-    if(scale > 1.0){
-        bool state = false;
-        int screenNum = QGuiApplication::screens().length();
-        for(int i = 0; i < screenNum; i++){
-            QScreen *screen = QGuiApplication::screens().at(i);
-            //qDebug()<<screen->geometry();
-            if (screen->geometry().width() <= 1920 &&  screen->geometry().height() <= 1080)
-                state = true;
-            else {
-                state = false;
-                break;
-            }
-        }
-        if (state){
-            GSettings   *mGsettings;
-            mGsettings = (GSettings *)g_hash_table_lookup(this->gsettings, MOUSE_SCHEMA);
-            g_settings_set_double (mGsettings, CURSOR_SIZE_KEY, 24);
-            g_settings_set_double (gsettings, SCALING_FACTOR_KEY, 1.0);
-        }
-    }
 
     update_xft_settings (this);
     start_fontconfig_monitor (this);
