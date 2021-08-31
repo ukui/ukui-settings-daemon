@@ -30,6 +30,11 @@
 #include <string.h>
 #include "usd-disk-space.h"
 
+
+extern "C"{
+#include "config.h"
+}
+
 class HousekeepingManager : public QObject
 {
     Q_OBJECT
