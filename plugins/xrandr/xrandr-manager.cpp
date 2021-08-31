@@ -519,7 +519,6 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
                         if (primaryMode->size().width() == newOutputMode->size().width() &&
                                 primaryMode->size().height() == newOutputMode->size().height())
                         {
-//                            rtModeId = newOutputMode;
 
                             rtResolution = primaryMode->size().width() * primaryMode->size().height();
 
@@ -527,14 +526,10 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
                                 bigestModeId = newOutputMode->id();
                                 bigestPrimaryModeId = primaryMode->id();
                             }
-                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
-                                    primaryMode->size().width(),primaryMode->size().height(),
-                                    newOutputMode->size().width(), newOutputMode->size().height());
-                        }/*else {
-                            USD_LOG(LOG_DEBUG,"bad..p_width:%d p_height:%d n_width:%d n_height:%d",
-                                    primaryMode->size().width(),primaryMode->size().height(),
-                                    newOutputMode->size().width(), newOutputMode->size().height());
-                        }*/
+//                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
+//                                    primaryMode->size().width(),primaryMode->size().height(),
+//                                    newOutputMode->size().width(), newOutputMode->size().height());
+                        }
 
                     }//end  Q_FOREACH (auto newOutputMode, newOutput->modes())
                 }//end  Q_FOREACH (auto primaryMode, output->modes())
@@ -577,7 +572,6 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
 //            USD_LOG(LOG_DEBUG,"");
             USD_LOG_SHOW_OUTPUT(newOutput);
         }
-
     }
 }
 
@@ -681,7 +675,6 @@ void XrandrManager::monitorsInit()
             USD_LOG(LOG_DEBUG,"sizeChanged:%s",output1->name().toLatin1().data());
             USD_LOG_SHOW_OUTPUT(output1);
         });
-
     }
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
@@ -712,11 +705,7 @@ void XrandrManager::monitorsInit()
                 }
             }
         }
-
-    }
-
-    for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
-        USD_LOG_SHOW_OUTPUT(output);
+        mMonitoredConfig->writeFile(false);
     }
 }
 
