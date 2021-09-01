@@ -1484,7 +1484,8 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
             settings->set(KEY_TOUCHPAD_ENABLED, false);
             return true;
         }else {
-//            settings->set(KEY_TOUCHPAD_ENABLED, true);
+            //
+            settings->set(KEY_TOUCHPAD_ENABLED, true);
             return true;
         }
     }
@@ -1741,7 +1742,7 @@ void MouseManager::MouseManagerIdleCb()
     time->stop();
 
 //    connect(settings_mouse, &QGSettings::changed, this, &MouseManager::MouseCallback);
-    //    connect(settings_touchpad, &QGSettings::changed, this, &MouseManager::TouchpadCallback);
+//    connect(settings_touchpad, &QGSettings::changed, this, &MouseManager::TouchpadCallback);
 
     QObject::connect(settings_mouse,SIGNAL(changed(QString)),  this,SLOT(MouseCallback(QString)));
     QObject::connect(settings_touchpad,SIGNAL(changed(QString)),this,SLOT(TouchpadCallback(QString)));
