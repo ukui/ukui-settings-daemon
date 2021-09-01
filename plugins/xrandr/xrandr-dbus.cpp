@@ -54,25 +54,23 @@ QString xrandrDbus::priScreenName(){
 
 void xrandrDbus::initShortKeys()
 {
-    if (UsdBaseClass::is9X0()) {
-        QAction *brightDown= new QAction(this);
-        brightDown->setObjectName(QStringLiteral("Brightness down"));
-        brightDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-        KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
-        KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
-        connect(brightDown, &QAction::triggered, this, [this]() {
-            Q_EMIT brightnessDown();
-        });
+    QAction *brightDown= new QAction(this);
+    brightDown->setObjectName(QStringLiteral("Brightness down"));
+    brightDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+    KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+    connect(brightDown, &QAction::triggered, this, [this]() {
+        Q_EMIT brightnessDown();
+    });
 
-        QAction *brightUp = new QAction(this);
-        brightUp->setObjectName(QStringLiteral("Brightness Up"));
-        brightUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-        KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
-        KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
-        connect(brightUp, &QAction::triggered, this, [this]() {
-            Q_EMIT brightnessUp();
-        });
-    }
+    QAction *brightUp = new QAction(this);
+    brightUp->setObjectName(QStringLiteral("Brightness Up"));
+    brightUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+    KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+    connect(brightUp, &QAction::triggered, this, [this]() {
+        Q_EMIT brightnessUp();
+    });
 }
 
 int xrandrDbus::priScreenChanged(int x, int y, int width, int height, QString name)
