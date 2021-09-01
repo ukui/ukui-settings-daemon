@@ -107,7 +107,7 @@ bool KeyboardManager::KeyboardManagerStart()
 
     time = new QTimer(this);
     connect(time,SIGNAL(timeout()),this,SLOT(start_keyboard_idle_cb()));
-    time->start();
+    time->start(1500);
 
     return true;
 }
@@ -374,13 +374,11 @@ void KeyboardManager::apply_settings (QString keys)
 
 void KeyboardManager::usd_keyboard_manager_apply_settings (KeyboardManager *manager)
 {
-        apply_settings(NULL);
+     apply_settings(NULL);
 }
 
 void KeyboardManager::XkbEventsFilter(int keyCode)
 {
-//    USD_LOG(LOG_DEBUG,"keyevent  keyCode '%d'", keyCode);
-
     Display *display = XOpenDisplay(NULL);
     NumLockState numlockState;
     bool capsLockState;
@@ -394,7 +392,6 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         if(numLockedMods == 2 || numLockedMods==3)
         {
             numlockState = NUMLOCK_STATE_ON;
-
         }
         else
         {
@@ -529,4 +526,7 @@ void KeyboardManager::start_keyboard_idle_cb ()
     numlock_install_xkb_callback();
 #endif /* HAVE_X11_EXTENSIONS_XKB_H */
 
+      apply_repeat (this);
+      apply_numlock (this);
+      apply_bell(this);
 }
