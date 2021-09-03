@@ -26,6 +26,12 @@
 #include <QDBusConnection>
 
 #include <kwindowsystem.h>
+#include <QGraphicsEffect>
+#include <QPainter>
+#include <QStyleOption>
+#include <KWindowEffects>
+#include <QBitmap>
+
 
 #include "expendbutton.h"
 #include "qtsingleapplication.h"
@@ -33,7 +39,7 @@
 
 #define TITLEHEIGHT 90
 #define OPTIONSHEIGHT 70
-#define BOTTOMHEIGHT 60
+#define BOTTOMHEIGHT 38
 
 #define FIRSTSCREENID 0
 #define CLONESCREENID 1
@@ -44,6 +50,9 @@
 
 #define XSETTINGS_SCHEMA            "org.ukui.SettingsDaemon.plugins.xsettings"
 #define XSETTINGS_KEY_SCALING       "scaling-factor"
+
+#define QT_THEME_SCHEMA             "org.ukui.style"
+
 
 
 Widget::Widget(QWidget *parent) :
@@ -74,6 +83,7 @@ void Widget::beginSetup(){
     m_scaleSetting = new QGSettings(XSETTINGS_SCHEMA);
     m_scale = m_scaleSetting->get(XSETTINGS_KEY_SCALING).toDouble();
 
+    m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
 
     /* 不在任务栏显示图标 */
     KWindowSystem::setState(winId(), NET::SkipTaskbar | NET::SkipPager);
@@ -107,6 +117,11 @@ void Widget::initData(){
 
 void Widget::setupComponent(){
 
+    int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
+    setFixedWidth(384);
+    setFixedHeight(h);
+    const QString style = m_styleSettings->get("style-name").toString();
+
     ui->outputPrimaryTip->hide();
 //    setCurrentFirstOutputTip();
 
@@ -118,58 +133,58 @@ void Widget::setupComponent(){
         switch (i) {
 #ifdef FIRSTSCREENID
         case FIRSTSCREENID:
-            btn->setSign(FIRSTSCREENID % 2);
+            btn->setSign(FIRSTSCREENID % 2,style);
             btn->setBtnText(tr("First Screen"));
-            btn->setBtnLogo(":/img/main.png");
+            btn->setBtnLogo(":/img/main.png",style);
             break;
 #endif
 
 #ifdef CLONESCREENID
         case CLONESCREENID:
-            btn->setSign(CLONESCREENID % 2);
+            btn->setSign(CLONESCREENID % 2,style);
             btn->setBtnText(tr("Clone Screen"));
-            btn->setBtnLogo(":/img/clone.png");
+            btn->setBtnLogo(":/img/clone.png",style);
             break;
 #endif
 
 #ifdef EXTENEDSCREENID
         case EXTENEDSCREENID:
-            btn->setSign(EXTENEDSCREENID % 2);
+            btn->setSign(EXTENEDSCREENID % 2,style);
             btn->setBtnText(tr("Extend Screen"));
-            btn->setBtnLogo(":/img/extend.png");
+            btn->setBtnLogo(":/img/extend.png",style);
             break;
 #endif
 
 #ifdef OTHERSCREENID
         case OTHERSCREENID:
-            btn->setSign(OTHERSCREENID % 2);
+            btn->setSign(OTHERSCREENID % 2,style);
             btn->setBtnText(tr("Vice Screen"));
-            btn->setBtnLogo(":/img/vice.png");
+            btn->setBtnLogo(":/img/vice.png",style);
             break;
 #endif
         default:
             break;
         }
-
-
         ui->btnsVerLayout->addWidget(btn);
     }
 
-    int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
-    setFixedWidth(400);
-    setFixedHeight(h);
+    m_qssDark = ("QFrame#titleFrame{background: #40131314; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
+                   "QFrame#bottomFrame{background: #40131314; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
+                   "QFrame#splitFrame{background: #99000000; border: none;}"\
+                   "QLabel#titleLabel{color: #FFFFFF; font-size:24px;}"\
+                   "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
+                   "QLabel#outputName{color: #FFFFFF; }"\
+                   "QLabel#outputDisplayName{color: #60FFFFFF; }"\
+                );
 
-
-    /// QSS
-    ui->titleFrame->setStyleSheet("QFrame#titleFrame{background: #A6000000; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}");
-    ui->bottomFrame->setStyleSheet("QFrame#bottomFrame{background: #A6000000; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}");
-
-    ui->splitFrame->setStyleSheet("QFrame#splitFrame{background: #99000000; border: none;}");
-
-    ui->titleLabel->setStyleSheet("QLabel{color: #FFFFFF; }");
-    ui->outputPrimaryTip->setStyleSheet("QLabel{color: #60FFFFFF; }");
-    ui->outputName->setStyleSheet("QLabel{color: #60FFFFFF; }");
-    ui->outputDisplayName->setStyleSheet("QLabel{color: #60FFFFFF; }");
+    m_qssDefault = ("QFrame#titleFrame{background: #40F5F5F5; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
+                   "QFrame#bottomFrame{background: #40F5F5F5; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
+                   "QFrame#splitFrame{background: #99000000; border: none;}"\
+                   "QLabel#titleLabel{color: #232426; font-size:24px;}"\
+                   "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
+                   "QLabel#outputName{color: #232426; }"\
+                   "QLabel#outputDisplayName{color: #60FFFFFF; }"\
+                );
 }
 
 void Widget::setupConnect(){
@@ -812,7 +827,9 @@ void Widget::keyPressEvent(QKeyEvent* event)
             confirmCurrentOption();
             break;
         case Qt::Key_Meta:
+        case Qt::Key_Super_L:
             m_superPresss = true;
+            close();
             break;
         case Qt::Key_Display:
             nextSelectedOption();
@@ -847,12 +864,56 @@ void Widget::keyReleaseEvent(QKeyEvent *event)
                 break;
         }
 }
-/*鼠标坐标点在窗口外时关闭*/
 
 void Widget::XkbButtonEvent(int x,int y)
 {
-
     receiveButtonClick( x/m_scale, y/m_scale);
 }
+
+void Widget::showEvent(QShowEvent* event)
+{
+    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    {
+        setStyleSheet(m_qssDefault);
+    }
+    else
+    {
+        setStyleSheet(m_qssDark);
+    }
+}
+
+
+
+void Widget::paintEvent(QPaintEvent *event)
+{
+    QRect rect = this->rect();
+    QPainterPath path;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);  //反锯齿;
+    painter.setPen(Qt::transparent);
+    qreal radius=24;
+    path.moveTo(rect.topRight() - QPointF(radius, 0));
+    path.lineTo(rect.topLeft() + QPointF(radius, 0));
+    path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+    path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
+    path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+    path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+    path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+    path.lineTo(rect.topRight() + QPointF(0, radius));
+    path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+    painter.setBrush(this->palette().base());
+    painter.setPen(Qt::transparent);
+    painter.setOpacity(0.75);
+    painter.drawPath(path);
+
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+
+    QWidget::paintEvent(event);
+}
+
+
+
 
 

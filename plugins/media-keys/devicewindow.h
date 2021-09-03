@@ -32,6 +32,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusInterface>
+#include <QGSettings>
 
 namespace Ui {
 class DeviceWindow;
@@ -51,18 +52,29 @@ public:
 
 private:
     void ensureSvgInfo(int*,int*,int*,int*);
+    QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
+
 
 private Q_SLOTS:
     void timeoutHandle();
     void priScreenChanged(int x, int y, int width, int height);
     void geometryChangedHandle();
+
+    void onStyleChanged(const QString& );
+protected:
+    void paintEvent(QPaintEvent *event);
+
+
 private:
     Ui::DeviceWindow *ui;
     double           mScale = 1;
     QString          mIconName;
-    QPushButton      *mBut;
+    QLabel      *m_btnStatus;
     QTimer           *mTimer;
     QDBusInterface   *mDbusXrandInter;
+
+    QGSettings       *m_styleSettings;
+
 };
 
 #endif // DEVICEWINDOW_H

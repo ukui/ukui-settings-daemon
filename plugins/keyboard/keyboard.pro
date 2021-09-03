@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 QT += gui
-QT += core widgets x11extras
+QT += core widgets x11extras KWindowSystem
 TARGET = keyboard
 TEMPLATE = lib
 DEFINES += KEYBOARD_LIBRARY

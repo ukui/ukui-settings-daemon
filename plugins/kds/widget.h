@@ -72,6 +72,7 @@ public:
 
     QDBusInterface * ukcciface;
 
+
 private:
     Ui::Widget *ui;
     QButtonGroup * btnsGroup;
@@ -83,12 +84,19 @@ private:
     bool           m_superPresss;
 
     QGSettings     *m_scaleSetting;
+    QGSettings     *m_styleSettings;
+
+    QString         m_qssDark;
+    QString         m_qssDefault;
 
     double         m_scale;
 
 protected:
     void keyPressEvent(QKeyEvent *event);
     void keyReleaseEvent(QKeyEvent *event);
+    void paintEvent(QPaintEvent *event);
+    void showEvent(QShowEvent* event);
+
 public slots:
     void XkbButtonEvent(int,int);
 
@@ -104,6 +112,8 @@ private:
     bool _configIsAllOff(MateRRConfig * config);
 
     char * _findFirstOutput(MateRRConfig * config);
+
+
 
 public slots:
     void msgReceiveAnotherOne(const QString &msg);

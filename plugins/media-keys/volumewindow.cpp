@@ -24,12 +24,19 @@
 #include <QScreen>
 #include <QX11Info>
 #include <QDebug>
-#include <QGSettings/qgsettings.h>
+#include <QPainter>
+#include <QBitmap>
+#include <KWindowEffects>
+#include <QPainterPath>
+#include <QPainter>
 #include "clib-syslog.h"
 
 #define DBUS_NAME       "org.ukui.SettingsDaemon"
 #define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
+
+#define QT_THEME_SCHEMA             "org.ukui.style"
+
 
 const QString allIconName[] = {
     "audio-volume-muted",
@@ -54,6 +61,9 @@ VolumeWindow::VolumeWindow(QWidget *parent)
     //监听dbus变化  更改主屏幕时，会进行信号发送
     connect(mDbusXrandInter, SIGNAL(screenPrimaryChanged(int,int,int,int)),
             this, SLOT(priScreenChanged(int,int,int,int)));
+    m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
+    connect(m_styleSettings,SIGNAL(changed(const QString&)),
+            this,SLOT(onStyleChanged(const QString&)));
 
     QGSettings *settings = new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
 
@@ -124,6 +134,16 @@ void VolumeWindow::geometryChangedHandle()
     priScreenChanged(x,y,width,height);
 }
 
+void VolumeWindow::onStyleChanged(const QString&)
+{
+    if(!this->isHidden())
+    {
+        hide();
+        show();
+    }
+}
+
+
 
 void VolumeWindow::initWindowInfo()
 {
@@ -134,28 +154,26 @@ void VolumeWindow::initWindowInfo()
 
     //窗口性质
     setWindowFlags(Qt::FramelessWindowHint | Qt::Tool | Qt::WindowStaysOnTopHint | Qt::X11BypassWindowManagerHint);
-//    setWindowOpacity(0.8);          //设置透明度
-    setPalette(QPalette(Qt::black));//设置窗口背景色
-    setAutoFillBackground(true);
 
+    setAttribute(Qt::WA_TranslucentBackground, true);
 
+    setFixedSize(QSize(64,300) * mScale);
 
     //new memery
     mVLayout = new QVBoxLayout(this);
+
     mBarLayout = new QHBoxLayout();
     mSvgLayout = new QHBoxLayout();
     mLabLayout = new QHBoxLayout();
 
-    mLabel = new QLabel();
-    mBar = new QProgressBar();
-    mBut = new QPushButton(this);
+    mLabel = new QLabel(this);
+    mBar = new QProgressBar(this);
+    mBut = new QLabel(this);
 
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
-
     mVolumeLevel = 0;
     mVolumeMuted = false;
-
     geometryChangedHandle();//had move action
 
     setWidgetLayout();
@@ -167,7 +185,7 @@ void VolumeWindow::setWidgetLayout()
 {
     //窗口性质
     setFixedSize(QSize(64,300) * mScale);
-//    setStyleSheet("background:#394073");
+
     //lable 音量键值
     QFont font;
     font.setPointSize(10 * mScale);
@@ -177,19 +195,11 @@ void VolumeWindow::setWidgetLayout()
     mLabLayout->addWidget(mLabel);
 
     //button图片操作
-    mBut->setFixedSize(QSize(48,48) * mScale);
-    mBut->setIconSize(QSize(32,32) * mScale);
+    mBut->setFixedSize(QSize(32,32) * mScale);
     //音量条操作
     mBar->setOrientation(Qt::Vertical);
     mBar->setFixedSize(QSize(10,200) * mScale);
     mBar->setTextVisible(false);
-
-
-/*  mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#2e335c}"
-                       "QProgressBar::chunk{border-radius:5px;background:#d5d6de}")*/;
-
-    mBar->setStyleSheet("QProgressBar{border:none;border-radius:5px;background:#708069}"
-                        "QProgressBar::chunk{border-radius:5px;background:white}");
 
     //音量调放入横向布局
     mBarLayout->addWidget(mBar);
@@ -203,6 +213,7 @@ void VolumeWindow::setWidgetLayout()
     mVLayout->addLayout(mBarLayout);
     mVLayout->addLayout(mSvgLayout);
     mVLayout->setGeometry(QRect(0,0,width() * mScale, height() * mScale));
+    setLayout(mVLayout);
 }
 
 int doubleToInt(double d)
@@ -214,8 +225,15 @@ int doubleToInt(double d)
         return I;
 }
 
-QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source)
+QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source, const QString &style)
 {
+
+    int value = 255;
+    if(style == "ukui-default")
+    {
+        value = 0;
+    }
+
     QColor gray(255,255,255);
     QColor standard (0,0,0);
     QImage img = source.toImage();
@@ -224,15 +242,15 @@ QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source)
             auto color = img.pixelColor(x, y);
             if (color.alpha() > 0) {
                 if (qAbs(color.red()-gray.red())<20 && qAbs(color.green()-gray.green())<20 && qAbs(color.blue()-gray.blue())<20) {
-                    color.setRed(255);
-                    color.setGreen(255);
-                    color.setBlue(255);
+                    color.setRed(value);
+                    color.setGreen(value);
+                    color.setBlue(value);
                     img.setPixelColor(x, y, color);
                 }
                 else {
-                    color.setRed(255);
-                    color.setGreen(255);
-                    color.setBlue(255);
+                    color.setRed(value);
+                    color.setGreen(value);
+                    color.setBlue(value);
                     img.setPixelColor(x, y, color);
                 }
             }
@@ -248,8 +266,7 @@ void VolumeWindow::dialogShow()
 
     QSize iconSize(32 * mScale,32 * mScale);
 
-    mBut->setIcon(QIcon(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)))));
-
+    mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
     mTimer->start(2000);
 }
@@ -302,3 +319,63 @@ void VolumeWindow::timeoutHandle()
     hide();
     mTimer->stop();
 }
+
+void VolumeWindow::showEvent(QShowEvent* e)
+{
+     QSize iconSize(32*mScale,32*mScale);
+    /*适应主题颜色*/
+    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    {
+        mLabel->setStyleSheet("color:black;");
+        mBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
+                            "QProgressBar::chunk{border-radius:4px;background:black}");
+        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
+
+    }
+    else
+    {
+        mLabel->setStyleSheet("color:white;");
+        mBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#CC000000}"
+                            "QProgressBar::chunk{border-radius:4px;background:white}");
+        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+
+
+    }
+    mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
+
+
+}
+
+void VolumeWindow::paintEvent(QPaintEvent* e)
+{
+    QRect rect = this->rect();
+    QPainterPath path;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    painter.setPen(Qt::transparent);
+    qreal radius=12;
+    path.moveTo(rect.topRight() - QPointF(radius, 0));
+    path.lineTo(rect.topLeft() + QPointF(radius, 0));
+    path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+    path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
+    path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+    path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+    path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+    path.lineTo(rect.topRight() + QPointF(0, radius));
+    path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+    painter.setBrush(this->palette().base());
+    painter.setPen(Qt::transparent);
+    painter.setOpacity(0.75);
+    painter.drawPath(path);
+
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+
+    QWidget::paintEvent(e);
+}
+
+
+
+
+
