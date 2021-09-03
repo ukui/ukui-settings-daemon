@@ -650,6 +650,7 @@ void XrandrManager::monitorsInit()
 
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
         });
 
