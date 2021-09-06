@@ -7,12 +7,12 @@
   </enum>
   <schema path="/org/ukui/desktop/peripherals/touchpad/" id="org.ukui.peripherals-touchpad">
     <key type="b" name="disable-while-typing">
-      <default>false</default>
+      <default>true</default>
       <summary>Disable touchpad while typing</summary>
       <description>Set this to TRUE if you have problems with accidentally hitting the touchpad while typing.</description>
     </key>
     <key type="b" name="tap-to-click">
-      <default>false</default>
+      <default>true</default>
       <summary>Enable mouse clicks with touchpad</summary>
       <description>Set this to TRUE to be able to send mouse clicks by tapping on the touchpad.</description>
     </key>
