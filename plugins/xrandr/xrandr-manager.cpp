@@ -80,7 +80,7 @@ XrandrManager::XrandrManager()
     KScreen::Log::instance();
 
 
-    mDbus = new xrandrDbus();
+    mDbus = new xrandrDbus(this);
     new WaylandAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -441,7 +441,7 @@ void XrandrManager::outputConnectedChanged()
 
 }
 
-void XrandrManager::outputAdded(const KScreen::OutputPtr &output)
+void XrandrManager::outputAddedHandle(const KScreen::OutputPtr &output)
 {
     USD_LOG(LOG_DEBUG,".");
 
@@ -580,6 +580,21 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
     char outputConnectCount = 0;
     USD_LOG_SHOW_OUTPUT(senderOutput);
 
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
+            USD_LOG(LOG_DEBUG,"reset output..");
+            USD_LOG_SHOW_OUTPUT(output);
+            senderOutput->setEnabled(true);
+            //            mMonitoredConfig->data()->outputs().remove(output->id());
+            //              mMonitoredConfig->data()->outputs().insert(senderOutput->id(), &senderOutput);
+            mMonitoredConfig->data()->removeOutput(output->id());
+            mMonitoredConfig->data()->addOutput(senderOutput->clone());
+//            output->setEdid(senderOutput->edid()->clone());
+            USD_LOG_SHOW_OUTPUT(output);
+            break;
+        }
+    }
+
     Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
 
@@ -646,11 +661,23 @@ void XrandrManager::monitorsInit()
         }
 
         connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
+            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+            USD_LOG_SHOW_OUTPUT(senderOutput);
+            Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+                USD_LOG_SHOW_OUTPUT(output);
+            }
+
         });
 
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            outputChangedHandle(senderOutput);
+            USD_LOG_SHOW_OUTPUT(senderOutput);
+            if(senderOutput->hash().contains("HDMI") || senderOutput->hash().contains("VGA")) {
+                USD_LOG(LOG_ERR,"find bug so need reinit monitor...");
+                QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+            } else {
+                outputChangedHandle(senderOutput);
+            }
         });
 
         connect(output.data(), &KScreen::Output::scaleChanged, this, [this](){
@@ -679,11 +706,17 @@ void XrandrManager::monitorsInit()
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
 
-    connect(mMonitoredConfig->data().data(), &KScreen::Config::outputAdded,
-            this, &XrandrManager::outputAdded), Qt::UniqueConnection;
+
+//    connect(mConfig.data(), &KScreen::Config::outputAdded,
+//            this, &XrandrManager::outputAddedHandle);
+
+    connect(mConfig.data(), SIGNAL(outputAdded(KScreen::OutputPtr)),
+            this, SLOT(outputAddedHandle(KScreen::OutputPtr)));
+
     connect(mConfig.data(), &KScreen::Config::outputRemoved,
             this, &XrandrManager::outputRemoved,
             static_cast<Qt::ConnectionType>(Qt::QueuedConnection | Qt::UniqueConnection));
+
     connect(mConfig.data(), &KScreen::Config::primaryOutputChanged,
             this, &XrandrManager::primaryOutputChanged);
 

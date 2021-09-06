@@ -45,10 +45,13 @@ QString xrandrOutput::dirPath()
 
 QString xrandrOutput::globalFileName(const QString &hash)
 {
-    const auto dir = dirPath();
-    if (!QDir().mkpath(dir)) {
-        return QString();
-    }
+//    const auto dir = dirPath();
+//    if (!QDir().mkpath(dir)) {
+//     USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
+//        return QString();
+//    }
+
+    USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
     return QString();//dir % hash;
 }
 
@@ -122,6 +125,7 @@ bool xrandrOutput::readInGlobal(KScreen::OutputPtr output)
 {
     const QVariantMap info = getGlobalData(output);
     if (info.empty()) {
+        USD_LOG(LOG_DEBUG,"can't get info...");
         // if info is empty, the global file does not exists, or is in an unreadable state
         return false;
     }
@@ -399,9 +403,10 @@ void xrandrOutput::writeGlobal(const KScreen::OutputPtr &output)
     if (!writeGlobalPart(output, info, nullptr)) {
         return;
     }
+
     QFile file(globalFileName(output->hashMd5()));
     if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "Failed to open global output file for writing! " << file.errorString();
+        USD_LOG(LOG_DEBUG, "Failed to open global output file for writing! ", file.errorString().toLatin1().data());
         return;
     }
 

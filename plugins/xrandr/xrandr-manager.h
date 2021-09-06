@@ -72,9 +72,8 @@ public:
     void saveCurrentConfig();
     void setMonitorForChanges(bool enabled);
     static void printScreenApplyFailReason(KScreen::ConfigPtr KsData);
-    void outputAdded(const KScreen::OutputPtr &output);
-    void outputRemoved(int outputId);
-    void primaryOutputChanged(const KScreen::OutputPtr &output);
+
+
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
     void init_primary_screens(KScreen::ConfigPtr config);
 
@@ -88,6 +87,9 @@ public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);
     void RotationChangedEvent(QString);
+    void outputAddedHandle(const KScreen::OutputPtr &output);
+    void outputRemoved(int outputId);
+    void primaryOutputChanged(const KScreen::OutputPtr &output);
 //    void applyConfigTimerHandle();
 
 Q_SIGNALS:
