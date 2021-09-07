@@ -27,6 +27,7 @@
 #include <glib/gi18n.h>
 #include <gdk/gdk.h>
 #include <gio/gio.h>
+#include <QGSettings/qgsettings.h>
 
 extern "C"{
 #include <matekbd-status.h>
@@ -35,7 +36,6 @@ extern "C"{
 #include <matekbd-keyboard-config.h>
 #include <matekbd-util.h>
 }
-
 typedef void (*PostActivationCallback) (void* userData);
 class KeyboardManager;
 

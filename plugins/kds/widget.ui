@@ -197,28 +197,6 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="splitFrame">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>1</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>1</height>
-      </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QFrame" name="bottomFrame">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>

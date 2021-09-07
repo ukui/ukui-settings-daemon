@@ -2,10 +2,12 @@
 #define KEYBOARDWIDGET_H
 
 #include <QWidget>
-#include <QPushButton>
+#include <QLabel>
 #include <QPropertyAnimation>
 #include <QGraphicsOpacityEffect>
 #include <QPainter>
+#include <QGSettings/qgsettings.h>
+
 
 
 namespace Ui {
@@ -23,22 +25,34 @@ public:
     void setIcons(QString icon);
     void showWidget();
 
+protected:
+    void paintEvent(QPaintEvent *event);
+    void showEvent(QShowEvent* event);
+    void resizeEvent(QResizeEvent* even);
+
+
+
 
 
 private:
     void initWidgetInfo();
     void geometryChangedHandle();
+    QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
+
 
 public Q_SLOTS:
     void timeoutHandle();
+    void onStyleChanged(const QString&);
 
 private:
     Ui::KeyboardWidget *ui;
-
+    QWidget*         m_backgroudWidget;
     QString          m_iconName;
 
-    QPushButton      *m_btnStatus;
+    QLabel      *m_btnStatus;
     QTimer           *m_timer;
+
+    QGSettings       *m_styleSettings;
 };
 
 #endif // KEYBOARDWIDGET_H

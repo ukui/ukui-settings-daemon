@@ -21,10 +21,13 @@
 #include <QDebug>
 #include <QPainter>
 #include <QBitmap>
+#include <KWindowEffects>
 #include "clib-syslog.h"
 #define DBUS_NAME       "org.ukui.SettingsDaemon"
 #define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
+
+#define QT_THEME_SCHEMA             "org.ukui.style"
 
 const QString allIconName[] = {
     "gpm-brightness-lcd",
@@ -50,15 +53,17 @@ DeviceWindow::DeviceWindow(QWidget *parent) :
     connect(mDbusXrandInter, SIGNAL(screenPrimaryChanged(int,int,int,int)),
             this, SLOT(priScreenChanged(int,int,int,int)));
 
+    m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
+    connect(m_styleSettings,SIGNAL(changed(const QString&)),
+            this,SLOT(onStyleChanged(const QString&)));
+
     mScale = getScreenGeometry("scale");
 }
 
 DeviceWindow::~DeviceWindow()
 {
     delete ui;
-    delete mBut;
     delete mTimer;
-    mBut = nullptr;
     mTimer = nullptr;
 }
 
@@ -105,14 +110,12 @@ int DeviceWindow::getScreenGeometry(QString methodName)
 }
 
 void DeviceWindow::initWindowInfo()
-{
-
+{ 
     mTimer = new QTimer();
     connect(mTimer,SIGNAL(timeout()),this,SLOT(timeoutHandle()));
 
-    mBut = new QPushButton(this);
-    mBut->setDisabled(true);
-
+    m_btnStatus = new QLabel(this);
+    m_btnStatus->setFixedSize(QSize(48,48));
 
 
     connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &DeviceWindow::geometryChangedHandle);
@@ -126,6 +129,8 @@ void DeviceWindow::initWindowInfo()
                    Qt::WindowStaysOnTopHint |
                    Qt::X11BypassWindowManagerHint |
                    Qt::Popup);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+
 
     QBitmap bmp(this->size());
     bmp.fill();
@@ -136,7 +141,23 @@ void DeviceWindow::initWindowInfo()
     p.drawRoundedRect(bmp.rect(),12,12);
     setMask(bmp);
 
-    setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+    QPainterPath path;
+    auto rect = this->rect();
+    rect.adjust(1, 1, -1, -1);
+    path.addRect(rect);
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+
+
+    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    {
+        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
+
+    }
+    else
+    {
+        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+
+    }
     setAutoFillBackground(true);
 
     geometryChangedHandle();
@@ -162,10 +183,10 @@ void DeviceWindow::dialogShow()
 
     ensureSvgInfo(&svgWidth,&svgHeight,&svgX,&svgY);
 
-    mBut->setFixedSize(this->size());
-    mBut->setIconSize(QSize(48,48));
+    m_btnStatus->move((width() - m_btnStatus->width())/2,(height() - m_btnStatus->height())/2);
 
-    mBut->setIcon(QIcon::fromTheme(mIconName));
+    QPixmap pixmap = QIcon::fromTheme(mIconName,QIcon("")).pixmap(QSize(48,48));
+    m_btnStatus->setPixmap(drawLightColoredPixmap(pixmap,m_styleSettings->get("style-name").toString()));
 
     show();
     mTimer->start(2000);
@@ -190,3 +211,80 @@ void DeviceWindow::timeoutHandle()
     hide();
     mTimer->stop();
 }
+
+QPixmap DeviceWindow::drawLightColoredPixmap(const QPixmap &source, const QString &style)
+{
+
+    int value = 255;
+    if(style == "ukui-default")
+    {
+        value = 0;
+    }
+
+    QColor gray(255,255,255);
+    QColor standard (0,0,0);
+    QImage img = source.toImage();
+    for (int x = 0; x < img.width(); x++) {
+        for (int y = 0; y < img.height(); y++) {
+            auto color = img.pixelColor(x, y);
+            if (color.alpha() > 0) {
+                if (qAbs(color.red()-gray.red())<20 && qAbs(color.green()-gray.green())<20 && qAbs(color.blue()-gray.blue())<20) {
+                    color.setRed(value);
+                    color.setGreen(value);
+                    color.setBlue(value);
+                    img.setPixelColor(x, y, color);
+                }
+                else {
+                    color.setRed(value);
+                    color.setGreen(value);
+                    color.setBlue(value);
+                    img.setPixelColor(x, y, color);
+                }
+            }
+        }
+    }
+    return QPixmap::fromImage(img);
+}
+void DeviceWindow::onStyleChanged(const QString&)
+{
+    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    {
+        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
+
+    }
+    else
+    {
+        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+
+    }
+}
+
+void DeviceWindow::paintEvent(QPaintEvent *event)
+{
+    QRect rect = this->rect();
+    QPainterPath path;
+
+    QPainter painter(this);
+    painter.setRenderHint(QPainter::Antialiasing);  // 反锯齿;
+    painter.setPen(Qt::transparent);
+    qreal radius=12;
+    path.moveTo(rect.topRight() - QPointF(radius, 0));
+    path.lineTo(rect.topLeft() + QPointF(radius, 0));
+    path.quadTo(rect.topLeft(), rect.topLeft() + QPointF(0, radius));
+    path.lineTo(rect.bottomLeft() + QPointF(0, -radius));
+    path.quadTo(rect.bottomLeft(), rect.bottomLeft() + QPointF(radius, 0));
+    path.lineTo(rect.bottomRight() - QPointF(radius, 0));
+    path.quadTo(rect.bottomRight(), rect.bottomRight() + QPointF(0, -radius));
+    path.lineTo(rect.topRight() + QPointF(0, radius));
+    path.quadTo(rect.topRight(), rect.topRight() + QPointF(-radius, -0));
+
+    painter.setBrush(this->palette().base());
+    painter.setPen(Qt::transparent);
+    painter.setOpacity(0.75);
+    painter.drawPath(path);
+
+    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
+
+    QWidget::paintEvent(event);
+}
+

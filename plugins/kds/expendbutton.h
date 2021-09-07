@@ -15,11 +15,15 @@ public:
     ~ExpendButton();
 
 public:
-    void setSign(int id);
-    void setBtnLogo(QString logo);
+    void setSign(int id ,const QString &style = "");
+    void setBtnLogo(QString logo,const QString &style = "");
     void setBtnText(QString text);
     void setBtnChecked(bool checked);
     bool getBtnChecked();
+
+private:
+    QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
+
 
 private:
     QLabel * logoLabel;
