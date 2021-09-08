@@ -25,7 +25,9 @@ PluginInterface* BackgroundPlugin::mInstance = nullptr;
 
 BackgroundPlugin::BackgroundPlugin()
 {
+    return;
     manager = new BackgroundManager();
+    return;
 }
 
 BackgroundPlugin::~BackgroundPlugin()
@@ -48,6 +50,7 @@ PluginInterface *BackgroundPlugin::getInstance()
 
 void BackgroundPlugin::activate()
 {
+    return;
     USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
      manager->BackgroundManagerStart();
 }
