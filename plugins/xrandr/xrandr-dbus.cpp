@@ -80,7 +80,14 @@ int xrandrDbus::priScreenChanged(int x, int y, int width, int height, QString na
     mWidth = width;
     mHeight = height;
     mName = name;
-    USD_LOG(LOG_DEBUG, "primary screen changed, x = %d, y = %d, width = %d, height = %d",x, y , width, height);
+
+    USD_LOG(LOG_DEBUG, "primary screen changed, x = %d, y = %d, width = %d, height = %d",x, y, width, height);
     Q_EMIT screenPrimaryChanged(x, y, width, height);
     return 0;
+}
+
+int xrandrDbus::setScreenMode(QString modeName,QString appName){
+    USD_LOG(LOG_DEBUG,"change screen :%s, appName:%s",modeName.toLatin1().data(), appName.toLatin1().data());
+    Q_EMIT setScreenModeSignal(modeName);
+    return true;
 }

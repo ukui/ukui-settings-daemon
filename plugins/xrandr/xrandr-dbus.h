@@ -22,9 +22,11 @@ public Q_SLOTS:
     double scale();
     QString priScreenName();
     int priScreenChanged(int x, int y, int width, int height, QString name);
+    int setScreenMode(QString modeName, QString appName);
 
 Q_SIGNALS:
     void screenPrimaryChanged(int x, int y, int width, int height);
+    void setScreenModeSignal(QString modeName);
     void brightnessDown();
     void brightnessUp();
 
