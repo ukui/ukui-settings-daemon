@@ -391,6 +391,7 @@ void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 
 void XrandrManager::refreshConfig()
 {
+
 }
 
 void XrandrManager::saveCurrentConfig()
@@ -409,7 +410,6 @@ void XrandrManager::setMonitorForChanges(bool enabled)
         return;
     }
 
-    //qDebug() << "Monitor for changes: " << enabled;
     mMonitoring = enabled;
     if (mMonitoring) {
         connect(KScreen::ConfigMonitor::instance(), &KScreen::ConfigMonitor::configurationChanged,
@@ -497,6 +497,7 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
 
         if (!hadPrimary){
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
+                //没有找到主屏幕，需要指定一个分辨率最小的屏幕为主屏
                  if (output->isConnected() && output->isEnabled()){
                      output->setPrimary(true);
 
@@ -525,10 +526,11 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
                             if (rtResolution > bigestResolution){
                                 bigestModeId = newOutputMode->id();
                                 bigestPrimaryModeId = primaryMode->id();
+                                bigestResolution = rtResolution;
                             }
-//                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
-//                                    primaryMode->size().width(),primaryMode->size().height(),
-//                                    newOutputMode->size().width(), newOutputMode->size().height());
+                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
+                                    primaryMode->size().width(),primaryMode->size().height(),
+                                    newOutputMode->size().width(), newOutputMode->size().height());
                         }
 
                     }//end  Q_FOREACH (auto newOutputMode, newOutput->modes())
@@ -569,8 +571,31 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
             }
             newOutput->setEnabled(newOutput->isConnected());
             newOutput->setCurrentModeId(bigestModeId);
-//            USD_LOG(LOG_DEBUG,"");
+            USD_LOG(LOG_DEBUG,"bigestModeId:%d-bigestPrimaryModeId:%d",bigestModeId,bigestPrimaryModeId);
             USD_LOG_SHOW_OUTPUT(newOutput);
+        }
+    }
+}
+
+void XrandrManager::lightLastScreen()
+{
+    int enableCount = 0;
+    int connectCount = 0;
+
+    Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+        if (output->isConnected()){
+            connectCount++;
+        }
+        if (output->isEnabled()){
+            enableCount++;
+        }
+    }
+    if (connectCount==1 && enableCount==0){
+        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+            if (output->isConnected()){
+                output->setEnabled(true);
+                break;
+            }
         }
     }
 }
@@ -632,6 +657,8 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
     Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
     }
+
+    lightLastScreen();
     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
     op->exec();
 
@@ -649,9 +676,6 @@ void XrandrManager::monitorsInit()
     }
 
     mConfig = std::move(mMonitoredConfig->data());
-
-    USD_LOG(LOG_DEBUG,"config...:%s.",mMonitoredConfig->filePath().toLatin1().data());
-
 
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
@@ -721,10 +745,13 @@ void XrandrManager::monitorsInit()
             this, &XrandrManager::primaryOutputChanged);
 
     if (mMonitoredConfig->fileExists()){
+         USD_LOG(LOG_DEBUG,"read  config:%s.",mMonitoredConfig->filePath().toLatin1().data());
         mMonitoredConfig = mMonitoredConfig->readFile(false);
         auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
         op->exec();
     } else {
+        int foreachTimes = 0;
+        USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
 
         for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
             USD_LOG_SHOW_OUTPUT(output);
@@ -733,9 +760,18 @@ void XrandrManager::monitorsInit()
                 break;
             }
             else {
-                if (output->isConnected() && false == output->isEnabled()) {
-                    outputChangedHandle(output.data());
+
+                if (output->isConnected()){
+                    foreachTimes++;
                 }
+
+
+                if (foreachTimes>1) {
+                    USD_LOG_SHOW_OUTPUT(output);
+                    outputChangedHandle(output.data());
+                    break;
+                }
+
             }
         }
         mMonitoredConfig->writeFile(false);

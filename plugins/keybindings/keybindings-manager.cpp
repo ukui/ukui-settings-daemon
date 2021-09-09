@@ -28,8 +28,8 @@
 
 
 #define DESKTOP_APP_DIR "/usr/share/applications/"
-#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/session/"
-//#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
+//#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/session/"
+#define GSETTINGS_KEYBINDINGS_DIR "/org/ukui/desktop/keybindings/"
 #define CUSTOM_KEYBINDING_SCHEMA  "org.ukui.control-center.keybinding"
 
 KeybindingsManager *KeybindingsManager::mKeybinding = nullptr;
@@ -81,7 +81,7 @@ parse_binding (Binding *binding)
                                              &binding->key.keycodes,
                                              (EggVirtualModifierType *)&binding->key.state);
     if (!success)
-        qWarning ("Key binding (%s) is invalid", binding->settings_path);
+        USD_LOG(LOG_DEBUG,"Key binding (%s) is invalid", binding->settings_path);
 
     return success;
 }
@@ -122,9 +122,10 @@ bool KeybindingsManager::bindings_get_entry (KeybindingsManager *manager,const c
     key = g_settings_get_string (settings, "binding");
     g_object_unref (settings);
 
+
     if (action==nullptr || key==nullptr)
     {
-            qWarning ("Key binding (%s) is incomplete", settings_path);
+            USD_LOG(LOG_DEBUG,"Key binding (%s) is incomplete", settings_path);
             return false;
     }
 
@@ -345,14 +346,14 @@ void KeybindingsManager::binding_register_keys (KeybindingsManager *manager)
                 binding->previous_key.keycodes[i] = binding->key.keycodes[i];
 
             } else
-                qDebug ("Key binding (%s) is already in use", binding->binding_str);
+                USD_LOG(LOG_DEBUG,"Key binding (%s) is already in use", binding->binding_str);
         }
     }
 
     if (need_flush)
         gdk_display_flush (gdk_display_get_default());
     if(gdk_x11_display_error_trap_pop (gdk_display_get_default()))
-        qWarning("Grab failed for some keys, another application may already have access the them.");
+        USD_LOG(LOG_DEBUG,"Grab failed for some keys, another application may already have access the them.");
 }
 
 /**
@@ -369,7 +370,7 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
 {
     XEvent *xevent = (XEvent *) gdk_xevent;
     GSList *li;
- 
+    USD_LOG(LOG_DEBUG,"had event");
     if (xevent->type != KeyPress) {
         return GDK_FILTER_CONTINUE;
     }
@@ -448,7 +449,6 @@ void KeybindingsManager::bindings_callback (DConfClient  *client,
     Q_UNUSED(changes);
 
     if (strncmp(GSETTINGS_KEYBINDINGS_DIR,prefix,strlen(GSETTINGS_KEYBINDINGS_DIR))) {
-        USD_LOG(LOG_DEBUG,"keybindings: received 'changed' signal from dconf. gchar:%s changes:%s tag:%s break..",prefix, changes[0], tag);
         return;
     }
 
@@ -482,7 +482,7 @@ void KeybindingsManager::get_screens_list (void)
 
 bool KeybindingsManager::KeybindingsManagerStart()
 {
-    qDebug("Keybindings Manager Start");
+    USD_LOG(LOG_DEBUG,"-- Keybindings Manager Start --");
     QList<GdkScreen*>::iterator l, begin, end;
     GdkDisplay  *dpy;
     GdkScreen   *screen;
@@ -494,6 +494,7 @@ bool KeybindingsManager::KeybindingsManagerStart()
     gdk_init(NULL,NULL);
     dpy = gdk_display_get_default ();
 
+//    xdpy = GDK_DISPLAY_XDISPLAY (dpy);
     xdpy = QX11Info::display();
 
     screen = gdk_display_get_default_screen(dpy);
@@ -534,13 +535,11 @@ bool KeybindingsManager::KeybindingsManagerStart()
         int len;
         QList<char *> vals;
 
-//        client = dconf_client_new ();
-//        dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
-//        g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
+        client = dconf_client_new ();
+        dconf_client_watch_fast (client, GSETTINGS_KEYBINDINGS_DIR);
 
-
-//        dconf_client_watch_sync (client, GSETTINGS_KEYBINDINGS_DIR);
-
+        dconf_client_watch_sync (client, GSETTINGS_KEYBINDINGS_DIR);
+        g_signal_connect (client, "changed", G_CALLBACK (bindings_callback), this);
 #if 0 //无效，无法使用gsetings的方法监控dconf
         childs = dconf_client_list (client, GSETTINGS_KEYBINDINGS_DIR, &len);
 

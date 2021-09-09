@@ -41,7 +41,8 @@ static bool replace         = false;
 
 void handler(int no)
 {
-    qDebug()<<"catch SIGTERM signal, with exitcode "<< no;
+
+    USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode ",no)
     exit(15);
 }
 
@@ -83,6 +84,7 @@ int main (int argc, char* argv[])
         qDebug( "manager start error!");
         return 0;
     }
+
 
     USD_LOG(LOG_INFO, "ukui-settings-daemon started!");
     app.exec();

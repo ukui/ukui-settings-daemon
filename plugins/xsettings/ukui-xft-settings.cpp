@@ -182,6 +182,11 @@ get_window_scale (ukuiXSettingsManager *manager)
 void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
 {
     int i;
+    double scale = get_window_scale (manager);
+    if(scale >= 2.0)
+        scale = scale - 1.0;
+    if(scale >= 3.0)
+        scale = scale - 2.0;
 
     for (i = 0; manager->pManagers [i]; i++) {
         manager->pManagers [i]->set_int ("Xft/Antialias", antialias);
@@ -189,7 +194,7 @@ void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
         manager->pManagers [i]->set_string ("Xft/HintStyle", hintstyle);
 
         manager->pManagers [i]->set_int ( "Gdk/WindowScalingFactor",window_scale);
-        manager->pManagers [i]->set_int ("Gdk/UnscaledDPI",dpi);
+         manager->pManagers [i]->set_int ("Gdk/UnscaledDPI",(double)dpi * scale);
         manager->pManagers [i]->set_int ("Xft/DPI", scaled_dpi);
 
         manager->pManagers [i]->set_string ("Xft/RGBA", rgba);
