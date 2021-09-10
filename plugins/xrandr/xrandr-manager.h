@@ -84,6 +84,9 @@ public:
     void outputChangedHandle(KScreen::Output *senderOutput);
     void lightLastScreen();
     void outputConnectedWithoutConfigFile(KScreen::Output *senderOutput ,char outputCount);
+    void setScreenModeToClone();
+    void setScreenModeToFirst(bool isFirst);
+    void setScreenModeToExpand();
 public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);
@@ -92,7 +95,7 @@ public Q_SLOTS:
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
 //    void applyConfigTimerHandle();
-
+    void setScreenMode(QString modeName);
 Q_SIGNALS:
     // DBus
     void outputConnected(const QString &outputName);

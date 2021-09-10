@@ -228,6 +228,7 @@ bool xrandrConfig::writeFile(bool state)
 bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
     if (id().isEmpty()) {
+        USD_LOG(LOG_DEBUG,"id is empty!");
         return false;
     }
 
@@ -237,8 +238,6 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
     const auto oldConfig = readFile(state);
     KScreen::OutputList oldOutputs;
     if (oldConfig) {
-        if(!state)
-            return false;
         oldOutputs = oldConfig->data()->outputs();
     }
 
@@ -303,7 +302,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
     file.write(QJsonDocument::fromVariant(outputList).toJson());
     //qDebug() << "Config saved on: " << file.fileName();
-
+    USD_LOG(LOG_DEBUG,"write file ok");
     return true;
 }
 

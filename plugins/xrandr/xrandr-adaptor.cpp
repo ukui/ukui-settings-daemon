@@ -16,7 +16,7 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 #include <QtCore/QVariant>
-
+#include "clib-syslog.h"
 /*
  * Implementation of adaptor class WaylandAdaptor
  */
@@ -46,6 +46,13 @@ int WaylandAdaptor::priScreenChanged(int x, int y, int width, int height, const 
     // handle method call org.ukui.SettingsDaemon.wayland.priScreenChanged
     int out0;
     QMetaObject::invokeMethod(parent(), "priScreenChanged", Q_RETURN_ARG(int, out0), Q_ARG(int, x), Q_ARG(int, y), Q_ARG(int, width), Q_ARG(int, height), Q_ARG(QString, name));
+    return out0;
+}
+
+int WaylandAdaptor::setScreenMode(const QString &modeName, const QString &appName){
+    int out0;
+    USD_LOG(LOG_DEBUG,"change screen :%s, appName:%s",modeName.toLatin1().data(), appName.toLatin1().data());
+    QMetaObject::invokeMethod(parent(), "setScreenMode", Q_RETURN_ARG(int, out0),  Q_ARG(QString, modeName),  Q_ARG(QString, appName));
     return out0;
 }
 

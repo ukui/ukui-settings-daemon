@@ -134,7 +134,7 @@ bool XrandrManager::XrandrManagerStart()
 {
     USD_LOG(LOG_DEBUG,"Xrandr Manager Start");
     connect(mAcitveTime, &QTimer::timeout, this,&XrandrManager::StartXrandrIdleCb);
-    mAcitveTime->start(2000);
+    mAcitveTime->start();
     return true;
 }
 
@@ -473,108 +473,20 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 /*
  *
  *接入时没有配置文件的处理流程：
- * 单屏：最优分辨率。
- * 多屏幕：镜像模式。
+ *单屏：最优分辨率。
+ *多屏幕：镜像模式。
  *
 */
 void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput, char outputCount)
 {
-    QString bigestModeId;
-    QString bigestPrimaryModeId;
-    int rtResolution = 0;
-    int bigestResolution = 0;
-    bool hadPrimary = false;
     if (1 == outputCount) {//单屏接入时需要设置模式，主屏
         newOutput->setCurrentModeId(newOutput->preferredModeId());
         newOutput->setPrimary(true);
     } else {
-
-        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
-            if (output->isPrimary()){
-                hadPrimary = true;
-            }
-        }
-
-        if (!hadPrimary){
-            Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
-                //没有找到主屏幕，需要指定一个分辨率最小的屏幕为主屏
-                 if (output->isConnected() && output->isEnabled()){
-                     output->setPrimary(true);
-
-                     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
-                     op->exec();
-
-                     USD_LOG(LOG_DEBUG,"can't find primary screen set %s is primary..",output->name().toLatin1().data());
-                     break;
-                 }
-            }
-        }
-
-        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()){
-            USD_LOG_SHOW_OUTPUT(output);
-
-            if (output->isPrimary()){
-                Q_FOREACH (auto primaryMode, output->modes()) {
-                    Q_FOREACH (auto newOutputMode, newOutput->modes()) {
-
-                        if (primaryMode->size().width() == newOutputMode->size().width() &&
-                                primaryMode->size().height() == newOutputMode->size().height())
-                        {
-
-                            rtResolution = primaryMode->size().width() * primaryMode->size().height();
-
-                            if (rtResolution > bigestResolution){
-                                bigestModeId = newOutputMode->id();
-                                bigestPrimaryModeId = primaryMode->id();
-                                bigestResolution = rtResolution;
-                            }
-                            USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
-                                    primaryMode->size().width(),primaryMode->size().height(),
-                                    newOutputMode->size().width(), newOutputMode->size().height());
-                        }
-
-                    }//end  Q_FOREACH (auto newOutputMode, newOutput->modes())
-                }//end  Q_FOREACH (auto primaryMode, output->modes())
-            }//end if (output->isPrimary())
-            else {
-                USD_LOG(LOG_DEBUG,"%s is't primary..",output->name().toLatin1().data());
-            }
-        }//end  Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()
-
-
-
-
-        if (!bigestResolution) {
-            USD_LOG(LOG_DEBUG, "can't find the same resolution in outputs.so use bigest resolution.");
-            auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
-            op->exec();
-            Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
-                if (output->isPrimary()){
-                    output->setCurrentModeId(output->preferredModeId());
-                    USD_LOG(LOG_DEBUG, "primary output mode:%s",output->preferredModeId().toLatin1().data());
-                    break;
-                }
-            }
-
-             newOutput->setEnabled(newOutput->isConnected());
-             newOutput->setCurrentModeId(newOutput->preferredModeId());
-             USD_LOG(LOG_DEBUG, "newOutput output mode:%s",newOutput->preferredModeId().toLatin1().data());
-             USD_LOG_SHOW_OUTPUT(newOutput);
-
-        } else {
-
-            Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
-                if (output->isPrimary()){
-                    output->setCurrentModeId(bigestPrimaryModeId);
-                    break;
-                }
-            }
-            newOutput->setEnabled(newOutput->isConnected());
-            newOutput->setCurrentModeId(bigestModeId);
-            USD_LOG(LOG_DEBUG,"bigestModeId:%d-bigestPrimaryModeId:%d",bigestModeId,bigestPrimaryModeId);
-            USD_LOG_SHOW_OUTPUT(newOutput);
-        }
+        setScreenModeToClone();
     }
+
+
 }
 
 void XrandrManager::lightLastScreen()
@@ -783,6 +695,191 @@ void XrandrManager::mPrepareForSleep(bool state)
 
 }
 
+void XrandrManager::setScreenModeToClone()
+{
+
+    int rtResolution = 0;
+    int bigestResolution = 0;
+
+    QString bigestPrimaryModeId;
+    QString bigestModeId;
+    QString secondScreen;
+
+    if (mMonitoredConfig->data()->outputs().count() < 2) {
+        USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
+        return;
+    }
+
+    if (nullptr == mMonitoredConfig->data()->primaryOutput()){
+        Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            if (output->isConnected()){
+                output->setPrimary(true);
+                break;
+            }
+        }
+    }
+
+    const KScreen::OutputPtr &primaryOutput = mMonitoredConfig->data()->primaryOutput();
+
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+
+        if (output->isPrimary()) {
+            continue;
+        }
+        if (output->isConnected()) {
+            output->setEnabled(true);
+        }
+
+        secondScreen = output->name().toLatin1().data();
+        //便利模式找出最大分辨率的克隆模式
+        Q_FOREACH (auto primaryMode, primaryOutput->modes()) {
+            Q_FOREACH (auto newOutputMode, output->modes()){
+                if (primaryMode->size().width() == newOutputMode->size().width() &&
+                        primaryMode->size().height() == newOutputMode->size().height())
+                {
+
+                    rtResolution = primaryMode->size().width() * primaryMode->size().height();
+
+                    if (rtResolution > bigestResolution){
+                        bigestModeId = newOutputMode->id();
+                        bigestPrimaryModeId = primaryMode->id();
+                        bigestResolution = rtResolution;
+                        output->setPos(QPoint(0,0));
+                        primaryOutput->setPos(QPoint(0,0));
+                        output->setCurrentModeId(bigestModeId);
+                        primaryOutput->setCurrentModeId(bigestPrimaryModeId);
+                    }
+
+                    USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
+                            primaryMode->size().width(),primaryMode->size().height(),
+                            newOutputMode->size().width(), newOutputMode->size().height());
+                }
+            }
+        }
+
+    }
+
+    if (0 == bigestResolution) {
+        setScreenModeToExpand();
+    } else {
+        auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+        op->exec();
+        mMonitoredConfig->writeFile(true);//首次接入
+    }
+}
+
+void XrandrManager::setScreenModeToFirst(bool isFirst)
+{
+    if (mMonitoredConfig->data()->outputs().count() < 2) {
+        USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
+        return;
+    }
+
+    if (nullptr == mMonitoredConfig->data()->primaryOutput()){
+        Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            if (output->isConnected()){
+                output->setPrimary(true);
+                break;
+            }
+        }
+    }
+
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+
+        USD_LOG_SHOW_OUTPUT(output);
+
+        if (output->isPrimary()){
+            output->setEnabled(isFirst);
+
+        }else {
+            output->setEnabled(!isFirst);
+        }
+    }
+
+     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+     op->exec();
+     mMonitoredConfig->writeFile(true);//首次接入
+}
+
+void XrandrManager::setScreenModeToExpand()
+{
+    int primaryX = 0;
+    int screenSize = 0;
+    if (mMonitoredConfig->data()->outputs().count() < 2) {
+        USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
+        return;
+    }
+
+    if (nullptr == mMonitoredConfig->data()->primaryOutput()){
+        Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            if (output->isConnected()){
+                output->setPrimary(true);
+                break;
+            }
+        }
+    }
+
+    const KScreen::OutputPtr &primaryOutput = mMonitoredConfig->data()->primaryOutput();
+
+    Q_FOREACH (auto primaryMode, primaryOutput->modes()){
+        if (primaryMode->size().height()*primaryMode->size().width() > screenSize) {
+            screenSize = primaryMode->size().height()*primaryMode->size().width();
+            primaryX = primaryMode->size().width();
+        }
+    }
+
+     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+         screenSize = 0;
+         USD_LOG_SHOW_OUTPUT(output);
+         if (output->isPrimary()){
+            continue;
+         }
+
+         Q_FOREACH (auto Mode, output->modes()){
+            if (Mode->size().width()*Mode->size().height() > screenSize) {
+                output->setCurrentModeId(Mode->id());
+            }
+         }
+
+         output->setPos(QPoint(primaryX,0));
+         primaryX+=output->size().width();
+          USD_LOG_SHOW_OUTPUT(output);
+     }
+
+     auto *op = new KScreen::SetConfigOperation(mMonitoredConfig->data());
+     op->exec();
+     mMonitoredConfig->writeFile(true);//首次接入
+
+}
+
+void XrandrManager::setScreenMode(QString modeName)
+{
+    QStringList modeList;
+    modeList << "clone" << "first" << "second" << "expand";
+
+    switch (modeList.indexOf(modeName)) {
+    case 0:
+        USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
+        setScreenModeToClone();
+        break;
+    case 1:
+        USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
+        setScreenModeToFirst(true);
+        break;
+    case 2:
+        USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
+        setScreenModeToFirst(false);
+        break;
+    case 3:
+        USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
+        setScreenModeToExpand();
+        break;
+    default:
+        USD_LOG(LOG_DEBUG,"ready set mode  fail can't set to %s",modeName.toLatin1().data());
+        break;
+    }
+}
+
 /**
  * @brief XrandrManager::StartXrandrIdleCb
  * 开始时间回调函数
@@ -803,4 +900,6 @@ void XrandrManager::StartXrandrIdleCb()
 
      USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok");
      QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+
+     connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
 }
