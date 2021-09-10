@@ -107,5 +107,10 @@
       <summary>Set mouse sensitivity.</summary>
       <description>1-4 represents low sensitivity, medium sensitivity, high sensitivity and highest sensitivity.</description>
     </key>
+    <key name="wheel-speed" type="i">
+      <default>5</default>
+      <summary>Mouse wheel speed</summary>
+      <description>Set the mouse wheel speed by running imwheel.</description>
+    </key>
   </schema>
 </schemalist>
