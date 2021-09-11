@@ -104,8 +104,8 @@ private:
     int                         xkbEventBase;
     bool                        StickykeysShortcutVal;
     bool                        SlowkeysShortcutVal;
-    QMessageBox                 *StickykeysAlert;
-    QMessageBox                 *SlowkeysAlert;
+    QMessageBox                 *StickykeysAlert = nullptr;
+    QMessageBox                 *SlowkeysAlert = nullptr;
     A11yPreferencesDialog       *preferences_dialog=nullptr;
     //GtkStatusIcon               *status_icon;
     XkbDescRec                  *OriginalXkbDesc;

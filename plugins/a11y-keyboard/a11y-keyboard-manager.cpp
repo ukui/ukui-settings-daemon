@@ -16,8 +16,8 @@ A11yKeyboardManager::A11yKeyboardManager(QObject *parent) : QObject(parent)
 }
 A11yKeyboardManager::~A11yKeyboardManager()
 {
-    delete settings;
-    delete time;
+     settings->deleteLater();
+     time->deleteLater();
 }
 A11yKeyboardManager * A11yKeyboardManager::A11KeyboardManagerNew()
 {
@@ -52,11 +52,15 @@ void A11yKeyboardManager::A11yKeyboardManagerStop()
     /* Disable all the AccessX bits
     */
     RestoreServerXkbConfig (this);
-    if (SlowkeysAlert != NULL)
-        delete SlowkeysAlert;
+    if (SlowkeysAlert != nullptr){
+        USD_LOG(LOG_DEBUG,"delete SlowkeysAlert");
+        SlowkeysAlert->deleteLater();
+    }
 
-    if (SlowkeysAlert != NULL)
-        delete SlowkeysAlert;
+    if (StickykeysAlert != nullptr){
+        USD_LOG(LOG_DEBUG,"delete StickykeysAlert");
+        StickykeysAlert->deleteLater();
+    }
 
     SlowkeysShortcutVal = false;
     StickykeysShortcutVal = false;
