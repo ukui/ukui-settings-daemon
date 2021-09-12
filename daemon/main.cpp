@@ -41,14 +41,14 @@ static bool replace         = false;
 
 void handler(int no)
 {
-
-    USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode ",no)
-    exit(15);
+    USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no)
+//    exit(no);
+//    QCoreApplication::instance()->exit(no);
+    QApplication::instance()->exit(no);
 }
 
 int main (int argc, char* argv[])
 {
-
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseHighDpiPixmaps);
