@@ -431,9 +431,6 @@ bool xrandrOutput::writeGlobalPart(const KScreen::OutputPtr &output, QVariantMap
     if (output->currentMode() && output->isEnabled()) {
         refreshRate = output->currentMode()->refreshRate();
         modeSize = output->currentMode()->size();
-    } else if (fallback && fallback->currentMode()) {
-        refreshRate = fallback->currentMode()->refreshRate();
-        modeSize = fallback->currentMode()->size();
     }
 
     if (refreshRate < 0 || !modeSize.isValid()) {

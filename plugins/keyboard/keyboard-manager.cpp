@@ -367,7 +367,7 @@ void KeyboardManager::apply_settings (QString keys)
             apply_repeat (this);
 
     } else {
-             USD_LOG(LOG_DEBUG,"Unhandled settings change, key '%s'", key);
+//             USD_LOG(LOG_DEBUG,"Unhandled settings change, key '%s'", key);
     }
 
 }

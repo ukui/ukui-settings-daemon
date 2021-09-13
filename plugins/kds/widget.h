@@ -60,11 +60,7 @@ public:
     void setupComponent();
     void setupConnect();
 
-    MateRRConfig * makeCloneSetup();
-    MateRRConfig * makePrimarySetup();
-    MateRRConfig * makeOtherSetup();
-    MateRRConfig * makeXineramaSetup();
-
+    void setScreenModeByDbus(QString modeName);
     int getCurrentStatus();
 
     void initCurrentStatus(int id);
@@ -103,13 +99,12 @@ public slots:
 
 
 private:
-    bool _getCloneSize(int * width, int * height);
     bool _isLaptop(MateRROutputInfo * info);
     bool _setNewPrimaryOutput(MateRRConfig * config);
     bool _turnonOutput(MateRROutputInfo * info, int x, int y);
     MateRRMode * _findBestMode(MateRROutput * output);
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
-    bool _configIsAllOff(MateRRConfig * config);
+
 
     char * _findFirstOutput(MateRRConfig * config);
 

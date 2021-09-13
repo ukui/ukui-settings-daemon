@@ -234,24 +234,9 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
     const KScreen::OutputList outputs = mConfig->outputs();
 
-
-    const auto oldConfig = readFile(state);
-    KScreen::OutputList oldOutputs;
-    if (oldConfig) {
-        oldOutputs = oldConfig->data()->outputs();
-    }
-
     QVariantList outputList;
     for (const KScreen::OutputPtr &output : outputs) {
         QVariantMap info;
-
-        const auto oldOutputIt = std::find_if(oldOutputs.constBegin(), oldOutputs.constEnd(),
-                                              [output](const KScreen::OutputPtr &out) {
-                                                  return out->hashMd5() == output->hashMd5();
-                                               }
-        );
-        const KScreen::OutputPtr oldOutput = oldOutputIt != oldOutputs.constEnd() ? *oldOutputIt :
-                                                                                    nullptr;
 
         if (!output->isConnected()) {
             continue;
@@ -267,8 +252,8 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
             priState = output->isPrimary();
         }
 
-        xrandrOutput::writeGlobalPart(output, info, oldOutput);
-        info[QStringLiteral("primary")] = priState; //
+        xrandrOutput::writeGlobalPart(output, info, nullptr);
+        info[QStringLiteral("primary")] =  output->isPrimary();; //
         info[QStringLiteral("enabled")] = output->isEnabled();
 
         auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
@@ -281,7 +266,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
             pos[QStringLiteral("y")] = out->pos().y();
             info[QStringLiteral("pos")] = pos;
         };
-        setOutputConfigInfo(output->isEnabled() ? output : oldOutput);
+        setOutputConfigInfo(output->isEnabled() ? output : nullptr);
 
         if (output->isEnabled()) {
             // try to update global output data

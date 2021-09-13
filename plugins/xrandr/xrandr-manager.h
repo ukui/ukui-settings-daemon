@@ -85,8 +85,10 @@ public:
     void lightLastScreen();
     void outputConnectedWithoutConfigFile(KScreen::Output *senderOutput ,char outputCount);
     void setScreenModeToClone();
-    void setScreenModeToFirst(bool isFirst);
-    void setScreenModeToExpand();
+    void setScreenModeToFirst(bool isFirstMode);
+    void setScreenModeToExtend();
+    void checkPrimaryScreenIsActive();
+
 public Q_SLOTS:
     void configChanged();
     void mPrepareForSleep(bool);

@@ -207,29 +207,25 @@ void Widget::setupConnect(){
         switch (id) {
 #ifdef FIRSTSCREENID
         case FIRSTSCREENID:
-            settingConfig = makePrimarySetup();
-            initCurrentStatus(FIRSTSCREENID);
+            setScreenModeByDbus("first");
             break;
 #endif
 
 #ifdef CLONESCREENID
         case CLONESCREENID:
-            settingConfig = makeCloneSetup();
-            initCurrentStatus(CLONESCREENID);
+            setScreenModeByDbus("clone");
             break;
 #endif
 
 #ifdef EXTENEDSCREENID
         case EXTENEDSCREENID:
-            settingConfig = makeXineramaSetup();
-            initCurrentStatus(EXTENEDSCREENID);
+           setScreenModeByDbus("extend");
             break;
 #endif
 
 #ifdef OTHERSCREENID
         case OTHERSCREENID:
-            settingConfig = makeOtherSetup();
-            initCurrentStatus(OTHERSCREENID);
+            setScreenModeByDbus("second");
             break;
 #endif
 
@@ -446,222 +442,20 @@ void Widget::closeApp(){
     close();
 }
 
-MateRRConfig * Widget::makeCloneSetup() {
-
-    ukcciface->call("setScreenMode", "copy");
-
-    MateRRConfig * current;
-    MateRROutputInfo ** outputs;
-
-    int width, height;
-
-    //获取克隆屏最佳分辨率
-    _getCloneSize(&width, &height);
-
-    current = mate_rr_config_new_current(kScreen, NULL);
-    outputs = mate_rr_config_get_outputs(current);
-    mate_rr_config_set_clone(current, TRUE);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo *info = outputs[i];
-
-        mate_rr_output_info_set_active (info, FALSE);
-        if (mate_rr_output_info_is_connected(info)){
-            MateRROutput * output = mate_rr_screen_get_output_by_name(kScreen, mate_rr_output_info_get_name(info));
-            MateRRMode ** modes = mate_rr_output_list_modes(output);
-
-            int bestRate = 0;
-            for (int j = 0; modes[j] != NULL; j++){
-                MateRRMode * mode = modes[j];
-                int w, h;
-
-                w = mate_rr_mode_get_width(mode);
-                h = mate_rr_mode_get_height(mode);
-
-                if (w == width && h == height) {
-                    int r = mate_rr_mode_get_freq(mode);
-                    if (r > bestRate)
-                        bestRate = r;
-                }
-            }
-
-            if (bestRate > 0){
-                mate_rr_output_info_set_active(info, TRUE);
-                mate_rr_output_info_set_rotation(info, MATE_RR_ROTATION_0);
-                mate_rr_output_info_set_refresh_rate(info, bestRate);
-                mate_rr_output_info_set_geometry(info, 0, 0, width, height);
-            }
-        }
-    }
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
+void Widget::setScreenModeByDbus(QString modeName)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                                          "/org/ukui/SettingsDaemon/wayland",
+                                                          "org.ukui.SettingsDaemon.wayland",
+                                                          "setScreenMode");
+    QList<QVariant> args;
+    args.append(modeName);
+    args.append(qAppName());
+//    qDebug()<<"set to:"<<modeName<<qAppName();
+    message.setArguments(args);
+    QDBusConnection::sessionBus().send(message);
 }
 
-MateRRConfig * Widget::makePrimarySetup(){
-
-    ukcciface->call("setScreenMode", "first");
-
-    char * firstName;
-
-    /* Turn on the first screen, disable everything else */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs(current);
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    /* found first output */
-    firstName = _findFirstOutput(current);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        char * pName = mate_rr_output_info_get_name(info);
-
-        if (strcmp(firstName, pName) == 0){
-            if (!_turnonOutput(info, 0, 0)){
-                break;
-            }
-        } else {
-            mate_rr_output_info_set_active (info, FALSE);
-        }
-    }
-
-    _setNewPrimaryOutput(current);
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-MateRRConfig * Widget::makeOtherSetup(){
-
-    ukcciface->call("setScreenMode", "second");
-
-    char * firstName;
-
-    /* Turn off primary output, and make all external monitors clone from (0, 0) */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (current);
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    firstName = _findFirstOutput(current);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        char * pName = mate_rr_output_info_get_name(info);
-
-        if (strcmp(firstName, pName) == 0){
-            mate_rr_output_info_set_active(info, FALSE);
-        } else {
-            if (mate_rr_output_info_is_connected(info)){
-                _turnonOutput(info, 0, 0);
-            }
-        }
-    }
-
-    _setNewPrimaryOutput(current);
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-MateRRConfig * Widget::makeXineramaSetup(){
-
-    ukcciface->call("setScreenMode", "expand");
-
-    /* Turn on everything that has a preferred mode, and position it from left to right */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (current);
-    int x;
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    //found primary output
-    _setNewPrimaryOutput(current);
-
-    x = 0;
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_get_primary(info)){
-            x = _turnonGetRightmostOffset(info, x);
-        }
-    }
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_is_connected(info) && !mate_rr_output_info_get_primary(info)){
-            x = _turnonGetRightmostOffset(info, x);
-        }
-    }
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-bool Widget::_configIsAllOff(MateRRConfig *config){
-
-    MateRROutputInfo ** outputs;
-
-    outputs = mate_rr_config_get_outputs (config);
-
-    for (int j = 0; outputs[j] != NULL; j++) {
-        if (mate_rr_output_info_is_active (outputs[j])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool Widget::_getCloneSize(int *width, int *height) {
-
-    MateRRMode **modes = mate_rr_screen_list_clone_modes (kScreen);
-    int bestWidth, bestHeight;
-
-    bestWidth = 0; bestHeight = 0;
-
-    for (int i = 0; modes[i] != NULL; ++i){
-        int w, h;
-        MateRRMode *mode = modes[i];
-
-        w = mate_rr_mode_get_width (mode);
-        h = mate_rr_mode_get_height (mode);
-
-        if (w * h > bestWidth * bestHeight){
-            bestWidth = w;
-            bestHeight = h;
-        }
-    }
-
-    if (bestWidth > 0 && bestHeight > 0){
-        if (width)
-            *width = bestWidth;
-        if (height)
-            *height = bestHeight;
-
-        return true;
-    }
-
-    return false;
-}
 
 bool Widget::_isLaptop(MateRROutputInfo * info){
     /* 返回该输出是否是笔记本屏幕 */
