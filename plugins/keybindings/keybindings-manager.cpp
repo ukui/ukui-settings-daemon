@@ -370,7 +370,7 @@ keybindings_filter (GdkXEvent           *gdk_xevent,
 {
     XEvent *xevent = (XEvent *) gdk_xevent;
     GSList *li;
-    USD_LOG(LOG_DEBUG,"had event ：%d",xevent->type);
+//    USD_LOG(LOG_DEBUG,"had event ：%d",xevent->type);
     if (xevent->type != KeyPress) {
         return GDK_FILTER_CONTINUE;
     }
