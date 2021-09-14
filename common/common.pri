@@ -30,6 +30,7 @@ HEADERS += \
         $$PWD/QGSettings/qgsettings.h   \
         $$PWD/rfkillswitch.h \
         $$PWD/usd_base_class.h \
+        $$PWD/usd_global_define.h \
         $$PWD/xeventmonitor.h           \
         $$PWD/eggaccelerators.h         \
         $$PWD/ukui-input-helper.h       \

@@ -21,7 +21,26 @@
 
 PluginInterface *XrandrPlugin::mInstance      = nullptr;
 XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
-
+/*
+ *《》《》《》《》屏幕处理流程：
+ * 控制面板（UCC）
+ * 用户配置服务（USD）
+ * 屏幕模式切换（KDS）
+ *《》《》《》《》将用户屏幕分为五个文件夹:
+ *（share/kscreen/）:记录用户设置最后一次的设置。
+ *（share/kscreen/first）:记录用户在内屏模式下的设置
+ *（share/kscreen/clone）:记录用户在克隆模式下的设置
+ *（share/kscreen/extend）:记录用户在拓展模式下的设置
+ *（share/kscreen/other）:记录用户在其他屏模式下的设置
+ * 《》《》《》《》四个模式缺省设置：
+ * 内屏模式：以最大分辨率进行显示内屏并将内屏坐标迁移到0，0，disable外屏。
+ * 克隆模式：以最大分辨率进行显示克隆模式，enable全部已链接屏幕。
+ * 拓展模式：以最大分辨率显示拓展模式，enable全部已链接屏幕，并将外屏迁移到内屏的右侧。
+ * 其他屏幕：以最大分辨率显示外屏，并且将外屏迁移到0，0坐标。
+ * 《》《》《》《》交互逻辑：
+ * KDS：调用xrandr组件的模式切换dbus，传入模式字段（first，exten，clone，extend）进行处理。
+ * UCC：调用底层库，发送信号
+*/
 XrandrPlugin::XrandrPlugin()
 {
     if (UsdBaseClass::isWayland()) {

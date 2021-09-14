@@ -1,22 +1,33 @@
 #ifndef USDBASECLASS_H
 #define USDBASECLASS_H
+#include <QObject>
+#include <QMetaEnum>
 
-
-class UsdBaseClass
+class UsdBaseClass: public QObject
 {
+    Q_OBJECT
+
 public:
     UsdBaseClass();
     ~UsdBaseClass();
+    enum eScreenMode {
+        firstScreenMode = 0,
+        cloneScreenMode,
+        extendScreenMode,
+        secondScreenMode};
 
-static bool isTablet();
+    Q_ENUM(eScreenMode)
 
-static bool isMasterSP1();
+    static bool isTablet();
 
-static bool is9X0();
+    static bool isMasterSP1();
 
-static bool isWayland();
+    static bool is9X0();
 
-static bool isXcb();
+    static bool isWayland();
+
+    static bool isXcb();
+
 };
 
 #endif // USDBASECLASS_H

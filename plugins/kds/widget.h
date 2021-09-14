@@ -24,6 +24,7 @@
 #include <QKeyEvent>
 #include <QButtonGroup>
 #include <QGSettings/QGSettings>
+#include "usd_base_class.h"
 
 #ifdef signals
 #undef signals
@@ -72,7 +73,7 @@ public:
 private:
     Ui::Widget *ui;
     QButtonGroup * btnsGroup;
-
+    QMetaEnum metaEnum;
 private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
@@ -93,9 +94,9 @@ protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent* event);
 
-public slots:
+public Q_SLOTS:
     void XkbButtonEvent(int,int);
-
+    void msgReceiveAnotherOne(const QString &msg);
 
 
 private:
@@ -104,16 +105,9 @@ private:
     bool _turnonOutput(MateRROutputInfo * info, int x, int y);
     MateRRMode * _findBestMode(MateRROutput * output);
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
-
-
     char * _findFirstOutput(MateRRConfig * config);
 
-
-
-public slots:
-    void msgReceiveAnotherOne(const QString &msg);
-
-private slots:
+private Q_SLOTS:
     void nextSelectedOption();
     void lastSelectedOption();
     void confirmCurrentOption();

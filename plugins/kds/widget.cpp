@@ -36,6 +36,7 @@
 #include "expendbutton.h"
 #include "qtsingleapplication.h"
 #include "xeventmonitor.h"
+#include "clib-syslog.h"
 
 #define TITLEHEIGHT 90
 #define OPTIONSHEIGHT 70
@@ -62,6 +63,15 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     m_superPresss = false;
 
+    {
+        metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
+
+        for (int i=0; i<metaEnum.keyCount(); ++i)
+        {
+            qDebug() << metaEnum.key(i);
+            USD_LOG(LOG_DEBUG,"value:%s",metaEnum.key(i));
+        }
+    }
 }
 
 Widget::~Widget()
@@ -118,53 +128,35 @@ void Widget::initData(){
 void Widget::setupComponent(){
 
     int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
+    QStringList btnTextList;
+    QStringList btnImg;
+
+    btnTextList<<"First Screen";
+    btnTextList<<"Clone Screen";
+    btnTextList<<"Extend Screen";
+    btnTextList<<"Vice Screen";
+
+    btnImg<<":/img/main.png";
+    btnImg<<":/img/clone.png";
+    btnImg<<":/img/extend.png";
+    btnImg<<":/img/vice.png";
+
     setFixedWidth(384);
     setFixedHeight(h);
+
     const QString style = m_styleSettings->get("style-name").toString();
 
     ui->outputPrimaryTip->hide();
-//    setCurrentFirstOutputTip();
 
     for (int i = 0; i < ALLMODESID; i++){
         ExpendButton * btn = new ExpendButton();
         btn->setFixedHeight(70);
         btnsGroup->addButton(btn, i);
 
-        switch (i) {
-#ifdef FIRSTSCREENID
-        case FIRSTSCREENID:
-            btn->setSign(FIRSTSCREENID % 2,style);
-            btn->setBtnText(tr("First Screen"));
-            btn->setBtnLogo(":/img/main.png",style);
-            break;
-#endif
+        btn->setSign(i % 2,style);
+        btn->setBtnText(tr(btnTextList[i].toLatin1().data()));
+        btn->setBtnLogo(btnImg[i],style);
 
-#ifdef CLONESCREENID
-        case CLONESCREENID:
-            btn->setSign(CLONESCREENID % 2,style);
-            btn->setBtnText(tr("Clone Screen"));
-            btn->setBtnLogo(":/img/clone.png",style);
-            break;
-#endif
-
-#ifdef EXTENEDSCREENID
-        case EXTENEDSCREENID:
-            btn->setSign(EXTENEDSCREENID % 2,style);
-            btn->setBtnText(tr("Extend Screen"));
-            btn->setBtnLogo(":/img/extend.png",style);
-            break;
-#endif
-
-#ifdef OTHERSCREENID
-        case OTHERSCREENID:
-            btn->setSign(OTHERSCREENID % 2,style);
-            btn->setBtnText(tr("Vice Screen"));
-            btn->setBtnLogo(":/img/vice.png",style);
-            break;
-#endif
-        default:
-            break;
-        }
         ui->btnsVerLayout->addWidget(btn);
     }
 
@@ -190,78 +182,18 @@ void Widget::setupComponent(){
 void Widget::setupConnect(){
 
     connect(btnsGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [=](int id){
-
-
         /* 获取旧选项 */
         for (QAbstractButton * button : btnsGroup->buttons()){
             ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
 //            qDebug() << "old index: " << btn->getBtnChecked();
             int index = btnsGroup->id(button);
             if (index == id && btn->getBtnChecked()){
-                    goto closeapp;
+                   close();
             }
         }
 
-        MateRRConfig * settingConfig;
-
-        switch (id) {
-#ifdef FIRSTSCREENID
-        case FIRSTSCREENID:
-            setScreenModeByDbus("first");
-            break;
-#endif
-
-#ifdef CLONESCREENID
-        case CLONESCREENID:
-            setScreenModeByDbus("clone");
-            break;
-#endif
-
-#ifdef EXTENEDSCREENID
-        case EXTENEDSCREENID:
-           setScreenModeByDbus("extend");
-            break;
-#endif
-
-#ifdef OTHERSCREENID
-        case OTHERSCREENID:
-            setScreenModeByDbus("second");
-            break;
-#endif
-
-        default:
-            break;
-        }
-
-        if (id >= 0 && id < ALLMODESID){
-            guint32 timestamp, serverTimestamp;
-            gboolean success;
-            GError * error;
-
-            error = NULL;
-            if (!settingConfig || !mate_rr_config_applicable(settingConfig, kScreen, &error)){
-                if (error)
-                    g_error_free (error);
-                goto closeapp;
-            }
-
-            mate_rr_screen_get_timestamps(kScreen, NULL, &serverTimestamp);
-//            if (timestamp < serverTimestamp)
-//                timestamp = serverTimestamp;
-
-            error = NULL;
-
-            success = mate_rr_config_apply_with_time(settingConfig, kScreen, serverTimestamp, &error);
-            if (!success) {
-                qDebug() << "Could not switch to the following configuration: " << error->message;
-                g_error_free (error);
-            }
-
-closeapp:
-            close();
-        }
-
-
+        setScreenModeByDbus(metaEnum.key(id));
+        close();
     });
 
 }
@@ -270,7 +202,7 @@ closeapp:
 int Widget::getCurrentStatus(){
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
 
-    int status;
+
 
     if (mate_rr_config_get_clone(current)){
 #ifdef CLONESCREENID
@@ -372,10 +304,10 @@ void Widget::initCurrentStatus(int id){
 void Widget::setCurrentFirstOutputTip(){
 
     char * pName;
-    char * pDisplayName;
-
+    char *pDisplayName;
     char * firstName;
 
+    Q_UNUSED(pDisplayName);
     MateRRConfig * config = mate_rr_config_new_current(kScreen, NULL);
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
@@ -449,10 +381,11 @@ void Widget::setScreenModeByDbus(QString modeName)
                                                           "org.ukui.SettingsDaemon.wayland",
                                                           "setScreenMode");
     QList<QVariant> args;
+
     args.append(modeName);
     args.append(qAppName());
-//    qDebug()<<"set to:"<<modeName<<qAppName();
     message.setArguments(args);
+
     QDBusConnection::sessionBus().send(message);
 }
 
@@ -489,7 +422,7 @@ bool Widget::_setNewPrimaryOutput(MateRRConfig *config){
 char *Widget::_findFirstOutput(MateRRConfig *config){
 
     int firstid = -1;
-    char * firstname;
+    char *firstname=NULL;
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
 
@@ -537,7 +470,7 @@ bool Widget::_turnonOutput(MateRROutputInfo *info, int x, int y){
 }
 
 MateRRMode * Widget::_findBestMode(MateRROutput *output){
-    MateRRMode * preferred;
+
     MateRRMode ** modes;
     MateRRMode * bestMode;
     int bestSize;
