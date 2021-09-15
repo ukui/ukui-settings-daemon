@@ -1735,12 +1735,12 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         mate_rr_output_info_set_active (output, TRUE);
                         mate_rr_output_info_set_rotation (output, MATE_RR_ROTATION_0);
                         just_turned_on = g_list_prepend (just_turned_on, GINT_TO_POINTER (i));
-                        nums = i;
+                        nums++;
                 } else if (!mate_rr_output_info_is_connected (output) && mate_rr_output_info_is_active (output))
                         mate_rr_output_info_set_active (output, FALSE);
         }
         num = gdk_screen_get_n_monitors(gdk_screen_get_default());
-        if (num >= 1 || nums > 1){
+        if (num > 1 || nums > 1){
             g_object_unref (config);
             config = make_clone_setup (priv->rw_screen);
             applicable = mate_rr_config_applicable (config, priv->rw_screen, NULL);
@@ -1771,6 +1771,7 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         if (refresh < 50)
                             mate_rr_output_info_set_refresh_rate (output, 60);
 
+                        g_debug("set refresh:%d sjh",__LINE__);
                         x += width;
                 }
         }
@@ -1794,9 +1795,9 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                 if (refresh < 50)
                     mate_rr_output_info_set_refresh_rate (output, 60);
 
+                g_debug("set refresh:%d sjh",__LINE__);
                 x += width;
         }
-
         /* Check if we have a large enough framebuffer size.  If not, turn off
          * outputs from right to left until we reach a usable size.
          */
