@@ -887,6 +887,10 @@ void XrandrManager::setScreenModeToExtend()
 {
     int primaryX = 0;
     int screenSize = 0;
+
+    bool hadFindFirstScreen = false;
+    KScreen::OutputPtr primaryOutput;
+
     checkPrimaryScreenIsActive();
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
@@ -896,8 +900,10 @@ void XrandrManager::setScreenModeToExtend()
         if (output->isConnected()){
             output->setEnabled(true);
         } else {
+            output->setEnabled(false);
             continue;
         }
+
 
 
         Q_FOREACH (auto Mode, output->modes()){
@@ -910,6 +916,7 @@ void XrandrManager::setScreenModeToExtend()
          output->setPos(QPoint(primaryX,0));
          primaryX+=output->size().width();
          USD_LOG_SHOW_OUTPUT(output);
+         USD_LOG_SHOW_PARAM1(primaryX);
      }
 
     applyConfig();
