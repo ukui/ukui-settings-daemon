@@ -559,7 +559,18 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     KGlobalAccel::self()->setShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     connect(dSwitch, &QAction::triggered, this, [this]() {
+        static QTime startTime = QTime::currentTime();
+        int elapsed = 0;
+
+        elapsed = startTime.msecsTo(QTime::currentTime());
+        if (elapsed>0 && elapsed<3120){//避免过快刷屏,必须大于，120ms执行一次,
+            if (false == CheckProcessAlive("kydisplayswitch")){
+                return;
+            }
+        }
+        startTime = QTime::currentTime();
         doAction(KDS_KEY);
+
     });
     /*kylin display switch2*/
     QAction *dSwitch2= new QAction(this);
