@@ -63,10 +63,8 @@ private:
 private:
     KScreen::ConfigPtr mConfig = nullptr;
 
-public slots:
+public Q_SLOTS:
     void msgReceiveAnotherOne(const QString &msg);
-
-private slots:
     void nextSelectedOption();
     void lastSelectedOption();
     void confirmCurrentOption();

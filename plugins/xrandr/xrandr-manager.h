@@ -31,6 +31,7 @@
 #include <QDBusInterface>
 #include <QGSettings/qgsettings.h>
 #include <QScreen>
+#include <usd_base_class.h>
 
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
@@ -46,14 +47,6 @@ public:
     XrandrManager();
     ~XrandrManager() override;
 
-
-    //coolDownStart 1.5->>coolDowning3.5->coolDownStart
-    //coolDownStart 1.5->>coolDowning3.5(有事件)->coolDownRun-》coolDownStart
-    enum ScreenCanBeApplyStatus {
-        coolDownStart,//可以开始执行1.5s计时，超时后应用配置
-        coolDownOverAndRun,    //CD结束后立刻应用配置（配置文件已更新）
-        coolDowning,        //冷却中（只更新配置，不应用配置）
-    };
 public:
     bool XrandrManagerStart();
     void XrandrManagerStop();
@@ -67,7 +60,9 @@ public:
     void doApplyConfig(const KScreen::ConfigPtr &config);
     void doApplyConfig(std::unique_ptr<xrandrConfig> config);
     void refreshConfig();
+    void SaveConfigTimerHandle();
 
+    void discernScreenMode();
 
     void saveCurrentConfig();
     void setMonitorForChanges(bool enabled);
@@ -85,11 +80,14 @@ public:
     void lightLastScreen();
     void outputConnectedWithoutConfigFile(KScreen::Output *senderOutput ,char outputCount);
     void setScreenModeToClone();
-    void setScreenModeToFirst(bool isFirst);
-    void setScreenModeToExpand();
+    void setScreenModeToFirst(bool isFirstMode);
+    void setScreenModeToExtend();
+    void checkPrimaryScreenIsActive();
+
+
+
 public Q_SLOTS:
     void configChanged();
-    void mPrepareForSleep(bool);
     void RotationChangedEvent(QString);
     void outputAddedHandle(const KScreen::OutputPtr &output);
     void outputRemoved(int outputId);
@@ -103,26 +101,32 @@ Q_SIGNALS:
 
 private:
 
-    Q_ENUM(ScreenCanBeApplyStatus)
+
+
+
+
     Q_INVOKABLE void getInitialConfig();
     QTimer                *mAcitveTime = nullptr;
-    QTimer                *mSaveTimer = nullptr;
+    QTimer                *mSaveConfigTimer = nullptr;
     QTimer                *mChangeCompressor = nullptr;
     QTimer                *mApplyConfigTimer = nullptr;
     QGSettings            *mXrandrSetting = nullptr;
     QGSettings            *mXsettings = nullptr;
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
+
     std::unique_ptr<xrandrConfig> mMonitoredConfig = nullptr;
     KScreen::ConfigPtr mConfig = nullptr;
     xrandrDbus *mDbus;
+
+    QMetaEnum metaEnum;
+
     bool mMonitoring;
     bool mConfigDirty = true;
     bool mSleepState = false;
     bool mAddScreen = false;
     QScreen *mScreen = nullptr;
     bool mStartingUp = true;
-    ScreenCanBeApplyStatus mScreenCanBeApply = XrandrManager::coolDownStart;
 };
 
 #endif // XRANDRMANAGER_H

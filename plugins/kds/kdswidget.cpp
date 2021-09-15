@@ -391,110 +391,122 @@ QString KDSWidget::findFirstOutput(){
 
 void KDSWidget::setCloneModeSetup(){
 
-    QList<int> clones;
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                           "/org/ukui/SettingsDaemon/wayland",
+                                           "org.ukui.SettingsDaemon.wayland",
+                                           "setScreenMode");
+    message << "clone";
+    QDBusConnection::sessionBus().send(message);
+//    QList<int> clones;
 
-    const KScreen::ConfigPtr &config = this->currentConfig();
+//    const KScreen::ConfigPtr &config = this->currentConfig();
 
-    QSize cloneSize = findBestCloneSize();
+//    QSize cloneSize = findBestCloneSize();
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
 
-        float bestRate = 0.0;
-        QString bestID;
+//        float bestRate = 0.0;
+//        QString bestID;
 
-        output.data()->setEnabled(true);
+//        output.data()->setEnabled(true);
 
-        Q_FOREACH (const KScreen::ModePtr &mode, output->modes()) {
+//        Q_FOREACH (const KScreen::ModePtr &mode, output->modes()) {
 
-            if (mode.data()->size() == cloneSize){
+//            if (mode.data()->size() == cloneSize){
 
-                float r = mode.data()->refreshRate();
-                if (bestRate < r){
-                    bestRate = r;
-                    bestID = mode.data()->id();
-                }
+//                float r = mode.data()->refreshRate();
+//                if (bestRate < r){
+//                    bestRate = r;
+//                    bestID = mode.data()->id();
+//                }
 
-            }
-        }
+//            }
+//        }
 
-        if (bestRate > 0){
+//        if (bestRate > 0){
 
-            output.data()->setCurrentModeId(bestID);
-            output.data()->setRotation(KScreen::Output::None);
-            output.data()->setPos(QPoint(0, 0));
+//            output.data()->setCurrentModeId(bestID);
+//            output.data()->setRotation(KScreen::Output::None);
+//            output.data()->setPos(QPoint(0, 0));
 
-            if (!output.data()->isPrimary()){
-                clones.append(output.data()->id());
-            }
-        }
+//            if (!output.data()->isPrimary()){
+//                clones.append(output.data()->id());
+//            }
+//        }
 
-    }
+//    }
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
 
-        if (output.data()->isPrimary()){
-            output.data()->setClones(clones);
-        } else {
-            output.data()->setClones(QList<int>());
-        }
+//        if (output.data()->isPrimary()){
+//            output.data()->setClones(clones);
+//        } else {
+//            output.data()->setClones(QList<int>());
+//        }
 
-    }
+//    }
 
 
 
-    if (!KScreen::Config::canBeApplied(config)) {
-//        qDebug() << "Can not apply!";
-        return;
-    }
+//    if (!KScreen::Config::canBeApplied(config)) {
+////        qDebug() << "Can not apply!";
+//        return;
+//    }
 
-    auto *op = new KScreen::SetConfigOperation(config);
+//    auto *op = new KScreen::SetConfigOperation(config);
 
-    op->exec();
+//    op->exec();
 
-    syncPrimaryScreenData(getCurrentPrimaryScreenName());
+//    syncPrimaryScreenData(getCurrentPrimaryScreenName());
 
 }
 
 void KDSWidget::setExtendModeSetup(){
-    const KScreen::ConfigPtr &config = this->currentConfig();
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                           "/org/ukui/SettingsDaemon/wayland",
+                                           "org.ukui.SettingsDaemon.wayland",
+                                           "setScreenMode");
+    message << "extend";
+    QDBusConnection::sessionBus().send(message);
+//    const KScreen::ConfigPtr &config = this->currentConfig();
 
-    int x = 0;
+//    int x = 0;
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
-        if (!output.data()->isPrimary()){
-            continue;
-        }
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//        if (!output.data()->isPrimary()){
+//            continue;
+//        }
 
-        output.data()->setEnabled(true);
-        output.data()->setClones(QList<int>());
+//        output.data()->setEnabled(true);
+//        output.data()->setClones(QList<int>());
 
-        x = turnonAndGetRightmostOffset(output, x);
+//        x = turnonAndGetRightmostOffset(output, x);
 
-    }
+//    }
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
-        if (output.data()->isPrimary()){
-            continue;
-        }
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//        if (output.data()->isPrimary()){
+//            continue;
+//        }
 
-        output.data()->setEnabled(true);
-        output.data()->setClones(QList<int>());
+//        output.data()->setEnabled(true);
+//        output.data()->setClones(QList<int>());
 
-        x = turnonAndGetRightmostOffset(output, x);
+//        x = turnonAndGetRightmostOffset(output, x);
 
-    }
+//    }
 
-    if (!KScreen::Config::canBeApplied(config)) {
-//        qDebug() << "Can not apply!";
-        return;
-    }
+//    if (!KScreen::Config::canBeApplied(config)) {
+////        qDebug() << "Can not apply!";
+//        return;
+//    }
 
-    auto *op = new KScreen::SetConfigOperation(config);
+//    auto *op = new KScreen::SetConfigOperation(config);
 
-    op->exec();
+//    op->exec();
 
-    //
-    syncPrimaryScreenData(getCurrentPrimaryScreenName());
+//    //
+//    syncPrimaryScreenData(getCurrentPrimaryScreenName());
 }
 
 void KDSWidget::setLeftExtendModeSetup(){
@@ -543,70 +555,84 @@ void KDSWidget::setLeftExtendModeSetup(){
 }
 
 void KDSWidget::setFirstModeSetup(){
-    const KScreen::ConfigPtr &config = this->currentConfig();
 
-    QString firstName = findFirstOutput();
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                           "/org/ukui/SettingsDaemon/wayland",
+                                           "org.ukui.SettingsDaemon.wayland",
+                                           "setScreenMode");
+    message << "first";
+    QDBusConnection::sessionBus().send(message);
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
-        /* 取消镜像模式标志位 */
-        output.data()->setClones(QList<int>());
+//    const KScreen::ConfigPtr &config = this->currentConfig();
 
-        if (QString::compare(output.data()->name(), firstName) == 0){
-            turnonSpecifiedOutput(output, 0, 0);
-        } else {
-            output.data()->setEnabled(false);
-        }
+//    QString firstName = findFirstOutput();
 
-    }
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//        /* 取消镜像模式标志位 */
+//        output.data()->setClones(QList<int>());
 
-    if (!KScreen::Config::canBeApplied(config)) {
-//        qDebug() << "Can not apply!";
-        return;
-    }
+//        if (QString::compare(output.data()->name(), firstName) == 0){
+//            turnonSpecifiedOutput(output, 0, 0);
+//        } else {
+//            output.data()->setEnabled(false);
+//        }
 
-    auto * op = new KScreen::SetConfigOperation(config);
-    op->exec();
+//    }
 
-    syncPrimaryScreenData(firstName);
+//    if (!KScreen::Config::canBeApplied(config)) {
+////        qDebug() << "Can not apply!";
+//        return;
+//    }
+
+//    auto * op = new KScreen::SetConfigOperation(config);
+//    op->exec();
+
+//    syncPrimaryScreenData(firstName);
 }
 
 void KDSWidget::setOtherModeSetup(){
-    const KScreen::ConfigPtr &config = this->currentConfig();
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                           "/org/ukui/SettingsDaemon/wayland",
+                                           "org.ukui.SettingsDaemon.wayland",
+                                           "setScreenMode");
+    message << "second";
+    QDBusConnection::sessionBus().send(message);
+//    const KScreen::ConfigPtr &config = this->currentConfig();
 
-    QString firstName = findFirstOutput();
-    QString otherName;
+//    QString firstName = findFirstOutput();
+//    QString otherName;
 
-    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
+//    Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
 
-        /* 取消镜像模式标志位 */
-        output.data()->setClones(QList<int>());
+//        /* 取消镜像模式标志位 */
+//        output.data()->setClones(QList<int>());
 
-        if (QString::compare(output.data()->name(), firstName) == 0){
-            output.data()->setEnabled(false);
-        } else {
-//            output.data()->setEnabled(true);
-            turnonSpecifiedOutput(output, 0, 0);
-        }
+//        if (QString::compare(output.data()->name(), firstName) == 0){
+//            output.data()->setEnabled(false);
+//        } else {
+////            output.data()->setEnabled(true);
+//            turnonSpecifiedOutput(output, 0, 0);
+//        }
 
-        //获取非主屏的Name。TODO:多屏(>2)情况下呢？
-        if (QString::compare(output.data()->name(), firstName) == 0){
+//        //获取非主屏的Name。TODO:多屏(>2)情况下呢？
+//        if (QString::compare(output.data()->name(), firstName) == 0){
 
-        } else {
-            otherName = output.data()->name();
-        }
+//        } else {
+//            otherName = output.data()->name();
+//        }
 
-    }
+//    }
 
-    if (!KScreen::Config::canBeApplied(config)) {
-//        qDebug() << "Can not apply!";
-        return;
-    }
+//    if (!KScreen::Config::canBeApplied(config)) {
+////        qDebug() << "Can not apply!";
+//        return;
+//    }
 
-    auto * op = new KScreen::SetConfigOperation(config);
+//    auto * op = new KScreen::SetConfigOperation(config);
 
-    op->exec();
+//    op->exec();
 
-    syncPrimaryScreenData(otherName);
+//    syncPrimaryScreenData(otherName);
 }
 
 int KDSWidget::turnonAndGetRightmostOffset(const KScreen::OutputPtr &output, int x){

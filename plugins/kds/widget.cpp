@@ -36,6 +36,7 @@
 #include "expendbutton.h"
 #include "qtsingleapplication.h"
 #include "xeventmonitor.h"
+#include "clib-syslog.h"
 
 #define TITLEHEIGHT 90
 #define OPTIONSHEIGHT 70
@@ -62,6 +63,15 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     m_superPresss = false;
 
+    {
+        metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
+
+        for (int i=0; i<metaEnum.keyCount(); ++i)
+        {
+            qDebug() << metaEnum.key(i);
+            USD_LOG(LOG_DEBUG,"value:%s",metaEnum.key(i));
+        }
+    }
 }
 
 Widget::~Widget()
@@ -118,53 +128,35 @@ void Widget::initData(){
 void Widget::setupComponent(){
 
     int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
+    QStringList btnTextList;
+    QStringList btnImg;
+
+    btnTextList<<"First Screen";
+    btnTextList<<"Clone Screen";
+    btnTextList<<"Extend Screen";
+    btnTextList<<"Vice Screen";
+
+    btnImg<<":/img/main.png";
+    btnImg<<":/img/clone.png";
+    btnImg<<":/img/extend.png";
+    btnImg<<":/img/vice.png";
+
     setFixedWidth(384);
     setFixedHeight(h);
+
     const QString style = m_styleSettings->get("style-name").toString();
 
     ui->outputPrimaryTip->hide();
-//    setCurrentFirstOutputTip();
 
     for (int i = 0; i < ALLMODESID; i++){
         ExpendButton * btn = new ExpendButton();
         btn->setFixedHeight(70);
         btnsGroup->addButton(btn, i);
 
-        switch (i) {
-#ifdef FIRSTSCREENID
-        case FIRSTSCREENID:
-            btn->setSign(FIRSTSCREENID % 2,style);
-            btn->setBtnText(tr("First Screen"));
-            btn->setBtnLogo(":/img/main.png",style);
-            break;
-#endif
+        btn->setSign(i % 2,style);
+        btn->setBtnText(tr(btnTextList[i].toLatin1().data()));
+        btn->setBtnLogo(btnImg[i],style);
 
-#ifdef CLONESCREENID
-        case CLONESCREENID:
-            btn->setSign(CLONESCREENID % 2,style);
-            btn->setBtnText(tr("Clone Screen"));
-            btn->setBtnLogo(":/img/clone.png",style);
-            break;
-#endif
-
-#ifdef EXTENEDSCREENID
-        case EXTENEDSCREENID:
-            btn->setSign(EXTENEDSCREENID % 2,style);
-            btn->setBtnText(tr("Extend Screen"));
-            btn->setBtnLogo(":/img/extend.png",style);
-            break;
-#endif
-
-#ifdef OTHERSCREENID
-        case OTHERSCREENID:
-            btn->setSign(OTHERSCREENID % 2,style);
-            btn->setBtnText(tr("Vice Screen"));
-            btn->setBtnLogo(":/img/vice.png",style);
-            break;
-#endif
-        default:
-            break;
-        }
         ui->btnsVerLayout->addWidget(btn);
     }
 
@@ -190,82 +182,18 @@ void Widget::setupComponent(){
 void Widget::setupConnect(){
 
     connect(btnsGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [=](int id){
-
-
         /* 获取旧选项 */
         for (QAbstractButton * button : btnsGroup->buttons()){
             ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
 //            qDebug() << "old index: " << btn->getBtnChecked();
             int index = btnsGroup->id(button);
             if (index == id && btn->getBtnChecked()){
-                    goto closeapp;
+                   close();
             }
         }
 
-        MateRRConfig * settingConfig;
-
-        switch (id) {
-#ifdef FIRSTSCREENID
-        case FIRSTSCREENID:
-            settingConfig = makePrimarySetup();
-            initCurrentStatus(FIRSTSCREENID);
-            break;
-#endif
-
-#ifdef CLONESCREENID
-        case CLONESCREENID:
-            settingConfig = makeCloneSetup();
-            initCurrentStatus(CLONESCREENID);
-            break;
-#endif
-
-#ifdef EXTENEDSCREENID
-        case EXTENEDSCREENID:
-            settingConfig = makeXineramaSetup();
-            initCurrentStatus(EXTENEDSCREENID);
-            break;
-#endif
-
-#ifdef OTHERSCREENID
-        case OTHERSCREENID:
-            settingConfig = makeOtherSetup();
-            initCurrentStatus(OTHERSCREENID);
-            break;
-#endif
-
-        default:
-            break;
-        }
-
-        if (id >= 0 && id < ALLMODESID){
-            guint32 timestamp, serverTimestamp;
-            gboolean success;
-            GError * error;
-
-            error = NULL;
-            if (!settingConfig || !mate_rr_config_applicable(settingConfig, kScreen, &error)){
-                if (error)
-                    g_error_free (error);
-                goto closeapp;
-            }
-
-            mate_rr_screen_get_timestamps(kScreen, NULL, &serverTimestamp);
-//            if (timestamp < serverTimestamp)
-//                timestamp = serverTimestamp;
-
-            error = NULL;
-
-            success = mate_rr_config_apply_with_time(settingConfig, kScreen, serverTimestamp, &error);
-            if (!success) {
-                qDebug() << "Could not switch to the following configuration: " << error->message;
-                g_error_free (error);
-            }
-
-closeapp:
-            close();
-        }
-
-
+        setScreenModeByDbus(metaEnum.key(id));
+        close();
     });
 
 }
@@ -274,7 +202,7 @@ closeapp:
 int Widget::getCurrentStatus(){
     MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
 
-    int status;
+
 
     if (mate_rr_config_get_clone(current)){
 #ifdef CLONESCREENID
@@ -376,10 +304,10 @@ void Widget::initCurrentStatus(int id){
 void Widget::setCurrentFirstOutputTip(){
 
     char * pName;
-    char * pDisplayName;
-
+    char *pDisplayName;
     char * firstName;
 
+    Q_UNUSED(pDisplayName);
     MateRRConfig * config = mate_rr_config_new_current(kScreen, NULL);
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
@@ -446,222 +374,21 @@ void Widget::closeApp(){
     close();
 }
 
-MateRRConfig * Widget::makeCloneSetup() {
+void Widget::setScreenModeByDbus(QString modeName)
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                                          "/org/ukui/SettingsDaemon/wayland",
+                                                          "org.ukui.SettingsDaemon.wayland",
+                                                          "setScreenMode");
+    QList<QVariant> args;
 
-    ukcciface->call("setScreenMode", "copy");
+    args.append(modeName);
+    args.append(qAppName());
+    message.setArguments(args);
 
-    MateRRConfig * current;
-    MateRROutputInfo ** outputs;
-
-    int width, height;
-
-    //获取克隆屏最佳分辨率
-    _getCloneSize(&width, &height);
-
-    current = mate_rr_config_new_current(kScreen, NULL);
-    outputs = mate_rr_config_get_outputs(current);
-    mate_rr_config_set_clone(current, TRUE);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo *info = outputs[i];
-
-        mate_rr_output_info_set_active (info, FALSE);
-        if (mate_rr_output_info_is_connected(info)){
-            MateRROutput * output = mate_rr_screen_get_output_by_name(kScreen, mate_rr_output_info_get_name(info));
-            MateRRMode ** modes = mate_rr_output_list_modes(output);
-
-            int bestRate = 0;
-            for (int j = 0; modes[j] != NULL; j++){
-                MateRRMode * mode = modes[j];
-                int w, h;
-
-                w = mate_rr_mode_get_width(mode);
-                h = mate_rr_mode_get_height(mode);
-
-                if (w == width && h == height) {
-                    int r = mate_rr_mode_get_freq(mode);
-                    if (r > bestRate)
-                        bestRate = r;
-                }
-            }
-
-            if (bestRate > 0){
-                mate_rr_output_info_set_active(info, TRUE);
-                mate_rr_output_info_set_rotation(info, MATE_RR_ROTATION_0);
-                mate_rr_output_info_set_refresh_rate(info, bestRate);
-                mate_rr_output_info_set_geometry(info, 0, 0, width, height);
-            }
-        }
-    }
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
+    QDBusConnection::sessionBus().send(message);
 }
 
-MateRRConfig * Widget::makePrimarySetup(){
-
-    ukcciface->call("setScreenMode", "first");
-
-    char * firstName;
-
-    /* Turn on the first screen, disable everything else */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs(current);
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    /* found first output */
-    firstName = _findFirstOutput(current);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        char * pName = mate_rr_output_info_get_name(info);
-
-        if (strcmp(firstName, pName) == 0){
-            if (!_turnonOutput(info, 0, 0)){
-                break;
-            }
-        } else {
-            mate_rr_output_info_set_active (info, FALSE);
-        }
-    }
-
-    _setNewPrimaryOutput(current);
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-MateRRConfig * Widget::makeOtherSetup(){
-
-    ukcciface->call("setScreenMode", "second");
-
-    char * firstName;
-
-    /* Turn off primary output, and make all external monitors clone from (0, 0) */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (current);
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    firstName = _findFirstOutput(current);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        char * pName = mate_rr_output_info_get_name(info);
-
-        if (strcmp(firstName, pName) == 0){
-            mate_rr_output_info_set_active(info, FALSE);
-        } else {
-            if (mate_rr_output_info_is_connected(info)){
-                _turnonOutput(info, 0, 0);
-            }
-        }
-    }
-
-    _setNewPrimaryOutput(current);
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-MateRRConfig * Widget::makeXineramaSetup(){
-
-    ukcciface->call("setScreenMode", "expand");
-
-    /* Turn on everything that has a preferred mode, and position it from left to right */
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (current);
-    int x;
-
-    mate_rr_config_set_clone(current, FALSE);
-
-    //found primary output
-    _setNewPrimaryOutput(current);
-
-    x = 0;
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_get_primary(info)){
-            x = _turnonGetRightmostOffset(info, x);
-        }
-    }
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-        if (mate_rr_output_info_is_connected(info) && !mate_rr_output_info_get_primary(info)){
-            x = _turnonGetRightmostOffset(info, x);
-        }
-    }
-
-    if (_configIsAllOff(current)){
-        g_object_unref(current);
-        current = NULL;
-    }
-
-    return current;
-}
-
-bool Widget::_configIsAllOff(MateRRConfig *config){
-
-    MateRROutputInfo ** outputs;
-
-    outputs = mate_rr_config_get_outputs (config);
-
-    for (int j = 0; outputs[j] != NULL; j++) {
-        if (mate_rr_output_info_is_active (outputs[j])) {
-            return false;
-        }
-    }
-
-    return true;
-}
-
-bool Widget::_getCloneSize(int *width, int *height) {
-
-    MateRRMode **modes = mate_rr_screen_list_clone_modes (kScreen);
-    int bestWidth, bestHeight;
-
-    bestWidth = 0; bestHeight = 0;
-
-    for (int i = 0; modes[i] != NULL; ++i){
-        int w, h;
-        MateRRMode *mode = modes[i];
-
-        w = mate_rr_mode_get_width (mode);
-        h = mate_rr_mode_get_height (mode);
-
-        if (w * h > bestWidth * bestHeight){
-            bestWidth = w;
-            bestHeight = h;
-        }
-    }
-
-    if (bestWidth > 0 && bestHeight > 0){
-        if (width)
-            *width = bestWidth;
-        if (height)
-            *height = bestHeight;
-
-        return true;
-    }
-
-    return false;
-}
 
 bool Widget::_isLaptop(MateRROutputInfo * info){
     /* 返回该输出是否是笔记本屏幕 */
@@ -695,7 +422,7 @@ bool Widget::_setNewPrimaryOutput(MateRRConfig *config){
 char *Widget::_findFirstOutput(MateRRConfig *config){
 
     int firstid = -1;
-    char * firstname;
+    char *firstname=NULL;
 
     MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
 
@@ -743,7 +470,7 @@ bool Widget::_turnonOutput(MateRROutputInfo *info, int x, int y){
 }
 
 MateRRMode * Widget::_findBestMode(MateRROutput *output){
-    MateRRMode * preferred;
+
     MateRRMode ** modes;
     MateRRMode * bestMode;
     int bestSize;

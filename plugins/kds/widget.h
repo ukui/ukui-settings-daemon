@@ -24,6 +24,7 @@
 #include <QKeyEvent>
 #include <QButtonGroup>
 #include <QGSettings/QGSettings>
+#include "usd_base_class.h"
 
 #ifdef signals
 #undef signals
@@ -60,11 +61,7 @@ public:
     void setupComponent();
     void setupConnect();
 
-    MateRRConfig * makeCloneSetup();
-    MateRRConfig * makePrimarySetup();
-    MateRRConfig * makeOtherSetup();
-    MateRRConfig * makeXineramaSetup();
-
+    void setScreenModeByDbus(QString modeName);
     int getCurrentStatus();
 
     void initCurrentStatus(int id);
@@ -76,7 +73,7 @@ public:
 private:
     Ui::Widget *ui;
     QButtonGroup * btnsGroup;
-
+    QMetaEnum metaEnum;
 private:
     MateRRScreen * kScreen;
 //    MateRRConfig * kConfig;
@@ -97,28 +94,20 @@ protected:
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent* event);
 
-public slots:
+public Q_SLOTS:
     void XkbButtonEvent(int,int);
-
+    void msgReceiveAnotherOne(const QString &msg);
 
 
 private:
-    bool _getCloneSize(int * width, int * height);
     bool _isLaptop(MateRROutputInfo * info);
     bool _setNewPrimaryOutput(MateRRConfig * config);
     bool _turnonOutput(MateRROutputInfo * info, int x, int y);
     MateRRMode * _findBestMode(MateRROutput * output);
     int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
-    bool _configIsAllOff(MateRRConfig * config);
-
     char * _findFirstOutput(MateRRConfig * config);
 
-
-
-public slots:
-    void msgReceiveAnotherOne(const QString &msg);
-
-private slots:
+private Q_SLOTS:
     void nextSelectedOption();
     void lastSelectedOption();
     void confirmCurrentOption();

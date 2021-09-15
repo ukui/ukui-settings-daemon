@@ -1,0 +1,5 @@
+#ifndef USD_GLOBAL_DEFINE_H
+#define USD_GLOBAL_DEFINE_H
+
+
+#endif // USD_GLOBAL_DEFINE_H

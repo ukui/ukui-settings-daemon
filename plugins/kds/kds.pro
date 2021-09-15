@@ -15,7 +15,7 @@ TEMPLATE = app
 # any feature of Qt which as been marked as deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
 # deprecated API in order to know how to port your code away from it.
-DEFINES += QT_DEPRECATED_WARNINGS
+DEFINES += QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"KDS\\\"
 
 
 include (qtsingleapplication/qtsingleapplication.pri)
@@ -56,14 +56,12 @@ SOURCES += \
     kdswidget.cpp \
         main.cpp \
         widget.cpp \
-    expendbutton.cpp \
-    xeventmonitor.cpp
+    expendbutton.cpp
 
 HEADERS += \
     kdswidget.h \
         widget.h \
-    expendbutton.h \
-    xeventmonitor.h
+    expendbutton.h
 
 FORMS += \
         kdswidget.ui \
@@ -74,3 +72,5 @@ RESOURCES += \
 
 TRANSLATIONS +=  \
                 res/zh_CN.ts \
+
+include($$PWD/../../common/common.pri)
