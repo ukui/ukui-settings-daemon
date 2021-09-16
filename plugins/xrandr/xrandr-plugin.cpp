@@ -22,6 +22,7 @@
 PluginInterface *XrandrPlugin::mInstance      = nullptr;
 XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
 /*
+ * TODO:
  *《》《》《》《》屏幕处理流程：
  * 控制面板（UCC）
  * 用户配置服务（USD）
@@ -38,8 +39,11 @@ XrandrManager   *XrandrPlugin::mXrandrManager = nullptr;
  * 拓展模式：以最大分辨率显示拓展模式，enable全部已链接屏幕，并将外屏迁移到内屏的右侧。
  * 其他屏幕：以最大分辨率显示外屏，并且将外屏迁移到0，0坐标。
  * 《》《》《》《》交互逻辑：
- * KDS：调用xrandr组件的模式切换dbus，传入模式字段（first，exten，clone，extend）进行处理。
- * UCC：调用底层库，发送信号
+ * KDS：调用xrandr组件的模式切换dbus，传入（setScreenMode）模式字段（first，exten，clone，extend）进行处理,调用接口（getScreenMode）获取当前的模式（实现）
+ * UCC：调用底层库，发送信号.
+ * 《》《》《》《》《设计模式》
+ * 将实时的配置文件放入kscreen内，同时根据模式放入一份到first，clone，exten，other内。首次运行时直接载入kscreen文件夹下，模式切换时载入备份中，如果没有再按照缺省模式设置进行加载。
+ *
 */
 XrandrPlugin::XrandrPlugin()
 {

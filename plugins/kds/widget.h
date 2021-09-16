@@ -65,7 +65,6 @@ public:
     int getCurrentStatus();
 
     void initCurrentStatus(int id);
-    void setCurrentFirstOutputTip();
 
     QDBusInterface * ukcciface;
 
@@ -100,12 +99,6 @@ public Q_SLOTS:
 
 
 private:
-    bool _isLaptop(MateRROutputInfo * info);
-    bool _setNewPrimaryOutput(MateRRConfig * config);
-    bool _turnonOutput(MateRROutputInfo * info, int x, int y);
-    MateRRMode * _findBestMode(MateRROutput * output);
-    int _turnonGetRightmostOffset(MateRROutputInfo * info, int x);
-    char * _findFirstOutput(MateRRConfig * config);
 
 private Q_SLOTS:
     void nextSelectedOption();

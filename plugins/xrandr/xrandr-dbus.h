@@ -23,6 +23,7 @@ public Q_SLOTS:
     QString priScreenName();
     int priScreenChanged(int x, int y, int width, int height, QString name);
     int setScreenMode(QString modeName, QString appName);
+    int getScreenMode(QString appName);
 
 Q_SIGNALS:
     void screenPrimaryChanged(int x, int y, int width, int height);
@@ -36,6 +37,7 @@ public:
     int mWidth = 0;
     int mHeight = 0;
     double mScale = 1.0;
+    int mScreenMode = 0;
     QString mName;
     QGSettings *mXsettings;
 };

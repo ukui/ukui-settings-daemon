@@ -132,6 +132,9 @@ void XrandrManager::getInitialConfig()
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
         monitorsInit();
+
+        mDbus->mScreenMode = discernScreenMode();
+        USD_LOG(LOG_DEBUG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!mDbus mode:%s!!!!!!!!!!!!!!!!!!!!!!!1",metaEnum.key(mDbus->mScreenMode));
     });
 }
 
@@ -560,11 +563,13 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         USD_LOG_SHOW_OUTPUT(output);
 
         if (output->name()==senderOutput->name()) {//这里只设置connect，enbale由配置设置。
-            output->setConnected(senderOutput->isConnected());
+            output->setEnabled(senderOutput->isConnected());
+             output->setConnected(senderOutput->isConnected());
 
             if (0 == output->modes().count()) {
                 output->setModes(senderOutput->modes());
             }
+
            USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
        }
 
@@ -594,13 +599,12 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
     applyConfig();
 }
 
+//处理来自控制面板的操作动作
 void XrandrManager::SaveConfigTimerHandle()
 {
-    mSaveConfigTimer->stop();
-
-     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
-
-     }
+    mDbus->mScreenMode = discernScreenMode();
+//    mSaveConfigTimer->stop();
+//    mMonitoredConfig->writeFile(true);
 
 }
 
@@ -742,11 +746,20 @@ void XrandrManager::monitorsInit()
     }
 }
 
-void XrandrManager::checkPrimaryScreenIsActive()
+bool XrandrManager::checkPrimaryScreenIsSetable()
 {
-    if (mMonitoredConfig->data()->outputs().count() < 2) {
-        USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
-        return;
+
+    int connecedScreenCount = 0;
+
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
+        if (output->isConnected()){
+            connecedScreenCount++;
+        }
+    }
+
+    if (connecedScreenCount < 2) {
+         USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
+        return false;
     }
 
     if (nullptr == mMonitoredConfig->data()->primaryOutput()){
@@ -760,6 +773,7 @@ void XrandrManager::checkPrimaryScreenIsActive()
             }
         }
     }
+    return true;
 }
 
 void XrandrManager::setScreenModeToClone()
@@ -775,7 +789,9 @@ void XrandrManager::setScreenModeToClone()
 
     KScreen::OutputPtr primaryOutput;// = mMonitoredConfig->data()->primaryOutput();
 
-    checkPrimaryScreenIsActive();
+    if (false == checkPrimaryScreenIsSetable()) {
+        return;
+    }
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
@@ -837,11 +853,15 @@ void XrandrManager::setScreenModeToClone()
 
 void XrandrManager::setScreenModeToFirst(bool isFirstMode)
 {
-    checkPrimaryScreenIsActive();
+
 
     int posX = 0;
     int maxScreenSize = 0;
     bool hadFindFirstScreen = false;
+
+    if (false == checkPrimaryScreenIsSetable()) {
+        return;
+    }
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
 
@@ -887,14 +907,14 @@ void XrandrManager::setScreenModeToExtend()
 {
     int primaryX = 0;
     int screenSize = 0;
-
-    bool hadFindFirstScreen = false;
-    KScreen::OutputPtr primaryOutput;
-
-    checkPrimaryScreenIsActive();
+    int singleMaxWidth = 0;
+    if (false == checkPrimaryScreenIsSetable()) {
+        return;
+    }
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         screenSize = 0;
+        singleMaxWidth = 0;
         USD_LOG_SHOW_OUTPUT(output);
 
         if (output->isConnected()){
@@ -904,17 +924,18 @@ void XrandrManager::setScreenModeToExtend()
             continue;
         }
 
-
-
         Q_FOREACH (auto Mode, output->modes()){
             if (Mode->size().width()*Mode->size().height() > screenSize) {
                 screenSize = Mode->size().width()*Mode->size().height();
                 output->setCurrentModeId(Mode->id());
+                if (Mode->size().width() > singleMaxWidth) {
+                    singleMaxWidth = Mode->size().width();
+                }
             }
          }
 
          output->setPos(QPoint(primaryX,0));
-         primaryX+=output->size().width();
+         primaryX+=singleMaxWidth;
          USD_LOG_SHOW_OUTPUT(output);
          USD_LOG_SHOW_PARAM1(primaryX);
      }
@@ -925,7 +946,6 @@ void XrandrManager::setScreenModeToExtend()
 
 void XrandrManager::setScreenMode(QString modeName)
 {
-
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
@@ -951,6 +971,51 @@ void XrandrManager::setScreenMode(QString modeName)
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());
         break;
     }
+
+    mDbus->mScreenMode = metaEnum.keyToValue(modeName.toLatin1().data());
+}
+
+UsdBaseClass::eScreenMode XrandrManager::discernScreenMode()
+{
+    bool firstScreenIsEnable = false;
+    bool secondScreenIsEnable = false;
+    bool hadFindFirstScreen = false;
+
+    QPoint firstScreenQPoint;
+    QPoint secondScreenQPoint;
+
+    QSize firstScreenQsize;
+    QSize secondScreenQsize;
+
+    Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (output->isConnected()) {
+            if (false == hadFindFirstScreen) {
+                firstScreenIsEnable = output->isEnabled();
+                firstScreenQPoint = output->pos();
+                firstScreenQsize = output->currentMode()->size();
+                hadFindFirstScreen = true;
+            } else {
+                secondScreenIsEnable = output->isEnabled();
+                secondScreenQPoint = output->pos();
+                secondScreenQsize = output->currentMode()->size();
+                break;
+            }
+        }
+    }
+
+    if (true == firstScreenIsEnable && false == secondScreenIsEnable) {
+        return UsdBaseClass::eScreenMode::firstScreenMode;
+    }
+
+    if (false == firstScreenIsEnable && true == secondScreenIsEnable) {
+        return UsdBaseClass::eScreenMode::secondScreenMode;
+    }
+
+    if (firstScreenQPoint == secondScreenQPoint && firstScreenQsize==secondScreenQsize) {
+        return UsdBaseClass::eScreenMode::cloneScreenMode;
+    }
+
+    return UsdBaseClass::eScreenMode::extendScreenMode;
 }
 
 /**
@@ -975,4 +1040,7 @@ void XrandrManager::StartXrandrIdleCb()
      QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
 
      connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
+
+
+
 }
