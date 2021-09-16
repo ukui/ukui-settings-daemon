@@ -101,6 +101,8 @@ void Widget::beginSetup(){
 
     initCurrentStatus(getCurrentStatus());
 
+    connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &Widget::geometryChangedHandle);
+
     connect(XEventMonitor::instance(), SIGNAL(buttonPress(int,int)),
             this, SLOT(XkbButtonEvent(int,int)));
     XEventMonitor::instance()->start();
@@ -155,7 +157,7 @@ void Widget::setupComponent(){
     m_qssDark = ("QFrame#titleFrame{background: #40131314; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
                    "QFrame#bottomFrame{background: #40131314; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
                    "QFrame#splitFrame{background: #99000000; border: none;}"\
-                   "QLabel#titleLabel{color: #FFFFFF; font-size:24px;}"\
+                   "QLabel#titleLabel{color: #FFFFFF; }"\
                    "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
                    "QLabel#outputName{color: #FFFFFF; }"\
                    "QLabel#outputDisplayName{color: #60FFFFFF; }"\
@@ -164,11 +166,17 @@ void Widget::setupComponent(){
     m_qssDefault = ("QFrame#titleFrame{background: #40F5F5F5; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
                    "QFrame#bottomFrame{background: #40F5F5F5; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
                    "QFrame#splitFrame{background: #99000000; border: none;}"\
-                   "QLabel#titleLabel{color: #232426; font-size:24px;}"\
+                   "QLabel#titleLabel{color: #232426;}"\
                    "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
                    "QLabel#outputName{color: #232426; }"\
                    "QLabel#outputDisplayName{color: #60FFFFFF; }"\
                 );
+    /*跟随系统字体变化*/
+    int fontSize = m_styleSettings->get("system-font-size").toInt();
+    QFont font;
+    font.setPointSize(fontSize + 4);
+    ui->titleLabel->setFont(font);
+
 }
 
 void Widget::setupConnect(){
@@ -237,6 +245,19 @@ void Widget::initCurrentStatus(int id){
     }
 }
 
+
+void Widget::geometryChangedHandle()
+{
+    int x=QApplication::primaryScreen()->geometry().x();
+    int y=QApplication::primaryScreen()->geometry().y();
+    int width = QApplication::primaryScreen()->size().width();
+    int height = QApplication::primaryScreen()->size().height();
+    int ax,ay;
+    ax = x+(width - this->width())/2;
+    ay = y+(height - this->height())/2;
+    move(ax,ay);
+
+}
 
 void Widget::nextSelectedOption(){
     int current = btnsGroup->checkedId();

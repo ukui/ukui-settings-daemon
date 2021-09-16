@@ -3,12 +3,17 @@
 #include <QDebug>
 #include <QGraphicsBlurEffect>
 
+#define QT_THEME_SCHEMA             "org.ukui.style"
+
+
 
 ExpendButton::ExpendButton(QWidget *parent) :
     QPushButton(parent)
 {
     setFocusPolicy(Qt::NoFocus);
     setCheckable(true);
+
+    m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
 
     sign = 0;
 
@@ -19,10 +24,13 @@ ExpendButton::ExpendButton(QWidget *parent) :
     logoLabel = new QLabel(this);
     logoLabel->setFixedSize(QSize(60, 60));
     textLabel = new QLabel(this);
+
+    /*跟随系统字体变化*/
+    int fontSize = m_styleSettings->get("system-font-size").toInt();
+
     QFont font;
-    font.setPixelSize(18);
+    font.setPointSize(fontSize);
     textLabel->setFont(font);
-//    textLabel->setStyleSheet("QLabel{color: #232426;}");
     QSizePolicy textSizePolicy = textLabel->sizePolicy();
     textSizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);
     textSizePolicy.setVerticalPolicy(QSizePolicy::Fixed);
@@ -55,24 +63,24 @@ void ExpendButton::setSign(int id ,const QString &style){
         qss1 = QString("QPushButton{background: #40F5F5F5; border: none;}"\
                        "QPushButton:hover{background: #40000000; border: none;}"\
                        "QPushButton:checked{background: #40000000; border: none;}"\
-                       "QLabel#textLabel{color: #262626;font-size:18px;}");
+                       "QLabel#textLabel{color: #262626;}");
 
         qss0 = QString("QPushButton{background: #0D000000; border: none;}"\
                       "QPushButton:hover{background: #40000000; border: none;}"\
                        "QPushButton:checked{background: #40000000; border: none;}"\
-                       "QLabel#textLabel{color: #262626;font-size:18px;}");
+                       "QLabel#textLabel{color: #262626;}");
 
     }else
     {
         qss0 = QString("QPushButton{background: #0DFFFFFF; border: none;}"\
                        "QPushButton:hover{background: #40F5F5F5; border: none;}"\
                        "QPushButton:checked{background: #40F5F5F5; border: none;}"\
-                       "QLabel#textLabel{color: #FFFFFF;font-size:18px;}");
+                       "QLabel#textLabel{color: #FFFFFF;}");
 
         qss1 = QString("QPushButton{background: #40232426; border: none;}"\
                        "QPushButton:hover{background: #40F5F5F5; border: none;}"\
                        "QPushButton:checked{background: #40F5F5F5; border: none;}"\
-                       "QLabel#textLabel{color: #FFFFFF;font-size:18px;}");
+                       "QLabel#textLabel{color: #FFFFFF;}");
     }
     statusLabel->setPixmap(drawLightColoredPixmap(QPixmap(":/img/selected.png"),style));
 

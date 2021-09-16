@@ -25,6 +25,7 @@
 #include <X11/Xlib.h>
 
 #include <QTranslator>
+#include <QScreen>
 
 int getCurrentScreenWidth(){
     Display * pDis = XOpenDisplay(0);
@@ -74,6 +75,9 @@ int main(int argc, char *argv[])
         w.beginSetup();
         //    QObject::connect(&app, SIGNAL(messageReceived(const QString&, NULL)), &w, SLOT(msgReceiveAnotherOne(QString)));
         QObject::connect(&app, &QtSingleApplication::messageReceived, &w, &Widget::msgReceiveAnotherOne);
+        QObject::connect(&app, &QtSingleApplication::screenAdded, &w, &Widget::geometryChangedHandle);
+        QObject::connect(&app, &QtSingleApplication::screenRemoved, &w, &Widget::geometryChangedHandle);
+
         w.show();
     }
 

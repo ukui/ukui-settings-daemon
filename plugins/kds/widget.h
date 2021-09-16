@@ -96,6 +96,8 @@ protected:
 public Q_SLOTS:
     void XkbButtonEvent(int,int);
     void msgReceiveAnotherOne(const QString &msg);
+    void geometryChangedHandle();
+
 
 
 private:
