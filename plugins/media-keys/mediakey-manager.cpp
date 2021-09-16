@@ -302,6 +302,8 @@ void MediaKeysManager::initShortcuts()
     connect(peony2, &QAction::triggered, this, [this]() {
         doAction(FILE_MANAGER_KEY_2);
     });
+
+
     /*help*/
     QAction *help= new QAction(this);
     help->setObjectName(QStringLiteral("Launch help browser"));
@@ -1620,7 +1622,6 @@ void MediaKeysManager::doOpenUkuiSearchAction()
             USD_LOG(LOG_DEBUG, "priScreenChanged called failed");
             executeCommand("ukui-search"," -s");
         }
-
 }
 
 void MediaKeysManager::doOpenKdsAction()

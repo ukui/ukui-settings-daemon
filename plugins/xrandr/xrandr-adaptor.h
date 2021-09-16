@@ -71,6 +71,10 @@ class WaylandAdaptor: public QDBusAbstractAdaptor
                                        "      <arg direction=\"in\" type=\"s\" name=\"modeName\"/>\n"
                                        "      <arg direction=\"in\" type=\"s\" name=\"appName\"/>\n"
                                        "    </method>\n"
+                                       "    <method name=\"getScreenMode\">\n"
+                                       "      <arg direction=\"out\" type=\"i\"/>\n"
+                                       "      <arg direction=\"in\" type=\"s\" name=\"appName\"/>\n"
+                                       "    </method>\n"
                                        "  </interface>\n"
                                        "")
 public:
@@ -82,6 +86,7 @@ public Q_SLOTS: // METHODS
     int height();
     int priScreenChanged(int x, int y, int width, int height, const QString &name);
     int setScreenMode(const QString &modeName, const QString &appName);
+    int getScreenMode(const QString &appName);
     QString priScreenName();
     double scale();
     int width();

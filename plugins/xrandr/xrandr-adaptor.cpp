@@ -56,6 +56,14 @@ int WaylandAdaptor::setScreenMode(const QString &modeName, const QString &appNam
     return out0;
 }
 
+int WaylandAdaptor::getScreenMode(const QString &appName){
+    int out0;
+    USD_LOG(LOG_DEBUG,"get screen mode request from appName:%s", appName.toLatin1().data());
+    QMetaObject::invokeMethod(parent(), "getScreenMode", Q_RETURN_ARG(int, out0),  Q_ARG(QString, appName));
+    return out0;
+}
+
+
 QString WaylandAdaptor::priScreenName()
 {
     // handle method call org.ukui.SettingsDaemon.wayland.priScreenName

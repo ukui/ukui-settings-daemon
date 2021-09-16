@@ -62,7 +62,7 @@ public:
     void refreshConfig();
     void SaveConfigTimerHandle();
 
-    void discernScreenMode();
+    UsdBaseClass::eScreenMode discernScreenMode();
 
     void saveCurrentConfig();
     void setMonitorForChanges(bool enabled);
@@ -82,7 +82,7 @@ public:
     void setScreenModeToClone();
     void setScreenModeToFirst(bool isFirstMode);
     void setScreenModeToExtend();
-    void checkPrimaryScreenIsActive();
+    bool checkPrimaryScreenIsSetable();
 
 
 

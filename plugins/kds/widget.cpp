@@ -63,15 +63,7 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
     m_superPresss = false;
 
-    {
-        metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
-
-        for (int i=0; i<metaEnum.keyCount(); ++i)
-        {
-            qDebug() << metaEnum.key(i);
-            USD_LOG(LOG_DEBUG,"value:%s",metaEnum.key(i));
-        }
-    }
+    metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
 }
 
 Widget::~Widget()
@@ -199,85 +191,31 @@ void Widget::setupConnect(){
 }
 
 
-int Widget::getCurrentStatus(){
-    MateRRConfig * current = mate_rr_config_new_current(kScreen, NULL);
+int Widget::getCurrentStatus()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
+                                                          "/org/ukui/SettingsDaemon/wayland",
+                                                          "org.ukui.SettingsDaemon.wayland",
+                                                          "getScreenMode");
+    QList<QVariant> args;
+    args.append(qAppName());
+    message.setArguments(args);
 
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
+    if (response.type() == QDBusMessage::ReplyMessage)
+    {
+        if(response.arguments().isEmpty() == false) {
+            int value = response.arguments().takeFirst().toInt();
+            USD_LOG(LOG_DEBUG, "get mode :%s", metaEnum.key(value));
 
-    if (mate_rr_config_get_clone(current)){
-#ifdef CLONESCREENID
-        g_object_unref(current);
-        current = NULL;
-        return CLONESCREENID;
-#endif
+            return value;
+        }
     } else {
-
-        bool firstOutputActive = true;
-        QList<bool> actives;
-
-        char * firstName = _findFirstOutput(current);
-
-        MateRROutputInfo ** outputs = mate_rr_config_get_outputs(current);
-
-        for (int i = 0; outputs[i] != NULL; i++){
-            MateRROutputInfo * info = outputs[i];
-
-            if (mate_rr_output_info_is_connected(info)){
-
-                char * pName = mate_rr_output_info_get_name(info);
-
-                if (!mate_rr_output_info_is_active(info)){
-                    actives.append(false);
-
-                    if (strcmp(firstName, pName) == 0){
-                        firstOutputActive = false;
-                    }
-
-                } else {
-                    actives.append(true);
-                }
-            }
-        }
-
-        if (actives.length() < 2){
-#ifdef FIRSTSCREENID
-            g_object_unref(current);
-            current = NULL;
-            return FIRSTSCREENID;
-#endif
-        }
-
-        int acs = 0, disacs = 0;
-
-        for (bool b : actives){
-            b ? acs++ : disacs++;
-        }
-
-        if (acs == actives.length()){
-#ifdef EXTENEDSCREENID
-            g_object_unref(current);
-            current = NULL;
-            return EXTENEDSCREENID;
-#endif
-        } else {
-            if (firstOutputActive){
-#ifdef FIRSTSCREENID
-                g_object_unref(current);
-                current = NULL;
-                return FIRSTSCREENID;
-#endif
-            } else {
-#ifdef OTHERSCREENID
-                g_object_unref(current);
-                current = NULL;
-                return OTHERSCREENID;
-#endif
-            }
-        }
-
-
+        USD_LOG(LOG_DEBUG, "called failed cuz:%s", message.errorName().toLatin1().data());
     }
 
+    return 0;
 }
 
 void Widget::initCurrentStatus(int id){
@@ -293,51 +231,17 @@ void Widget::initCurrentStatus(int id){
         }
     }
 
-    // status == -1
     if (id == -1){
         ExpendButton * btn1 = dynamic_cast<ExpendButton *>(btnsGroup->button(0));
-//        btn1->setBtnChecked(true);
         btn1->setChecked(true);
     }
 }
 
-void Widget::setCurrentFirstOutputTip(){
-
-    char * pName;
-    char *pDisplayName;
-    char * firstName;
-
-    Q_UNUSED(pDisplayName);
-    MateRRConfig * config = mate_rr_config_new_current(kScreen, NULL);
-
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
-
-    firstName = _findFirstOutput(config);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        if (mate_rr_output_info_is_connected(info)){
-
-            pName = mate_rr_output_info_get_name(info);
-            pDisplayName = mate_rr_output_info_get_display_name(info);
-
-            if (strcmp(firstName, pName) == 0){
-                ui->outputName->setText(QString(pName));
-                ui->outputDisplayName->setText(""/*QString(pDisplayName)*/);
-            }
-        }
-
-    }
-}
 
 void Widget::nextSelectedOption(){
     int current = btnsGroup->checkedId();
     int next;
 
-    /* no button checked */
-//    if (current == -1)
-//        ;
 
     next = current == ALLMODESID - 1 ? 0 : current + 1;
 
@@ -390,140 +294,8 @@ void Widget::setScreenModeByDbus(QString modeName)
 }
 
 
-bool Widget::_isLaptop(MateRROutputInfo * info){
-    /* 返回该输出是否是笔记本屏幕 */
 
-    MateRROutput * output;
 
-    output = mate_rr_screen_get_output_by_name (kScreen, mate_rr_output_info_get_name (info));
-    return mate_rr_output_is_laptop(output);
-}
-
-bool Widget::_setNewPrimaryOutput(MateRRConfig *config){
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        if (mate_rr_output_info_is_active(info)){
-
-            if (mate_rr_output_info_get_primary(info)){
-                return true;
-            }
-        }
-    }
-
-    //top left output is primary
-    mate_rr_config_ensure_primary(config);
-
-    return true;
-}
-
-char *Widget::_findFirstOutput(MateRRConfig *config){
-
-    int firstid = -1;
-    char *firstname=NULL;
-
-    MateRROutputInfo ** outputs = mate_rr_config_get_outputs (config);
-
-    for (int i = 0; outputs[i] != NULL; i++){
-        MateRROutputInfo * info = outputs[i];
-
-        if (mate_rr_output_info_is_connected(info)){
-
-            MateRROutput * output = mate_rr_screen_get_output_by_name(kScreen, mate_rr_output_info_get_name(info));
-
-            int currentid = mate_rr_output_get_id(output);
-
-            if (firstid == -1){
-                firstid = currentid;
-                firstname = mate_rr_output_info_get_name(info);
-                continue;
-            }
-
-            if (firstid > currentid){
-                firstid = currentid;
-                firstname = mate_rr_output_info_get_name(info);
-            }
-        }
-
-    }
-
-    return firstname;
-}
-
-bool Widget::_turnonOutput(MateRROutputInfo *info, int x, int y){
-
-    MateRROutput * output = mate_rr_screen_get_output_by_name (kScreen, mate_rr_output_info_get_name (info));
-    MateRRMode * mode = _findBestMode(output);
-
-    if (mode) {
-        mate_rr_output_info_set_active (info, TRUE);
-        mate_rr_output_info_set_geometry (info, x, y, mate_rr_mode_get_width (mode), mate_rr_mode_get_height (mode));
-        mate_rr_output_info_set_rotation (info, MATE_RR_ROTATION_0);
-        mate_rr_output_info_set_refresh_rate (info, mate_rr_mode_get_freq (mode));
-
-        return true;
-    }
-
-    return false;
-}
-
-MateRRMode * Widget::_findBestMode(MateRROutput *output){
-
-    MateRRMode ** modes;
-    MateRRMode * bestMode;
-    int bestSize;
-    int bestWidth, bestHeight, bestRate;
-    /*mate库，此方法对某些设备获取不到最优的mode*/
-//    preferred = mate_rr_output_get_preferred_mode(output);
-
-//    if (preferred)
-//        return preferred;
-
-    modes = mate_rr_output_list_modes(output);
-    if (!modes)
-        return NULL;
-
-    bestSize = bestWidth = bestHeight = bestRate = 0;
-    bestMode = NULL;
-
-    for (int i = 0; modes[i] != NULL; i++){
-        int w, h, r;
-        int size;
-
-        w = mate_rr_mode_get_width (modes[i]);
-        h = mate_rr_mode_get_height (modes[i]);
-        r = mate_rr_mode_get_freq  (modes[i]);
-
-        size = w * h;
-
-        if (size > bestSize){
-            bestSize = size;
-            bestWidth = w;
-            bestHeight = h;
-            bestRate = r;
-            bestMode = modes[i];
-        } else if (size == bestSize){
-            if (r > bestRate){
-                bestRate = r;
-                bestMode = modes[i];
-            }
-        }
-    }
-
-    return bestMode;
-}
-
-int Widget::_turnonGetRightmostOffset(MateRROutputInfo *info, int x){
-    if (_turnonOutput(info, x, 0)){
-        int width;
-        mate_rr_output_info_get_geometry (info, NULL, NULL, &width, NULL);
-        x += width;
-    }
-
-    return x;
-}
 
 void Widget::msgReceiveAnotherOne(const QString &msg){
 //    qDebug() << "another one " << msg;
@@ -636,7 +408,6 @@ void Widget::paintEvent(QPaintEvent *event)
     painter.drawPath(path);
 
     KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
-
     QWidget::paintEvent(event);
 }
 

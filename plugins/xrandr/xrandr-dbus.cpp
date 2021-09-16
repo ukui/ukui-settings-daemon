@@ -91,3 +91,8 @@ int xrandrDbus::setScreenMode(QString modeName,QString appName){
     Q_EMIT setScreenModeSignal(modeName);
     return true;
 }
+
+int xrandrDbus::getScreenMode(QString appName){
+    USD_LOG(LOG_DEBUG,"get screen mode appName:%s:%d", appName.toLatin1().data(),mScreenMode);
+    return mScreenMode;
+}
