@@ -38,6 +38,17 @@ TabletModeManager::TabletModeManager()
     mSensor = new QOrientationSensor(this);
     mXrandrSettings = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
     mTableSettings  = new QGSettings(SETTINGS_TABLET_SCHEMAS);
+
+
+    t_DbusTableMode = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
+
+    if (t_DbusTableMode->isValid()) {
+        connect(t_DbusTableMode, SIGNAL(mode_change_signal(bool)),this,SLOT(TabletSettingsChanged(bool)));
+        //USD_LOG(LOG_DEBUG, "..");
+    } else {
+       //USD_LOG(LOG_DEBUG, "...");
+    }
+
 }
 
 TabletModeManager::~TabletModeManager()
@@ -126,17 +137,15 @@ void TabletModeManager::SetEnabled(bool enabled)
     }
 }
 
-void TabletModeManager::TabletSettingsChanged(QString key)
+void TabletModeManager::TabletSettingsChanged(const bool tablemode)
 {
-    bool rotations, table;
-    rotations = mTableSettings->get(TABLET_AUTO_KEY).toBool();
-    table     = mTableSettings->get(TABLET_MODE_KEY).toBool();
-    if(table)
-        SetEnabled(rotations);
+//    bool rotations, table;
+//    rotations = mTableSettings->get(TABLET_AUTO_KEY).toBool();
+//    table     = mTableSettings->get(TABLET_MODE_KEY).toBool();
+//    if(table)
+//        SetEnabled(rotations);
 
-    if(key == TABLET_MODE_KEY)
-    {
-        if(table){
+        if(tablemode){
             QDBusMessage message =
                     QDBusMessage::createSignal("/KGlobalSettings",
                                                "org.kde.KGlobalSettings",
@@ -151,8 +160,7 @@ void TabletModeManager::TabletSettingsChanged(QString key)
                 message << bool(0);
                 QDBusConnection::sessionBus().send(message);
         }
-    }
-    qDebug()<<"key = "<<key<<";auto rotations = "<<rotations<<"; table mode = "<<table;
+      mTableSettings->set(TABLET_MODE_KEY, tablemode);
 }
 
 bool TabletModeManager::TabletModeManagerStart()

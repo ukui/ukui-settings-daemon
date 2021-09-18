@@ -88,7 +88,7 @@ public:
 
 public Q_SLOTS:
     void configChanged();
-    void RotationChangedEvent(QString);
+    void RotationChangedEvent(const QString &rotation);
     void outputAddedHandle(const KScreen::OutputPtr &output);
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
@@ -101,11 +101,8 @@ Q_SIGNALS:
 
 private:
 
-
-
-
-
     Q_INVOKABLE void getInitialConfig();
+    QDBusInterface        *m_DbusRotation;
     QTimer                *mAcitveTime = nullptr;
     QTimer                *mSaveConfigTimer = nullptr;
     QTimer                *mChangeCompressor = nullptr;
