@@ -112,7 +112,7 @@ QPixmap KeyboardWidget::drawLightColoredPixmap(const QPixmap &source, const QStr
 {
 
     int value = 255;
-    if(style == "ukui-default")
+    if(style == "ukui-light")
     {
         value = 0;
     }
@@ -152,7 +152,7 @@ void KeyboardWidget::resizeEvent(QResizeEvent* event)
 
 void KeyboardWidget::showEvent(QShowEvent* event)
 {
-    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
         setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
 

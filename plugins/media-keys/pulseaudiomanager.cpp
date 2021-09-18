@@ -280,6 +280,32 @@ bool pulseAudioManager::getMute()
 
     return g_mute;
 }
+bool pulseAudioManager::getMicMute()
+{
+    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, p_sourceName, getSourceInfoCallback, NULL);
+    if (nullptr == p_PaOp) {
+        return 0;
+    }
+
+    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+    }
+    return m_sourceMute;
+}
+
+void pulseAudioManager::setMicMute(bool MuteState)
+{
+    p_PaOp = pa_context_set_source_mute_by_name(p_PaCtx, p_sourceName, MuteState, paActionDoneCallback, NULL);
+
+    if ( nullptr == p_PaOp ) {
+
+        return;
+    }
+
+    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
+        pa_mainloop_iterate(p_PaMl, 1, nullptr);
+    }
+}
 
 int pulseAudioManager::getVolume()
 {

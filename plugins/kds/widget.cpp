@@ -154,23 +154,16 @@ void Widget::setupComponent(){
         ui->btnsVerLayout->addWidget(btn);
     }
 
-    m_qssDark = ("QFrame#titleFrame{background: #40131314; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
-                   "QFrame#bottomFrame{background: #40131314; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
-                   "QFrame#splitFrame{background: #99000000; border: none;}"\
-                   "QLabel#titleLabel{color: #FFFFFF; }"\
-                   "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
-                   "QLabel#outputName{color: #FFFFFF; }"\
-                   "QLabel#outputDisplayName{color: #60FFFFFF; }"\
+    m_qssDefaultOrDark = ("QFrame#titleFrame{background: transparent;}"\
+                 "QFrame#bottomFrame{background: transparent; border: none;}"\
+                 "QLabel#titleLabel{color: #FFFFFF;background: transparent; }"\
                 );
 
-    m_qssDefault = ("QFrame#titleFrame{background: #40F5F5F5; border: none; border-top-left-radius: 24px; border-top-right-radius: 24px;}"\
-                   "QFrame#bottomFrame{background: #40F5F5F5; border: none; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}"\
-                   "QFrame#splitFrame{background: #99000000; border: none;}"\
-                   "QLabel#titleLabel{color: #232426;}"\
-                   "QLabel#outputPrimaryTip{color: #60FFFFFF; }"\
-                   "QLabel#outputName{color: #232426; }"\
-                   "QLabel#outputDisplayName{color: #60FFFFFF; }"\
+    m_qssLight = ("QFrame#titleFrame{background: transparent; border: none;}"\
+                    "QFrame#bottomFrame{background: transparent; border: none; }"\
+                    "QLabel#titleLabel{color: #232426;background: transparent;}"\
                 );
+
     /*跟随系统字体变化*/
     int fontSize = m_styleSettings->get("system-font-size").toInt();
     QFont font;
@@ -392,13 +385,16 @@ void Widget::XkbButtonEvent(int x,int y)
 
 void Widget::showEvent(QShowEvent* event)
 {
-    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
-        setStyleSheet(m_qssDefault);
-    }
-    else
-    {
-        setStyleSheet(m_qssDark);
+        setStyleSheet(m_qssLight);
+        setPalette(QPalette(QColor("#FFFFFF")));//设置窗口背景色
+
+
+    } else {
+        setPalette(QPalette(QColor("#40232426")));//设置窗口背景色
+        setStyleSheet(m_qssDefaultOrDark);
+
     }
 }
 
