@@ -263,7 +263,7 @@ void setScreenScale()
 ukuiXSettingsManager::ukuiXSettingsManager()
 {
     gdk_init(NULL,NULL);
-    setScreenScale();
+    //setScreenScale();
     pManagers=nullptr;
     gsettings=nullptr;
     gsettings_font=nullptr;
