@@ -50,7 +50,7 @@ public:
 public:
     bool XrandrManagerStart();
     void XrandrManagerStop();
-    void StartXrandrIdleCb ();
+    void StartXrandrIdleCb();
     void monitorsInit();
     void changeScreenPosition();
     void applyConfig();
@@ -92,7 +92,7 @@ public Q_SLOTS:
     void outputAddedHandle(const KScreen::OutputPtr &output);
     void outputRemoved(int outputId);
     void primaryOutputChanged(const KScreen::OutputPtr &output);
-//    void applyConfigTimerHandle();
+   // void applyConfigTimerHandle();
     void setScreenMode(QString modeName);
 Q_SIGNALS:
     // DBus
