@@ -40,6 +40,7 @@
 #include <KF5/KScreen/kscreen/configmonitor.h>
 #include <KF5/KScreen/kscreen/getconfigoperation.h>
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
+#include <QDBusMessage>
 
 extern "C"{
 #include <glib.h>
@@ -83,6 +84,7 @@ XrandrManager::XrandrManager()
 
 
     mDbus = new xrandrDbus(this);
+    mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
     new WaylandAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -108,6 +110,32 @@ XrandrManager::XrandrManager()
             USD_LOG(LOG_DEBUG,"value:%s",metaEnum.key(i));
         }
     }
+
+    m_DbusRotation = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
+
+    if (nullptr != m_DbusRotation){
+        if (m_DbusRotation->isValid()) {
+            connect(m_DbusRotation, SIGNAL(rotations_change_signal(QString)),this,SLOT(RotationChangedEvent(QString)));
+           // USD_LOG(LOG_DEBUG, "m_DbusRotation ok....");
+        } else {
+           // USD_LOG(LOG_DEBUG, "m_DbusRotation fail...");
+        }
+    }
+
+    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanger.interface","/","com.kylin.statusmanager.interface","get_current_rotation");
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if(response.type() == QDBusMessage::ReplyMessage)
+    {
+        QString str_Value = response.arguments().takeFirst().toString();
+        qDebug() << QString("str_value = %1").arg(str_Value);
+        RotationChangedEvent(str_Value);
+    }
+    else{
+        qDebug() << "value obtain failed!";
+    }
+
 }
 
 void XrandrManager::getInitialConfig()
@@ -273,7 +301,6 @@ void doAction (char *input_name, char *output_name)
     QProcess::execute(buff);
 }
 
-
 void SetTouchscreenCursorRotation()
 {
     int     event_base, error_base, major, minor;
@@ -364,24 +391,35 @@ void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
-void XrandrManager::RotationChangedEvent(QString key)
+void XrandrManager::RotationChangedEvent(const QString &rotation)
 {
     int angle;
+    int value;
+    qDebug() << "rotation=%s............................."<<rotation;
 
-    if(key != XRANDR_ROTATION_KEY)
-        return;
 
-    angle = mXrandrSetting->getEnum(XRANDR_ROTATION_KEY);
-    qDebug()<<"angle = "<<angle;
+    QString angle_Value = rotation;
+    if (angle_Value == "normal") {
+        value = 1;
+    } else if (angle_Value == "left") {
+        value = 2;
+    } else if (angle_Value == "upside-down") {
+        value = 4;
+    } else if  (angle_Value == "right") {
+        value = 8;
+    } else {
+        USD_LOG(LOG_DEBUG,"Find a error !!!");
+    }
 
     const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
     for(auto output : outputs){
         if (!output->isConnected() || !output->isEnabled() || !output->currentMode()) {
             continue;
         }
-        output->setRotation(static_cast<KScreen::Output::Rotation>(angle));
+        output->setRotation(static_cast<KScreen::Output::Rotation>(value));
         qDebug()<<output->rotation() <<output->name();
     }
+    applyConfig();
     doApplyConfig(mMonitoredConfig->data());
 }
 
@@ -403,7 +441,7 @@ void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
 void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 {
     mMonitoredConfig = std::move(config);
-    //monitorsInit();
+//    monitorsInit();
     refreshConfig();
     primaryScreenChange();
 }

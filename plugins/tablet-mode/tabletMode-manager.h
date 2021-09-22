@@ -24,6 +24,7 @@
 #include <QOrientationReading>
 #include <KSharedConfig>
 #include <QGSettings/qgsettings.h>
+#include <QDBusInterface>
 
 class TabletModeManager : public QObject
 {
@@ -48,9 +49,10 @@ public:
 public Q_SLOTS:
     void TabletUpdateState();
     void TabletRefresh();
-    void TabletSettingsChanged(QString);
+    void TabletSettingsChanged(const bool tablemode);
 
 private:
+    QDBusInterface *t_DbusTableMode;
     bool   mEnabled = false;
     QGSettings   *mXrandrSettings;
     QGSettings   *mTableSettings;
