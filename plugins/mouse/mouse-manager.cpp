@@ -575,10 +575,12 @@ void MouseManager::SetLeftHanded (XDeviceInfo  *device_info,
                       bool         mouse_left_handed,
                       bool         touchpad_left_handed)
 {
-    if (property_exists_on_device (device_info, "libinput Left Handed Enabled"))
+    if (property_exists_on_device (device_info, "libinput Left Handed Enabled")){
         set_left_handed_libinput (device_info, mouse_left_handed, touchpad_left_handed);
-    else
+
+    } else {
         SetLeftHandedLegacyDriver (device_info, mouse_left_handed, touchpad_left_handed);
+    }
 }
 
 void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
@@ -593,6 +595,7 @@ void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
         qWarning("SetLeftHandedAll: device_info is null");
         return;
     }
+
     for (i = 0; i < n_devices; i++) {
         SetLeftHanded (&device_info[i], mouse_left_handed, touchpad_left_handed);
     }
@@ -776,8 +779,8 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
     unsigned long nitems, bytes_after;
 
 
-    Display * dpy = gdk_x11_get_default_xdisplay ();//QX11Info::display();
-
+//    Display * dpy = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+    Display * dpy = QX11Info::display();
     union {
         unsigned char *c;
         long *l;
@@ -874,6 +877,7 @@ void MouseManager::SetMouseAccel(XDeviceInfo *device_info)
 void MouseManager::SetMotion (XDeviceInfo *device_info)
 {
     if (property_exists_on_device (device_info, "libinput Accel Speed")) {
+
         SetMotionLibinput (device_info);
     }
     else {
@@ -881,10 +885,12 @@ void MouseManager::SetMotion (XDeviceInfo *device_info)
     }
 
     if(property_exists_on_device (device_info, "Device Accel Constant Deceleration")) {
+
         SetTouchpadMotionAccel(device_info);
     }
 
     if(property_exists_on_device (device_info, "libinput Accel Profile Enabled")) {
+
         SetMouseAccel(device_info);
     }
 }
@@ -1128,9 +1134,13 @@ void MouseManager::SetDisableWTypingSynaptics (bool         state)
         GError *error = NULL;
         char **args;
         int    argc;
-        QString cmd = "syndaemon -i 0.5 -K -R";
-        if (syndaemon_spawned)
-            return;
+        QString cmd = "syndaemon -i 0.3 -K -R";
+        if (syndaemon_spawned) {
+            kill (syndaemon_pid, SIGHUP);
+            g_spawn_close_pid (syndaemon_pid);
+            syndaemon_spawned = FALSE;
+        }
+
 
         if (!have_program_in_path ("syndaemon"))
                 return;
@@ -1644,19 +1654,15 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ENABLED)) == 0) {
         SetTouchpadEnabledAll (settings_touchpad->get(keys).toBool());//设置触摸板开关
-
+             SetDisableWTyping (true);
     } else if ((keys.compare((KEY_MOTION_ACCELERATION)) == 0)
             || (keys.compare((KEY_MOTION_THRESHOLD)) == 0)) {
-        USD_LOG(LOG_DEBUG,".");
         SetMotionAll ();                                    //设置鼠标速度
-        USD_LOG(LOG_DEBUG,".");
     }else if (0 == QString::compare(keys, QString(KEY_MOTION_ACCELERATION), Qt::CaseInsensitive)||
               0 == QString::compare(keys, QString(KEY_MOTION_THRESHOLD), Qt::CaseInsensitive)){
         SetMotionAll ();                                    //设置鼠标速度
-        USD_LOG(LOG_DEBUG,"Qstring.");
 
     }else if (keys == "motion-acceleration" || keys==KEY_MOTION_THRESHOLD){
-        USD_LOG(LOG_DEBUG,"Qstring.==");
     }else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DISBLE_O_E_MOUSE)) == 0) {
         SetPlugMouseDisbleTouchpad(settings_touchpad);      //设置插入鼠标时禁用触摸板
 
@@ -1712,8 +1718,9 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     if (xev->type == xi_presence)
     {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
-            if (dpn->devchange == DeviceEnabled)
+            if (dpn->devchange == DeviceEnabled) {
                     manager->SetMouseSettings ();
+            }
     }
     return GDK_FILTER_CONTINUE;
 }
