@@ -21,6 +21,8 @@ public:
 
     void initPulseAudio();
 
+    void setMicMute(bool MuteState);
+
     void setMute(bool MuteState);
 
     void upVolume(int PerVolume);
@@ -30,6 +32,8 @@ public:
     void setVolume(int Volume);
 
     bool getMute();
+
+    bool getMicMute();
 
     int getVolume();
 

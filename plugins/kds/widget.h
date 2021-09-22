@@ -82,8 +82,8 @@ private:
     QGSettings     *m_scaleSetting;
     QGSettings     *m_styleSettings;
 
-    QString         m_qssDark;
-    QString         m_qssDefault;
+    QString         m_qssDefaultOrDark;
+    QString         m_qssLight;
 
     double         m_scale;
 
@@ -96,6 +96,8 @@ protected:
 public Q_SLOTS:
     void XkbButtonEvent(int,int);
     void msgReceiveAnotherOne(const QString &msg);
+    void geometryChangedHandle();
+
 
 
 private:

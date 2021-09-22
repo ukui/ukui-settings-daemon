@@ -3,12 +3,19 @@
 #include <QDebug>
 #include <QGraphicsBlurEffect>
 
+#define QT_THEME_SCHEMA             "org.ukui.style"
+
+
 
 ExpendButton::ExpendButton(QWidget *parent) :
     QPushButton(parent)
 {
     setFocusPolicy(Qt::NoFocus);
     setCheckable(true);
+    setAttribute(Qt::WA_TranslucentBackground, true);
+
+
+    m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
 
     sign = 0;
 
@@ -19,10 +26,7 @@ ExpendButton::ExpendButton(QWidget *parent) :
     logoLabel = new QLabel(this);
     logoLabel->setFixedSize(QSize(60, 60));
     textLabel = new QLabel(this);
-    QFont font;
-    font.setPixelSize(18);
-    textLabel->setFont(font);
-//    textLabel->setStyleSheet("QLabel{color: #232426;}");
+
     QSizePolicy textSizePolicy = textLabel->sizePolicy();
     textSizePolicy.setHorizontalPolicy(QSizePolicy::Fixed);
     textSizePolicy.setVerticalPolicy(QSizePolicy::Fixed);
@@ -50,29 +54,28 @@ ExpendButton::~ExpendButton()
 }
 
 void ExpendButton::setSign(int id ,const QString &style){
-    if(style == "ukui-default")
+    if(style == "ukui-light")
     {
-        qss1 = QString("QPushButton{background: #40F5F5F5; border: none;}"\
+        qss1 = QString("QPushButton{background: #00F5F5F5; border: none;}"\
                        "QPushButton:hover{background: #40000000; border: none;}"\
-                       "QPushButton:checked{background: #40000000; border: none;}"\
-                       "QLabel#textLabel{color: #262626;font-size:18px;}");
+                       "QPushButton:checked{background: #40000000; border: none;}");
 
         qss0 = QString("QPushButton{background: #0D000000; border: none;}"\
-                      "QPushButton:hover{background: #40000000; border: none;}"\
-                       "QPushButton:checked{background: #40000000; border: none;}"\
-                       "QLabel#textLabel{color: #262626;font-size:18px;}");
+                       "QPushButton:hover{background: #40000000; border: none;}"\
+                       "QPushButton:checked{background: #40000000; border: none;}");
+        textLabel->setStyleSheet("color: #262626;");
+
 
     }else
     {
         qss0 = QString("QPushButton{background: #0DFFFFFF; border: none;}"\
                        "QPushButton:hover{background: #40F5F5F5; border: none;}"\
-                       "QPushButton:checked{background: #40F5F5F5; border: none;}"\
-                       "QLabel#textLabel{color: #FFFFFF;font-size:18px;}");
+                       "QPushButton:checked{background: #40F5F5F5; border: none;}");
 
-        qss1 = QString("QPushButton{background: #40232426; border: none;}"\
+        qss1 = QString("QPushButton{background: #00232426; border: none;}"\
                        "QPushButton:hover{background: #40F5F5F5; border: none;}"\
-                       "QPushButton:checked{background: #40F5F5F5; border: none;}"\
-                       "QLabel#textLabel{color: #FFFFFF;font-size:18px;}");
+                       "QPushButton:checked{background: #40F5F5F5; border: none;}");
+        textLabel->setStyleSheet("color: #FFFFFF;");
     }
     statusLabel->setPixmap(drawLightColoredPixmap(QPixmap(":/img/selected.png"),style));
 
@@ -107,7 +110,7 @@ bool ExpendButton::getBtnChecked(){
 QPixmap ExpendButton::drawLightColoredPixmap(const QPixmap &source, const QString &style)
 {
     int value = 255;
-    if(style == "ukui-default")
+    if(style == "ukui-light")
     {
         value = 0;
     }

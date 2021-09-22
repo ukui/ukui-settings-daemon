@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QGSettings/QGSettings>
 
 class ExpendButton : public QPushButton
 {
@@ -30,6 +31,8 @@ private:
     QLabel * textLabel;
     QLabel * spaceLabel;
     QLabel * statusLabel;
+    QGSettings     *m_styleSettings;
+
 
     int sign;
 

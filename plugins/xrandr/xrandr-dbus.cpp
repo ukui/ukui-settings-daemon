@@ -60,6 +60,7 @@ void xrandrDbus::initShortKeys()
     KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
     KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
     connect(brightDown, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"Brightness down...............");
         Q_EMIT brightnessDown();
     });
 
@@ -69,6 +70,8 @@ void xrandrDbus::initShortKeys()
     KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
     KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
     connect(brightUp, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"Brightness Up ..................");
+
         Q_EMIT brightnessUp();
     });
 }

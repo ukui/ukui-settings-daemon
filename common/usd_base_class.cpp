@@ -3,6 +3,16 @@
 #include "clib-syslog.h"
 #include "usd_base_class.h"
 
+
+#include <QDBusMessage>
+#include <QDBusInterface>
+#include <QDBusReply>
+#include <QDebug>
+
+#define DBUS_SERVICE "org.freedesktop.UPower"
+#define DBUS_OBJECT "/org/freedesktop/UPower"
+#define DBUS_INTERFACE "org.freedesktop.DBus.Properties"
+
 UsdBaseClass::UsdBaseClass()
 {
 
@@ -56,4 +66,19 @@ bool UsdBaseClass::isXcb()
         return true;
     }
     return false;
+}
+
+bool UsdBaseClass::isNotebook()
+{
+    QDBusMessage msg = QDBusMessage::createMethodCall(DBUS_SERVICE,DBUS_OBJECT,DBUS_INTERFACE,"Get");
+    msg<<DBUS_SERVICE<<"LidlsPresent";
+    QDBusMessage res = QDBusConnection::systemBus().call(msg);
+    if(res.type()==QDBusMessage::ReplyMessage)
+    {
+        QVariant v = res.arguments().at(0);
+        QDBusVariant dv = qvariant_cast<QDBusVariant>(v);
+        QVariant result = dv.variant();
+        qDebug()<<"LidlsPresent: "<<  result.toBool();
+        return result.toBool();
+    }
 }

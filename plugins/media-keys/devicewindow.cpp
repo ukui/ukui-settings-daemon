@@ -148,7 +148,7 @@ void DeviceWindow::initWindowInfo()
     KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
 
 
-    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
         setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
 
@@ -216,7 +216,7 @@ QPixmap DeviceWindow::drawLightColoredPixmap(const QPixmap &source, const QStrin
 {
 
     int value = 255;
-    if(style == "ukui-default")
+    if(style == "ukui-light")
     {
         value = 0;
     }
@@ -247,7 +247,7 @@ QPixmap DeviceWindow::drawLightColoredPixmap(const QPixmap &source, const QStrin
 }
 void DeviceWindow::onStyleChanged(const QString&)
 {
-    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
         setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
 

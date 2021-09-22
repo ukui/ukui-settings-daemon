@@ -1248,10 +1248,9 @@ void MediaKeysManager::doTouchpadAction()
 void MediaKeysManager::doMicSoundAction()
 {
     bool mute;
-
-    mute = !mpulseAudioManager->getMute();
-    mpulseAudioManager->setMute(mute);
-    mDeviceWindow->setAction ( mute ? "audio-input-microphone-high-symbolic" : "audio-input-microphone-muted-symbolic");
+    mute = !mpulseAudioManager->getMicMute();
+    mpulseAudioManager->setMicMute(mute);
+    mDeviceWindow->setAction ( mute ? "ukui-microphone-off" : "ukui-microphone-on");
     mDeviceWindow->dialogShow();
 }
 void MediaKeysManager::doSoundActionALSA(int keyType)

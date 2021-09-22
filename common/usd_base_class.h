@@ -28,6 +28,9 @@ public:
 
     static bool isXcb();
 
+    static bool isNotebook();
+
+
 };
 
 #endif // USDBASECLASS_H

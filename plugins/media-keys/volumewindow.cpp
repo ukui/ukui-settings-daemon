@@ -229,7 +229,7 @@ QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source, const QStrin
 {
 
     int value = 255;
-    if(style == "ukui-default")
+    if(style == "ukui-light")
     {
         value = 0;
     }
@@ -324,7 +324,7 @@ void VolumeWindow::showEvent(QShowEvent* e)
 {
      QSize iconSize(32*mScale,32*mScale);
     /*适应主题颜色*/
-    if(m_styleSettings->get("style-name").toString() == "ukui-default")
+    if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
         mLabel->setStyleSheet("color:black;");
         mBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
