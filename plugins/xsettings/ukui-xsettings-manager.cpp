@@ -234,7 +234,7 @@ void setScreenScale()
     double       scale;
     gsettings =g_settings_new(XSETTINGS_PLUGIN_SCHEMA);
     scale = g_settings_get_double (gsettings, SCALING_FACTOR_KEY);
-    if(scale > 1.25){
+    if(scale > 1.25) {
         bool state = false;
         for(QScreen *screen : QGuiApplication::screens())
         {
@@ -249,6 +249,7 @@ void setScreenScale()
             else
                 state = false;
         }
+
         if (state){
             GSettings   *mGsettings;
             mGsettings = g_settings_new(MOUSE_SCHEMA);
@@ -263,7 +264,7 @@ void setScreenScale()
 ukuiXSettingsManager::ukuiXSettingsManager()
 {
     gdk_init(NULL,NULL);
-    //setScreenScale();
+
     pManagers=nullptr;
     gsettings=nullptr;
     gsettings_font=nullptr;

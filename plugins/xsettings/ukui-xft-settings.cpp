@@ -20,9 +20,18 @@
 #include "xsettings-const.h"
 #include "ukui-xft-settings.h"
 #include "ukui-xsettings-manager.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <gio/gio.h>
 #include <glib.h>
 #include <gdk/gdkx.h>
+
+#ifdef __cplusplus
+}
+#endif
 
 static const char *rgba_types[] = { "rgb", "bgr", "vbgr", "vrgb" };
 
@@ -194,7 +203,7 @@ void UkuiXftSettings::xft_settings_set_xsettings (ukuiXSettingsManager *manager)
         manager->pManagers [i]->set_string ("Xft/HintStyle", hintstyle);
 
         manager->pManagers [i]->set_int ( "Gdk/WindowScalingFactor",window_scale);
-         manager->pManagers [i]->set_int ("Gdk/UnscaledDPI",(double)dpi * scale);
+        manager->pManagers [i]->set_int ("Gdk/UnscaledDPI",(double)dpi * scale);
         manager->pManagers [i]->set_int ("Xft/DPI", scaled_dpi);
 
         manager->pManagers [i]->set_string ("Xft/RGBA", rgba);
