@@ -121,21 +121,6 @@ XrandrManager::XrandrManager()
            // USD_LOG(LOG_DEBUG, "m_DbusRotation fail...");
         }
     }
-
-//    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanger.interface","/","com.kylin.statusmanager.interface","get_current_rotation");
-
-//    QDBusMessage response = QDBusConnection::sessionBus().call(message);
-
-//    if(response.type() == QDBusMessage::ReplyMessage)
-//    {
-//        QString str_Value = response.arguments().takeFirst().toString();
-//        qDebug() << QString("str_value = %1").arg(str_Value);
-//        RotationChangedEvent(str_Value);
-//    }
-//    else{
-//        qDebug() << "value obtain failed!";
-//    }
-
 }
 
 void XrandrManager::getInitialConfig()
@@ -291,14 +276,14 @@ bool checkMatch(int output_width,  int output_height,
 /* Here to run command xinput
    更新触摸屏触点位置
 */
-void doAction (char *input_name, char *output_name)
+
+void doAction (int input_name, char *output_name)
 {
     char buff[100];
-    sprintf(buff, "xinput --map-to-output \"%s\" \"%s\"", input_name, output_name);
+    sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_name, output_name);
 
     printf("buff is %s\n", buff);
     QProcess::execute(buff);
-    QProcess::execute("xinput map-to-output 11 eDP-1");
 }
 
 void SetTouchscreenCursorRotation()
@@ -370,7 +355,8 @@ void SetTouchscreenCursorRotation()
                                                                      "ID_INPUT_HEIGHT_MM");
 
                         if (checkMatch(output_mm_width, output_mm_height, width, height)){
-                            doAction(info->dev_info.name, output_info->name);
+                            //doAction(info->dev_info.name, output_info->name);
+                            doAction(info->dev_info.deviceid,output_info->name);
                         }
                     }
                     g_clear_object (&udev_client);
