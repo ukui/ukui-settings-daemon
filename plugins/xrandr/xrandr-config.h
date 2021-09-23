@@ -43,11 +43,15 @@ public:
     QString id() const;
 
     bool fileExists() const;
-    std::unique_ptr<xrandrConfig> readFile(bool state);
+    bool fileScreenModeExists(QString screenMode);
+
+    std::unique_ptr<xrandrConfig> readFile(bool isUseModeConfig);
     std::unique_ptr<xrandrConfig> readOpenLidFile();
     std::unique_ptr<xrandrConfig> readFile(const QString &fileName, bool state);
+
     bool writeFile(bool state);
     bool writeOpenLidFile();
+    bool writeConfigAndBackupToModeDir();
     bool writeFile(const QString &filePath, bool state);
 
     KScreen::ConfigPtr data() const {
@@ -65,18 +69,25 @@ public:
     bool canBeApplied() const;
 
     QString filePath() const;
+    QString fileModeConfigPath();
+
+    void setScreenMode(QString modeName);
 private:
 
 
     bool canBeApplied(KScreen::ConfigPtr config) const;
     static QString configsDirPath();
+    QString configsModeDirPath();
     static QString sleepDirPath();
+
 
     KScreen::ConfigPtr mConfig;
     KScreen::Config::ValidityFlags mValidityFlags;
 
     QString priName;
     bool    mAddScreen = false;
+
+    QString mScreenMode;
     static QString mConfigsDirName;
     static QString mFixedConfigFileName;
 
