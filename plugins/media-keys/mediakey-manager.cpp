@@ -42,6 +42,9 @@ const int VOLUMESTEP = 6;
 #define SHOT_SCHEMA         "org.ukui.screenshot"
 #define SHOT_RUN_KEY        "isrunning"
 
+#define PANEL_QUICK_OPERATION "org.ukui.quick-operation.panel"
+#define PANEL_SOUND_STATE   "soundstate"
+
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     mTimer = new QTimer(this);
@@ -1238,7 +1241,7 @@ void MediaKeysManager::doTouchpadAction()
         mDeviceWindow->setAction("touchpad-disabled");
         return;
     }
-    mDeviceWindow->setAction(!touchpadState ? "touchpad-enabled" : "touchpad-disabled");
+    mDeviceWindow->setAction(!touchpadState ? "ukui-touchpad-on" : "ukui-touchpad-off");
     mDeviceWindow->dialogShow();
 
     touchpadSettings->set("touchpad-enabled",!touchpadState);
@@ -1318,6 +1321,9 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
      mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
      updateDialogForVolume(volume,muted,soundChanged);
+     QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
+     panel_settings->set(PANEL_SOUND_STATE,muted);
+     delete panel_settings;
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
@@ -1625,7 +1631,7 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 
 void MediaKeysManager::doOpenKdsAction()
 {
-         executeCommand("kydisplayswitch","");
+     executeCommand("kydisplayswitch","");
 }
 
 void MediaKeysManager::doWlanAction()
