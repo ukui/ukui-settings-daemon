@@ -565,7 +565,7 @@ void MediaKeysManager::initShortcuts()
         int elapsed = 0;
 
         elapsed = startTime.msecsTo(QTime::currentTime());
-        if (elapsed>0 && elapsed<3120){//避免过快刷屏,必须大于，120ms执行一次,
+        if (elapsed>0 && elapsed<1200){//避免过快刷屏,必须大于，1200ms执行一次,
             if (false == CheckProcessAlive("kydisplayswitch")){
                 return;
             }
