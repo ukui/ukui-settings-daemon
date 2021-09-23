@@ -597,7 +597,7 @@ void ColorManager::SettingsChangedCb(QString key)
 
 bool ColorManager::ColorManagerStart()
 {
-    qDebug()<<"Color manager start";
+    USD_LOG(LOG_DEBUG,"--Color manager start--");
     mColorProfiles->ColorProfilesStart();
     mColorState->ColorStateStart();
     NightLightRecheck(this);
