@@ -29,13 +29,14 @@
 #include <KWindowEffects>
 #include <QPainterPath>
 #include <QPainter>
+#include <QGSettings/qgsettings.h>
 #include "clib-syslog.h"
 
 #define DBUS_NAME       "org.ukui.SettingsDaemon"
 #define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
 
-#define QT_THEME_SCHEMA             "org.ukui.style"
+#define QT_THEME_SCHEMA   "org.ukui.style"
 
 
 const QString allIconName[] = {
