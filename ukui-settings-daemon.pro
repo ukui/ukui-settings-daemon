@@ -26,6 +26,7 @@ SUBDIRS += \
     $$PWD/plugins/tablet-mode/tablet-mode.pro   \
     $$PWD/plugins/xrandr/xrandr.pro             \
     $$PWD/plugins/xrdb/xrdb.pro                 \
+    $$PWD/plugins/xinput/xinput.pro             \
     $$PWD/plugins/xsettings/xsettings.pro       \
     $$PWD/plugins/locate-pointer/usd-locate-pointer.pro \
     $$PWD/plugins/kds/kds.pro\

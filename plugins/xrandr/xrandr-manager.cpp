@@ -122,19 +122,19 @@ XrandrManager::XrandrManager()
         }
     }
 
-    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanger.interface","/","com.kylin.statusmanager.interface","get_current_rotation");
+//    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanger.interface","/","com.kylin.statusmanager.interface","get_current_rotation");
 
-    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+//    QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
-    if(response.type() == QDBusMessage::ReplyMessage)
-    {
-        QString str_Value = response.arguments().takeFirst().toString();
-        qDebug() << QString("str_value = %1").arg(str_Value);
-        RotationChangedEvent(str_Value);
-    }
-    else{
-        qDebug() << "value obtain failed!";
-    }
+//    if(response.type() == QDBusMessage::ReplyMessage)
+//    {
+//        QString str_Value = response.arguments().takeFirst().toString();
+//        qDebug() << QString("str_value = %1").arg(str_Value);
+//        RotationChangedEvent(str_Value);
+//    }
+//    else{
+//        qDebug() << "value obtain failed!";
+//    }
 
 }
 
@@ -297,8 +297,8 @@ void doAction (char *input_name, char *output_name)
     sprintf(buff, "xinput --map-to-output \"%s\" \"%s\"", input_name, output_name);
 
     printf("buff is %s\n", buff);
-
     QProcess::execute(buff);
+    QProcess::execute("xinput map-to-output 11 eDP-1");
 }
 
 void SetTouchscreenCursorRotation()
@@ -393,10 +393,8 @@ void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 /*监听旋转键值回调 并设置旋转角度*/
 void XrandrManager::RotationChangedEvent(const QString &rotation)
 {
-    int angle;
     int value;
-    qDebug() << "rotation=%s............................."<<rotation;
-
+    //qDebug() << "rotation=%s............................."<<rotation;
 
     QString angle_Value = rotation;
     if (angle_Value == "normal") {
@@ -419,8 +417,8 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
         output->setRotation(static_cast<KScreen::Output::Rotation>(value));
         qDebug()<<output->rotation() <<output->name();
     }
+
     applyConfig();
-    doApplyConfig(mMonitoredConfig->data());
 }
 
 void XrandrManager::applyIdealConfig()
@@ -703,6 +701,14 @@ void XrandrManager::monitorsInit()
                 }
             }
             mSaveConfigTimer->start(1500);
+        });
+
+        connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
+            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+            USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
+
+            SetTouchscreenCursorRotation();
+
         });
 
         connect(output.data(), &KScreen::Output::currentModeIdChanged, this, [this](){
@@ -1063,7 +1069,7 @@ UsdBaseClass::eScreenMode XrandrManager::discernScreenMode()
 void XrandrManager::StartXrandrIdleCb()
 {
     mAcitveTime->stop();
-//    SetTouchscreenCursorRotation();
+    SetTouchscreenCursorRotation();
 
     if(!mScreen)
         mScreen = QApplication::screens().at(0);
@@ -1074,7 +1080,7 @@ void XrandrManager::StartXrandrIdleCb()
     connect(mScreen, &QScreen::orientationChanged, this,
             &XrandrManager::orientationChangedProcess);
 
-     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok");
+     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
      QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
 
      connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
