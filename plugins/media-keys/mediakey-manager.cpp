@@ -476,7 +476,7 @@ void MediaKeysManager::initShortcuts()
         static int elapsed = -1;
 
         elapsed = startTime.msecsTo(QTime::currentTime());
-        if(elapsed >= 0 && elapsed <= 6500){
+        if(elapsed > 0 && elapsed <= 2500){
             return;
         }
         startTime = QTime::currentTime();
@@ -1367,9 +1367,11 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
      mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
      updateDialogForVolume(volume,muted,soundChanged);
-     QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
-     panel_settings->set(PANEL_SOUND_STATE,muted);
-     delete panel_settings;
+     if(QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)){
+        QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
+        panel_settings->set(PANEL_SOUND_STATE,muted);
+        delete panel_settings;
+     }
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
