@@ -1768,10 +1768,9 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                         mate_rr_output_info_get_geometry (output, NULL, NULL, &width, &height);
                         mate_rr_output_info_set_geometry (output, x, 0, width, height);
                         refresh = mate_rr_output_info_get_refresh_rate (output);
-                        if (refresh < 50)
+                        if (refresh < 50) {
                             mate_rr_output_info_set_refresh_rate (output, 60);
-
-                        g_debug("set refresh:%d sjh",__LINE__);
+                        }
                         x += width;
                 }
         }
@@ -1792,10 +1791,9 @@ auto_configure_outputs (UsdXrandrManager *manager, guint32 timestamp)
                 height = mate_rr_output_info_get_preferred_height (output);
                 mate_rr_output_info_set_geometry (output, x, 0, width, height);
                 refresh = mate_rr_output_info_get_refresh_rate (output);
-                if (refresh < 50)
+                if (refresh < 50) {
                     mate_rr_output_info_set_refresh_rate (output, 60);
-
-                g_debug("set refresh:%d sjh",__LINE__);
+                }
                 x += width;
         }
         /* Check if we have a large enough framebuffer size.  If not, turn off
