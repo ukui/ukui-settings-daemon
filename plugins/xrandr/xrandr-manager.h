@@ -62,7 +62,7 @@ public:
     void doApplyConfig(const KScreen::ConfigPtr &config);
     void doApplyConfig(std::unique_ptr<xrandrConfig> config);
     void refreshConfig();
-    void SaveConfigTimerHandle();
+
 
     UsdBaseClass::eScreenMode discernScreenMode();
 
@@ -85,7 +85,7 @@ public:
     void setScreenModeToFirst(bool isFirstMode);
     void setScreenModeToExtend();
     bool checkPrimaryScreenIsSetable();
-
+    bool readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode);
 
 
 public Q_SLOTS:
@@ -96,6 +96,7 @@ public Q_SLOTS:
     void primaryOutputChanged(const KScreen::OutputPtr &output);
    // void applyConfigTimerHandle();
     void setScreenMode(QString modeName);
+     void SaveConfigTimerHandle();
 Q_SIGNALS:
     // DBus
     void outputConnected(const QString &outputName);

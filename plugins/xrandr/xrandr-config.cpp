@@ -44,6 +44,19 @@ QString xrandrConfig::configsDirPath()
     return dirPath % mConfigsDirName;
 }
 
+void xrandrConfig::setScreenMode(QString modeName)
+{
+    mScreenMode = modeName;
+    USD_LOG(LOG_DEBUG,"set mScreenMode to :%s",mScreenMode.toLatin1().data());
+}
+
+QString xrandrConfig::configsModeDirPath()
+{
+    QString dirPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
+            QStringLiteral("/kscreen/") % mScreenMode % QStringLiteral("/");
+    return dirPath;
+}
+
 QString xrandrConfig::sleepDirPath()
 {
     QString dirPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
@@ -55,6 +68,14 @@ xrandrConfig::xrandrConfig(KScreen::ConfigPtr config, QObject *parent)
     : QObject(parent)
 {
     mConfig = config;
+}
+
+QString xrandrConfig::fileModeConfigPath()
+{
+    if (!QDir().mkpath(configsModeDirPath())) {
+        return QString();
+    }
+    return configsModeDirPath() % id();
 }
 
 QString xrandrConfig::filePath() const
@@ -78,10 +99,17 @@ bool xrandrConfig::fileExists() const
     return (QFile::exists(configsDirPath() % id()) || QFile::exists(configsDirPath() % mFixedConfigFileName));
 }
 
+bool xrandrConfig::fileScreenModeExists(QString screenMode)
+{
+    USD_LOG(LOG_DEBUG,"%s status:%d",(fileModeConfigPath()).toLatin1().data(),QFile::exists(fileModeConfigPath()));
+    return QFile::exists(fileModeConfigPath());
+}
+
 /*
- * state:是否读取睡眠配置
+ * isUseModeConfig:是否读取模式配置
+ * 模式配置只是在kds调用接口时使用
 */
-std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool state)
+std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool isUseModeConfig)
 {
     bool res = false;
     if (res){//Device::self()->isLaptop() && !Device::self()->isLidClosed()) {
@@ -97,7 +125,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool state)
             }
         }
     }
-    return readFile(id(), state);
+    return readFile(id(), isUseModeConfig);
 }
 
 std::unique_ptr<xrandrConfig> xrandrConfig::readOpenLidFile()
@@ -123,30 +151,25 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     QFile file;
     if(!state){
         if (QFile::exists(configsDirPath() % mFixedConfigFileName)) {
-            file.setFileName(configsDirPath() % mFixedConfigFileName);
-            //qDebug() << "found a fixed config, will use " << file.fileName();
+            file.setFileName(configsDirPath() % mFixedConfigFileName);//先读取特定模式的配置，
         } else {
             file.setFileName(configsDirPath() % fileName);
         }
         if (!file.open(QIODevice::ReadOnly)) {
-             USD_LOG(LOG_ERR,"config is nullptr...");
-            //qDebug() << "failed to open file" << file.fileName();
+            USD_LOG(LOG_ERR,"config is nullptr...");
             return nullptr;
         }
+
     } else {
-        if (QFile::exists(sleepDirPath() % mFixedConfigFileName)) {
-            file.setFileName(sleepDirPath() % mFixedConfigFileName);
-            //qDebug() << "found a fixed config, will use " << file.fileName();
-        } else {
-            file.setFileName(sleepDirPath() % fileName);
+        if (QFile::exists(configsModeDirPath())) {
+            file.setFileName(configsModeDirPath() % fileName);
         }
+
         if (!file.open(QIODevice::ReadOnly)) {
-             USD_LOG(LOG_ERR,"config is nullptr...");
-            //qDebug() << "failed to open file" << file.fileName();
+             USD_LOG(LOG_ERR,"config is nullptr...%s",file.fileName().toLatin1().data());
             return nullptr;
         }
     }
-
     QJsonDocument parser;
     QVariantList outputs = parser.fromJson(file.readAll()).toVariant().toList();
     xrandrOutput::readInOutputs(config->data(), outputs);
@@ -154,54 +177,35 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     QSize screenSize;
 
     for (const auto &output : config->data()->outputs()) {
-        USD_LOG_SHOW_OUTPUT(output);
         if (output->isEnabled()) {
             enabledOutputsCount++;
         }
 
         if (!output->isConnected()) {
-            USD_LOG(LOG_DEBUG,"can't positionable..");
             continue;
         }
 
         if (1 == outputs.count() && (0 != output->pos().x() || 0 != output->pos().y())) {
-            USD_LOG(LOG_DEBUG,"read %s at %dx%d size %dx%d",output->name().toLatin1().data(), output->pos().x(), output->pos().y(),
-                    output->currentMode()->size().width(),output->currentMode()->size().height());
-
             const QPoint pos(0,0);
             output->setPos(std::move(pos));
-            USD_LOG(LOG_DEBUG,"set %s at %dx%d size %dx%d",output->name().toLatin1().data(), output->pos().x(), output->pos().y(),
-                    output->currentMode()->size().width(),output->currentMode()->size().height());
         }
 
         const QRect geom = output->geometry();
         if (geom.x() + geom.width() > screenSize.width()) {
-            USD_LOG(LOG_DEBUG,"x(%d) + width(%d) >screenSize.width(%d)",geom.x(), geom.width(), screenSize.width());
             screenSize.setWidth(geom.x() + geom.width());
         }
 
         if (geom.y() + geom.height() > screenSize.height()) {
-            USD_LOG(LOG_DEBUG,"x(%d) + height(%d) >screenSize.height(%d)",geom.y(), geom.height(), screenSize.height());
             screenSize.setHeight(geom.y() + geom.height());
         }
-        USD_LOG_SHOW_OUTPUT(output);
-        USD_LOG(LOG_DEBUG,"set %s %dx%d at start at %dx%d by %s, screensize(%dx%d)"
-                ,output->name().toLatin1().data(),geom.width(),geom.height(),geom.x(),geom.y(), state ? "sleep":"normal",screenSize.width(),screenSize.height());
-    }
+      }
 
     config->data()->screen()->setCurrentSize(screenSize);
 
     if (!canBeApplied(config->data())) {
-        USD_LOG(LOG_DEBUG,"config can't be enabled..cuz maxActiveOutputsCount[%d] : [%d]",
-                config->data()->screen()->maxActiveOutputsCount(),enabledOutputsCount);
-
         config->data()->screen()->setMaxActiveOutputsCount(enabledOutputsCount);
 
-        USD_LOG(LOG_DEBUG,"reset maxActiveOutputCount %d",
-                config->data()->screen()->maxActiveOutputsCount());
-
         if (!canBeApplied(config->data())) {
-            USD_LOG(LOG_ERR,"reset maxAcitveOutputsCount but still apply fail.....");
             return nullptr;
         }
     }
@@ -225,8 +229,14 @@ bool xrandrConfig::writeFile(bool state)
     return writeFile(filePath(), false);
 }
 
+bool xrandrConfig::writeConfigAndBackupToModeDir()
+{
+
+}
+
 bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
+    int screenConnectedCount = 0;
     if (id().isEmpty()) {
         USD_LOG(LOG_DEBUG,"id is empty!");
         return false;
@@ -241,7 +251,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
         if (!output->isConnected()) {
             continue;
         }
-
+        screenConnectedCount++;
         bool priState = false;
         if (state || mAddScreen){
             if (priName.compare(output->name()) == 0){
@@ -268,10 +278,10 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
         };
         setOutputConfigInfo(output->isEnabled() ? output : nullptr);
 
-        if (output->isEnabled()) {
-            // try to update global output data
-            xrandrOutput::writeGlobal(output);
-        }
+//        if (output->isEnabled()) {
+//            // try to update global output data
+//            xrandrOutput::writeGlobal(output);
+//        }
 
         outputList.append(info);
     }
@@ -279,15 +289,25 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
     if (mAddScreen)
         mAddScreen = false;
 
+
     QFile file(filePath);
-    if (!file.open(QIODevice::WriteOnly)) {
-        qWarning() << "Failed to open config file for writing! " << file.errorString();
-        return false;
+    if (file.open(QIODevice::WriteOnly)) {
+         file.write(QJsonDocument::fromVariant(outputList).toJson());
+    } else {
+         USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),file.errorString().toLatin1().data());
     }
 
-    file.write(QJsonDocument::fromVariant(outputList).toJson());
-    //qDebug() << "Config saved on: " << file.fileName();
-    USD_LOG(LOG_DEBUG,"write file ok");
+
+    if (screenConnectedCount > 1) {
+        QFile backFile(fileModeConfigPath());
+        if (backFile.open(QIODevice::WriteOnly)) {
+            backFile.write(QJsonDocument::fromVariant(outputList).toJson());
+        } else {
+            USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),backFile.errorString().toLatin1().data());
+        }
+    }
+
+    USD_LOG(LOG_DEBUG,"write file:\n%s ok \n%s ok.",filePath.toLatin1().data(),mScreenMode == nullptr? "" : fileModeConfigPath().toLatin1().data());
     return true;
 }
 

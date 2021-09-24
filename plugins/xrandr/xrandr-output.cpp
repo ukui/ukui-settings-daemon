@@ -51,7 +51,7 @@ QString xrandrOutput::globalFileName(const QString &hash)
 //        return QString();
 //    }
 
-    USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
+//    USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
     return QString();//dir % hash;
 }
 
@@ -79,11 +79,11 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
 
     for(const KScreen::ModePtr &mode : modes) {
         if (mode->size() != size) {
-            USD_LOG(LOG_DEBUG,"%dx%d(id:%s) != %dx%d",mode->size().width(),mode->size().height(),mode->id().toLatin1().data(),size.width(),size.height());
+//            USD_LOG(LOG_DEBUG,"%dx%d(id:%s) != %dx%d",mode->size().width(),mode->size().height(),mode->id().toLatin1().data(),size.width(),size.height());
             continue;
         }
         if (!qFuzzyCompare(mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat())) {
-            USD_LOG(LOG_DEBUG,"%f != %f",mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat());
+//            USD_LOG(LOG_DEBUG,"%f != %f",mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat());
             continue;
         }
         //qDebug() << "\tFound: " << mode->id() << " " << mode->size() << "@" << mode->refreshRate();
@@ -114,7 +114,7 @@ QVariantMap xrandrOutput::getGlobalData(KScreen::OutputPtr output)
 {
     QFile file(globalFileName(output->hashMd5()));
     if (!file.open(QIODevice::ReadOnly)) {
-        USD_LOG(LOG_DEBUG, "Failed to open file %s" , file.fileName().toLatin1().data());
+//        USD_LOG(LOG_DEBUG, "Failed to open file %s" , file.fileName().toLatin1().data());
         return QVariantMap();
     }
     QJsonDocument parser;
@@ -125,7 +125,7 @@ bool xrandrOutput::readInGlobal(KScreen::OutputPtr output)
 {
     const QVariantMap info = getGlobalData(output);
     if (info.empty()) {
-        USD_LOG(LOG_DEBUG,"can't get info...");
+//        USD_LOG(LOG_DEBUG,"can't get info...");
         // if info is empty, the global file does not exists, or is in an unreadable state
         return false;
     }
@@ -292,15 +292,15 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
 
 
     if (readInGlobal(output)) {
-        USD_LOG(LOG_DEBUG,"out it....");
+//        USD_LOG(LOG_DEBUG,"out it....");
         // output data read from global output file
         return;
     }
 
-    USD_LOG_SHOW_OUTPUT(output);
+
     // output data read directly from info
     readInGlobalPartFromInfo(output, info);
-    USD_LOG_SHOW_OUTPUT(output)
+
 }
 
 void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &outputsInfo)
@@ -324,7 +324,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     for (const KScreen::OutputPtr &output : outputs) {
         if (!output->isConnected()) {
             output->setEnabled(false);
-            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
+//            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
             continue;
         }
 
@@ -350,7 +350,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
                 }
             }
 
-            USD_LOG(LOG_DEBUG,"..%s ready set...", output->name().toLatin1().data());
+//            USD_LOG(LOG_DEBUG,"..%s ready set...", output->name().toLatin1().data());
             infoFound = true;
             readIn(output, info);//, control.getOutputRetention(output));
             break;
