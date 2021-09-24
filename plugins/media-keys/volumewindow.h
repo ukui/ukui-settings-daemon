@@ -33,7 +33,7 @@
 #include <QDBusConnection>
 #include <QDBusMessage>
 #include <QDBusInterface>
-#include <QGSettings>
+#include <QGSettings/qgsettings.h>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {class VolumeWindow;}

@@ -1,3 +1,21 @@
+ukui-settings-daemon (3.1.0-1.1) v101; urgency=medium
+
+  * BUG号：无
+  * 需求号：无
+  * 其他改动说明：3.1增加对侧边栏声音Gsettings状态设置
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 24 Sep 2021 10:05:51 +0800
+
+ukui-settings-daemon (3.1.0-1) v101; urgency=medium
+
+  * BUG号： 81183 【显示】控制面板-显示器，缩放屏幕无论选择125%,150%都不生效
+            81186 【显示】切换缩放比例然后注销重新登录之后，开始菜单出现在任务栏上方 
+            79707 【UKUI V3.1】【OSD】台式机将vga设置为主屏，HDMI为副屏后，选择仅显示第二屏幕后，HDMI的屏幕黑屏，仅有鼠标 
+            79679 【UKUI V3.1】【OSD】麦克风锁按下无热键弹窗，无对应功能 
+  * 需求号：无
+  * 其他改动说明：无
+ -- sundagao <sundagao@kylinos.cn>  Thu, 23 Sep 2021 19:38:57 +0800
+
 ukui-settings-daemon (3.1.0) v101; urgency=medium
 
   * BUG号：77572 高 一般【专项测试】【USD】控制面板显示器中对缩放进行设置后注销，注销后设置不生效，设置恢复为默认100%

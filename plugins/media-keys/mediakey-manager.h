@@ -24,7 +24,6 @@
 #include <QTime>
 #include <QString>
 #include <QProcess>
-#include <QGSettings>
 #include <QVariant>
 #include <QFileInfo>
 #include <QDir>
@@ -163,6 +162,7 @@ private:
     QGSettings        *pointSettings;
     QGSettings        *sessionSettings;
     QGSettings        *shotSettings;
+    QGSettings        *powerSettings;
 
     QProcess          *mExecCmd;
     GdkScreen         *mCurrentScreen;  //current GdkScreen
@@ -177,6 +177,7 @@ private:
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
 
+    int                power_state = 4;
     bool               m_ctrlFlag = false;
 };
 

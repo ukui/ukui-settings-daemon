@@ -36,11 +36,24 @@ const int VOLUMESTEP = 6;
 #define POINTER_SCHEMA      "org.ukui.SettingsDaemon.plugins.mouse"
 #define POINTER_KEY         "locate-pointer"
 
+#define POWER_SCHEMA        "org.ukui.power-manager"
+#define POWER_BUTTON_KEY    "button-power"
+
 #define SESSION_SCHEMA      "org.ukui.session"
 #define SESSION_WIN_KEY     "win-key-release"
 
 #define SHOT_SCHEMA         "org.ukui.screenshot"
 #define SHOT_RUN_KEY        "isrunning"
+
+#define PANEL_QUICK_OPERATION "org.ukui.quick-operation.panel"
+#define PANEL_SOUND_STATE   "soundstate"
+
+typedef enum {
+    POWER_SUSPEND = 1,
+    POWER_SHUTDOWN = 2,
+    POWER_HIBERNATE = 3,
+    POWER_INTER_ACTIVE = 4
+} PowerButton;
 
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
@@ -101,6 +114,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
                 shotSettings->set(SHOT_RUN_KEY, false);
         }
 
+    powerSettings = new QGSettings(POWER_SCHEMA);
 
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
@@ -450,6 +464,41 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(logout1, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Period });
     connect(logout1, &QAction::triggered, this, [this]() {
         doAction(LOGOUT_KEY);
+    });
+
+    QAction *logout2 = new QAction(this);
+    logout2->setObjectName(QStringLiteral("open shutdown interface"));
+    logout2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+    KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+    connect(logout2, &QAction::triggered, this, [this]() {
+        static QTime startTime = QTime::currentTime();
+        static int elapsed = -1;
+
+        elapsed = startTime.msecsTo(QTime::currentTime());
+        if(elapsed > 0 && elapsed <= 2500){
+            return;
+        }
+        startTime = QTime::currentTime();
+
+        power_state = powerSettings->getEnum(POWER_BUTTON_KEY);
+        switch (power_state) {
+            case POWER_HIBERNATE:
+                executeCommand("ukui-session-tools"," --hibernate");
+
+            break;
+            case POWER_INTER_ACTIVE:
+                doAction(LOGOUT_KEY);
+            break;
+            case POWER_SHUTDOWN:
+//                doAction(POWER_KEY);
+                executeCommand("ukui-session-tools"," --shutdown");
+            break;
+            case POWER_SUSPEND:
+                executeCommand("ukui-session-tools"," --suspend");
+
+            break;
+        }
     });
 
     /*terminal*/
@@ -1238,7 +1287,7 @@ void MediaKeysManager::doTouchpadAction()
         mDeviceWindow->setAction("touchpad-disabled");
         return;
     }
-    mDeviceWindow->setAction(!touchpadState ? "touchpad-enabled" : "touchpad-disabled");
+    mDeviceWindow->setAction(!touchpadState ? "ukui-touchpad-on" : "ukui-touchpad-off");
     mDeviceWindow->dialogShow();
 
     touchpadSettings->set("touchpad-enabled",!touchpadState);
@@ -1318,6 +1367,11 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
      mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
      updateDialogForVolume(volume,muted,soundChanged);
+     if(QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)){
+        QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
+        panel_settings->set(PANEL_SOUND_STATE,muted);
+        delete panel_settings;
+     }
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
@@ -1625,7 +1679,7 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 
 void MediaKeysManager::doOpenKdsAction()
 {
-         executeCommand("kydisplayswitch","");
+     executeCommand("kydisplayswitch","");
 }
 
 void MediaKeysManager::doWlanAction()
