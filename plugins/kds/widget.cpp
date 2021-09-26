@@ -114,7 +114,6 @@ void Widget::initData()
 
 void Widget::setupComponent()
 {
-    int h = 0;
     QStringList btnTextList;
     QStringList btnImageList;
 
@@ -138,10 +137,8 @@ void Widget::setupComponent()
         btnImageList<<":/img/extend.png";
     }
 
-    h = TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT;
-
+    this->setFixedHeight(TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT);
     setFixedWidth(384);
-    setFixedHeight(h);
 
     const QString style = m_styleSettings->get("style-name").toString();
 
