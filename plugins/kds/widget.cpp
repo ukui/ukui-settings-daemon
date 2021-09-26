@@ -116,7 +116,7 @@ void Widget::setupComponent()
 {
     int h = 0;
     QStringList btnTextList;
-    QStringList btnImg;
+    QStringList btnImageList;
 
     if (false == UsdBaseClass::isTablet()) {
         btnTextList<<"First Screen";
@@ -129,13 +129,13 @@ void Widget::setupComponent()
     }
 
     if (false == UsdBaseClass::isTablet()) {
-        btnImg<<":/img/main.png";
-        btnImg<<":/img/clone.png";
-        btnImg<<":/img/extend.png";
-        btnImg<<":/img/vice.png";
+        btnImageList<<":/img/main.png";
+        btnImageList<<":/img/clone.png";
+        btnImageList<<":/img/extend.png";
+        btnImageList<<":/img/vice.png";
     } else {
-        btnImg<<":/img/clone.png";
-        btnImg<<":/img/extend.png";
+        btnImageList<<":/img/clone.png";
+        btnImageList<<":/img/extend.png";
     }
 
     h = TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT;
@@ -154,7 +154,7 @@ void Widget::setupComponent()
 
         btn->setSign(i % 2,style);
         btn->setBtnText(tr(btnTextList[i].toLatin1().data()));
-        btn->setBtnLogo(btnImg[i],style);
+        btn->setBtnLogo(btnImageList[i],style);
 
         ui->btnsVerLayout->addWidget(btn);
 

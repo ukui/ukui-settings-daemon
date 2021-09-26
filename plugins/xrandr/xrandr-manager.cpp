@@ -487,8 +487,8 @@ void XrandrManager::applyConfig()
             this, [this]() {
         mMonitoredConfig->writeFile(true);//首次接入
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-        SetTouchscreenCursorRotation();
-        USD_LOG_SHOW_OUTPUT(output);
+            SetTouchscreenCursorRotation();
+            USD_LOG_SHOW_OUTPUT(output);
         }
     });
 }
