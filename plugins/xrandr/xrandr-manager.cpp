@@ -112,13 +112,22 @@ XrandrManager::XrandrManager()
 
     m_DbusRotation = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
 
-    if (nullptr != m_DbusRotation){
+    if (nullptr != m_DbusRotation) {
         if (m_DbusRotation->isValid()) {
             connect(m_DbusRotation, SIGNAL(rotations_change_signal(QString)),this,SLOT(RotationChangedEvent(QString)));
-           // USD_LOG(LOG_DEBUG, "m_DbusRotation ok....");
+            // USD_LOG(LOG_DEBUG, "m_DbusRotation ok....");
         } else {
-           // USD_LOG(LOG_DEBUG, "m_DbusRotation fail...");
+            // USD_LOG(LOG_DEBUG, "m_DbusRotation fail...");
         }
+    }
+
+    t_DbusTableMode = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
+
+    if (t_DbusTableMode->isValid()) {
+        connect(t_DbusTableMode, SIGNAL(mode_change_signal(bool)),this,SLOT(TabletSettingsChanged(bool)));
+        //USD_LOG(LOG_DEBUG, "..");
+    } else {
+        //USD_LOG(LOG_DEBUG, "...");
     }
 }
 
@@ -381,9 +390,8 @@ void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 void XrandrManager::RotationChangedEvent(const QString &rotation)
 {
     int value;
-    //qDebug() << "rotation=%s............................."<<rotation;
-
     QString angle_Value = rotation;
+
     if (angle_Value == "normal") {
         value = 1;
     } else if (angle_Value == "left") {
@@ -426,7 +434,7 @@ void XrandrManager::doApplyConfig(const KScreen::ConfigPtr& config)
 void XrandrManager::doApplyConfig(std::unique_ptr<xrandrConfig> config)
 {
     mMonitoredConfig = std::move(config);
-//    monitorsInit();
+    //monitorsInit();
     refreshConfig();
     primaryScreenChange();
 }
@@ -478,6 +486,10 @@ void XrandrManager::applyConfig()
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
         mMonitoredConfig->writeFile(true);//首次接入
+        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+            SetTouchscreenCursorRotation();
+            USD_LOG_SHOW_OUTPUT(output);
+        }
     });
 }
 
@@ -528,9 +540,8 @@ void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput,
         newOutput->setCurrentModeId(newOutput->preferredModeId());
         newOutput->setPrimary(true);
     } else {
-        setScreenModeToClone();
+        setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     }
-
 
 }
 
@@ -741,8 +752,8 @@ void XrandrManager::monitorsInit()
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
 
 
-//    connect(mConfig.data(), &KScreen::Config::outputAdded,
-//            this, &XrandrManager::outputAddedHandle);
+    //connect(mConfig.data(), &KScreen::Config::outputAdded,
+    //        this, &XrandrManager::outputAddedHandle);
 
     connect(mConfig.data(), SIGNAL(outputAdded(KScreen::OutputPtr)),
             this, SLOT(outputAddedHandle(KScreen::OutputPtr)));
@@ -773,7 +784,6 @@ void XrandrManager::monitorsInit()
                 if (output->isConnected()){
                     foreachTimes++;
                 }
-
 
                 if (foreachTimes>1) {
                     USD_LOG_SHOW_OUTPUT(output);
@@ -834,6 +844,17 @@ bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode e
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(mConfig->clone()));
     }
     return false;
+}
+
+void XrandrManager::TabletSettingsChanged(const bool tablemode)
+{
+    if(tablemode)
+    {
+        setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
+    } else {
+        setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
+    }
+
 }
 
 void XrandrManager::setScreenModeToClone()
@@ -909,7 +930,7 @@ void XrandrManager::setScreenModeToClone()
     }
 
     if (0 == bigestResolution) {
-        setScreenModeToExtend();
+       setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
     } else {
        applyConfig();
     }
@@ -917,7 +938,6 @@ void XrandrManager::setScreenModeToClone()
 
 void XrandrManager::setScreenModeToFirst(bool isFirstMode)
 {
-
     int posX = 0;
     int maxScreenSize = 0;
     bool hadFindFirstScreen = false;
@@ -1017,9 +1037,7 @@ void XrandrManager::setScreenModeToExtend()
          USD_LOG_SHOW_OUTPUT(output);
          USD_LOG_SHOW_PARAM1(primaryX);
      }
-
     applyConfig();
-
 }
 
 void XrandrManager::setScreenMode(QString modeName)
@@ -1047,7 +1065,7 @@ void XrandrManager::setScreenMode(QString modeName)
             USD_LOG_SHOW_OUTPUT(output);
         }
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());
-        break;
+        return;
     }
 
     mDbus->mScreenMode = metaEnum.keyToValue(modeName.toLatin1().data());

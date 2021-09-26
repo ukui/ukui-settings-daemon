@@ -151,7 +151,7 @@ void TabletModeManager::TabletSettingsChanged(const bool tablemode)
                                                "org.kde.KGlobalSettings",
                                                "send_to_client");
                 message << bool(1);
-                QDBusConnection::sessionBus().send(message);
+                QDBusConnection::sessionBus().send(message); 
         }else{
             QDBusMessage message =
                     QDBusMessage::createSignal("/KGlobalSettings",

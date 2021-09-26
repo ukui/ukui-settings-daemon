@@ -89,6 +89,7 @@ public:
 
 
 public Q_SLOTS:
+    void TabletSettingsChanged(const bool tablemode);
     void configChanged();
     void RotationChangedEvent(const QString &rotation);
     void outputAddedHandle(const KScreen::OutputPtr &output);
@@ -105,6 +106,7 @@ Q_SIGNALS:
 private:
 
     Q_INVOKABLE void getInitialConfig();
+    QDBusInterface        *t_DbusTableMode;
     QDBusInterface        *m_DbusRotation;
     QTimer                *mAcitveTime = nullptr;
     QTimer                *mSaveConfigTimer = nullptr;

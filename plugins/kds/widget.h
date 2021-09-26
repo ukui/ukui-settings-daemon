@@ -71,7 +71,7 @@ public:
 
 private:
     Ui::Widget *ui;
-    QButtonGroup * btnsGroup;
+    QButtonGroup *btnsGroup;
     QMetaEnum metaEnum;
 private:
     MateRRScreen * kScreen;

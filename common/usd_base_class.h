@@ -2,6 +2,7 @@
 #define USDBASECLASS_H
 #include <QObject>
 #include <QMetaEnum>
+#include <ukuisdk/kylin-com4cxx.h>
 
 class UsdBaseClass: public QObject
 {
@@ -29,8 +30,6 @@ public:
     static bool isXcb();
 
     static bool isNotebook();
-
-
 };
 
 #endif // USDBASECLASS_H
