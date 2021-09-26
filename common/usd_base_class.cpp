@@ -9,13 +9,14 @@
 #include <QDBusReply>
 #include <QDebug>
 
+#define STR_EQUAL 0
+
 #define DBUS_SERVICE "org.freedesktop.UPower"
 #define DBUS_OBJECT "/org/freedesktop/UPower"
 #define DBUS_INTERFACE "org.freedesktop.DBus.Properties"
 
 UsdBaseClass::UsdBaseClass()
 {
-
 }
 
 UsdBaseClass::~UsdBaseClass()
@@ -25,19 +26,23 @@ UsdBaseClass::~UsdBaseClass()
 
 bool UsdBaseClass::isMasterSP1()
 {
-#ifdef USD_MASTER
-    return true;
-#endif
 
-    return false;
 }
 
 bool UsdBaseClass::isTablet()
 {
-#ifdef USD_TABLET
-    return true;
-#endif
-    return false;
+    static QString projectCode = nullptr;
+    QString deviceName = "v10sp1-edu";
+
+    if (nullptr == projectCode) {
+        QString arg = KDKGetPrjCodeName().c_str();
+        projectCode = arg.toLower();
+    }
+    if (QString::compare(projectCode,deviceName) == STR_EQUAL) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 bool UsdBaseClass::is9X0()
@@ -50,7 +55,7 @@ bool UsdBaseClass::is9X0()
 
 bool UsdBaseClass::isWayland()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"))){
+    if (QGuiApplication::platformName().startsWith(QLatin1String("wayland"))) {
         USD_LOG(LOG_DEBUG,"is wayland app");
         return true;
     }
@@ -61,7 +66,7 @@ bool UsdBaseClass::isWayland()
 
 bool UsdBaseClass::isXcb()
 {
-    if (QGuiApplication::platformName().startsWith(QLatin1String("xcb"))){
+    if (QGuiApplication::platformName().startsWith(QLatin1String("xcb"))) {
         USD_LOG(LOG_DEBUG,"is xcb app");
         return true;
     }

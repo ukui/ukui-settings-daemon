@@ -63,7 +63,6 @@ int WaylandAdaptor::getScreenMode(const QString &appName){
     return out0;
 }
 
-
 QString WaylandAdaptor::priScreenName()
 {
     // handle method call org.ukui.SettingsDaemon.wayland.priScreenName

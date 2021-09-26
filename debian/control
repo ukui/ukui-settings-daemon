@@ -43,6 +43,7 @@ Build-Depends: debhelper-compat (=12),
                libxkbcommon-dev,
 	       libkf5globalaccel-dev,
 	       libqt5x11extras5-dev,
+	       libukui-common-dev,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/

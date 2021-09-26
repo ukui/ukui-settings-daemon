@@ -42,19 +42,11 @@
 #define OPTIONSHEIGHT 70
 #define BOTTOMHEIGHT 38
 
-#define FIRSTSCREENID 0
-#define CLONESCREENID 1
-#define EXTENEDSCREENID 2
-#define OTHERSCREENID 3
-#define ALLMODESID 4
-
 
 #define XSETTINGS_SCHEMA            "org.ukui.SettingsDaemon.plugins.xsettings"
 #define XSETTINGS_KEY_SCALING       "scaling-factor"
 
 #define QT_THEME_SCHEMA             "org.ukui.style"
-
-
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -73,7 +65,8 @@ Widget::~Widget()
     delete m_scaleSetting;
 }
 
-void Widget::beginSetup(){
+void Widget::beginSetup()
+{
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
 
     setAttribute(Qt::WA_TranslucentBackground, true);
@@ -103,37 +96,49 @@ void Widget::beginSetup(){
 
     connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &Widget::geometryChangedHandle);
 
-    connect(XEventMonitor::instance(), SIGNAL(buttonPress(int,int)),
-            this, SLOT(XkbButtonEvent(int,int)));
+    connect(XEventMonitor::instance(), SIGNAL(buttonPress(int,int)),this, SLOT(XkbButtonEvent(int,int)));
     XEventMonitor::instance()->start();
 }
 
-void Widget::initData(){
+void Widget::initData()
+{
     btnsGroup = new QButtonGroup;
 
     gtk_init(NULL, NULL);
 
     //Monitor init
     kScreen = mate_rr_screen_new (gdk_screen_get_default (), NULL);
-//    kConfig = mate_rr_config_new_current (kScreen, NULL);
+    //kConfig = mate_rr_config_new_current (kScreen, NULL);
 
 }
 
-void Widget::setupComponent(){
-
-    int h = TITLEHEIGHT + OPTIONSHEIGHT * ALLMODESID + BOTTOMHEIGHT;
+void Widget::setupComponent()
+{
+    int h = 0;
     QStringList btnTextList;
     QStringList btnImg;
 
-    btnTextList<<"First Screen";
-    btnTextList<<"Clone Screen";
-    btnTextList<<"Extend Screen";
-    btnTextList<<"Vice Screen";
+    if (false == UsdBaseClass::isTablet()) {
+        btnTextList<<"First Screen";
+        btnTextList<<"Clone Screen";
+        btnTextList<<"Extend Screen";
+        btnTextList<<"Vice Screen";
+    } else {
+        btnTextList<<"Clone Screen";
+        btnTextList<<"Extend Screen";
+    }
 
-    btnImg<<":/img/main.png";
-    btnImg<<":/img/clone.png";
-    btnImg<<":/img/extend.png";
-    btnImg<<":/img/vice.png";
+    if (false == UsdBaseClass::isTablet()) {
+        btnImg<<":/img/main.png";
+        btnImg<<":/img/clone.png";
+        btnImg<<":/img/extend.png";
+        btnImg<<":/img/vice.png";
+    } else {
+        btnImg<<":/img/clone.png";
+        btnImg<<":/img/extend.png";
+    }
+
+    h = TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT;
 
     setFixedWidth(384);
     setFixedHeight(h);
@@ -142,7 +147,7 @@ void Widget::setupComponent(){
 
     ui->outputPrimaryTip->hide();
 
-    for (int i = 0; i < ALLMODESID; i++){
+    for (int i = 0; i < btnTextList.length(); i++) {
         ExpendButton * btn = new ExpendButton();
         btn->setFixedHeight(70);
         btnsGroup->addButton(btn, i);
@@ -152,45 +157,47 @@ void Widget::setupComponent(){
         btn->setBtnLogo(btnImg[i],style);
 
         ui->btnsVerLayout->addWidget(btn);
+
+        USD_LOG(LOG_DEBUG,"%s...",btnTextList[i].toLatin1().data());
     }
 
     m_qssDefaultOrDark = ("QFrame#titleFrame{background: transparent;}"\
-                 "QFrame#bottomFrame{background: transparent; border: none;}"\
-                 "QLabel#titleLabel{color: #FFFFFF;background: transparent; }"\
-                );
+                          "QFrame#bottomFrame{background: transparent; border: none;}"\
+                          "QLabel#titleLabel{color: #FFFFFF;background: transparent; }"\
+                          );
 
     m_qssLight = ("QFrame#titleFrame{background: transparent; border: none;}"\
-                    "QFrame#bottomFrame{background: transparent; border: none; }"\
-                    "QLabel#titleLabel{color: #232426;background: transparent;}"\
-                );
+                  "QFrame#bottomFrame{background: transparent; border: none; }"\
+                  "QLabel#titleLabel{color: #232426;background: transparent;}"\
+                  );
 
     /*跟随系统字体变化*/
     int fontSize = m_styleSettings->get("system-font-size").toInt();
     QFont font;
     font.setPointSize(fontSize + 4);
     ui->titleLabel->setFont(font);
-
 }
 
-void Widget::setupConnect(){
-
-    connect(btnsGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [=](int id){
+void Widget::setupConnect()
+{
+    connect(btnsGroup, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, [=](int id) {
         /* 获取旧选项 */
-        for (QAbstractButton * button : btnsGroup->buttons()){
+        for (QAbstractButton * button : btnsGroup->buttons()) {
             ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
-//            qDebug() << "old index: " << btn->getBtnChecked();
+            //qDebug() << "old index: " << btn->getBtnChecked();
             int index = btnsGroup->id(button);
             if (index == id && btn->getBtnChecked()){
-                   close();
+                close();
             }
         }
-
+        //0,1  ->1,2
+        if (true == UsdBaseClass::isTablet()) {
+            id += 1;
+        }
         setScreenModeByDbus(metaEnum.key(id));
         close();
     });
-
 }
-
 
 int Widget::getCurrentStatus()
 {
@@ -204,8 +211,7 @@ int Widget::getCurrentStatus()
 
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
-    if (response.type() == QDBusMessage::ReplyMessage)
-    {
+    if (response.type() == QDBusMessage::ReplyMessage) {
         if(response.arguments().isEmpty() == false) {
             int value = response.arguments().takeFirst().toInt();
             USD_LOG(LOG_DEBUG, "get mode :%s", metaEnum.key(value));
@@ -219,9 +225,13 @@ int Widget::getCurrentStatus()
     return 0;
 }
 
-void Widget::initCurrentStatus(int id){
+void Widget::initCurrentStatus(int id)
+{
     //set all no checked
-    for (QAbstractButton * button : btnsGroup->buttons()){
+    if(true == UsdBaseClass::isTablet()) {
+        id -= 1;
+    }
+    for (QAbstractButton * button : btnsGroup->buttons()) {
         ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
 
         btn->setBtnChecked(false);
@@ -252,73 +262,75 @@ void Widget::geometryChangedHandle()
 
 }
 
-void Widget::nextSelectedOption(){
+void Widget::nextSelectedOption()
+{
     int current = btnsGroup->checkedId();
     int next;
-
-
-    next = current == ALLMODESID - 1 ? 0 : current + 1;
+    next = current == btnsGroup->buttons().count() - 1 ? 0 : current + 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(next));
     btn->setChecked(true);
 }
 
-void Widget::lastSelectedOption(){
+void Widget::lastSelectedOption()
+{
     int current = btnsGroup->checkedId();
     int last;
 
     /* no button checked */
     if (current == -1)
-        current = ALLMODESID;
+        current = btnsGroup->buttons().count();
 
-    last = current == 0 ? ALLMODESID - 1 : current - 1;
+    last = current == 0 ? btnsGroup->buttons().count() - 1 : current - 1;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(last));
     btn->setChecked(true);
 }
 
-void Widget::confirmCurrentOption(){
+void Widget::confirmCurrentOption()
+{
     int current = btnsGroup->checkedId();
-
     if (current == -1)
         return;
 
     ExpendButton * btn = dynamic_cast<ExpendButton *>(btnsGroup->button(current));
-//    btn->click();
+    //btn->click();
     btn->animateClick();
 }
 
-void Widget::closeApp(){
+void Widget::closeApp()
+{
     close();
 }
 
 void Widget::setScreenModeByDbus(QString modeName)
 {
+    QList<QVariant> args;
+    const QStringList ukccModeList = {"first", "copy", "expand", "second"};
+
     QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
                                                           "/org/ukui/SettingsDaemon/wayland",
                                                           "org.ukui.SettingsDaemon.wayland",
                                                           "setScreenMode");
-    QList<QVariant> args;
 
     args.append(modeName);
     args.append(qAppName());
     message.setArguments(args);
 
+    ukcciface->call("setScreenMode", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())]);
     QDBusConnection::sessionBus().send(message);
 }
 
-
-
-
-
-void Widget::msgReceiveAnotherOne(const QString &msg){
-//    qDebug() << "another one " << msg;
+void Widget::msgReceiveAnotherOne(const QString &msg)
+{
+    //qDebug() << "another one " << msg;
     nextSelectedOption();
 }
 
-void Widget::receiveButtonClick(int x, int y){
+void Widget::receiveButtonClick(int x, int y)
+{
     qDebug() << "receive button press " << x << y;
-    if (!this->geometry().contains(x, y)){
+    if (!this->geometry().contains(x, y)) {
         close();
     }
 
@@ -328,54 +340,49 @@ void Widget::keyPressEvent(QKeyEvent* event)
 {
     switch (event->key())
     {
-        case Qt::Key_Up:
-            lastSelectedOption();
-            break;
-        case Qt::Key_Down:
+    case Qt::Key_Up:
+        lastSelectedOption();
+        break;
+    case Qt::Key_Down:
+        nextSelectedOption();
+        break;
+    case Qt::Key_Return:
+    case Qt::Key_Enter:
+        confirmCurrentOption();
+        break;
+    case Qt::Key_Meta:
+    case Qt::Key_Super_L:
+        m_superPresss = true;
+        close();
+        break;
+    case Qt::Key_Display:
+        nextSelectedOption();
+        break;
 
+    case Qt::Key_P:
+        if(m_superPresss) {
             nextSelectedOption();
-            break;
-        case Qt::Key_Return:
-        case Qt::Key_Enter:
-            confirmCurrentOption();
-            break;
-        case Qt::Key_Meta:
-        case Qt::Key_Super_L:
-            m_superPresss = true;
+
+        } else {
             close();
-            break;
-        case Qt::Key_Display:
-            nextSelectedOption();
-
-            break;
-
-        case Qt::Key_P:
-            if(m_superPresss)
-            {
-                nextSelectedOption();
-
-            }else
-            {
-                close();
-            }
-            break;
-        default:
-            close();
-            break;
+        }
+        break;
+    default:
+        close();
+        break;
     }
 }
 
 void Widget::keyReleaseEvent(QKeyEvent *event)
 {
-        switch (event->key())
-        {
-            case Qt::Key_Meta:
-            m_superPresss = false;
-
-                break;
-            default:
-                break;
-        }
+    switch (event->key())
+    {
+    case Qt::Key_Meta:
+        m_superPresss = false;
+        break;
+    default:
+        break;
+    }
 }
 
 void Widget::XkbButtonEvent(int x,int y)
@@ -390,15 +397,12 @@ void Widget::showEvent(QShowEvent* event)
         setStyleSheet(m_qssLight);
         setPalette(QPalette(QColor("#FFFFFF")));//设置窗口背景色
 
-
     } else {
         setPalette(QPalette(QColor("#40232426")));//设置窗口背景色
         setStyleSheet(m_qssDefaultOrDark);
 
     }
 }
-
-
 
 void Widget::paintEvent(QPaintEvent *event)
 {
