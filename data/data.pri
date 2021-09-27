@@ -20,6 +20,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.mouse.gschema.xml       \
     $$PWD/org.ukui.SettingsDaemon.plugins.media-keys.gschema.xml  \
     $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml       \
+    $$PWD/org.ukui.SettingsDaemon.plugins.sharing.gschema.xml       \
     $$PWD/org.ukui.SettingsDaemon.plugins.tablet-mode.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml      \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml        \
@@ -67,6 +68,7 @@ DISTFILES += \
     $$PWD/keyboard.ukui-settings-plugin      \
     $$PWD/keybindings.ukui-settings-plugin   \
     $$PWD/sound.ukui-settings-plugin         \
+    $$PWD/sharing.ukui-settings-plugin       \
     $$PWD/tablet-mode.ukui-settings-plugin   \
     $$PWD/xrdb.ukui-settings-plugin          \
     $$PWD/xrandr.ukui-settings-plugin        \
