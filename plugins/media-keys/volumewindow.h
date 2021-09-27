@@ -47,11 +47,14 @@ public:
     VolumeWindow(QWidget *parent = nullptr);
     ~VolumeWindow();
     void initWindowInfo();
-    void dialogShow();
+    void dialogVolumeShow();
+    void dialogBrightShow();
     void setWidgetLayout();
     void setVolumeMuted(bool);
     void setVolumeLevel(int);
     void setVolumeRange(int, int);
+    void setBrightIcon(const QString icon);
+    void setBrightValue(int value);
     int getScreenGeometry (QString methodName);
 
     QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
@@ -73,7 +76,8 @@ private:
     QHBoxLayout *mLabLayout;
     QSpacerItem *mSpace;
     QLabel      *mLabel;
-    QProgressBar *mBar;
+    QProgressBar *mVolumeBar;
+    QProgressBar *mBrightBar;
     QLabel      *mBut;
     QTimer       *mTimer;
     QString      mIconName;
@@ -86,5 +90,8 @@ private:
     int mVolumeLevel;
     int mMaxVolume,mMinVolume;
     bool mVolumeMuted;
+
+    int mbrightValue;
+
 };
 #endif // MEDIAKEYSWINDOW_H

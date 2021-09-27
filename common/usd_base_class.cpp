@@ -76,7 +76,7 @@ bool UsdBaseClass::isXcb()
 bool UsdBaseClass::isNotebook()
 {
     QDBusMessage msg = QDBusMessage::createMethodCall(DBUS_SERVICE,DBUS_OBJECT,DBUS_INTERFACE,"Get");
-    msg<<DBUS_SERVICE<<"LidlsPresent";
+    msg<<DBUS_SERVICE<<"LidIsPresent";
     QDBusMessage res = QDBusConnection::systemBus().call(msg);
     if(res.type()==QDBusMessage::ReplyMessage)
     {

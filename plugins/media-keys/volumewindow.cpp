@@ -86,8 +86,8 @@ VolumeWindow::~VolumeWindow()
         delete mSvgLayout;
     if (mBut)
         delete mBut;
-    if (mBar)
-        delete mBar;
+    if (mVolumeBar)
+        delete mVolumeBar;
     if (mVLayout)
         delete mVLayout;
     if (mTimer)
@@ -168,7 +168,8 @@ void VolumeWindow::initWindowInfo()
     mLabLayout = new QHBoxLayout();
 
     mLabel = new QLabel(this);
-    mBar = new QProgressBar(this);
+    mVolumeBar = new QProgressBar(this);
+    mBrightBar = new QProgressBar(this);
     mBut = new QLabel(this);
 
     mTimer = new QTimer();
@@ -198,12 +199,18 @@ void VolumeWindow::setWidgetLayout()
     //button图片操作
     mBut->setFixedSize(QSize(32,32) * mScale);
     //音量条操作
-    mBar->setOrientation(Qt::Vertical);
-    mBar->setFixedSize(QSize(10,200) * mScale);
-    mBar->setTextVisible(false);
-
-    //音量调放入横向布局
-    mBarLayout->addWidget(mBar);
+    mVolumeBar->setOrientation(Qt::Vertical);
+    mVolumeBar->setFixedSize(QSize(10,200) * mScale);
+    mVolumeBar->setTextVisible(false);
+    mVolumeBar->hide();
+    //亮度条操作
+    mBrightBar->setOrientation(Qt::Vertical);
+    mBrightBar->setFixedSize(QSize(10,200) * mScale);
+    mBrightBar->setTextVisible(false);
+    mBrightBar->hide();
+    //音量条放入横向布局
+    mBarLayout->addWidget(mVolumeBar);
+    mBarLayout->addWidget(mBrightBar);
     mBarLayout->setContentsMargins(0,0,0,15 * mScale);
 
     //svg图片加到横向布局
@@ -260,10 +267,28 @@ QPixmap VolumeWindow::drawLightColoredPixmap(const QPixmap &source, const QStrin
     return QPixmap::fromImage(img);
 }
 
-void VolumeWindow::dialogShow()
+void VolumeWindow::dialogVolumeShow()
 {
+    geometryChangedHandle();
     mLabel->clear();
     mLabel->setNum(doubleToInt(mVolumeLevel/655.35));
+    mBrightBar->hide();
+    mVolumeBar->show();
+    QSize iconSize(32 * mScale,32 * mScale);
+
+    mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
+    show();
+    mTimer->start(2000);
+}
+
+void VolumeWindow::dialogBrightShow()
+{
+    geometryChangedHandle();
+    mVolumeBar->hide();
+    mBrightBar->show();
+    mBrightBar->setValue(mbrightValue);
+    mLabel->clear();
+    mLabel->setNum(mbrightValue);
 
     QSize iconSize(32 * mScale,32 * mScale);
 
@@ -282,11 +307,11 @@ void VolumeWindow::setVolumeLevel(int level)
 {
     double percentage;
 
-    mBar->reset();
+    mVolumeBar->reset();
     mIconName.clear();
     mVolumeLevel = level;
 
-    mBar->setValue((mVolumeLevel-mMinVolume)/100);
+    mVolumeBar->setValue((mVolumeLevel-mMinVolume)/100);
 
     if(mVolumeMuted){
         mIconName = allIconName[0];
@@ -312,7 +337,18 @@ void VolumeWindow::setVolumeRange(int min, int max)
 
     mMaxVolume = max;
     mMinVolume = min;
-    mBar->setRange(min,(max-min)/100);
+    mVolumeBar->setRange(min,(max-min)/100);
+}
+
+
+void VolumeWindow::setBrightIcon(const QString icon)
+{
+    mIconName = icon;
+}
+
+void VolumeWindow::setBrightValue(int value)
+{
+    mbrightValue = value;
 }
 
 void VolumeWindow::timeoutHandle()
@@ -328,7 +364,9 @@ void VolumeWindow::showEvent(QShowEvent* e)
     if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
         mLabel->setStyleSheet("color:black;");
-        mBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
+        mVolumeBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
+                            "QProgressBar::chunk{border-radius:4px;background:black}");
+        mBrightBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
                             "QProgressBar::chunk{border-radius:4px;background:black}");
         setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
 
@@ -336,7 +374,9 @@ void VolumeWindow::showEvent(QShowEvent* e)
     else
     {
         mLabel->setStyleSheet("color:white;");
-        mBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#CC000000}"
+        mVolumeBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#CC000000}"
+                            "QProgressBar::chunk{border-radius:4px;background:white}");
+        mBrightBar->setStyleSheet("QProgressBar{border:none;border-radius:4px;background:#33000000}"
                             "QProgressBar::chunk{border-radius:4px;background:white}");
         setPalette(QPalette(QColor("#232426")));//设置窗口背景色
 
