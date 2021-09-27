@@ -834,7 +834,8 @@ void MouseManager::SetMouseAccel(XDeviceInfo *device_info)
     int format, rc;
     unsigned long nitems, bytes_after;
 
-    Display * dpy = QX11Info::display();
+    //Display * dpy = QX11Info::display();
+    Display * dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
     unsigned char *data;
     bool MouseAccel;
 
