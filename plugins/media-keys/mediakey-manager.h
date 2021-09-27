@@ -36,6 +36,7 @@
 #include "acme.h"
 #include "xeventmonitor.h"
 #include "pulseaudiomanager.h"
+#include "usd_base_class.h"
 
 #ifdef signals
 #undef signals
