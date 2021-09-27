@@ -29,6 +29,9 @@ MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
 const int VOLUMESTEP = 6;
 #define midValue(x,low,high) (((x) > (high)) ? (high): (((x) < (low)) ? (low) : (x)))
+#define TIME_LIMIT          2500
+#define MAX_BRIGHTNESS      100
+#define STEP_BRIGHTNESS     10
 
 #define UKUI_DAEMON_NAME    "ukui-settings-daemon"
 #define MEDIAKEY_SCHEMA     "org.ukui.SettingsDaemon.plugins.media-keys"
@@ -47,6 +50,9 @@ const int VOLUMESTEP = 6;
 
 #define PANEL_QUICK_OPERATION "org.ukui.quick-operation.panel"
 #define PANEL_SOUND_STATE   "soundstate"
+
+#define GPM_SETTINGS_SCHEMA		            "org.ukui.power-manager"
+#define GPM_SETTINGS_BRIGHTNESS_AC			"brightness-ac"
 
 typedef enum {
     POWER_SUSPEND = 1,
@@ -160,6 +166,30 @@ void MediaKeysManager::initShortcuts()
     connect(touchpad, &QAction::triggered, this, [this]() {
         doAction(TOUCHPAD_KEY);
     });
+
+    QAction *brightDown= new QAction(this);
+    brightDown->setObjectName(QStringLiteral("Brightness down"));
+    brightDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+    KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+    connect(brightDown, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"Brightness down...............");
+        doAction(BRIGHT_DOWN_KEY);
+        Q_EMIT brightnessDown();
+    });
+
+    QAction *brightUp = new QAction(this);
+    brightUp->setObjectName(QStringLiteral("Brightness Up"));
+    brightUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+    KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+    connect(brightUp, &QAction::triggered, this, [this]() {
+        USD_LOG(LOG_DEBUG,"Brightness Up ..................");
+        doAction(BRIGHT_UP_KEY);
+
+        Q_EMIT brightnessUp();
+    });
+
     /* sound mute*/
     QAction *volumeMute= new QAction(this);
     volumeMute->setObjectName(QStringLiteral("Volume mute"));
@@ -476,7 +506,7 @@ void MediaKeysManager::initShortcuts()
         static int elapsed = -1;
 
         elapsed = startTime.msecsTo(QTime::currentTime());
-        if(elapsed > 0 && elapsed <= 2500){
+        if(elapsed > 0 && elapsed <= TIME_LIMIT){
             return;
         }
         startTime = QTime::currentTime();
@@ -1042,6 +1072,10 @@ bool MediaKeysManager::doAction(int type)
     case MIC_MUTE_KEY:
         doMicSoundAction();
         break;
+    case BRIGHT_UP_KEY:
+    case BRIGHT_DOWN_KEY:
+        doBrightAction(type);
+        break;
     case POWER_KEY:
         doShutdownAction();
         break;
@@ -1302,6 +1336,31 @@ void MediaKeysManager::doMicSoundAction()
     mDeviceWindow->setAction ( mute ? "ukui-microphone-off" : "ukui-microphone-on");
     mDeviceWindow->dialogShow();
 }
+
+void MediaKeysManager::doBrightAction(int type)
+{
+    int brightValue;
+    QGSettings* settings = new QGSettings(GPM_SETTINGS_SCHEMA);
+    switch (type){
+    case BRIGHT_UP_KEY:
+        brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() + STEP_BRIGHTNESS;
+        if(brightValue >= MAX_BRIGHTNESS){
+            brightValue = MAX_BRIGHTNESS;
+        }
+        break;
+    case BRIGHT_DOWN_KEY:
+        brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() - STEP_BRIGHTNESS;
+        if(brightValue <= STEP_BRIGHTNESS){
+            brightValue = STEP_BRIGHTNESS;
+        }
+        break;
+    }
+    mVolumeWindow->setBrightIcon("display-brightness-symbolic");
+    mVolumeWindow->setBrightValue(brightValue);
+    mVolumeWindow->dialogBrightShow();
+    delete settings;
+}
+
 void MediaKeysManager::doSoundActionALSA(int keyType)
 {
     int last_volume;
@@ -1458,7 +1517,7 @@ void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundCh
     USD_LOG(LOG_DEBUG, "volume = %d, muted is %d", v, muted);
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
-    mVolumeWindow->dialogShow();
+    mVolumeWindow->dialogVolumeShow();
     //ToDo...
 }
 

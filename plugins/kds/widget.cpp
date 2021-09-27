@@ -117,28 +117,28 @@ void Widget::setupComponent()
     QStringList btnTextList;
     QStringList btnImageList;
 
-    if (false == UsdBaseClass::isTablet()) {
+    if (UsdBaseClass::isTablet() || !UsdBaseClass::isNotebook()) {
+        btnTextList<<"Clone Screen";
+        btnTextList<<"Extend Screen";
+
+    } else {
         btnTextList<<"First Screen";
         btnTextList<<"Clone Screen";
         btnTextList<<"Extend Screen";
         btnTextList<<"Vice Screen";
-    } else {
-        btnTextList<<"Clone Screen";
-        btnTextList<<"Extend Screen";
     }
 
-    if (false == UsdBaseClass::isTablet()) {
+    if (UsdBaseClass::isTablet() || !UsdBaseClass::isNotebook()) {
+        btnImageList<<":/img/clone.png";
+        btnImageList<<":/img/extend.png";
+    } else {
         btnImageList<<":/img/main.png";
         btnImageList<<":/img/clone.png";
         btnImageList<<":/img/extend.png";
         btnImageList<<":/img/vice.png";
-    } else {
-        btnImageList<<":/img/clone.png";
-        btnImageList<<":/img/extend.png";
     }
-
+    this->setFixedWidth(384);
     this->setFixedHeight(TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT);
-    setFixedWidth(384);
 
     const QString style = m_styleSettings->get("style-name").toString();
 
@@ -188,7 +188,7 @@ void Widget::setupConnect()
             }
         }
         //0,1  ->1,2
-        if (true == UsdBaseClass::isTablet()) {
+        if (true == UsdBaseClass::isTablet() || UsdBaseClass::isNotebook()) {
             id += 1;
         }
         setScreenModeByDbus(metaEnum.key(id));
@@ -225,7 +225,7 @@ int Widget::getCurrentStatus()
 void Widget::initCurrentStatus(int id)
 {
     //set all no checked
-    if(true == UsdBaseClass::isTablet()) {
+    if(true == UsdBaseClass::isTablet() || UsdBaseClass::isNotebook()) {
         id -= 1;
     }
     for (QAbstractButton * button : btnsGroup->buttons()) {

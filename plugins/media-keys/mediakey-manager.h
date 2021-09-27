@@ -95,6 +95,7 @@ private:
     void doSoundAction(int);
     void doSoundActionALSA(int);
     void doMicSoundAction();
+    void doBrightAction(int);
     void updateDialogForVolume(uint,bool,bool);
     void executeCommand(const QString&,const QString&);
     void doShutdownAction();
@@ -151,6 +152,15 @@ Q_SIGNALS:
      *  同时，mpris插件会connect这个signal
     */
     void MediaPlayerKeyPressed(QString application,QString operation);
+
+    /**
+     * @brief brightnessDown
+     */
+    void brightnessDown();
+    /**
+     * @brief brightnessUp
+     */
+    void brightnessUp();
 
 private:
     pulseAudioManager *mpulseAudioManager;

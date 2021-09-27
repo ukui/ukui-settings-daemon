@@ -12,7 +12,6 @@ class xrandrDbus : public QObject
 public:
     xrandrDbus(QObject* parent=0);
     ~xrandrDbus();
-    void initShortKeys();
 
 public Q_SLOTS:
     int x();

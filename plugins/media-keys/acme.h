@@ -30,6 +30,8 @@ enum {
         VOLUME_DOWN_KEY,
         VOLUME_UP_KEY,
         MIC_MUTE_KEY,
+        BRIGHT_UP_KEY,
+        BRIGHT_DOWN_KEY,
         POWER_KEY,
         EJECT_KEY,
         HOME_KEY,
