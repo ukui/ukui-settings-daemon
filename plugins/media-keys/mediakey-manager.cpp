@@ -503,35 +503,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
 
     connect(logout2, &QAction::triggered, this, [this]() {
-        if (true == UsdBaseClass::isTablet()) {
-            doAction(SCREENSAVER_KEY_2);
-        } else {
-            static QTime startTime = QTime::currentTime();
-            static int elapsed = -1;
-
-            elapsed = startTime.msecsTo(QTime::currentTime());
-            if(elapsed > 0 && elapsed <= TIME_LIMIT){
-                return;
-            }
-            startTime = QTime::currentTime();
-
-            power_state = powerSettings->getEnum(POWER_BUTTON_KEY);
-            switch (power_state) {
-                case POWER_HIBERNATE:
-                    executeCommand("ukui-session-tools"," --hibernate");
-                    break;
-                case POWER_INTER_ACTIVE:
-                    doAction(LOGOUT_KEY);
-                    break;
-                case POWER_SHUTDOWN:
-                    //doAction(POWER_KEY);
-                    executeCommand("ukui-session-tools"," --shutdown");
-                    break;
-                case POWER_SUSPEND:
-                    executeCommand("ukui-session-tools"," --suspend");
-                    break;
-            }
-        }
+        doPowerOffAction();
     });
 
     /*terminal*/
@@ -1599,6 +1571,40 @@ void MediaKeysManager::doLogoutAction()
 {
     executeCommand("ukui-session-tools","");
 }
+
+void MediaKeysManager::doPowerOffAction()
+{
+    if (true == UsdBaseClass::isTablet()) {
+        doAction(SCREENSAVER_KEY_2);
+    } else {
+        static QTime startTime = QTime::currentTime();
+        static int elapsed = -1;
+
+        elapsed = startTime.msecsTo(QTime::currentTime());
+        if(elapsed > 0 && elapsed <= TIME_LIMIT){
+            return;
+        }
+        startTime = QTime::currentTime();
+
+        power_state = powerSettings->getEnum(POWER_BUTTON_KEY);
+        switch (power_state) {
+            case POWER_HIBERNATE:
+                executeCommand("ukui-session-tools"," --hibernate");
+                break;
+            case POWER_INTER_ACTIVE:
+                doAction(LOGOUT_KEY);
+                break;
+            case POWER_SHUTDOWN:
+                //doAction(POWER_KEY);
+                executeCommand("ukui-session-tools"," --shutdown");
+                break;
+            case POWER_SUSPEND:
+                executeCommand("ukui-session-tools"," --suspend");
+                break;
+        }
+    }
+}
+
 
 void MediaKeysManager::doOpenHomeDirAction()
 {

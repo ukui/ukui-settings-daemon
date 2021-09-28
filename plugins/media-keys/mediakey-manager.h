@@ -101,6 +101,7 @@ private:
     void executeCommand(const QString&,const QString&);
     void doShutdownAction();
     void doLogoutAction();
+    void doPowerOffAction();
     void doOpenHomeDirAction();
     void doSearchAction();
     void doScreensaverAction();
