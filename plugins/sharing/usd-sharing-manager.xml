@@ -1,0 +1,15 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node>
+  <interface name="org.ukui.SettingsDaemon.Sharing">
+    <signal name="serviceChange">
+      <arg name="state" type="s" direction="out"/>
+      <arg name="serviceName" type="s" direction="out"/>
+    </signal>
+    <method name="EnableService">
+      <arg name="serviceName" type="s" direction="in"/>
+    </method>
+    <method name="DisableService">
+      <arg name="serviceName" type="s" direction="in"/>
+    </method>
+  </interface>
+</node>

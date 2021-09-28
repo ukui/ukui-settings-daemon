@@ -7,6 +7,7 @@ TEMPLATE = subdirs
 
 TRANSLATIONS += daemon/res/i18n/zh_CN.ts
 
+
 CONFIG += ordered
 
 SUBDIRS += \
@@ -22,6 +23,7 @@ SUBDIRS += \
     $$PWD/plugins/mouse/mouse.pro               \
     $$PWD/plugins/mpris/mpris.pro               \
     $$PWD/plugins/sound/sound.pro               \
+    $$PWD/plugins/sharing/sharing.pro           \
     $$PWD/plugins/tablet-mode/tablet-mode.pro   \
     $$PWD/plugins/xrandr/xrandr.pro             \
     $$PWD/plugins/xrdb/xrdb.pro                 \
