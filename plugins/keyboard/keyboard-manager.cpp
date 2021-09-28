@@ -264,14 +264,15 @@ void apply_numlock (KeyboardManager *manager)
     manager->old_state = settings->getEnum(KEY_NUMLOCK_STATE);
 
     try {
-        if (rnumlock) {
+        if(true == UsdBaseClass::isTablet() && rnumlock) {
+            numlock_set_xkb_state (NUMLOCK_STATE_OFF);
+        } else {
             numlock_set_xkb_state ((NumLockState)manager->old_state);
         }
         XSync (dpy, FALSE);
     } catch (int x) {
 
     }
-
 }
 
 static gboolean xkb_set_keyboard_autorepeat_rate(int delay, int rate)

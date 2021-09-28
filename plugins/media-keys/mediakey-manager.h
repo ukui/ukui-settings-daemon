@@ -36,6 +36,7 @@
 #include "acme.h"
 #include "xeventmonitor.h"
 #include "pulseaudiomanager.h"
+#include "usd_base_class.h"
 
 #ifdef signals
 #undef signals
@@ -100,6 +101,7 @@ private:
     void executeCommand(const QString&,const QString&);
     void doShutdownAction();
     void doLogoutAction();
+    void doPowerOffAction();
     void doOpenHomeDirAction();
     void doSearchAction();
     void doScreensaverAction();

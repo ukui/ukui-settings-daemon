@@ -408,8 +408,8 @@ void ukuiXrdbManager::themeChanged (const QString& key)
             QDBusConnection::sessionBus().send(message);
         }
     }
-    getColorConfigFromGtkWindow();
-    applySettings();
+    //getColorConfigFromGtkWindow();
+    //applySettings();
 }
 
 /* func : remove one item from first,if second have this item too.
