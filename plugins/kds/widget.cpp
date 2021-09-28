@@ -117,7 +117,7 @@ void Widget::setupComponent()
     QStringList btnTextList;
     QStringList btnImageList;
 
-    if (UsdBaseClass::isTablet() || !UsdBaseClass::isNotebook()) {
+    if (UsdBaseClass::isTablet()) {
         btnTextList<<"Clone Screen";
         btnTextList<<"Extend Screen";
 
@@ -128,7 +128,7 @@ void Widget::setupComponent()
         btnTextList<<"Vice Screen";
     }
 
-    if (UsdBaseClass::isTablet() || !UsdBaseClass::isNotebook()) {
+    if (UsdBaseClass::isTablet()) {
         btnImageList<<":/img/clone.png";
         btnImageList<<":/img/extend.png";
     } else {
@@ -188,7 +188,7 @@ void Widget::setupConnect()
             }
         }
         //0,1  ->1,2
-        if (true == UsdBaseClass::isTablet() || UsdBaseClass::isNotebook()) {
+        if (true == UsdBaseClass::isTablet()) {
             id += 1;
         }
         setScreenModeByDbus(metaEnum.key(id));
@@ -225,7 +225,7 @@ int Widget::getCurrentStatus()
 void Widget::initCurrentStatus(int id)
 {
     //set all no checked
-    if(true == UsdBaseClass::isTablet() || UsdBaseClass::isNotebook()) {
+    if(true == UsdBaseClass::isTablet()) {
         id -= 1;
     }
     for (QAbstractButton * button : btnsGroup->buttons()) {

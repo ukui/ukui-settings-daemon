@@ -37,6 +37,7 @@
 #include "xeventmonitor.h"
 #include "keyboard-xkb.h"
 #include "keyboard-widget.h"
+#include "usd_base_class.h"
 
 #ifdef HAVE_X11_EXTENSIONS_XF86MISC_H
 #include <X11/extensions/xf86misc.h>
