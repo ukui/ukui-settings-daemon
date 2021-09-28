@@ -33,6 +33,7 @@
 extern "C" {
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr.h>
+#include "clib-syslog.h"
 }
 
 #ifdef GDK_WINDOWING_X11

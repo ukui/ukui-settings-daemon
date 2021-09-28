@@ -27,7 +27,7 @@
 
 #include "color-state.h"
 #include "color-profiles.h"
-#include "clib-syslog.h"
+
 #define USD_COLOR_TEMPERATURE_MIN               1000    /* Kelvin */
 #define USD_COLOR_TEMPERATURE_DEFAULT           6500    /* Kelvin, is RGB [1.0,1.0,1.0] */
 #define USD_COLOR_TEMPERATURE_MAX               10000   /* Kelvin */

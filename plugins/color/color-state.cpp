@@ -76,11 +76,13 @@ void ColorState::ColorStateSetTemperature(guint temperature)
 {
     if (color_temperature == temperature)
                     return;
+
     if(temperature < USD_COLOR_TEMPERATURE_MIN)
         temperature = USD_COLOR_TEMPERATURE_MIN;
     if(temperature > USD_COLOR_TEMPERATURE_MAX)
         temperature = USD_COLOR_TEMPERATURE_MAX;
     color_temperature = temperature;
+
     SessionSetGammaForAllDevices (this);
 }
 
@@ -102,13 +104,13 @@ ColorEdid *ColorState::SessionGetOutputEdid (ColorState *state,
         /* parse edid */
         data = mate_rr_output_get_edid_data (output);
         if (data == nullptr) {
-               qDebug("unable to get EDID for output");
+//               qDebug("unable to get EDID for output");
                 return nullptr;
         }
         edid = new ColorEdid ();
         ret = edid->EdidParse (data, size);
         if (!ret) {
-                delete edid;
+//                delete edid;
                 return nullptr;
         }
 
@@ -122,9 +124,9 @@ ColorEdid *ColorState::SessionGetOutputEdid (ColorState *state,
 
 gchar *ColorState::SessionGetOutputId (ColorState *state, MateRROutput *output)
 {
-        const gchar *name;
-        const gchar *serial;
-        const gchar *vendor;
+        const gchar *name = nullptr;
+        const gchar *serial = nullptr;
+        const gchar *vendor = nullptr;
         ColorEdid *edid = NULL;
         GString *device_id;
 
@@ -134,12 +136,11 @@ gchar *ColorState::SessionGetOutputId (ColorState *state, MateRROutput *output)
         /* get the output EDID if possible */
         edid = SessionGetOutputEdid (state, output);
         if (edid == NULL) {
-                qDebug ("no edid for %s, falling back to connection name",
-                         mate_rr_output_get_name (output));
-                g_string_append_printf (device_id,
-                                        "-%s",
-                                        mate_rr_output_get_name (output));
-                goto out;
+            USD_LOG(LOG_ERR,"no edid for %s, falling back to connection name", mate_rr_output_get_name (output));
+            g_string_append_printf (device_id,
+                                    "-%s",
+                                    mate_rr_output_get_name (output));
+            goto out;
         }
 
         /* check EDID data is okay to use */
@@ -148,8 +149,8 @@ gchar *ColorState::SessionGetOutputId (ColorState *state, MateRROutput *output)
         serial = edid->EdidGetSerialNumber();
 
         if (vendor == NULL && name == NULL && serial == NULL) {
-            qDebug ("edid invalid for %s, falling back to connection name",
-                     mate_rr_output_get_name (output));
+            USD_LOG(LOG_ERR,"no edid for %s, falling back to connection name", mate_rr_output_get_name (output));
+
             g_string_append_printf (device_id,
                                     "-%s",
                                     mate_rr_output_get_name (output));
@@ -190,7 +191,7 @@ SessionCreateDeviceCb (GObject *object,
                 g_error_free (error);
                 return;
         }
-        fprintf(stderr, "success to create device\n");
+        // fprintf(stderr, "success to create device\n");
         g_object_unref (device);
 }
 
@@ -246,7 +247,7 @@ void ColorState::SessionAddStateOutput (ColorState *state, MateRROutput *output)
                 serial = "unknown";
 
         device_id = SessionGetOutputId (state, output);
-        qDebug ("output %s added", device_id);
+//        qDebug ("output %s added", device_id);
         device_props = g_hash_table_new_full (g_str_hash, g_str_equal,
                                               NULL, NULL);
         g_hash_table_insert (device_props,
@@ -319,10 +320,16 @@ MateRrOutputGetGammaSize (MateRROutput *output)
 static void
 SessionAsyncHelperFree (SessionAsyncHelper *helper)
 {
+        if (helper->state != NULL){
+            helper->state = NULL;
+        }
         if (helper->profile != NULL)
                 g_object_unref (helper->profile);
-        if (helper->device != NULL)
-                g_object_unref (helper->device);
+        /*
+         * helper-device的引用计数一直是0，所以会报g_object_unref: assertion 'G_IS_OBJECT (object)' failed
+         *if (helper->device != NULL)
+         *        g_object_unref (helper->device);
+        */
         g_free (helper);
 }
 
@@ -341,7 +348,7 @@ SessionOutputSetGamma (MateRROutput *output,
         /* no length? */
         if (array->len == 0) {
             ret = FALSE;
-            qDebug("no data in the CLUT array");
+//            qDebug("no data in the CLUT array");
             goto out;
         }
 
@@ -360,7 +367,7 @@ SessionOutputSetGamma (MateRROutput *output,
         crtc = mate_rr_output_get_crtc (output);
         if (crtc == NULL) {
             ret = FALSE;
-            qDebug("failed to get ctrc for %s",mate_rr_output_get_name (output));
+//            qDebug("failed to get ctrc for %s",mate_rr_output_get_name (output));
             goto out;
         }
         mate_rr_crtc_set_gamma (crtc, array->len,
@@ -385,9 +392,10 @@ bool ColorState::SessionDeviceResetGamma(MateRROutput *output,
         CdColorRGB temp;
 
         /* create a linear ramp */
-        qDebug ("falling back to dummy ramp");
+//        qDebug ("falling back to dummy ramp");
         clut = g_ptr_array_new_with_free_func (g_free);
         size = MateRrOutputGetGammaSize (output);
+
         if (size == 0) {
                 ret = true;
                 goto out;
@@ -397,11 +405,8 @@ bool ColorState::SessionDeviceResetGamma(MateRROutput *output,
         if (!cd_color_get_blackbody_rgb_full (color_temperature,
                                               &temp,
                                               CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN)) {
-                qWarning ("failed to get blackbody for %uK", color_temperature);
+//                qWarning ("failed to get blackbody for %uK", color_temperature);
                 cd_color_rgb_set (&temp, 1.0, 1.0, 1.0);
-        } else {
-                qDebug ("using reset gamma of %uK = %.1f,%.1f,%.1f",
-                         color_temperature, temp.R, temp.G, temp.B);
         }
 
         for (i = 0; i < size; i++) {
@@ -430,7 +435,7 @@ out:
 gboolean ColorState::SessionCheckProfileDeviceMd (GFile *file)
 {
         const gchar *key_we_need = CD_PROFILE_METADATA_MAPPING_DEVICE_ID;
-        CdIcc *icc;
+        CdIcc *icc = NULL;
         gboolean ret;
 
         icc = cd_icc_new ();
@@ -443,7 +448,8 @@ gboolean ColorState::SessionCheckProfileDeviceMd (GFile *file)
                          key_we_need);
         }
 out:
-        g_object_unref (icc);
+        if (icc != NULL)
+            g_object_unref (icc);
         return ret;
 }
 
@@ -459,18 +465,19 @@ MateRROutput *ColorState::SessionGetStateOutputById (ColorState *state,
         /* search all STATE outputs for the device id */
         outputs = mate_rr_screen_list_outputs (state->state_screen);
         if (outputs == NULL) {
-                qDebug("Failed to get outputs");
+//                qDebug("Failed to get outputs");
                 goto out;
         }
         for (i = 0; outputs[i] != NULL && output == NULL; i++) {
+            if (mate_rr_output_is_connected(outputs[i])) {
                 output_id = SessionGetOutputId (state, outputs[i]);
                 if (g_strcmp0 (output_id, device_id) == 0)
                         output = outputs[i];
                 g_free (output_id);
+            }
         }
         if (output == NULL) {
-                qDebug("Failed to find output %s",
-                             device_id);
+                qDebug("Failed to find output %s", device_id);
         }
 out:
         return output;
@@ -658,7 +665,7 @@ bool ColorState::SessionUseOutputProfileForScreen (ColorState *state,
         /* do we have any screens marked as primary */
         outputs = mate_rr_screen_list_outputs (state->state_screen);
         if (outputs == NULL || outputs[0] == NULL) {
-                qWarning ("failed to get outputs");
+//                qWarning ("failed to get outputs");
                 return false;
         }
         for (i = 0; outputs[i] != NULL; i++) {
@@ -702,7 +709,7 @@ bool ColorState::SessionScreenSetIccProfile (ColorState *state,
                 return true;
         }
 
-        qDebug ("setting root window ICC profile atom from %s", filename);
+//        qDebug ("setting root window ICC profile atom from %s", filename);
 
         /* get contents of file */
         if (!g_file_get_contents (filename, &data, &length, error))
@@ -756,7 +763,7 @@ SessionGenerateVcgt (CdProfile *profile, guint color_temperature, guint size)
         lcms_profile = cd_icc_get_handle (icc);
         vcgt = (const cmsToneCurve **)cmsReadTag (lcms_profile, cmsSigVcgtTag);
         if (vcgt == NULL || vcgt[0] == NULL) {
-                qDebug ("profile does not have any VCGT data");
+//                qDebug ("profile does not have any VCGT data");
                 goto out;
         }
 
@@ -764,7 +771,7 @@ SessionGenerateVcgt (CdProfile *profile, guint color_temperature, guint size)
         if (!cd_color_get_blackbody_rgb_full (color_temperature,
                                               &temp,
                                               CD_COLOR_BLACKBODY_FLAG_USE_PLANCKIAN)) {
-                qWarning ("failed to get blackbody for %uK", color_temperature);
+//                qWarning ("failed to get blackbody for %uK", color_temperature);
                 cd_color_rgb_set (&temp, 1.0, 1.0, 1.0);
         } else {
                 qDebug ("using VCGT gamma of %uK = %.1f,%.1f,%.1f",
@@ -805,7 +812,7 @@ SessionDeviceSetGamma (MateRROutput *output,
         }
         clut = SessionGenerateVcgt (profile, color_temperature, size);
         if (clut == NULL) {
-                qDebug("failed to generate vcgt");
+//                qDebug("failed to generate vcgt");
                 goto out;
         }
 
@@ -930,25 +937,21 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
     if (kind != CD_DEVICE_KIND_DISPLAY)
         goto out;
 
-    qDebug ("need to assign display device %s",
-         cd_device_get_id (device));
+//    qDebug ("need to assign display device %s", cd_device_get_id (device));
 
     /* get the GnomeRROutput for the device id */
     xrandr_id = cd_device_get_id (device);
     output = SessionGetStateOutputById (state,
                                         xrandr_id);
     if (output == NULL) {
-        qWarning ("no %s device found",
-                   cd_device_get_id (device));
+        qWarning ("no %s device found", cd_device_get_id (device));
         goto out;
     }
 
     /* create profile from device edid if it exists */
     edid = SessionGetOutputEdid (state, output);
     if (edid == nullptr) {
-        qWarning ("unable to get EDID for %s",
-                   cd_device_get_id (device));
-
+        qWarning ("unable to get EDID for %s", cd_device_get_id (device));
     } else {
         autogen_filename = g_strdup_printf ("edid-%s.icc",
                                             edid->EdidGetChecksum ());
@@ -956,12 +959,11 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
                                          "icc", autogen_filename, NULL);
 
         /* check if auto-profile has up-to-date metadata */
-        file = g_file_new_for_path (autogen_path);
+        file = g_file_new_for_path (autogen_path);  // 新建~/.local/share/icc/edid-*.icc文件
         if (SessionCheckProfileDeviceMd (file)) {
-                qDebug ("auto-profile edid %s exists with md", autogen_path);
+//                qDebug ("auto-profile edid %s exists with md", autogen_path);
         } else {
-                qDebug ("auto-profile edid does not exist, creating as %s",
-                         autogen_path);
+                qDebug ("auto-profile edid does not exist, creating as %s", autogen_path);
                 /* check if the system has a built-in profile */
                 ret = mate_rr_output_is_laptop (output) &&
                       GetSystemIccProfile (state, file);
@@ -976,8 +978,7 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
                 }
 
                 if (!ret) {
-                        qWarning ("failed to create profile from EDID data: %s",
-                                     error->message);
+                        qWarning ("failed to create profile from EDID data: %s", error->message);
                         g_clear_error (&error);
                 }
         }
@@ -986,8 +987,7 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
     /* get the default profile for the device */
     profile = cd_device_get_default_profile (device);
     if (profile == NULL) {
-        qDebug ("%s has no default profile to set",
-                 cd_device_get_id (device));
+        qDebug ("%s has no default profile to set", cd_device_get_id (device));
 
         /* the default output? */
         if (mate_rr_output_get_is_primary (output) &&
@@ -1002,8 +1002,7 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
         ret = SessionDeviceResetGamma (output,
                                        state->color_temperature);
         if (!ret) {
-                qWarning ("failed to reset %s gamma tables",
-                           cd_device_get_id (device));
+                qWarning ("failed to reset %s gamma tables", cd_device_get_id (device));
                 goto out;
         }
         goto out;
@@ -1012,8 +1011,9 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
     /* get properties */
     helper = g_new0 (SessionAsyncHelper, 1);
     helper->output_id = mate_rr_output_get_id (output);
-    if(!helper->state)
-        helper->state = state;
+//    if(!helper->state)
+//        helper->state = state;
+    helper->state = state;
     helper->device = device;
     cd_profile_connect (profile,
                     state->cancellable,
@@ -1044,10 +1044,12 @@ void ColorState::SessionProfileGammaFindDeviceCb (GObject *object,
                                                            res,
                                                            &error);
         if (device == NULL) {
-                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-                        qWarning ("could not find device: %s", error->message);
-                g_error_free (error);
-                return;
+            if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)){
+                USD_LOG(LOG_DEBUG,".");
+            }
+
+            g_error_free (error);
+            return;
         }
 
         /* get properties */
@@ -1058,6 +1060,8 @@ void ColorState::SessionProfileGammaFindDeviceCb (GObject *object,
 
         if (device != NULL)
                 g_object_unref (device);
+
+        USD_LOG(LOG_DEBUG,"set gamma over..");
 }
 
 
@@ -1068,16 +1072,27 @@ void ColorState::SessionSetGammaForAllDevices (ColorState *state)
 
         /* setting the temperature before we get the list of devices is fine,
          * as we use the temperature in the calculation */
-        if (state->state_screen == NULL)
+        if (state->state_screen == NULL) {
+            USD_LOG(LOG_DEBUG,"had bad..");
                 return;
+        }
 
         /* get STATE outputs */
         outputs = mate_rr_screen_list_outputs (state->state_screen);
         if (outputs == NULL) {
-                qWarning ("failed to get outputs");
+                USD_LOG(LOG_ERR,"failed to get outputs");
                 return;
         }
+
         for (i = 0; outputs[i] != NULL; i++) {
+//            if (mate_rr_output_get_is_primary (outputs[i]) || mate_rr_output_is_laptop (outputs[i])){
+            /*
+             * 目前需求是外显通过物理按键调节色温值，所以这里只是判断当前屏幕是否是笔记本的屏幕。
+             * 如果在台式机上就会无法调节色温
+            */
+            if (mate_rr_output_is_laptop (outputs[i])){
+//                qDebug("Output Name %s\n", mate_rr_output_get_name (outputs[i]));
+
                 /* get CdDevice for this output */
                 cd_client_find_device_by_property (state->client,
                                                    CD_DEVICE_METADATA_XRANDR_NAME,
@@ -1085,7 +1100,10 @@ void ColorState::SessionSetGammaForAllDevices (ColorState *state)
                                                    state->cancellable,
                                                    SessionProfileGammaFindDeviceCb,
                                                    state);
+                break;
+            }
         }
+
 }
 
 
@@ -1108,7 +1126,6 @@ void ColorState::SessionDeviceAssign (ColorState *state, CdDevice *device)
         found = g_hash_table_lookup (state->device_assign_hash, key);
         if (found != NULL) {
                 qDebug ("assign for %s already in progress", key);
-                fprintf(stderr, "assign for %s already in progress\n", key);
                 return;
         }
         g_hash_table_insert (state->device_assign_hash,
@@ -1126,6 +1143,7 @@ void ColorState::SessionDeviceAddedAssignCb (CdClient *client,
 {
         SessionDeviceAssign (state, device);
 }
+
 void ColorState::SessionDeviceChangedAssignCb (CdClient *client,
                                                CdDevice *device,
                                                ColorState *state)
@@ -1169,8 +1187,11 @@ void ColorState::SessionClientConnectCb (GObject *source_object,
     guint i;
     ColorState *state = (ColorState *)user_data;
 
+    USD_LOG(LOG_DEBUG, "ready to connect to colord");
     /* connected */
     ret = cd_client_connect_finish (state->client, res, &error);
+    USD_LOG(LOG_DEBUG, "connect to colord over!ret:%d",ret);
+
     if (!ret) {
         if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
             qWarning ("failed to connect to colord: %s", error->message);
@@ -1178,7 +1199,9 @@ void ColorState::SessionClientConnectCb (GObject *source_object,
         g_error_free (error);
         return;
     }
-    qDebug("success to connect to colord\n");
+
+    USD_LOG(LOG_DEBUG, "success to connect to colord");
+
     /* is there an available colord instance? */
     ret = cd_client_get_has_server (state->client);
     if (!ret) {
@@ -1196,24 +1219,39 @@ void ColorState::SessionClientConnectCb (GObject *source_object,
 
     /* get STATE outputs */
     outputs = mate_rr_screen_list_outputs (state->state_screen);
+
     if (outputs == NULL) {
-        qWarning ("failed to get outputs");
+        USD_LOG(LOG_DEBUG,"failed to get outputs");
         return;
     }
+
+    USD_LOG(LOG_DEBUG,"start add output..");
+    ret = false;
     for (i = 0; outputs[i] != NULL; i++) {
-        SessionAddStateOutput (state, outputs[i]);
+        //        if (mate_rr_output_is_laptop (outputs[i]))
+        {
+            if (mate_rr_output_is_connected(outputs[i])) {
+                SessionAddStateOutput (state, outputs[i]);
+                USD_LOG(LOG_DEBUG,"find laptop screen :%s",mate_rr_output_get_name(outputs[i]));
+                ret = true;
+            }
+        }
+    }
+
+    if (false == ret) {
+      USD_LOG(LOG_DEBUG,"can't find laptop screen..");
     }
 
     /* only connect when colord is awake */
-    g_signal_connect (state->state_screen, "changed",
-                      G_CALLBACK (MateRrScreenOutputChangedCb),
-                      state);
-    g_signal_connect (state->client, "device-added",
-                      G_CALLBACK (SessionDeviceAddedAssignCb),
-                      state);
-    g_signal_connect (state->client, "device-changed",
-                      G_CALLBACK (SessionDeviceChangedAssignCb),
-                      state);
+    //    g_signal_connect (state->state_screen, "changed",
+    //                      G_CALLBACK (MateRrScreenOutputChangedCb),
+    //                      state);
+    //    g_signal_connect (state->client, "device-added",
+    //                      G_CALLBACK (SessionDeviceAddedAssignCb),
+    //                      state);
+    //    g_signal_connect (state->client, "device-changed",
+    //                      G_CALLBACK (SessionDeviceChangedAssignCb),
+    //                      state);
 
     /* set for each device that already exist */
     cd_client_get_devices (state->client,
@@ -1235,7 +1273,6 @@ bool ColorState::ColorStateStart()
             g_error_free (error);
             return false;
     }
-
     cd_client_connect (client,
                        cancellable,
                        SessionClientConnectCb,

@@ -25,6 +25,10 @@
 #include <glib/gi18n.h>
 #include <colord.h>
 
+extern "C"{
+#include "clib-syslog.h"
+}
+
 class ColorProfiles : public QObject
 {
     Q_OBJECT
