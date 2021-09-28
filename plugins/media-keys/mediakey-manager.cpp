@@ -441,6 +441,7 @@ void MediaKeysManager::initShortcuts()
     connect(audioRepeat, &QAction::triggered, this, [this]() {
         doAction(REPEAT_KEY);
     });
+
     /*audio random*/
     QAction *audioRandom= new QAction(this);
     audioRandom->setObjectName(QStringLiteral("Audio Random"));
@@ -494,6 +495,16 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(logout1, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_Period });
     connect(logout1, &QAction::triggered, this, [this]() {
         doAction(LOGOUT_KEY);
+    });
+
+    //sideBar
+    QAction *sideBar= new QAction(this);
+    sideBar->setObjectName(QStringLiteral("Open sideBar "));
+    sideBar->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(sideBar, QList<QKeySequence>{Qt::META + Qt::Key_A});
+    KGlobalAccel::self()->setShortcut(sideBar, QList<QKeySequence>{Qt::META + Qt::Key_A});
+    connect(sideBar, &QAction::triggered, this, [this]() {
+        doAction(UKUI_SIDEBAR);
     });
 
     QAction *logout2 = new QAction(this);
@@ -1185,8 +1196,9 @@ bool MediaKeysManager::doAction(int type)
         break;
     case WLAN_KEY:
         doWlanAction();
-
         break;
+     case UKUI_SIDEBAR:
+        doSidebarAction();
     default:
         break;
     }

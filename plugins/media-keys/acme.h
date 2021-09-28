@@ -74,6 +74,7 @@ enum {
         KDS_KEY2,
         WLAN_KEY,
         HANDLED_KEYS,
+        UKUI_SIDEBAR,
 };
 
 static struct {
