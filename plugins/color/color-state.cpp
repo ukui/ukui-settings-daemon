@@ -74,15 +74,17 @@ ColorState::~ColorState()
 }
 void ColorState::ColorStateSetTemperature(guint temperature)
 {
-    if (color_temperature == temperature)
+    if (color_temperature == temperature) {
+        USD_LOG(LOG_DEBUG,".");
                     return;
+    }
 
     if(temperature < USD_COLOR_TEMPERATURE_MIN)
         temperature = USD_COLOR_TEMPERATURE_MIN;
     if(temperature > USD_COLOR_TEMPERATURE_MAX)
         temperature = USD_COLOR_TEMPERATURE_MAX;
     color_temperature = temperature;
-
+    USD_LOG(LOG_DEBUG,"color_temperature %d",color_temperature);
     SessionSetGammaForAllDevices (this);
 }
 
@@ -1090,7 +1092,9 @@ void ColorState::SessionSetGammaForAllDevices (ColorState *state)
              * 目前需求是外显通过物理按键调节色温值，所以这里只是判断当前屏幕是否是笔记本的屏幕。
              * 如果在台式机上就会无法调节色温
             */
-            if (mate_rr_output_is_laptop (outputs[i])){
+//            if (mate_rr_output_is_laptop (outputs[i]))
+
+            if (mate_rr_output_is_connected(outputs[i])){
 //                qDebug("Output Name %s\n", mate_rr_output_get_name (outputs[i]));
 
                 /* get CdDevice for this output */
@@ -1100,7 +1104,7 @@ void ColorState::SessionSetGammaForAllDevices (ColorState *state)
                                                    state->cancellable,
                                                    SessionProfileGammaFindDeviceCb,
                                                    state);
-                break;
+                continue;
             }
         }
 

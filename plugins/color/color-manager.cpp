@@ -127,7 +127,7 @@ bool ColorManager::NightLightSmoothCb (ColorManager *manager)
         tmp *= frac;
         tmp += manager->cached_temperature;
         manager->NightLightSetTemperatureInternal (tmp);
-
+//        USD_LOG(LOG_DEBUG,"set Temp...%f",tmp);
         return G_SOURCE_CONTINUE;
 }
 
@@ -152,6 +152,7 @@ void ColorManager::PollSmoothDestroy ()
 void ColorManager::NightLightSetTemperatureInternal (double temperature)
 {
     if (ABS (cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA) {
+//        USD_LOG(LOG_DEBUG,"set night light %f error ABS:%f delta:%f", temperature,ABS (cached_temperature - temperature),USD_TEMPERATURE_MAX_DELTA);
         return;
     }
 
@@ -163,6 +164,7 @@ void ColorManager::NightLightSetTemperature(double temperature)
 {
     /* immediate */
     if (!smooth_enabled) {
+            USD_LOG(LOG_DEBUG,"set night light %f", temperature);
             NightLightSetTemperatureInternal (temperature);
             return;
     }
@@ -402,6 +404,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
 //        qDebug("night light disabled, resetting");
+        USD_LOG(LOG_DEBUG,"color disable..");
         manager->NightLightSetActive (false);
         return;
     }
@@ -595,6 +598,8 @@ void ColorManager::SettingsChangedCb(QString key)
     if(key == COLOR_KEY_AUTOMATIC_FROM || key == COLOR_KEY_AUTOMATIC_TO){
         return;
     }
+
+    USD_LOG(LOG_DEBUG,"KEY:%s",key.toLatin1().data());
 
     NightLightRecheck(this);
     mColorState->ColorStateSetTemperature (cached_temperature);
