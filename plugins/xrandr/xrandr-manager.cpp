@@ -578,8 +578,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
             USD_LOG(LOG_DEBUG,"reset output..");
             USD_LOG_SHOW_OUTPUT(output);
             senderOutput->setEnabled(true);
-            //            mMonitoredConfig->data()->outputs().remove(output->id());
-            //              mMonitoredConfig->data()->outputs().insert(senderOutput->id(), &senderOutput);
+
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
 //            output->setEdid(senderOutput->edid()->clone());
@@ -631,13 +630,11 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 //处理来自控制面板的操作,保存配置
 void XrandrManager::SaveConfigTimerHandle()
 {
-    USD_LOG(LOG_DEBUG,".");
-
     mSaveConfigTimer->stop();
+
     mDbus->mScreenMode = discernScreenMode();
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     mMonitoredConfig->writeFile(true);
-
 }
 
 void XrandrManager::monitorsInit()
@@ -750,8 +747,6 @@ void XrandrManager::monitorsInit()
     }
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
-
-
     //connect(mConfig.data(), &KScreen::Config::outputAdded,
     //        this, &XrandrManager::outputAddedHandle);
 
@@ -766,9 +761,9 @@ void XrandrManager::monitorsInit()
             this, &XrandrManager::primaryOutputChanged);
 
     if (mMonitoredConfig->fileExists()){
-         USD_LOG(LOG_DEBUG,"read  config:%s.",mMonitoredConfig->filePath().toLatin1().data());
+        USD_LOG(LOG_DEBUG,"read  config:%s.",mMonitoredConfig->filePath().toLatin1().data());
         mMonitoredConfig = mMonitoredConfig->readFile(false);
-       applyConfig();
+        applyConfig();
     } else {
         int foreachTimes = 0;
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
@@ -799,7 +794,6 @@ void XrandrManager::monitorsInit()
 
 bool XrandrManager::checkPrimaryScreenIsSetable()
 {
-
     int connecedScreenCount = 0;
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()){
@@ -809,7 +803,7 @@ bool XrandrManager::checkPrimaryScreenIsSetable()
     }
 
     if (connecedScreenCount < 2) {
-         USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
+        USD_LOG(LOG_DEBUG, "skip set command cuz ouputs count :%d",mMonitoredConfig->data()->outputs().count());
         return false;
     }
 
@@ -1033,13 +1027,15 @@ void XrandrManager::setScreenModeToExtend()
          }
 
          output->setPos(QPoint(primaryX,0));
-         primaryX+=singleMaxWidth;
+         primaryX += singleMaxWidth;
          USD_LOG_SHOW_OUTPUT(output);
          USD_LOG_SHOW_PARAM1(primaryX);
      }
     applyConfig();
 }
-
+/*
+ * 当前显示模式
+*/
 void XrandrManager::setScreenMode(QString modeName)
 {
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
@@ -1072,6 +1068,9 @@ void XrandrManager::setScreenMode(QString modeName)
     mMonitoredConfig->setScreenMode(modeName);
 }
 
+/*
+ * 识别当前显示的模式
+*/
 UsdBaseClass::eScreenMode XrandrManager::discernScreenMode()
 {
     bool firstScreenIsEnable = false;
@@ -1108,17 +1107,21 @@ UsdBaseClass::eScreenMode XrandrManager::discernScreenMode()
     }
 
     if (true == firstScreenIsEnable && false == secondScreenIsEnable) {
+        USD_LOG(LOG_DEBUG,"mode : firstScreenMode");
         return UsdBaseClass::eScreenMode::firstScreenMode;
     }
 
     if (false == firstScreenIsEnable && true == secondScreenIsEnable) {
+        USD_LOG(LOG_DEBUG,"mode : secondScreenMode");
         return UsdBaseClass::eScreenMode::secondScreenMode;
     }
 
     if (firstScreenQPoint == secondScreenQPoint && firstScreenQsize==secondScreenQsize) {
+        USD_LOG(LOG_DEBUG,"mode : cloneScreenMode");
         return UsdBaseClass::eScreenMode::cloneScreenMode;
     }
 
+    USD_LOG(LOG_DEBUG,"mode : extendScreenMode");
     return UsdBaseClass::eScreenMode::extendScreenMode;
 }
 
@@ -1135,19 +1138,9 @@ void XrandrManager::StartXrandrIdleCb()
 
     SetTouchscreenCursorRotation();
 
-    if(!mScreen)
-        mScreen = QApplication::screens().at(0);
+    USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 
-//    connect(mXrandrSetting,SIGNAL(changed(QString)),this,
-//            SLOT(RotationChangedEvent(QString)));
+    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
 
-//    connect(mScreen, &QScreen::orientationChanged, this,
-//            &XrandrManager::orientationChangedProcess);
-
-     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
-     QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
-
-     connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
-
-
+    connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
 }
