@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QDebug>
-#include "color-manager.h"
 #include <math.h>
 #include <QTimer>
+
+#include "color-manager.h"
 
 #define PLUGIN_COLOR_SCHEMA         "org.ukui.SettingsDaemon.plugins.color"
 #define COLOR_KEY_LAST_COORDINATES  "night-light-last-coordinates"
@@ -126,7 +127,7 @@ bool ColorManager::NightLightSmoothCb (ColorManager *manager)
         tmp *= frac;
         tmp += manager->cached_temperature;
         manager->NightLightSetTemperatureInternal (tmp);
-
+//        USD_LOG(LOG_DEBUG,"set Temp...%f",tmp);
         return G_SOURCE_CONTINUE;
 }
 
@@ -150,9 +151,12 @@ void ColorManager::PollSmoothDestroy ()
 
 void ColorManager::NightLightSetTemperatureInternal (double temperature)
 {
-        if (ABS (cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA)
-                return;
-        cached_temperature = temperature;
+    if (ABS (cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA) {
+//        USD_LOG(LOG_DEBUG,"set night light %f error ABS:%f delta:%f", temperature,ABS (cached_temperature - temperature),USD_TEMPERATURE_MAX_DELTA);
+        return;
+    }
+
+    cached_temperature = temperature;
     mColorState->ColorStateSetTemperature (cached_temperature);
 }
 
@@ -160,6 +164,7 @@ void ColorManager::NightLightSetTemperature(double temperature)
 {
     /* immediate */
     if (!smooth_enabled) {
+            USD_LOG(LOG_DEBUG,"set night light %f", temperature);
             NightLightSetTemperatureInternal (temperature);
             return;
     }
@@ -175,6 +180,7 @@ void ColorManager::NightLightSetTemperature(double temperature)
 
     /* smooth out the transition */
     PollSmoothCreate (temperature);
+    USD_LOG(LOG_DEBUG,"set color temp to :%f",temperature);
 }
 
 void ColorManager::NightLightSetActive(bool active)
@@ -183,6 +189,7 @@ void ColorManager::NightLightSetActive(bool active)
     /* ensure set to unity temperature */
     if (!active){
         NightLightSetTemperature (USD_COLOR_TEMPERATURE_DEFAULT);
+        USD_LOG(LOG_DEBUG,"use default tempature..");
     }
 }
 
@@ -352,7 +359,6 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     double theme_to = -1.f;
     double smear = USD_NIGHT_LIGHT_POLL_SMEAR; /* hours */
     int theme_now = -1;
-
     guint temperature;
     guint temp_smeared;
     GDateTime *dt_now = manager->NightLightGetDateTimeNow ();
@@ -362,51 +368,51 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     if (manager->forced) {
         temperature = manager->settings->get(COLOR_KEY_TEMPERATURE).toUInt();
         manager->NightLightSetTemperature (temperature);
+        USD_LOG(LOG_DEBUG,"set color to :%d",temperature);
         return;
     }
 
     /* calculate the position of the sun */
-    if (manager->settings->keys().contains(COLOR_KEY_AUTO_THEME)) {
-        if (manager->settings->get(COLOR_KEY_AUTO_THEME).toBool()) {
-            manager->UpdateCachedSunriseSunset ();
-            //        if (manager->cached_sunrise > 0.f && manager->cached_sunset > 0.f) {
-            //            theme_to   = manager->cached_sunrise;
-            //            theme_from = manager->cached_sunset;
-            //        } else {
-            //            theme_to = 7.0;
-            //            theme_from = 18.0;
-            //        }
-            theme_to = 7.0;
-            theme_from = 18.0;
-            /* get the current hour of a day as a fraction */
-            frac_day = NightLightFracDayFromDt (dt_now);
-            //        qDebug ("fractional day = %.3f, limits = %.3f->%.3f",
-            //             frac_day, theme_from, theme_to);
-            if(frac_day > theme_to && frac_day < theme_from)
-                theme_now = 0;
-            else
-                theme_now = 1;
-            if(theme_now){
-                manager->gtk_settings->set(GTK_THEME_KEY, "ukui-black-unity");
-                manager->qt_settings->set(QT_THEME_KEY, "ukui-dark");
-            }
-            else{
-                manager->gtk_settings->set(GTK_THEME_KEY, "ukui-white-unity");
-                manager->qt_settings->set(QT_THEME_KEY, "ukui-light");
-            }
+    if (manager->settings->get(COLOR_KEY_AUTO_THEME).toBool()) {
+        manager->UpdateCachedSunriseSunset ();
+//        if (manager->cached_sunrise > 0.f && manager->cached_sunset > 0.f) {
+//            theme_to   = manager->cached_sunrise;
+//            theme_from = manager->cached_sunset;
+//        } else {
+//            theme_to = 7.0;
+//            theme_from = 18.0;
+//        }
+        theme_to = 7.0;
+        theme_from = 18.0;
+        /* get the current hour of a day as a fraction */
+        frac_day = NightLightFracDayFromDt (dt_now);
+//        qDebug ("fractional day = %.3f, limits = %.3f->%.3f",
+//             frac_day, theme_from, theme_to);
+        if(frac_day > theme_to && frac_day < theme_from)
+            theme_now = 0;
+        else
+            theme_now = 1;
+        if(theme_now){
+            manager->gtk_settings->set(GTK_THEME_KEY, "ukui-black-unity");
+            manager->qt_settings->set(QT_THEME_KEY, "ukui-dark");
+        }
+        else{
+            manager->gtk_settings->set(GTK_THEME_KEY, "ukui-white-unity");
+            manager->qt_settings->set(QT_THEME_KEY, "ukui-light");
         }
     }
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
 //        qDebug("night light disabled, resetting");
+        USD_LOG(LOG_DEBUG,"color disable..");
         manager->NightLightSetActive (false);
         return;
     }
 
     if(manager->settings->get(COLOR_KEY_ALLDAY).toBool()){
-//        qDebug() << "all day all day all day";
         temperature = manager->settings->get(COLOR_KEY_TEMPERATURE).toUInt();
         manager->NightLightSetTemperature (temperature);
+        USD_LOG(LOG_DEBUG,"COLOR_KEY_ALLDAY temperature:%d",temperature);
         return;
     }
 
@@ -460,7 +466,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
                 manager->disabled_until_tmw = false;
                 g_clear_pointer(&manager->disabled_until_tmw_dt, g_date_time_unref);
         } else {
-                qDebug ("night light still day-disabled, resetting");
+                USD_LOG(LOG_DEBUG,"night light still day-disabled, resetting");
                 manager->NightLightSetTemperature (USD_COLOR_TEMPERATURE_DEFAULT);
                 return;
         }
@@ -512,6 +518,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
 //         temp_smeared, temperature);
     manager->NightLightSetActive (true);
     manager->NightLightSetTemperature (temp_smeared);
+    USD_LOG(LOG_DEBUG,"set temp :%d",temp_smeared);
 }
 
 void ColorManager::OnLocationNotify(GClueSimple *simple,
@@ -591,6 +598,9 @@ void ColorManager::SettingsChangedCb(QString key)
     if(key == COLOR_KEY_AUTOMATIC_FROM || key == COLOR_KEY_AUTOMATIC_TO){
         return;
     }
+
+    USD_LOG(LOG_DEBUG,"KEY:%s",key.toLatin1().data());
+
     NightLightRecheck(this);
     mColorState->ColorStateSetTemperature (cached_temperature);
 }
@@ -605,10 +615,10 @@ bool ColorManager::ColorManagerStart()
     QTimer * timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkTime()));
     timer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
-
     StartGeoclue();
-    connect(settings, SIGNAL(changed(QString)), this, SLOT(SettingsChangedCb(QString)));
-    return true;
+
+    connect(settings,SIGNAL(changed(QString)),this,SLOT(SettingsChangedCb(QString)));
+    return  true;
 }
 
 void ColorManager::checkTime()

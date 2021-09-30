@@ -1136,6 +1136,7 @@ void MouseManager::SetDisableWTypingSynaptics (bool         state)
         char **args;
         int    argc;
         QString cmd = "syndaemon -i 0.3 -K -R";
+
         if (syndaemon_spawned) {
             kill (syndaemon_pid, SIGHUP);
             g_spawn_close_pid (syndaemon_pid);
@@ -1160,10 +1161,10 @@ void MouseManager::SetDisableWTypingSynaptics (bool         state)
                 settings_touchpad->set(KEY_TOUCHPAD_DISABLE_W_TYPING,false);
                 g_error_free (error);
         }
+
         g_strfreev (args);
 
-    } else if (syndaemon_spawned)
-    {
+    } else if (syndaemon_spawned) {
         kill (syndaemon_pid, SIGHUP);
         g_spawn_close_pid (syndaemon_pid);
         syndaemon_spawned = FALSE;

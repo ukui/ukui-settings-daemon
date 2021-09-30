@@ -29,10 +29,11 @@
 #include <canberra-gtk.h>
 
 #include "color-edid.h"
-
+#include "usd_base_class.h"
 extern "C" {
 #define MATE_DESKTOP_USE_UNSTABLE_API
 #include <libmate-desktop/mate-rr.h>
+#include "clib-syslog.h"
 }
 
 #ifdef GDK_WINDOWING_X11

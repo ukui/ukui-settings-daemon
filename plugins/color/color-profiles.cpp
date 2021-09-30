@@ -101,7 +101,7 @@ void ColorProfiles::SessionIccStoreRemovedCb (CdIccStore *icc_store,
                                               ColorProfiles *profiles)
 {
         /* find the ID for the filename */
-        qDebug ("filename %s removed", cd_icc_get_filename (icc));
+//        qDebug ("filename %s removed", cd_icc_get_filename (icc));
         cd_client_find_profile_by_filename (profiles->client,
                                             cd_icc_get_filename (icc),
                                             profiles->cancellable,
@@ -143,20 +143,22 @@ void ColorProfiles::SessionClientConnectCb (GObject *source_object,
 
         /* connected */
         ret = cd_client_connect_finish (client, res, &error);
+
         if (!ret) {
-                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-                        qWarning ("failed to connect to colord: %s", error->message);
-                printf("success to connect to colord\n");
-                g_error_free (error);
-                return;
+            if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+                USD_LOG(LOG_DEBUG,"failed to connect to colord: %s", error->message);
+            }
+            g_error_free (error);
+            return;
         }
 
         /* is there an available colord instance? */
         profiles = (ColorProfiles *)user_data;
         ret = cd_client_get_has_server (profiles->client);
+
         if (!ret) {
-                qWarning ("There is no colord server available");
-                return;
+            USD_LOG(LOG_DEBUG,"There is no colord server available");
+            return;
         }
 
         /* add profiles */
@@ -166,9 +168,10 @@ void ColorProfiles::SessionClientConnectCb (GObject *source_object,
                                         profiles->cancellable,
                                         &error);
         if (!ret) {
-                qWarning ("failed to add user icc: %s", error->message);
                 g_error_free (error);
+                USD_LOG(LOG_DEBUG,"failed to add user icc: %s", error->message);
         }
+        USD_LOG(LOG_DEBUG,"SessionClientConnectCb over..");
 }
 
 bool ColorProfiles::ColorProfilesStart()

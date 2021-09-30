@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 #include <QDebug>
-#include "color-edid.h"
 #include <math.h>
 #include <string.h>
 #include <gio/gio.h>
 #include <stdlib.h>
 
+#include "color-edid.h"
 #define EDID_OFFSET_PNPID                           0x08
 #define EDID_OFFSET_SERIAL                          0x0c
 #define EDID_OFFSET_SIZE                            0x15
