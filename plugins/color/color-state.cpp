@@ -1075,15 +1075,15 @@ void ColorState::SessionSetGammaForAllDevices (ColorState *state)
         /* setting the temperature before we get the list of devices is fine,
          * as we use the temperature in the calculation */
         if (state->state_screen == NULL) {
-            USD_LOG(LOG_DEBUG,"had bad..");
-                return;
+            USD_LOG(LOG_DEBUG,"state->state_screen is nullptr");
+            return;
         }
 
         /* get STATE outputs */
         outputs = mate_rr_screen_list_outputs (state->state_screen);
         if (outputs == NULL) {
-                USD_LOG(LOG_ERR,"failed to get outputs");
-                return;
+            USD_LOG(LOG_ERR,"failed to get outputs");
+            return;
         }
 
         for (i = 0; outputs[i] != NULL; i++) {
@@ -1232,8 +1232,13 @@ void ColorState::SessionClientConnectCb (GObject *source_object,
     USD_LOG(LOG_DEBUG,"start add output..");
     ret = false;
     for (i = 0; outputs[i] != NULL; i++) {
-        //        if (mate_rr_output_is_laptop (outputs[i]))
-        {
+
+        if (UsdBaseClass::isTablet()) {
+            if (mate_rr_output_is_laptop (outputs[i])) {
+                 SessionAddStateOutput (state, outputs[i]);
+                 ret = true;
+            }
+        } else {
             if (mate_rr_output_is_connected(outputs[i])) {
                 SessionAddStateOutput (state, outputs[i]);
                 USD_LOG(LOG_DEBUG,"find laptop screen :%s",mate_rr_output_get_name(outputs[i]));
