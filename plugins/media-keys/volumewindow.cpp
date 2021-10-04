@@ -271,7 +271,7 @@ void VolumeWindow::dialogVolumeShow()
 {
     geometryChangedHandle();
     mLabel->clear();
-    mLabel->setNum(doubleToInt(mVolumeLevel/655.35));
+    mLabel->setNum(doubleToInt(mVolumeLevel/(mMaxVolume/100)));
     mBrightBar->hide();
     mVolumeBar->show();
     QSize iconSize(32 * mScale,32 * mScale);
@@ -311,7 +311,7 @@ void VolumeWindow::setVolumeLevel(int level)
     mIconName.clear();
     mVolumeLevel = level;
 
-    mVolumeBar->setValue((mVolumeLevel-mMinVolume)/100);
+    mVolumeBar->setValue(mVolumeLevel/(mMaxVolume/100));
 
     if(mVolumeMuted){
         mIconName = allIconName[0];
@@ -337,7 +337,7 @@ void VolumeWindow::setVolumeRange(int min, int max)
 
     mMaxVolume = max;
     mMinVolume = min;
-    mVolumeBar->setRange(min,(max-min)/100);
+    mVolumeBar->setRange(mMinVolume/(mMaxVolume/100),100);
 }
 
 
