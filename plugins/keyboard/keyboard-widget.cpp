@@ -13,6 +13,8 @@
 
 #define QT_THEME_SCHEMA             "org.ukui.style"
 
+#define PANEL_SCHEMA "org.ukui.panel.settings"
+#define PANEL_SIZE_KEY "panelsize"
 
 KeyboardWidget::KeyboardWidget(QWidget *parent) :
     QWidget(parent),
@@ -72,6 +74,7 @@ void KeyboardWidget::timeoutHandle()
 }
 void KeyboardWidget::showWidget()
 {
+    geometryChangedHandle();
 
     QPixmap pixmap = QIcon::fromTheme(m_iconName,QIcon("")).pixmap(QSize(48,48));
     m_btnStatus->setPixmap(drawLightColoredPixmap(pixmap,m_styleSettings->get("style-name").toString()));
@@ -93,9 +96,18 @@ void KeyboardWidget::geometryChangedHandle()
     int width = QApplication::primaryScreen()->size().width();
     int height = QApplication::primaryScreen()->size().height();
 
+
+    int pSize = 0;
+    const QByteArray id(PANEL_SCHEMA);
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * settings = new QGSettings(id);
+        pSize = settings->get(PANEL_SIZE_KEY).toInt();
+
+        delete settings;
+    }
     int ax,ay;
     ax = x+width - this->width() - 200;
-    ay = y+height - this->height() - 50;
+    ay = y+height - this->height() - pSize-4;
     move(ax,ay);
 }
 

@@ -29,6 +29,9 @@
 
 #define QT_THEME_SCHEMA             "org.ukui.style"
 
+#define PANEL_SCHEMA "org.ukui.panel.settings"
+#define PANEL_SIZE_KEY "panelsize"
+
 const QString allIconName[] = {
     "gpm-brightness-lcd",
     "touchpad-disabled-symbolic",
@@ -70,9 +73,20 @@ DeviceWindow::~DeviceWindow()
 /* 主屏幕变化监听函数 */
 void DeviceWindow::priScreenChanged(int x, int y, int Width, int Height)
 {
+    const QByteArray id(PANEL_SCHEMA);
+
+    int pSize = 0;
+
+    if (QGSettings::isSchemaInstalled(id)){
+        QGSettings * settings = new QGSettings(id);
+        pSize = settings->get(PANEL_SIZE_KEY).toInt();
+
+        delete settings;
+    }
+
     int ax,ay;
     ax = x+Width - this->width() - 200;
-    ay = y+Height - this->height() - 50;
+    ay = y+Height - this->height() - pSize-4;
     move(ax,ay);
 
     USD_LOG(LOG_DEBUG,"move it at %d,%d",ax,ay);
@@ -178,6 +192,7 @@ void DeviceWindow::setAction(const QString icon)
 
 void DeviceWindow::dialogShow()
 {
+    geometryChangedHandle();
     int svgWidth,svgHeight;
     int svgX,svgY;
 
