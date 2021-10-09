@@ -155,15 +155,6 @@ Q_SIGNALS:
     */
     void MediaPlayerKeyPressed(QString application,QString operation);
 
-    /**
-     * @brief brightnessDown
-     */
-    void brightnessDown();
-    /**
-     * @brief brightnessUp
-     */
-    void brightnessUp();
-
 private:
     pulseAudioManager *mpulseAudioManager;
     static MediaKeysManager* mManager;

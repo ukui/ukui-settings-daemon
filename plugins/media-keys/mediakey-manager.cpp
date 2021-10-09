@@ -175,7 +175,6 @@ void MediaKeysManager::initShortcuts()
     connect(brightDown, &QAction::triggered, this, [this]() {
         USD_LOG(LOG_DEBUG,"Brightness down...............");
         doAction(BRIGHT_DOWN_KEY);
-        Q_EMIT brightnessDown();
     });
 
     QAction *brightUp = new QAction(this);
@@ -186,8 +185,6 @@ void MediaKeysManager::initShortcuts()
     connect(brightUp, &QAction::triggered, this, [this]() {
         USD_LOG(LOG_DEBUG,"Brightness Up ..................");
         doAction(BRIGHT_UP_KEY);
-
-        Q_EMIT brightnessUp();
     });
 
     /* sound mute*/
@@ -1342,6 +1339,7 @@ void MediaKeysManager::doBrightAction(int type)
         }
         break;
     }
+    settings->set(GPM_SETTINGS_BRIGHTNESS_AC,brightValue);
     mVolumeWindow->setBrightIcon("display-brightness-symbolic");
     mVolumeWindow->setBrightValue(brightValue);
     mVolumeWindow->dialogBrightShow();
