@@ -684,6 +684,7 @@ void XrandrManager::monitorsInit()
         connect(output.data(), &KScreen::Output::posChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"posChanged:%s",senderOutput->name().toLatin1().data());
+            SetTouchscreenCursorRotation();
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
@@ -979,7 +980,6 @@ void XrandrManager::setScreenModeToFirst(bool isFirstMode)
                 maxScreenSize = Mode->size().width()*Mode->size().height();
                 output->setCurrentModeId(Mode->id());
             }
-
             output->setPos(QPoint(posX,0));
             posX+=output->size().width();
         }
