@@ -147,6 +147,7 @@ void XEventMonitorPrivate::run()
     XFree(range);
 
     XSync(display, True);
+    XCloseDisplay(display);
 
     Display* display_datalink = XOpenDisplay(0);
     if (display_datalink == 0) {
