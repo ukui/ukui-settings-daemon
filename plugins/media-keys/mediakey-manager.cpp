@@ -33,23 +33,24 @@ const int VOLUMESTEP = 6;
 #define MAX_BRIGHTNESS      100
 #define STEP_BRIGHTNESS     10
 
-#define UKUI_DAEMON_NAME    "ukui-settings-daemon"
-#define MEDIAKEY_SCHEMA     "org.ukui.SettingsDaemon.plugins.media-keys"
+#define UKUI_DAEMON_NAME        "ukui-settings-daemon"
+#define MEDIAKEY_SCHEMA         "org.ukui.SettingsDaemon.plugins.media-keys"
 
-#define POINTER_SCHEMA      "org.ukui.SettingsDaemon.plugins.mouse"
-#define POINTER_KEY         "locate-pointer"
+#define POINTER_SCHEMA          "org.ukui.SettingsDaemon.plugins.mouse"
+#define POINTER_KEY             "locate-pointer"
 
-#define POWER_SCHEMA        "org.ukui.power-manager"
-#define POWER_BUTTON_KEY    "button-power"
+#define POWER_SCHEMA            "org.ukui.power-manager"
+#define POWER_BUTTON_KEY        "button-power"
 
-#define SESSION_SCHEMA      "org.ukui.session"
-#define SESSION_WIN_KEY     "win-key-release"
+#define SESSION_SCHEMA          "org.ukui.session"
+#define SESSION_WIN_KEY         "win-key-release"
 
-#define SHOT_SCHEMA         "org.ukui.screenshot"
-#define SHOT_RUN_KEY        "isrunning"
+#define SHOT_SCHEMA             "org.ukui.screenshot"
+#define SHOT_RUN_KEY            "isrunning"
 
-#define PANEL_QUICK_OPERATION "org.ukui.quick-operation.panel"
-#define PANEL_SOUND_STATE   "soundstate"
+#define PANEL_QUICK_OPERATION   "org.ukui.quick-operation.panel"
+#define PANEL_SOUND_STATE       "soundstate"
+#define PANEL_SOUND_VOLUMSIZE   "volumesize"
 
 #define GPM_SETTINGS_SCHEMA		            "org.ukui.power-manager"
 #define GPM_SETTINGS_BRIGHTNESS_AC			"brightness-ac"
@@ -78,8 +79,6 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
-    delete mVolumeWindow;
-    delete mDeviceWindow;
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -175,7 +174,6 @@ void MediaKeysManager::initShortcuts()
     connect(brightDown, &QAction::triggered, this, [this]() {
         USD_LOG(LOG_DEBUG,"Brightness down...............");
         doAction(BRIGHT_DOWN_KEY);
-        Q_EMIT brightnessDown();
     });
 
     QAction *brightUp = new QAction(this);
@@ -186,8 +184,6 @@ void MediaKeysManager::initShortcuts()
     connect(brightUp, &QAction::triggered, this, [this]() {
         USD_LOG(LOG_DEBUG,"Brightness Up ..................");
         doAction(BRIGHT_UP_KEY);
-
-        Q_EMIT brightnessUp();
     });
 
     /* sound mute*/
@@ -1342,6 +1338,7 @@ void MediaKeysManager::doBrightAction(int type)
         }
         break;
     }
+    settings->set(GPM_SETTINGS_BRIGHTNESS_AC,brightValue);
     mVolumeWindow->setBrightIcon("display-brightness-symbolic");
     mVolumeWindow->setBrightValue(brightValue);
     mVolumeWindow->dialogBrightShow();
@@ -1416,6 +1413,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
      if(QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)){
         QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
         panel_settings->set(PANEL_SOUND_STATE,muted);
+        panel_settings->set(PANEL_SOUND_VOLUMSIZE,volume/655.36);
+
         delete panel_settings;
      }
 }
@@ -1927,4 +1926,13 @@ void MediaKeysManager::removeMediaPlayerByApplication(const QString& app,uint cu
             break;
         }
     }
+}
+
+int  MediaKeysManager::getFlightState()
+{
+    return RfkillSwitch::instance()->getCurrentFlightMode();
+}
+void MediaKeysManager::setFlightState(int value)
+{
+    RfkillSwitch::instance()->toggleFlightMode(value);
 }

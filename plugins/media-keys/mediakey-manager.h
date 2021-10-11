@@ -138,6 +138,9 @@ public Q_SLOTS:
     void GrabMediaPlayerKeys(QString application);
     void ReleaseMediaPlayerKeys(QString application);
 
+    int  getFlightState();
+    void setFlightState(int value);
+
 private Q_SLOTS:
     //void timeoutCallback();
     void updateKbdCallback(const QString&);
@@ -154,15 +157,6 @@ Q_SIGNALS:
      *  同时，mpris插件会connect这个signal
     */
     void MediaPlayerKeyPressed(QString application,QString operation);
-
-    /**
-     * @brief brightnessDown
-     */
-    void brightnessDown();
-    /**
-     * @brief brightnessUp
-     */
-    void brightnessUp();
 
 private:
     pulseAudioManager *mpulseAudioManager;
