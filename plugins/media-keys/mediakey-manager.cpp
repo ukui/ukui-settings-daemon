@@ -1624,7 +1624,7 @@ void MediaKeysManager::doOpenHomeDirAction()
     homePath = QDir::homePath();
     executeCommand("peony"," --show-folders " + homePath);
 }
-stop
+
 void MediaKeysManager::doSearchAction()
 {
     QString tool1,tool2,tool3;
