@@ -247,15 +247,20 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
     int format;
     unsigned long nitems, bytes_after;
     unsigned char *data;
-    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+   // Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+    Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
     prop = property_from_name (property_name);
 
     if (!prop)
             return FALSE;
     try {
         device = XOpenDevice (display, device_info->id);
-        if (device == NULL)
+
+        if (device == NULL) {
+            USD_LOG(LOG_DEBUG, "%s find %s had a error:can't open id(%d) device in XOpenDevice,type：%d",device_info->name, property_name,device_info->id,device_info->type);
             throw 1;
+        }
+//        USD_LOG(LOG_DEBUG,"prop [%s] had find in %d type:%d", property_name, device_info->id, device_info->type);
         rc = XGetDeviceProperty (display,
                                  device, prop, 0, 1, False, XA_INTEGER, &type, &format,
                                  &nitems, &bytes_after, &data);
@@ -780,7 +785,7 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
 
 
 //    Display * dpy = gdk_x11_get_default_xdisplay ();//QX11Info::display();
-    Display * dpy = QX11Info::display();
+    Display * dpy = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());//Display * dpy = QX11Info::display();
     union {
         unsigned char *c;
         long *l;
@@ -925,7 +930,8 @@ void set_middle_button_evdev (XDeviceInfo *device_info,
     unsigned long nitems, bytes_after;
     unsigned char *data;
 
-    Display * display = QX11Info::display();
+    Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+   // Display * display = QX11Info::display();
     prop = property_from_name ("Evdev Middle Button Emulation");
     if (!prop) /* no evdev devices */
         return;
@@ -1096,6 +1102,7 @@ void MouseManager::SetMouseWheelSpeed (int speed)
 
 void MouseManager::MouseCallback (QString keys)
 {
+    USD_LOG(LOG_DEBUG,".");
     if (keys.compare(QString::fromLocal8Bit(KEY_LEFT_HANDED))==0){
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
@@ -1129,7 +1136,7 @@ gboolean have_program_in_path (const char *name)
     return result;
 }
 
-void MouseManager::SetDisableWTypingSynaptics (bool         state)
+void MouseManager::SetDisableWTypingSynaptics (bool state)
 {
     if (state && touchpad_is_present ()) {
         GError *error = NULL;
@@ -1141,11 +1148,14 @@ void MouseManager::SetDisableWTypingSynaptics (bool         state)
             kill (syndaemon_pid, SIGHUP);
             g_spawn_close_pid (syndaemon_pid);
             syndaemon_spawned = FALSE;
+            USD_LOG(LOG_DEBUG,"stop syndaemon");
         }
 
 
-        if (!have_program_in_path ("syndaemon"))
-                return;
+        if (!have_program_in_path ("syndaemon")){
+            return;
+        }
+
         if (g_shell_parse_argv (cmd.toLatin1().data(), &argc, &args, NULL)) {
             g_spawn_async (g_get_home_dir (),
                            args,
@@ -1157,9 +1167,12 @@ void MouseManager::SetDisableWTypingSynaptics (bool         state)
                            &error);
             syndaemon_spawned = (error == NULL);
         }
+        USD_LOG(LOG_DEBUG,"start syndaemon(%d)", syndaemon_pid);
         if (error) {
                 settings_touchpad->set(KEY_TOUCHPAD_DISABLE_W_TYPING,false);
+                USD_LOG(LOG_ERR,"find error %s",error->message);
                 g_error_free (error);
+
         }
 
         g_strfreev (args);
@@ -1211,7 +1224,7 @@ void MouseManager::SetDisableWTypingLibinput (bool  state)
         XFreeDeviceList (device_info);
 }
 
-void MouseManager::SetDisableWTyping (bool         state)
+void MouseManager::SetDisableWTyping (bool state)
 {
     if (property_from_name ("Synaptics Off"))
         SetDisableWTypingSynaptics (state);
@@ -1279,7 +1292,8 @@ static void set_scrolling_libinput (XDeviceInfo *device_info,
     Atom prop, type;
     bool want_edge, want_2fg;
     bool want_horiz;
-    Display *display = QX11Info::display();
+    //Display *display = QX11Info::display();
+     Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
     prop = property_from_name ("libinput Scroll Method Enabled");
     if (!prop)
             return;
@@ -1363,7 +1377,8 @@ void set_natural_scroll_synaptics (XDeviceInfo *device_info,
     unsigned char* data;
     long *ptr;
     Atom prop, type;
-    Display *display = QX11Info::display();
+     Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+//    Display *display = QX11Info::display();
     prop = property_from_name ("Synaptics Scrolling Distance");
     if (!prop)
             return;
@@ -1524,7 +1539,8 @@ void SetTouchpadDoubleClick(XDeviceInfo *device_info, bool state)
     unsigned long nitems, bytes_after;
     unsigned char* data;
     Atom prop, type;
-    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+     Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+//    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
     prop = property_from_name ("Synaptics Gestures");
     if (!prop)
             return;
@@ -1575,7 +1591,8 @@ void MouseManager::SetBottomRightClickMenu(XDeviceInfo *device_info, bool state)
     unsigned char* data;
     long *ptr;
     Atom prop, type;
-    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
+     Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+//    Display *display = gdk_x11_get_default_xdisplay ();//QX11Info::display();
     prop = property_from_name ("Synaptics Soft Button Areas");
     if (!prop)
             return;
@@ -1629,7 +1646,7 @@ void MouseManager::SetBottomRightConrnerClickMenu(bool state)
 
 void MouseManager::TouchpadCallback (QString keys)
 {
-
+    USD_LOG(LOG_DEBUG,".");
     if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DISABLE_W_TYPING))==0) {
         SetDisableWTyping (settings_touchpad->get(keys).toBool());  //设置打字时禁用触摸板
 
@@ -1686,11 +1703,14 @@ void MouseManager::SetMouseSettings ()
     bool mouse_left_handed = settings_mouse->get(KEY_LEFT_HANDED).toBool();
     bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
 
+    USD_LOG(LOG_DEBUG,".");
     SetLeftHandedAll (mouse_left_handed, touchpad_left_handed);
 
     SetMotionAll ();
     SetMiddleButtonAll (settings_mouse->get(KEY_MIDDLE_BUTTON_EMULATION).toBool());
     SetMouseWheelSpeed (settings_mouse->get(KEY_MOUSE_WHEEL_SPEED).toInt());
+
+    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
 }
 
 void MouseManager::SetTouchSettings ()
