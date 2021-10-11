@@ -138,6 +138,9 @@ public Q_SLOTS:
     void GrabMediaPlayerKeys(QString application);
     void ReleaseMediaPlayerKeys(QString application);
 
+    int  getFlightState();
+    void setFlightState(int value);
+
 private Q_SLOTS:
     //void timeoutCallback();
     void updateKbdCallback(const QString&);
