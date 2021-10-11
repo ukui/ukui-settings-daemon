@@ -1102,7 +1102,6 @@ void MouseManager::SetMouseWheelSpeed (int speed)
 
 void MouseManager::MouseCallback (QString keys)
 {
-    USD_LOG(LOG_DEBUG,".");
     if (keys.compare(QString::fromLocal8Bit(KEY_LEFT_HANDED))==0){
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
@@ -1112,7 +1111,6 @@ void MouseManager::MouseCallback (QString keys)
                (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0) ||
                (keys.compare(QString::fromLocal8Bit(KEY_MOUSE_ACCEL)) == 0)){
         SetMotionAll ();
-        USD_LOG(LOG_DEBUG,".......");
     } else if (keys.compare(QString::fromLocal8Bit(KEY_MIDDLE_BUTTON_EMULATION))==0){
         SetMiddleButtonAll (settings_mouse->get(keys).toBool());
 
@@ -1152,7 +1150,7 @@ void MouseManager::SetDisableWTypingSynaptics (bool state)
         }
 
 
-        if (!have_program_in_path ("syndaemon")){
+        if (!have_program_in_path ("syndaemon")) {
             return;
         }
 
@@ -1646,7 +1644,6 @@ void MouseManager::SetBottomRightConrnerClickMenu(bool state)
 
 void MouseManager::TouchpadCallback (QString keys)
 {
-    USD_LOG(LOG_DEBUG,".");
     if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_DISABLE_W_TYPING))==0) {
         SetDisableWTyping (settings_touchpad->get(keys).toBool());  //设置打字时禁用触摸板
 
@@ -1703,7 +1700,6 @@ void MouseManager::SetMouseSettings ()
     bool mouse_left_handed = settings_mouse->get(KEY_LEFT_HANDED).toBool();
     bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
 
-    USD_LOG(LOG_DEBUG,".");
     SetLeftHandedAll (mouse_left_handed, touchpad_left_handed);
 
     SetMotionAll ();
