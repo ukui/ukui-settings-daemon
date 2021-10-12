@@ -1,3 +1,12 @@
+ukui-settings-daemon (3.1.0-1.5) v101; urgency=medium
+
+  * BUG号：83527 【PTOF】【显示】win+p设置双屏为扩展模式后副屏一直显示黑屏状态
+           83521 【控制面板|触摸板】开启“打字时禁用触摸板”，插入鼠标再拔出，此时“打字时禁用触摸板”功能失效，重新关开功能恢复正常
+           75491 【双屏】笔记本外接一个hdmi4K屏，设置为第一屏，进行热插拔会变为镜像模式
+  * 需求号：无
+  * 其他改动说明：修复媒体Next按键不生效问题
+ -- sundagao <sundagao@kylinos.cn>  Tue, 12 Oct 2021 14:33:34 +0800
+
 ukui-settings-daemon (3.1.0-1.4) v101; urgency=medium
 
   * BUG号： 78070 【USD】本地用户注销重登产生core文件 
@@ -14,7 +23,7 @@ ukui-settings-daemon (3.1.0-1.4) v101; urgency=medium
   *需求号：无
   *其他改动说明：无 
 
- -- sun <sun@sun>  Mon, 11 Oct 2021 10:10:02 +0800
+ -- sundagao <sundagao@kylinos.cn>  Mon, 11 Oct 2021 10:10:02 +0800
 
 ukui-settings-daemon (3.1.0-1.3) v101; urgency=medium
 
