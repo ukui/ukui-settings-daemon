@@ -404,8 +404,8 @@ void MediaKeysManager::initShortcuts()
     QAction *mediaNext= new QAction(this);
     mediaNext->setObjectName(QStringLiteral("Next track"));
     mediaNext->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
-    KGlobalAccel::self()->setShortcut(media, QList<QKeySequence>{Qt::Key_MediaNext});
+    KGlobalAccel::self()->setDefaultShortcut(mediaNext, QList<QKeySequence>{Qt::Key_MediaNext});
+    KGlobalAccel::self()->setShortcut(mediaNext, QList<QKeySequence>{Qt::Key_MediaNext});
     connect(mediaNext, &QAction::triggered, this, [this]() {
         doAction(NEXT_KEY);
         USD_LOG(LOG_DEBUG,"NEXT_KEY...");
