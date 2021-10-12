@@ -85,6 +85,7 @@ XrandrManager::XrandrManager()
 
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
+
     new WaylandAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -95,7 +96,7 @@ XrandrManager::XrandrManager()
     }
 
     mAcitveTime = new QTimer(this);
-
+    mKscreenInitTimer = new QTimer(this);
 
     {
         QMetaObject mo = XrandrManager::staticMetaObject;
@@ -160,6 +161,7 @@ void XrandrManager::getInitialConfig()
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
         USD_LOG(LOG_DEBUG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!mDbus mode:%s!!!!!!!!!!!!!!!!!!!!!!!1",metaEnum.key(mDbus->mScreenMode));
     });
+    USD_LOG(LOG_DEBUG,"kscreen init ..");
 }
 
 XrandrManager::~XrandrManager()
