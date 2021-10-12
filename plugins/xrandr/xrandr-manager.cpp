@@ -135,6 +135,7 @@ void XrandrManager::getInitialConfig()
 {
     connect(new KScreen::GetConfigOperation, &KScreen::GetConfigOperation::finished,
             this, [this](KScreen::ConfigOperation* op) {
+        mKscreenInitTimer->stop();
         if (op->hasError()) {
             USD_LOG(LOG_DEBUG,"Error getting initial configuration：%s",op->errorString().toLatin1().data());
             return;
@@ -1140,7 +1141,10 @@ void XrandrManager::StartXrandrIdleCb()
 
     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 
-    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+    //    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
+      connect(mKscreenInitTimer,  SIGNAL(timeout()), this, SLOT(getInitialConfig()));
+      mKscreenInitTimer->start(1500);
+
 
     connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
 }

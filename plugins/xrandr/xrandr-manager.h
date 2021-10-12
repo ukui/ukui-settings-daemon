@@ -109,6 +109,7 @@ private:
     QDBusInterface        *t_DbusTableMode;
     QDBusInterface        *m_DbusRotation;
     QTimer                *mAcitveTime = nullptr;
+    QTimer                *mKscreenInitTimer = nullptr;
     QTimer                *mSaveConfigTimer = nullptr;
     QTimer                *mChangeCompressor = nullptr;
     QTimer                *mApplyConfigTimer = nullptr;
