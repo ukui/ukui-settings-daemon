@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: 0.3;
+      }
+
+      .cls-2, .cls-3 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        opacity: 0;
+      }
+
+      .cls-4 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <g id="microphone-off" class="cls-1">
+    <rect id="background" class="cls-2" width="48" height="48"/>
+    <g id="icon-microphone-off" transform="translate(-72 -1)">
+      <rect id="矩形_19" data-name="矩形 19" class="cls-3" width="6" height="2" transform="translate(93 18)"/>
+      <rect id="矩形_20" data-name="矩形 20" class="cls-3" width="6" height="2" transform="translate(93 12)"/>
+      <path id="路径_38" data-name="路径 38" class="cls-4" d="M35,18A14,14,0,0,1,21,32h0A14,14,0,0,1,7,18" transform="translate(75 3)"/>
+      <rect id="矩形_21" data-name="矩形 21" class="cls-4" width="14" height="24" rx="6.928" transform="translate(89 4)"/>
+      <rect id="矩形_22" data-name="矩形 22" class="cls-3" width="2" height="16" rx="0.959" transform="translate(104 43) rotate(90)"/>
+      <rect id="矩形_23" data-name="矩形 23" class="cls-3" width="2" height="9" transform="translate(95 35)"/>
+    </g>
+  </g>
+</svg>

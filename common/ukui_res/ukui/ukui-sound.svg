@@ -1,0 +1,28 @@
+<svg id="sound" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        opacity: 0;
+      }
+
+      .cls-2, .cls-3 {
+        fill: none;
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-3 {
+        stroke-linecap: round;
+      }
+    </style>
+  </defs>
+  <rect id="background" class="cls-1" width="48" height="48"/>
+  <g id="icon-sound" transform="translate(3 -73)">
+    <path id="路径_17" data-name="路径 17" class="cls-2" d="M21.608,24.761l-9.08,8.851H9.736A2.9,2.9,0,0,0,7,36.644v4.711a2.9,2.9,0,0,0,2.736,3.033h2.793l9.08,8.85c1.768,1.723,4.542.331,4.542-2.278V27.039C26.15,24.43,23.376,23.038,21.608,24.761Z" transform="translate(-7 58)"/>
+    <path id="路径_18" data-name="路径 18" class="cls-3" d="M107,29a25.466,25.466,0,0,1,3.83,13.779,26.019,26.019,0,0,1-3,12.391" transform="translate(-68.83 54.915)"/>
+    <path id="路径_19" data-name="路径 19" class="cls-3" d="M87.015,39A13.115,13.115,0,0,1,87,57.51" transform="translate(-56.464 48.745)"/>
+    <path id="路径_20" data-name="路径 20" class="cls-3" d="M72.008,49A9.591,9.591,0,0,1,72,60.49" transform="translate(-47.186 42.255)"/>
+  </g>
+</svg>

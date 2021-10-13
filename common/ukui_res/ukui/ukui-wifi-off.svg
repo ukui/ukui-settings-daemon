@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: 0.3;
+      }
+
+      .cls-2, .cls-4 {
+        fill: #fff;
+      }
+
+      .cls-2 {
+        opacity: 0;
+      }
+
+      .cls-3 {
+        fill: none;
+        stroke: #fff;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2px;
+      }
+    </style>
+  </defs>
+  <g id="wifi-off" class="cls-1">
+    <rect id="background" class="cls-2" width="48" height="48"/>
+    <g id="icon-wifi-on" transform="translate(3 -4)">
+      <path id="路径_5" data-name="路径 5" class="cls-3" d="M21.667,55.314c8.307-9.308,21.775-9.308,30.082,0" transform="translate(-15.708 -27.516)"/>
+      <path id="路径_6" data-name="路径 6" class="cls-3" d="M49,36.52c-11.6-12.693-30.4-12.693-42,0" transform="translate(-7 -14)"/>
+      <path id="路径_7" data-name="路径 7" class="cls-3" d="M73,95.686" transform="translate(-47.8 -57.283)"/>
+      <path id="路径_8" data-name="路径 8" class="cls-3" d="M55.189,74.109a12.225,12.225,0,0,0-18.856,0" transform="translate(-24.761 -40.878)"/>
+      <path id="路径_9" data-name="路径 9" class="cls-4" d="M51,92.9l4.469,4.6,4.469-4.6A6.2,6.2,0,0,0,51,92.9Z" transform="translate(-34.469 -54.5)"/>
+    </g>
+  </g>
+</svg>

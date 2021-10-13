@@ -1,3 +1,11 @@
+ukui-settings-daemon (3.1.0-1.6) v101; urgency=medium
+
+  * BUG号：79767 【显示】开机时不连接显示器，开机后连接显示器，屏幕黑屏
+  * 需求号：无
+  * 其他改动说明：增加本地资源图标，在主题图标获取不到时，从本地获取
+
+ -- sundagao <sundagao@kylinos.cn>  Wed, 13 Oct 2021 18:30:48 +0800
+
 ukui-settings-daemon (3.1.0-1.5) v101; urgency=medium
 
   * BUG号：83527 【PTOF】【显示】win+p设置双屏为扩展模式后副屏一直显示黑屏状态

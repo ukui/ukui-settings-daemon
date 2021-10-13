@@ -1,0 +1,42 @@
+<RCC>
+    <qresource prefix="/">
+        <file>ukui_res/ukui/ukui-bluetooth-off.svg</file>
+        <file>ukui_res/ukui/ukui-bluetooth-on.svg</file>
+        <file>ukui_res/ukui/ukui-camera-off.svg</file>
+        <file>ukui_res/ukui/ukui-camera-on.svg</file>
+        <file>ukui_res/ukui/ukui-capslock-off.svg</file>
+        <file>ukui_res/ukui/ukui-capslock-on.svg</file>
+        <file>ukui_res/ukui/ukui-Fn-off.svg</file>
+        <file>ukui_res/ukui/ukui-Fn-on.svg</file>
+        <file>ukui_res/ukui/ukui-microphone-off.svg</file>
+        <file>ukui_res/ukui/ukui-microphone-on.svg</file>
+        <file>ukui_res/ukui/ukui-numlock-off.svg</file>
+        <file>ukui_res/ukui/ukui-numlock-on.svg</file>
+        <file>ukui_res/ukui/ukui-sound.svg</file>
+        <file>ukui_res/ukui/ukui-touchpad-off.svg</file>
+        <file>ukui_res/ukui/ukui-touchpad-on.svg</file>
+        <file>ukui_res/ukui/ukui-wifi-off.svg</file>
+        <file>ukui_res/ukui/ukui-wifi-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-bluetooth-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-bluetooth-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-camera-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-camera-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-capslock-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-capslock-on-symbolic.svg</file>
+        <file>ukui_res/ukui_intel/ukui-capslock-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-Fn-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-Fn-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-microphone-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-microphone-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-numlock-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-numlock-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-sound.svg</file>
+        <file>ukui_res/ukui_intel/ukui-touchpad-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-touchpad-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-wifi-off.svg</file>
+        <file>ukui_res/ukui_intel/ukui-airplane-on.svg</file>
+        <file>ukui_res/ukui_intel/ukui-airplane-off.svg</file>
+        <file>ukui_res/ukui/ukui-airplane-on.svg</file>
+        <file>ukui_res/ukui/ukui-airplane-off.svg</file>
+    </qresource>
+</RCC>
