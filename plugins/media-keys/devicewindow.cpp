@@ -23,6 +23,8 @@
 #include <QBitmap>
 #include <KWindowEffects>
 #include "clib-syslog.h"
+#include "usd_base_class.h"
+
 #define DBUS_NAME       "org.ukui.SettingsDaemon"
 #define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
 #define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
@@ -31,6 +33,9 @@
 
 #define PANEL_SCHEMA "org.ukui.panel.settings"
 #define PANEL_SIZE_KEY "panelsize"
+
+#define DEFAULT_LOCALE_ICON_NAME ":/ukui_res/ukui/"
+#define INTEL_LOCALE_ICON_NAME ":/ukui_res/ukui_intel/"
 
 const QString allIconName[] = {
     "gpm-brightness-lcd",
@@ -61,6 +66,11 @@ DeviceWindow::DeviceWindow(QWidget *parent) :
             this,SLOT(onStyleChanged(const QString&)));
 
     mScale = getScreenGeometry("scale");
+    if(UsdBaseClass::isTablet()) {
+        m_LocalIconPath = INTEL_LOCALE_ICON_NAME;
+    } else {
+        m_LocalIconPath = DEFAULT_LOCALE_ICON_NAME;
+    }
 }
 
 DeviceWindow::~DeviceWindow()
@@ -145,33 +155,6 @@ void DeviceWindow::initWindowInfo()
                    Qt::Popup);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-
-    QBitmap bmp(this->size());
-    bmp.fill();
-    QPainter p(&bmp);
-    p.setPen(Qt::NoPen);
-    p.setBrush(QColor("#232426"));
-    p.setRenderHint(QPainter::Antialiasing);
-    p.drawRoundedRect(bmp.rect(),12,12);
-    setMask(bmp);
-
-    QPainterPath path;
-    auto rect = this->rect();
-    rect.adjust(1, 1, -1, -1);
-    path.addRect(rect);
-    KWindowEffects::enableBlurBehind(this->winId(), true, QRegion(path.toFillPolygon().toPolygon()));
-
-
-    if(m_styleSettings->get("style-name").toString() == "ukui-light")
-    {
-        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
-
-    }
-    else
-    {
-        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
-
-    }
     setAutoFillBackground(true);
 
     geometryChangedHandle();
@@ -193,32 +176,9 @@ void DeviceWindow::setAction(const QString icon)
 void DeviceWindow::dialogShow()
 {
     geometryChangedHandle();
-    int svgWidth,svgHeight;
-    int svgX,svgY;
-
-    ensureSvgInfo(&svgWidth,&svgHeight,&svgX,&svgY);
-
-    m_btnStatus->move((width() - m_btnStatus->width())/2,(height() - m_btnStatus->height())/2);
-
-    QPixmap pixmap = QIcon::fromTheme(mIconName,QIcon("")).pixmap(QSize(48,48));
-    m_btnStatus->setPixmap(drawLightColoredPixmap(pixmap,m_styleSettings->get("style-name").toString()));
-
+    repaintWidget();
     show();
     mTimer->start(2000);
-}
-
-void DeviceWindow::ensureSvgInfo(int* pictureWidth,int* pictureHeight,
-                                 int* pictureX,int* pictureY)
-{
-    int width,height;               //main window size. 主窗口尺寸
-
-    width = this->width();
-    height = this->height();
-
-    *pictureWidth = qRound(width * 0.65);
-    *pictureHeight = qRound(height * 0.65);
-    *pictureX = (width - *pictureWidth) / 2;
-    *pictureY = (height - *pictureHeight) /2;
 }
 
 void DeviceWindow::timeoutHandle()
@@ -260,18 +220,33 @@ QPixmap DeviceWindow::drawLightColoredPixmap(const QPixmap &source, const QStrin
     }
     return QPixmap::fromImage(img);
 }
+
+void DeviceWindow::repaintWidget()
+{
+    if(m_styleSettings->get("style-name").toString() == "ukui-light"){
+        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景
+    } else{
+        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+    }
+    QString m_LocalIconName;
+    m_LocalIconName = m_LocalIconPath + mIconName + QString(".svg");
+    QPixmap m_pixmap = QIcon::fromTheme(mIconName,QIcon(m_LocalIconName)).pixmap(QSize(48,48));
+    m_btnStatus->setPixmap(drawLightColoredPixmap(m_pixmap,m_styleSettings->get("style-name").toString()));
+}
+
 void DeviceWindow::onStyleChanged(const QString&)
 {
-    if(m_styleSettings->get("style-name").toString() == "ukui-light")
-    {
-        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
-
+    if(!this->isHidden()) {
+        hide();
+        repaintWidget();
+        show();
     }
-    else
-    {
-        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+}
 
-    }
+void DeviceWindow::resizeEvent(QResizeEvent* event)
+{
+    m_btnStatus->move((width() - m_btnStatus->width())/2,(height() - m_btnStatus->height())/2);
+    QWidget::resizeEvent(event);
 }
 
 void DeviceWindow::paintEvent(QPaintEvent *event)

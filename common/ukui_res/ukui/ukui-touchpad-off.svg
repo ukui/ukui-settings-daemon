@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <defs>
+    <style>
+      .cls-1 {
+        opacity: 0.3;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        opacity: 0;
+      }
+
+      .cls-3, .cls-5 {
+        fill: none;
+      }
+
+      .cls-3 {
+        stroke: #fff;
+        stroke-miterlimit: 10;
+        stroke-width: 2px;
+      }
+
+      .cls-4 {
+        stroke: none;
+      }
+    </style>
+  </defs>
+  <g id="touchpad-off" class="cls-1">
+    <rect id="background" class="cls-2" width="48" height="48"/>
+    <g id="icon-touchpad-on">
+      <g id="矩形_16" data-name="矩形 16" class="cls-3" transform="translate(3 7)">
+        <rect class="cls-4" width="42" height="34" rx="4"/>
+        <rect class="cls-5" x="1" y="1" width="40" height="32" rx="3"/>
+      </g>
+      <g id="矩形_17" data-name="矩形 17" class="cls-3" transform="translate(4 31)">
+        <rect class="cls-4" width="40" height="2"/>
+        <rect class="cls-5" x="1" y="1" width="38"/>
+      </g>
+      <g id="矩形_18" data-name="矩形 18" class="cls-3" transform="translate(23 32)">
+        <rect class="cls-4" width="2" height="9"/>
+        <rect class="cls-5" x="1" y="1" height="7"/>
+      </g>
+    </g>
+  </g>
+</svg>

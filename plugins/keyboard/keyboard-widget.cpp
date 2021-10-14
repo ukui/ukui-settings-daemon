@@ -10,11 +10,15 @@
 #include <QPixmap>
 #include <QIcon>
 #include <KWindowEffects>
+#include "usd_base_class.h"
 
 #define QT_THEME_SCHEMA             "org.ukui.style"
 
 #define PANEL_SCHEMA "org.ukui.panel.settings"
 #define PANEL_SIZE_KEY "panelsize"
+
+#define DEFAULT_LOCALE_ICON_NAME ":/ukui_res/ukui/"
+#define INTEL_LOCALE_ICON_NAME ":/ukui_res/ukui_intel/"
 
 KeyboardWidget::KeyboardWidget(QWidget *parent) :
     QWidget(parent),
@@ -40,6 +44,11 @@ void KeyboardWidget::initWidgetInfo()
     setFixedSize(72,72);
     setAttribute(Qt::WA_TranslucentBackground, true);
 
+    if(UsdBaseClass::isTablet()) {
+        m_LocalIconPath = INTEL_LOCALE_ICON_NAME;
+    } else {
+        m_LocalIconPath = DEFAULT_LOCALE_ICON_NAME;
+    }
 
     m_styleSettings = new QGSettings(QT_THEME_SCHEMA);
     connect(m_styleSettings,SIGNAL(changed(const QString&)),
@@ -75,9 +84,7 @@ void KeyboardWidget::timeoutHandle()
 void KeyboardWidget::showWidget()
 {
     geometryChangedHandle();
-
-    QPixmap pixmap = QIcon::fromTheme(m_iconName,QIcon("")).pixmap(QSize(48,48));
-    m_btnStatus->setPixmap(drawLightColoredPixmap(pixmap,m_styleSettings->get("style-name").toString()));
+    repaintWidget();
     show();
     m_timer->start(2500);
 
@@ -96,7 +103,6 @@ void KeyboardWidget::geometryChangedHandle()
     int width = QApplication::primaryScreen()->size().width();
     int height = QApplication::primaryScreen()->size().height();
 
-
     int pSize = 0;
     const QByteArray id(PANEL_SCHEMA);
     if (QGSettings::isSchemaInstalled(id)){
@@ -113,9 +119,10 @@ void KeyboardWidget::geometryChangedHandle()
 
 void KeyboardWidget::onStyleChanged(const QString& key)
 {
-    if(!this->isHidden())
-    {
+    Q_UNUSED(key)
+    if(!this->isHidden()) {
         hide();
+        repaintWidget();
         show();
     }
 }
@@ -154,29 +161,24 @@ QPixmap KeyboardWidget::drawLightColoredPixmap(const QPixmap &source, const QStr
     return QPixmap::fromImage(img);
 }
 
+void KeyboardWidget::repaintWidget()
+{
+    if(m_styleSettings->get("style-name").toString() == "ukui-light"){
+        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景
+    } else{
+        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
+    }
+    QString m_LocalIconName;
+    m_LocalIconName = m_LocalIconPath + m_iconName + QString(".svg");
+    QPixmap m_pixmap = QIcon::fromTheme(m_iconName,QIcon(m_LocalIconName)).pixmap(QSize(48,48));
+    m_btnStatus->setPixmap(drawLightColoredPixmap(m_pixmap,m_styleSettings->get("style-name").toString()));
+}
+
 
 void KeyboardWidget::resizeEvent(QResizeEvent* event)
 {
     m_btnStatus->move((width() - m_btnStatus->width())/2,(height() - m_btnStatus->height())/2);
     QWidget::resizeEvent(event);
-
-}
-
-void KeyboardWidget::showEvent(QShowEvent* event)
-{
-    if(m_styleSettings->get("style-name").toString() == "ukui-light")
-    {
-        setPalette(QPalette(QColor("#F5F5F5")));//设置窗口背景色
-
-    }
-    else
-    {
-        setPalette(QPalette(QColor("#232426")));//设置窗口背景色
-
-    }
-    QPixmap pixmap = QIcon::fromTheme(m_iconName,QIcon("")).pixmap(QSize(48,48));
-    m_btnStatus->setPixmap(drawLightColoredPixmap(pixmap,m_styleSettings->get("style-name").toString()));
-    QWidget::showEvent(event);
 }
 
 void KeyboardWidget::paintEvent(QPaintEvent *event)

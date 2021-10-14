@@ -27,18 +27,13 @@ public:
 
 protected:
     void paintEvent(QPaintEvent *event);
-    void showEvent(QShowEvent* event);
     void resizeEvent(QResizeEvent* even);
-
-
-
-
 
 private:
     void initWidgetInfo();
     void geometryChangedHandle();
     QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
-
+    void repaintWidget();
 
 public Q_SLOTS:
     void timeoutHandle();
@@ -48,6 +43,8 @@ private:
     Ui::KeyboardWidget *ui;
     QWidget*         m_backgroudWidget;
     QString          m_iconName;
+    QString             m_LocalIconPath;
+
 
     QLabel      *m_btnStatus;
     QTimer           *m_timer;

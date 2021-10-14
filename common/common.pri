@@ -35,3 +35,6 @@ HEADERS += \
         $$PWD/ukui-input-helper.h       \
         $$PWD/ukui-keygrab.h            \
         $$PWD/config.h
+
+RESOURCES += \
+    $$PWD/ukui_icon.qrc

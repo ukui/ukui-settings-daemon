@@ -484,7 +484,7 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
             return;
         }
 
-        m_statusWidget->setIcons(flightState?"ukui-airplane-mode-on":"ukui-airplane-mode-off");
+        m_statusWidget->setIcons(flightState?"ukui-airplane-on":"ukui-airplane-off");
         m_statusWidget->showWidget();
     }
     XCloseDisplay (display);

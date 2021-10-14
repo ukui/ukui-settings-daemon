@@ -51,7 +51,6 @@ public:
     int getScreenGeometry (QString methodName);
 
 private:
-    void ensureSvgInfo(int*,int*,int*,int*);
     QPixmap drawLightColoredPixmap(const QPixmap &source, const QString &style);
 
 
@@ -59,17 +58,22 @@ private Q_SLOTS:
     void timeoutHandle();
     void priScreenChanged(int x, int y, int width, int height);
     void geometryChangedHandle();
+    void repaintWidget();
+
 
     void onStyleChanged(const QString& );
 protected:
     void paintEvent(QPaintEvent *event);
+    void resizeEvent(QResizeEvent* event);
+
 
 
 private:
     Ui::DeviceWindow *ui;
     double           mScale = 1;
     QString          mIconName;
-    QLabel      *m_btnStatus;
+    QString          m_LocalIconPath;
+    QLabel           *m_btnStatus;
     QTimer           *mTimer;
     QDBusInterface   *mDbusXrandInter;
 
