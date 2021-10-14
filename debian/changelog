@@ -1,4 +1,4 @@
-ukui-settings-daemon (3.1.0-1.7) V101; urgency=medium
+ukui-settings-daemon (3.1.0-1.7) v101; urgency=medium
 
   * BUG号：85307【PTOF】【键盘】通过快捷键ctrl+alt+p无法打开护眼中心
   * 需求号：无
