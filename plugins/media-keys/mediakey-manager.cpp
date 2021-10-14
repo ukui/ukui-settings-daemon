@@ -114,6 +114,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
     shotSettings = new QGSettings(SHOT_SCHEMA);
+
     if (shotSettings->keys().contains(SHOT_RUN_KEY)){
             if (shotSettings->get(SHOT_RUN_KEY).toBool())
                 shotSettings->set(SHOT_RUN_KEY, false);
@@ -644,6 +645,15 @@ void MediaKeysManager::initShortcuts()
     connect(dSwitch2, &QAction::triggered, this, [this]() {
         doAction(KDS_KEY2);
     });
+    /*The eyecare centre*/
+    QAction *eyeCare= new QAction(this);
+    eyeCare->setObjectName(QStringLiteral("open kylin eyeCare center"));
+    eyeCare->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(eyeCare, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_P});
+    KGlobalAccel::self()->setShortcut(eyeCare, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_P});
+    connect(eyeCare, &QAction::triggered, this, [this]() {
+        doAction(UKUI_EYECARE_CENTER);
+    });
     /*TODO Ukui Sidebar*/
 //    QAction *sideBar= new QAction(this);
 //    sideBar->setObjectName(QStringLiteral("Open ukui sidebar"));
@@ -1026,8 +1036,9 @@ bool MediaKeysManager::doAction(int type)
     int elapsed = 0;
     static uint lastKeySym = 0x00;
 
-    if (getScreenLockState() || shotSettings->get(SHOT_RUN_KEY).toBool() || sessionSettings->get(SESSION_WIN_KEY).toBool())
+    if (getScreenLockState() || shotSettings->get(SHOT_RUN_KEY).toBool() || sessionSettings->get(SESSION_WIN_KEY).toBool()) {
         return false;
+    }
 
     if (lastKeySym == type){//考虑到一个应用针对多个快捷键，所以不能以按键值进行次数区分必须以序号进行区分，否则第二个以后的快捷键不生效
         elapsed = startTime.msecsTo(QTime::currentTime());
@@ -1168,8 +1179,10 @@ bool MediaKeysManager::doAction(int type)
     case WLAN_KEY:
         doWlanAction();
         break;
-     case UKUI_SIDEBAR:
+    case UKUI_SIDEBAR:
         doSidebarAction();
+    case UKUI_EYECARE_CENTER:
+        doEyeCenterAction();
     default:
         break;
     }
@@ -1771,6 +1784,11 @@ void MediaKeysManager::doWlanAction()
     }
     mDeviceWindow->setAction(wlanState ? "ukui-wifi-on" : "ukui-wifi-off");
     mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doEyeCenterAction()
+{
+    executeCommand("eye-protection-center","");
 }
 
 void MediaKeysManager::doUrlAction(const QString scheme)

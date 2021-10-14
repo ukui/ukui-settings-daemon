@@ -1,3 +1,11 @@
+ukui-settings-daemon (3.1.0-1.7) V101; urgency=medium
+
+  * BUG号：85307【PTOF】【键盘】通过快捷键ctrl+alt+p无法打开护眼中心
+  * 需求号：无
+  * 其他改动说明：无  
+
+ -- chenxiaohui <chenxiaohui@kylinos.cn>  Thu, 14 Oct 2021 19:57:02 +0800
+
 ukui-settings-daemon (3.1.0-1.6) v101; urgency=medium
 
   * BUG号：79767 【显示】开机时不连接显示器，开机后连接显示器，屏幕黑屏
