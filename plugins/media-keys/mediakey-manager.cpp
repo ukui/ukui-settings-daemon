@@ -114,11 +114,10 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
     shotSettings = new QGSettings(SHOT_SCHEMA);
-
-    if (shotSettings->keys().contains(SHOT_RUN_KEY)){
-            if (shotSettings->get(SHOT_RUN_KEY).toBool())
-                shotSettings->set(SHOT_RUN_KEY, false);
-        }
+    if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
+        if (shotSettings->get(SHOT_RUN_KEY).toBool())
+            shotSettings->set(SHOT_RUN_KEY, false);
+    }
 
     powerSettings = new QGSettings(POWER_SCHEMA);
 
@@ -645,7 +644,7 @@ void MediaKeysManager::initShortcuts()
     connect(dSwitch2, &QAction::triggered, this, [this]() {
         doAction(KDS_KEY2);
     });
-    /*The eyecare centre*/
+    /*kylin eyeCare center*/
     QAction *eyeCare= new QAction(this);
     eyeCare->setObjectName(QStringLiteral("open kylin eyeCare center"));
     eyeCare->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
