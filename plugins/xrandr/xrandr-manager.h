@@ -86,7 +86,7 @@ public:
     void setScreenModeToExtend();
     bool checkPrimaryScreenIsSetable();
     bool readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode);
-
+    int8_t getCurrentMode();
 
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);

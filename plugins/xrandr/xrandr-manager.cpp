@@ -103,12 +103,6 @@ XrandrManager::XrandrManager()
         int index = mo.indexOfEnumerator("eScreenMode");
 
         metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
-
-        for (int i=0; i<metaEnum.keyCount(); ++i)
-        {
-            qDebug() << metaEnum.key(i);
-            USD_LOG(LOG_DEBUG,"value:%s",metaEnum.key(i));
-        }
     }
 
     m_DbusRotation = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
@@ -118,7 +112,7 @@ XrandrManager::XrandrManager()
             connect(m_DbusRotation, SIGNAL(rotations_change_signal(QString)),this,SLOT(RotationChangedEvent(QString)));
             // USD_LOG(LOG_DEBUG, "m_DbusRotation ok....");
         } else {
-            // USD_LOG(LOG_DEBUG, "m_DbusRotation fail...");
+            USD_LOG(LOG_ERR, "m_DbusRotation fail...");
         }
     }
 
@@ -128,7 +122,7 @@ XrandrManager::XrandrManager()
         connect(t_DbusTableMode, SIGNAL(mode_change_signal(bool)),this,SLOT(TabletSettingsChanged(bool)));
         //USD_LOG(LOG_DEBUG, "..");
     } else {
-        //USD_LOG(LOG_DEBUG, "...");
+        USD_LOG(LOG_ERR, "m_DbusRotation");
     }
 }
 
@@ -571,6 +565,32 @@ void XrandrManager::lightLastScreen()
     }
 }
 
+/*
+ *
+ * -1:无接口
+ * 0:PC模式
+ * 1：tablet模式
+ *
+*/
+int8_t XrandrManager::getCurrentMode()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
+                                                          "/",
+                                                          "com.kylin.statusmanager.interface",
+                                                          "get_current_tabletmode");
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() == QDBusMessage::ReplyMessage) {
+        if(response.arguments().isEmpty() == false) {
+            bool value = response.arguments().takeFirst().toBool();
+            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+            return value;
+        }
+    }
+
+    return -1;
+}
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
@@ -609,25 +629,38 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         }
     }
 
-    if (false == mMonitoredConfig->fileExists()) {
-        USD_LOG(LOG_DEBUG,"config  %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
-        if (senderOutput->isConnected()) {
-            senderOutput->setEnabled(senderOutput->isConnected());
+    if (UsdBaseClass::isTablet()) {
+
+        int ret = getCurrentMode();
+
+        if (0 < ret) {
+            //tablet模式
+              setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
+        } else {
+            //PC模式
+              setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
+        }
+    } else {//非intel项目无此接口
+        if (false == mMonitoredConfig->fileExists()) {
+            USD_LOG(LOG_DEBUG,"config %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
+            if (senderOutput->isConnected()) {
+                senderOutput->setEnabled(senderOutput->isConnected());
+            }
+
+            outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
+
+            mMonitoredConfig->writeFile(true);//首次接入，
+
+        } else {
+            USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
+            if (outputConnectCount) {
+                mMonitoredConfig = mMonitoredConfig->readFile(false);
+            }
         }
 
-        outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
-
-        mMonitoredConfig->writeFile(true);//首次接入，
-
-    } else {
-        USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
-        if (outputConnectCount) {
-            mMonitoredConfig = mMonitoredConfig->readFile(false);
-        }
+        lightLastScreen();
+        applyConfig();
     }
-
-    lightLastScreen();
-    applyConfig();
 }
 
 //处理来自控制面板的操作,保存配置
