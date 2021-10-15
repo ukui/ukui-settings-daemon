@@ -24,6 +24,7 @@
 
 #include <QDebug>
 #include <QString>
+#include <clib-syslog.h>
 
 struct QGSettingsPrivate
 {
@@ -83,6 +84,10 @@ QVariant QGSettings::get(const QString &key) const
 {
     gchar *gkey = unqtify_name(key);
     GVariant *value = g_settings_get_value(mPriv->settings, gkey);
+    if( NULL == value) {
+        USD_LOG(LOG_DEBUG,"g_settings_get_value is faild");
+        return QVariant(0);
+    }
     QVariant qvalue = qconf_types_to_qvariant(value);
     g_variant_unref(value);
     g_free(gkey);
