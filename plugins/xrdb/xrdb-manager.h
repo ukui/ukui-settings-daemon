@@ -80,6 +80,9 @@ private:
     QGSettings* settings;
     GtkWidget* widget;
 
+    QList<QString> m_whiteThemeNameList = {"ukui-light", "ukui-default","ukui-white-unity","ukui-white"};
+    QList<QString> m_blackThemeNameList = {"ukui-dark", "ukui-black-unity","ukui-black"};
+
     //after call spawn_with_input(),the following three members must be Empty.
     QList<QString>  *allUsefulAdFiles;
     QStringList     colorDefineList;
