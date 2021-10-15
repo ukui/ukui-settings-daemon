@@ -1,3 +1,11 @@
+ukui-settings-daemon (3.1.0-1.8) v101; urgency=medium
+ 
+  * BUG号：83664 【OSD】【mips】【PTOF】接双屏，使用win+p切换，无法打开切换显示模式OSD界面
+  * 需求号：无
+  * 其他改动说明：无
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 15 Oct 2021 15:43:51 +0800
+
 ukui-settings-daemon (3.1.0-1.7) v101; urgency=medium
 
   * BUG号：85307【PTOF】【键盘】通过快捷键ctrl+alt+p无法打开护眼中心
