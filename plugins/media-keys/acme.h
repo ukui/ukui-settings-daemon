@@ -75,6 +75,7 @@ enum {
         WLAN_KEY,
         HANDLED_KEYS,
         UKUI_SIDEBAR,
+        UKUI_EYECARE_CENTER,
 };
 
 static struct {

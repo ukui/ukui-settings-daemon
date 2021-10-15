@@ -124,6 +124,7 @@ private:
     void doOpenUkuiSearchAction();
     void doOpenKdsAction();
     void doWlanAction();
+    void doEyeCenterAction();
 
 
     /******************Function for DBus(DBus相关处理函数)******************************/
