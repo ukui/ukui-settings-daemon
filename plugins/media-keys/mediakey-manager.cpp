@@ -1180,8 +1180,10 @@ bool MediaKeysManager::doAction(int type)
         break;
     case UKUI_SIDEBAR:
         doSidebarAction();
+        break;
     case UKUI_EYECARE_CENTER:
         doEyeCenterAction();
+        break;
     default:
         break;
     }
