@@ -79,6 +79,21 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
+
+    if (mSettings)
+        delete mSettings;
+    if (pointSettings)
+        delete pointSettings;
+    if (sessionSettings)
+        delete sessionSettings;
+    if (shotSettings)
+        delete shotSettings;
+//    if (mExecCmd)
+//        delete mExecCmd;
+    if (mVolumeWindow)
+        delete mVolumeWindow;
+    if (mDeviceWindow)
+        delete mDeviceWindow;
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -671,21 +686,6 @@ void MediaKeysManager::mediaKeysStop()
     int i;
 
     USD_LOG(LOG_DEBUG, "Stooping media keys manager!");
-
-    if (mSettings)
-        delete mSettings;
-    if (pointSettings)
-        delete pointSettings;
-    if (sessionSettings)
-        delete sessionSettings;
-    if (shotSettings)
-        delete shotSettings;
-//    if (mExecCmd)
-//        delete mExecCmd;
-    if (mVolumeWindow)
-        delete mVolumeWindow;
-    if (mDeviceWindow)
-        delete mDeviceWindow;
     XEventMonitor::instance()->exit();
 
     /*
@@ -1368,6 +1368,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
     int muted  = mpulseAudioManager->getMute();
+    USD_LOG(LOG_DEBUG,"getMute muted : %d",muted);
 
     int volumeCvStep = mpulseAudioManager->getStepVolume();
     int volumeMin = mpulseAudioManager->getMinVolume();
