@@ -33,13 +33,7 @@
 #include <QOrientationReading>
 #include <memory>
 
-#include <KF5/KScreen/kscreen/config.h>
-#include <KF5/KScreen/kscreen/log.h>
-#include <KF5/KScreen/kscreen/output.h>
-#include <KF5/KScreen/kscreen/edid.h>
-#include <KF5/KScreen/kscreen/configmonitor.h>
-#include <KF5/KScreen/kscreen/getconfigoperation.h>
-#include <KF5/KScreen/kscreen/setconfigoperation.h>
+
 #include <QDBusMessage>
 
 extern "C"{
@@ -289,7 +283,7 @@ void doAction (int input_name, char *output_name)
     char buff[100];
     sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_name, output_name);
 
-    printf("buff is %s\n", buff);
+    USD_LOG(LOG_DEBUG,"map touch-screen [%s]\n", buff);
     QProcess::execute(buff);
 }
 
@@ -407,7 +401,8 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
             continue;
         }
         output->setRotation(static_cast<KScreen::Output::Rotation>(value));
-        qDebug()<<output->rotation() <<output->name();
+//        qDebug()<<output->rotation() <<output->name();
+        USD_LOG(LOG_DEBUG,"set %s rotaion:%s", output->name().toLatin1().data(), rotation.toLatin1().data());
     }
 
     applyConfig();
@@ -484,7 +479,6 @@ void XrandrManager::applyConfig()
             this, [this]() {
         mMonitoredConfig->writeFile(true);//首次接入
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-            SetTouchscreenCursorRotation();
             USD_LOG_SHOW_OUTPUT(output);
         }
     });
@@ -563,6 +557,40 @@ void XrandrManager::lightLastScreen()
             }
         }
     }
+}
+
+uint8_t XrandrManager::getCurrentRotation()
+{
+    USD_LOG(LOG_DEBUG,"qdebug.............................................................");
+    uint8_t ret;
+    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
+                                                          "/",
+                                                          "com.kylin.statusmanager.interface",
+                                                          "get_current_tabletmode");
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() == QDBusMessage::ReplyMessage) {
+        if(response.arguments().isEmpty() == false) {
+            QString value = response.arguments().takeFirst().toString();
+            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+
+            if (value == "normal") {
+                ret = 1;
+            } else if (value == "left") {
+                 ret = 2;
+            } else if (value == "upside-down") {
+                  ret = 4;
+            } else if  (value == "right") {
+                   ret = 8;
+            } else {
+                USD_LOG(LOG_DEBUG,"Find a error !!!");
+                return ret = 1;
+            }
+        }
+    }
+
+    return ret;
 }
 
 /*
@@ -668,6 +696,7 @@ void XrandrManager::SaveConfigTimerHandle()
 {
     mSaveConfigTimer->stop();
 
+    SetTouchscreenCursorRotation();
     mDbus->mScreenMode = discernScreenMode();
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     mMonitoredConfig->writeFile(true);
@@ -720,7 +749,6 @@ void XrandrManager::monitorsInit()
         connect(output.data(), &KScreen::Output::posChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"posChanged:%s",senderOutput->name().toLatin1().data());
-            SetTouchscreenCursorRotation();
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
@@ -861,6 +889,12 @@ bool XrandrManager::checkPrimaryScreenIsSetable()
 
 bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode)
 {
+
+     if (UsdBaseClass::isTablet())
+     {
+         return false;
+     }
+
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(eMode));
 
     if (mMonitoredConfig->fileScreenModeExists(metaEnum.valueToKey(eMode))) {
@@ -885,7 +919,7 @@ void XrandrManager::TabletSettingsChanged(const bool tablemode)
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
     }
-
+    USD_LOG(LOG_DEBUG,"recv mode changed:%d", tablemode);
 }
 
 void XrandrManager::setScreenModeToClone()
@@ -948,9 +982,14 @@ void XrandrManager::setScreenModeToClone()
                         output->setCurrentModeId(bigestModeId);
                         primaryOutput->setCurrentModeId(bigestPrimaryModeId);
 
-                        USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d",
+                        if (UsdBaseClass::isTablet()) {
+                            output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
+                            USD_LOG(LOG_DEBUG,"qdebug.............................................................");
+                        }
+
+                        USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d,rotation:%d",
                                 primaryMode->size().width(),primaryMode->size().height(),
-                                newOutputMode->size().width(), newOutputMode->size().height());
+                                newOutputMode->size().width(), newOutputMode->size().height(),output->rotation());
                     }
 
 
@@ -1062,10 +1101,15 @@ void XrandrManager::setScreenModeToExtend()
             }
          }
 
+        if (UsdBaseClass::isTablet()) {
+            output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
+            USD_LOG(LOG_DEBUG,"qdebug.........................................................");
+        }
+
          output->setPos(QPoint(primaryX,0));
          primaryX += singleMaxWidth;
+
          USD_LOG_SHOW_OUTPUT(output);
-         USD_LOG_SHOW_PARAM1(primaryX);
      }
     applyConfig();
 }
