@@ -561,7 +561,6 @@ void XrandrManager::lightLastScreen()
 
 uint8_t XrandrManager::getCurrentRotation()
 {
-    USD_LOG(LOG_DEBUG,"qdebug.............................................................");
     uint8_t ret;
     QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
                                                           "/",
@@ -984,7 +983,6 @@ void XrandrManager::setScreenModeToClone()
 
                         if (UsdBaseClass::isTablet()) {
                             output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
-                            USD_LOG(LOG_DEBUG,"qdebug.............................................................");
                         }
 
                         USD_LOG(LOG_DEBUG,"good..p_width:%d p_height:%d n_width:%d n_height:%d,rotation:%d",
