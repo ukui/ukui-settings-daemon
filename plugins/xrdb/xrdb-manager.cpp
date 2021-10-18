@@ -391,21 +391,24 @@ void ukuiXrdbManager::themeChanged (const QString& key)
 {
     /* 监听主题更改，发送dbus信号 */
     if(key.compare("gtk-theme")==0){
-        QString keys = settings->get(key).toString();
-        if (keys.compare("ukui-white")==0){
-            QDBusMessage message = 
-		    QDBusMessage::createSignal("/KGlobalSettings",
+        QString value = settings->get(key).toString();
+        USD_LOG(LOG_DEBUG,"key:%s value:%s", key.toLatin1().data(), value.toLatin1().data());
+        if (m_whiteThemeNameList.contains(value)) {
+            QDBusMessage message =
+            QDBusMessage::createSignal("/KGlobalSettings",
                                                "org.kde.KGlobalSettings",
                                                "slotThemeChange");
             message << int(0);
             QDBusConnection::sessionBus().send(message);
-        } else if (keys.compare("ukui-black")==0){
-            QDBusMessage message = 
-		    QDBusMessage::createSignal("/KGlobalSettings",
+            USD_LOG(LOG_DEBUG,"set white theme keys:%s",value.toLatin1().data());
+        } else if (m_blackThemeNameList.contains(value)) {
+            QDBusMessage message =
+            QDBusMessage::createSignal("/KGlobalSettings",
                                                "org.kde.KGlobalSettings",
                                                "slotThemeChange");
             message << int(1);
             QDBusConnection::sessionBus().send(message);
+            USD_LOG(LOG_DEBUG,"set black theme keys %s",value.toLatin1().data());
         }
     }
     //getColorConfigFromGtkWindow();
