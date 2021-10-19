@@ -68,16 +68,20 @@ HousekeepingPlugin::~HousekeepingPlugin()
 bool HousekeepingPlugin::isTrialMode()
 {
     QString str;
-    QByteArray t;
+    QStringList symbList ;
     QFile file("/proc/cmdline");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    t = file.readAll();
-    str = QString(t);
-    if(str.indexOf("boot=casper") != -1){
+    if(file.open(QIODevice::ReadOnly)) {
+        QByteArray data = file.readAll();
+        str = QString::fromLocal8Bit(data);
+        symbList = str.split("\r\n");
+    }
+
+    if(symbList.indexOf("boot=casper") != -1) {
         printf("is Trial Mode\n");
         file.close();
         return true;
     }
+
     file.close();
     if(getuid() == 999)
         return true;
@@ -102,8 +106,8 @@ PluginInterface *HousekeepingPlugin::getInstance()
 
 void HousekeepingPlugin::deactivate()
 {
-    if(isTrialMode())
-        return;
+    //if(isTrialMode())
+    //    return;
     if(mHouseManager)
         mHouseManager->HousekeepingManagerStop();
 }

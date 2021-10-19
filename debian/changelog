@@ -1,3 +1,12 @@
+ukui-settings-daemon (3.1.0-1.9) v101; urgency=medium
+
+  * BUG号：78070 【USD】本地注销产生core文件
+           85550【PTOF】【TM/PC】【显示器】平板模式-竖屏状态连接外显，外显屏显示一半黑屏(内显正常显示)(2/3 units 3/10 times)
+   * 需求号：无
+   * 其他改动说明：无
+
+ -- chenxiaohui <chenxiaohui@kylinos.cn>  Tue, 19 Oct 2021 15:01:43 +0800
+
 ukui-settings-daemon (3.1.0-1.8) v101; urgency=medium
  
   * BUG号：83664 【OSD】【mips】【PTOF】接双屏，使用win+p切换，无法打开切换显示模式OSD界面
