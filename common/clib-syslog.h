@@ -43,9 +43,9 @@ extern "C" {
    syslog_to_self_dir(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }
 
-#define USD_LOG_SHOW_OUTPUT(output) USD_LOG(LOG_DEBUG,":%s (%s)(%s) use [%s] mode at (%dx%d) id %d %s primary id:%s",  \
+#define USD_LOG_SHOW_OUTPUT(output) USD_LOG(LOG_DEBUG,":%s (%s)(%s) use [%s] mode at (%dx%d) id %d %s primary id:%s,rotation:%d",  \
     output->name().toLatin1().data(), output->isConnected()? "connect":"disconnect", output->isEnabled()? "Enale":"Disable",    \
-        output->currentModeId().toLatin1().data(), output->pos().x(), output->pos().y(),output->id(), output->isPrimary()? "is":"is't", output->hash().toLatin1().data())
+        output->currentModeId().toLatin1().data(), output->pos().x(), output->pos().y(),output->id(), output->isPrimary()? "is":"is't", output->hash().toLatin1().data(), output->rotation())
 
 
 #define USD_LOG_SHOW_OUTPUT_NOID(output) USD_LOG(LOG_DEBUG,":%s (%s)(%s) use [%s] mode at (%dx%d) ",  \
@@ -57,6 +57,7 @@ extern "C" {
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
 #define USD_LOG_SHOW_PARAM4(a,b,c,d) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
 
+#define USD_LOG_SHOW_PARAM2F(a,b) USD_LOG(LOG_DEBUG,"%s : %f,%s : %f",#a,a,#b, b)
 #define CHECK_PROJECT(A) ifdef A
 #define CHECK_OVER  endif
 
