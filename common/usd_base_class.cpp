@@ -45,6 +45,16 @@ bool UsdBaseClass::isTablet()
     }
 }
 
+bool UsdBaseClass::isLoongarch()
+{
+    QString cpuMode = KDKGetCpuModelName().c_str();
+    USD_LOG(LOG_DEBUG,"GetCpuModelName : %s",cpuMode.toStdString().c_str());
+    if(cpuMode.toLower().contains("loongson")){
+        return true;
+    }
+    return false;
+}
+
 bool UsdBaseClass::is9X0()
 {
 #ifdef USD_9X0

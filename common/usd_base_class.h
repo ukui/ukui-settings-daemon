@@ -30,6 +30,9 @@ public:
     static bool isXcb();
 
     static bool isNotebook();
+
+    static bool isLoongarch();
+
 };
 
 #endif // USDBASECLASS_H
