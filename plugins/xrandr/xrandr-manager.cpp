@@ -565,7 +565,7 @@ uint8_t XrandrManager::getCurrentRotation()
     QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
                                                           "/",
                                                           "com.kylin.statusmanager.interface",
-                                                          "get_current_tabletmode");
+                                                          "get_current_rotation");
 
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
