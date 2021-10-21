@@ -47,6 +47,9 @@
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
 #include "usd_base_class.h"
+#include "usd_global_define.h"
+
+#define SAVE_CONFIG_TIME 800
 
 class XrandrManager: public QObject
 {
