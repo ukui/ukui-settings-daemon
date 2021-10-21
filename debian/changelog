@@ -1,3 +1,22 @@
+ukui-settings-daemon (3.1.0-1.11) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他修改说明：进行OTA升级配置
+
+ -- sundagao <sundagao@kylinos.cn>  Thu, 21 Oct 2021 19:46:23 +0800
+
+ukui-settings-daemon (3.1.0-1.10) v101; urgency=medium
+
+  * BUG号：61778 【显示器】【用例#104512】接HDMI和VGA双屏，设置VGA为主屏的情况，拔插VGA线，概率出现VGA显示背景为黑色，任务栏不显示
+           85696 紧急【浪潮信息】-【CE520L】-【Kylin-Desktop-V10-SP1-OEM-LC-20211014-loongarch64】系统开机后接入显示器不显示
+           85922 【触摸板】连接外显且模式为扩展时，触摸板灵敏度过高导致很难控制，镜像模式时则正常
+           77138 【专项测试】【USD】大小写、数字键设置开启/关闭后重启，重启后无法记住重启前设置
+           86396 【PTOF】【键盘】在连接USB耳机的情况下音量快捷键失效。（必现）
+  * 需求说明：无
+  * 其他修改说明：无
+ -- sundagao <sundagao@kylinos.cn>  Thu, 21 Oct 2021 19:44:09 +0800
+
 ukui-settings-daemon (3.1.0-1.9) v101; urgency=medium
 
   * BUG号：78070 【USD】本地注销产生core文件
