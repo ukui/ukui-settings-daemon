@@ -312,9 +312,8 @@ bool checkMatch(int output_width,  int output_height,
 
 void doAction (int input_name, char *output_name)
 {
-    char buff[100];
+    char buff[128] = "";
     sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_name, output_name);
-
     USD_LOG(LOG_DEBUG,"map touch-screen [%s]\n", buff);
     QProcess::execute(buff);
 }
@@ -386,7 +385,7 @@ void SetTouchscreenCursorRotation()
                     udev_device = g_udev_client_query_by_device_file (udev_client,
                                                                       (const gchar *)info->input_node);
 
-                    USD_LOG(LOG_DEBUG,"%s(%d) %d had touch",info->dev_info.name,info->dev_info.deviceid,g_udev_device_has_property(udev_device,"ID_INPUT_WIDTH_MM"), g_udev_device_has_property(udev_device,"ID_INPUT_HEIGHT_MM"));
+//                    USD_LOG(LOG_DEBUG,"%s(%d) %d had touch",info->dev_info.name,info->dev_info.deviceid,g_udev_device_has_property(udev_device,"ID_INPUT_WIDTH_MM"), g_udev_device_has_property(udev_device,"ID_INPUT_HEIGHT_MM"));
 
                     //sp1的触摸板不一定有此属性，所以根据名字进行适配by sjh 2021年10月20日11:23:58
                     if ((udev_device && g_udev_device_has_property (udev_device,
@@ -603,10 +602,10 @@ void XrandrManager::lightLastScreen()
 uint8_t XrandrManager::getCurrentRotation()
 {
     uint8_t ret;
-    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
-                                                          "/",
-                                                          "com.kylin.statusmanager.interface",
-                                                          "get_current_rotation");
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_PATH,
+                                                          DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_GET_ROTATION);
 
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
@@ -642,10 +641,10 @@ uint8_t XrandrManager::getCurrentRotation()
 */
 int8_t XrandrManager::getCurrentMode()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall("com.kylin.statusmanager.interface",
-                                                          "/",
-                                                          "com.kylin.statusmanager.interface",
-                                                          "get_current_tabletmode");
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_PATH,
+                                                          DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_GET_MODE);
 
     QDBusMessage response = QDBusConnection::sessionBus().call(message);
 
@@ -700,7 +699,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
     if (UsdBaseClass::isTablet()) {
 
         int ret = getCurrentMode();
-
+        USD_LOG(LOG_DEBUG,"intel edu is't need use config file");
         if (0 < ret) {
             //tablet模式
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
@@ -709,14 +708,13 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
         }
     } else {//非intel项目无此接口
+         USD_LOG(LOG_DEBUG,"need to use config file");
         if (false == mMonitoredConfig->fileExists()) {
             USD_LOG(LOG_DEBUG,"config %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
             if (senderOutput->isConnected()) {
                 senderOutput->setEnabled(senderOutput->isConnected());
             }
-
             outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
-
             mMonitoredConfig->writeFile(true);//首次接入，
 
         } else {
@@ -768,6 +766,7 @@ void XrandrManager::monitorsInit()
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
@@ -783,7 +782,7 @@ void XrandrManager::monitorsInit()
                     break;
                 }
             }
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::posChanged, this, [this](){
@@ -798,27 +797,27 @@ void XrandrManager::monitorsInit()
                     break;
                 }
             }
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::sizeChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"sizeChanged:%s",senderOutput->name().toLatin1().data());
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::clonesChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"clonesChanged:%s",senderOutput->name().toLatin1().data());
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
 
-            SetTouchscreenCursorRotation();
-
+//            SetTouchscreenCursorRotation();
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::currentModeIdChanged, this, [this](){
@@ -832,7 +831,7 @@ void XrandrManager::monitorsInit()
                 }
             }
 
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::isEnabledChanged, this, [this](){
@@ -847,7 +846,7 @@ void XrandrManager::monitorsInit()
                     break;
                 }
             }
-            mSaveConfigTimer->start(1500);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
     }
 
@@ -1156,6 +1155,8 @@ void XrandrManager::setScreenModeToExtend()
 */
 void XrandrManager::setScreenMode(QString modeName)
 {
+
+
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());

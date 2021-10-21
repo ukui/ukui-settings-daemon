@@ -159,6 +159,26 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     return true;
 }
 
+int8_t MediaKeysManager::getCurrentMode()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_PATH,
+                                                          DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_GET_MODE);
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() == QDBusMessage::ReplyMessage) {
+        if(response.arguments().isEmpty() == false) {
+            bool value = response.arguments().takeFirst().toBool();
+            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+            return value;
+        }
+    }
+
+    return -1;
+}
+
 void MediaKeysManager::initShortcuts()
 {
     /* WLAN */
@@ -637,6 +657,14 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     KGlobalAccel::self()->setShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     connect(dSwitch, &QAction::triggered, this, [this]() {
+
+        if (UsdBaseClass::isTablet()){
+            if (getCurrentMode()) {
+                return;
+            }
+        }
+
+
         static QTime startTime = QTime::currentTime();
         int elapsed = 0;
 
