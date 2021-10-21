@@ -27,18 +27,18 @@ PluginInterface     *HousekeepingPlugin::mInstance=nullptr;
 QString getCurrentUserName()
 {
     QString name;
-    if (name.isEmpty()){
+    if (name.isEmpty()) { 
         QStringList envList = QProcess::systemEnvironment();
         for(const QString& env : envList){
-            if(env.startsWith("USERNAME")){
+            if (env.startsWith("USERNAME")) {
                 QStringList strList = env.split('=');
-                if(strList.size() > 2){
+                if (strList.size() > 2) {
                     name = strList[1];
                 }
             }
         }
     }
-    if(!name.isEmpty())
+    if (!name.isEmpty())
         return name;
     QProcess process;
     process.start("whoami", QStringList());
@@ -50,20 +50,20 @@ QString getCurrentUserName()
 HousekeepingPlugin::HousekeepingPlugin()
 {
     userName = getCurrentUserName();
-    if(userName.compare("lightdm") != 0){
+    if (userName.compare("lightdm") != 0) {
         mHouseManager = new HousekeepingManager();
-        if(!mHouseManager)
+        if (!mHouseManager)
             USD_LOG(LOG_ERR,"Unable to start Housekeeping Manager!");
     }
 }
 
 HousekeepingPlugin::~HousekeepingPlugin()
 {
-    if(mHouseManager) {
+    if (mHouseManager) {
         delete mHouseManager;
         mHouseManager = nullptr;
     }
-    if(mInstance) {
+    if (mInstance) {
         delete mInstance;
         mInstance = nullptr;
     }
@@ -74,36 +74,36 @@ bool HousekeepingPlugin::isTrialMode()
     QString str;
     QStringList symbList ;
     QFile file("/proc/cmdline");
-    if(file.open(QIODevice::ReadOnly)) {
+    if (file.open(QIODevice::ReadOnly)) {
         QByteArray data = file.readAll();
         str = QString::fromLocal8Bit(data);
         symbList = str.split("\r\n");
     }
 
-    if(symbList.indexOf("boot=casper") != -1) {
+    if (symbList.indexOf("boot=casper") != -1) {
         printf("is Trial Mode\n");
         file.close();
         return true;
     }
 
     file.close();
-    if(getuid() == 999)
+    if (getuid() == 999)
         return true;
     return false;
 }
 
 void HousekeepingPlugin::activate()
 {
-    if(isTrialMode())
+    if (isTrialMode())
         return;
-    if(userName.compare("lightdm") != 0){
+    if (userName.compare("lightdm") != 0) {
         mHouseManager->HousekeepingManagerStart();
     }
 }
 
 PluginInterface *HousekeepingPlugin::getInstance()
 {
-    if(nullptr == mInstance)
+    if (nullptr == mInstance)
         mInstance = new HousekeepingPlugin();
     return mInstance;
 }
@@ -112,7 +112,7 @@ void HousekeepingPlugin::deactivate()
 {
     //if(isTrialMode())
     //    return;
-    if(mHouseManager)
+    if (mHouseManager)
         mHouseManager->HousekeepingManagerStop();
 }
 
