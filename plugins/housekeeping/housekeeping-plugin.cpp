@@ -59,9 +59,13 @@ HousekeepingPlugin::HousekeepingPlugin()
 
 HousekeepingPlugin::~HousekeepingPlugin()
 {
-    if(mHouseManager){
+    if(mHouseManager) {
         delete mHouseManager;
         mHouseManager = nullptr;
+    }
+    if(mInstance) {
+        delete mInstance;
+        mInstance = nullptr;
     }
 }
 

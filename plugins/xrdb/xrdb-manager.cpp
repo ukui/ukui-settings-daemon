@@ -33,13 +33,26 @@ ukuiXrdbManager* ukuiXrdbManager::mXrdbManager = nullptr;
 
 ukuiXrdbManager::ukuiXrdbManager()
 {
+    settings = new QGSettings(SCHEMAS);
+    allUsefulAdFiles = new QList<QString>();
     gtk_init(NULL,NULL);
 }
 
 ukuiXrdbManager::~ukuiXrdbManager()
 {
-    if(mXrdbManager)
+    if(mXrdbManager) {
         delete mXrdbManager;
+        mXrdbManager = nullptr;
+    }
+    if(settings) {
+        delete settings;
+        settings = nullptr;
+    }
+    if(allUsefulAdFiles){
+        allUsefulAdFiles->clear();
+        delete allUsefulAdFiles;
+        allUsefulAdFiles = nullptr;
+    }
 }
 
 //singleton
@@ -54,8 +67,6 @@ bool ukuiXrdbManager::start(GError **error)
 {
     USD_LOG(LOG_DEBUG,"Starting xrdb manager!");
 
-    settings = new QGSettings(SCHEMAS);
-    allUsefulAdFiles = new QList<QString>();
     widget = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     //gtk_widget_realize (widget);
     gtk_widget_ensure_style(widget);
@@ -72,12 +83,6 @@ bool ukuiXrdbManager::start(GError **error)
 void ukuiXrdbManager::stop()
 {
     USD_LOG(LOG_DEBUG,"Stopping xrdb manager!");
-    if(settings)
-        delete settings;
-    if(allUsefulAdFiles){
-        allUsefulAdFiles->clear();
-        delete allUsefulAdFiles;
-    }
 
     //destroy newed GtkWidget window
     gtk_widget_destroy(widget);

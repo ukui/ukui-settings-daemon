@@ -85,6 +85,7 @@ private:
 
     //after call spawn_with_input(),the following three members must be Empty.
     QList<QString>  *allUsefulAdFiles;
+    QList<QString>  *tmpFileList;
     QStringList     colorDefineList;
     QString         needMerge;
 };

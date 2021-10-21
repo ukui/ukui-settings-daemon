@@ -18,7 +18,6 @@
  */
 #include <QDebug>
 #include <math.h>
-#include <QTimer>
 
 #include "color-manager.h"
 
@@ -77,22 +76,39 @@ ColorManager::ColorManager()
     qt_settings = new QGSettings (QT_THEME_SCHEMA);
     mColorState    = new ColorState();
     mColorProfiles = new ColorProfiles();
+    timer  = new QTimer(this);
 }
 
 ColorManager::~ColorManager()
 {
-    if(mColorManager)
+    if(timer) {
+        delete timer;
+        timer = nullptr;
+    }
+    if(mColorManager) {
         delete mColorManager;
-    if(settings)
+        mColorManager = nullptr;
+    }
+    if(settings) {
         delete settings;
-    if(gtk_settings)
+        settings = nullptr;
+    }
+    if(gtk_settings) {
         delete gtk_settings;
-    if(qt_settings)
+        gtk_settings = nullptr;
+    }
+    if(qt_settings) {
         delete qt_settings;
-    if(mColorState)
+        qt_settings = nullptr;
+    }
+    if(mColorState) {
         delete mColorState;
-    if(mColorProfiles)
+        mColorState = nullptr;
+    }
+    if(mColorProfiles) {
         delete mColorProfiles;
+        mColorProfiles = nullptr;
+    }
 }
 
 ColorManager *ColorManager::ColorManagerNew()
@@ -612,7 +628,6 @@ bool ColorManager::ColorManagerStart()
     mColorState->ColorStateStart();
     NightLightRecheck(this);
 
-    QTimer * timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(checkTime()));
     timer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
     StartGeoclue();

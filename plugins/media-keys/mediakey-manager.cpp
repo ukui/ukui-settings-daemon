@@ -65,7 +65,15 @@ typedef enum {
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     mTimer = new QTimer(this);
+
+    mVolumeWindow = new VolumeWindow();
+    mDeviceWindow = new DeviceWindow();
+    powerSettings = new QGSettings(POWER_SCHEMA);
     mpulseAudioManager = new pulseAudioManager(this);
+
+    mSettings = new QGSettings(MEDIAKEY_SCHEMA);
+    pointSettings = new QGSettings(POINTER_SCHEMA);
+    sessionSettings = new QGSettings(SESSION_SCHEMA);
 
     gdk_init(NULL,NULL);
     //session bus 会话总线
@@ -79,6 +87,44 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
+    if (mSettings) {
+        delete mSettings;
+        mSettings = nullptr;
+    }
+    if (pointSettings) {
+        delete pointSettings;
+        mSettings = nullptr;
+    }
+    if (sessionSettings) {
+        delete sessionSettings;
+        sessionSettings = nullptr;
+    }
+    if (shotSettings) {
+        delete shotSettings;
+        shotSettings = nullptr;
+    }
+    //  if (mExecCmd)
+    //     delete mExecCmd;
+    if (mVolumeWindow) {
+        delete mVolumeWindow;
+        mVolumeWindow = nullptr;
+    }
+    if (mDeviceWindow) {
+        delete mDeviceWindow;
+        mDeviceWindow = nullptr;
+    }
+    if(powerSettings) {
+        delete powerSettings;
+        powerSettings = nullptr;
+    }
+    if(mpulseAudioManager) {
+        delete mpulseAudioManager;
+        mpulseAudioManager = nullptr;
+    }
+    if(mManager) {
+        delete mManager;
+        mManager = nullptr;
+    }
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -110,20 +156,11 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 //    mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
-    mSettings = new QGSettings(MEDIAKEY_SCHEMA);
-    pointSettings = new QGSettings(POINTER_SCHEMA);
-    sessionSettings = new QGSettings(SESSION_SCHEMA);
     shotSettings = new QGSettings(SHOT_SCHEMA);
     if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
         if (shotSettings->get(SHOT_RUN_KEY).toBool())
             shotSettings->set(SHOT_RUN_KEY, false);
     }
-
-    powerSettings = new QGSettings(POWER_SCHEMA);
-
-    mVolumeWindow = new VolumeWindow();
-    mDeviceWindow = new DeviceWindow();
-
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
@@ -672,20 +709,6 @@ void MediaKeysManager::mediaKeysStop()
 
     USD_LOG(LOG_DEBUG, "Stooping media keys manager!");
 
-    if (mSettings)
-        delete mSettings;
-    if (pointSettings)
-        delete pointSettings;
-    if (sessionSettings)
-        delete sessionSettings;
-    if (shotSettings)
-        delete shotSettings;
-//    if (mExecCmd)
-//        delete mExecCmd;
-    if (mVolumeWindow)
-        delete mVolumeWindow;
-    if (mDeviceWindow)
-        delete mDeviceWindow;
     XEventMonitor::instance()->exit();
 
     /*

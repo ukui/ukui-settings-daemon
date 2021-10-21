@@ -71,8 +71,6 @@ XrandrManager::XrandrManager()
 {
     QGSettings *mXsettings = new QGSettings(XSETTINGS_SCHEMA);
     mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
-    if(mXsettings)
-        delete mXsettings;
 
     KScreen::Log::instance();
 
@@ -154,13 +152,23 @@ void XrandrManager::getInitialConfig()
 
 XrandrManager::~XrandrManager()
 {
-
-    if(mAcitveTime)
+    if(mAcitveTime) {
         delete mAcitveTime;
-    if(mXrandrSetting)
+        mAcitveTime = nullptr;
+    }
+    if(mXrandrSetting) {
         delete mXrandrSetting;
-    if(mLoginInter)
-        delete mLoginInter;
+        mXrandrSetting = nullptr;
+    }
+    if(mXsettings) {
+        delete mXsettings;
+        mXsettings = nullptr;
+    }
+
+    //  if(mLoginInter) {
+    //     delete mLoginInter;
+    //      mLoginInter = nullptr;
+    //  }
 }
 
 bool XrandrManager::XrandrManagerStart()
