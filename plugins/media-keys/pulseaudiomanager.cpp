@@ -21,15 +21,20 @@ pulseAudioManager::pulseAudioManager(QObject *parent)
 
 pulseAudioManager::~pulseAudioManager()
 {
+
+
     if ( nullptr != p_PaCtx ) {
         pa_context_set_state_callback(p_PaCtx, NULL, NULL);
         pa_context_disconnect(p_PaCtx);
         pa_context_unref(p_PaCtx);
     }
-
-    if ( nullptr != p_PaMl) {
+     pa_signal_done();
+    if (nullptr != p_PaMl) {
         pa_mainloop_free(p_PaMl);
     }
+
+
+
 }
 
 //pulseAudioManager *pulseAudioManager::getIntance()
@@ -74,6 +79,7 @@ void pulseAudioManager::initPulseAudio()
 
     pa_signal_init(p_PaMlApi);
 //    pa_disable_sigpipe();
+
 
 
     pa_context_set_state_callback(p_PaCtx, PaContextStateCallback,

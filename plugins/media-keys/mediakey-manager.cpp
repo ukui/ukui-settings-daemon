@@ -65,7 +65,7 @@ typedef enum {
 MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     mTimer = new QTimer(this);
-    mpulseAudioManager = new pulseAudioManager(this);
+
 
     gdk_init(NULL,NULL);
     //session bus 会话总线
@@ -1328,10 +1328,15 @@ void MediaKeysManager::doTouchpadAction()
 void MediaKeysManager::doMicSoundAction()
 {
     bool mute;
+    mpulseAudioManager = new pulseAudioManager(this);
+
     mute = !mpulseAudioManager->getMicMute();
     mpulseAudioManager->setMicMute(mute);
     mDeviceWindow->setAction ( mute ? "ukui-microphone-off" : "ukui-microphone-on");
     mDeviceWindow->dialogShow();
+
+    delete mpulseAudioManager;
+
 }
 
 void MediaKeysManager::doBrightAction(int type)
@@ -1364,6 +1369,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     int last_volume;
     bool lastmuted;
     bool soundChanged = false;
+
+    mpulseAudioManager = new pulseAudioManager(this);
 
     int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
@@ -1432,6 +1439,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
         delete panel_settings;
      }
+    delete mpulseAudioManager;
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
