@@ -69,7 +69,6 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
     powerSettings = new QGSettings(POWER_SCHEMA);
-    mpulseAudioManager = new pulseAudioManager(this);
 
     mSettings = new QGSettings(MEDIAKEY_SCHEMA);
     pointSettings = new QGSettings(POINTER_SCHEMA);
@@ -116,10 +115,6 @@ MediaKeysManager::~MediaKeysManager()
     if (powerSettings) {
         delete powerSettings;
         powerSettings = nullptr;
-    }
-    if (mpulseAudioManager) {
-        delete mpulseAudioManager;
-        mpulseAudioManager = nullptr;
     }
     if (mManager) {
         delete mManager;
@@ -1351,10 +1346,12 @@ void MediaKeysManager::doTouchpadAction()
 void MediaKeysManager::doMicSoundAction()
 {
     bool mute;
+    mpulseAudioManager = new pulseAudioManager(this);
     mute = !mpulseAudioManager->getMicMute();
     mpulseAudioManager->setMicMute(mute);
     mDeviceWindow->setAction ( mute ? "ukui-microphone-off" : "ukui-microphone-on");
     mDeviceWindow->dialogShow();
+    delete mpulseAudioManager;
 }
 
 void MediaKeysManager::doBrightAction(int type)
@@ -1387,6 +1384,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     int last_volume;
     bool lastmuted;
     bool soundChanged = false;
+
+    mpulseAudioManager = new pulseAudioManager(this);
 
     int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
@@ -1454,6 +1453,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
         delete panel_settings;
      }
+     delete mpulseAudioManager;
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
