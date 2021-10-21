@@ -40,15 +40,15 @@ ukuiXrdbManager::ukuiXrdbManager()
 
 ukuiXrdbManager::~ukuiXrdbManager()
 {
-    if(mXrdbManager) {
+    if (mXrdbManager) {
         delete mXrdbManager;
         mXrdbManager = nullptr;
     }
-    if(settings) {
+    if (settings) {
         delete settings;
         settings = nullptr;
     }
-    if(allUsefulAdFiles){
+    if (allUsefulAdFiles) {
         allUsefulAdFiles->clear();
         delete allUsefulAdFiles;
         allUsefulAdFiles = nullptr;
