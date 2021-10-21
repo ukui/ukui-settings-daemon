@@ -113,15 +113,15 @@ MediaKeysManager::~MediaKeysManager()
         delete mDeviceWindow;
         mDeviceWindow = nullptr;
     }
-    if(powerSettings) {
+    if (powerSettings) {
         delete powerSettings;
         powerSettings = nullptr;
     }
-    if(mpulseAudioManager) {
+    if (mpulseAudioManager) {
         delete mpulseAudioManager;
         mpulseAudioManager = nullptr;
     }
-    if(mManager) {
+    if (mManager) {
         delete mManager;
         mManager = nullptr;
     }
