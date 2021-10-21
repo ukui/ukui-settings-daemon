@@ -55,7 +55,7 @@ KeyboardXkb     *KeyboardManager::mKeyXkb = nullptr;
 
 KeyboardManager::KeyboardManager(QObject * parent)
 {
-    if(mKeyXkb == nullptr)
+    if (mKeyXkb == nullptr)
         mKeyXkb = new KeyboardXkb;
     settings = new QGSettings(USD_KEYBOARD_SCHEMA);
 
@@ -86,23 +86,23 @@ KeyboardManager::KeyboardManager(QObject * parent)
 
 KeyboardManager::~KeyboardManager()
 {
-    if(mKeyXkb) {
+    if (mKeyXkb) {
         delete mKeyXkb;
         mKeyXkb = nullptr;
     }
-    if(settings) {
+    if (settings) {
         delete settings;
         settings = nullptr;
     }
-    if(time) {
+    if (time) {
         delete time;
         time = nullptr;
     }
-    if(m_statusWidget) {
+    if (m_statusWidget) {
         delete m_statusWidget;
         m_statusWidget = nullptr;
     }
-    if(ksettings) {
+    if (ksettings) {
         delete ksettings;
         ksettings = nullptr;
     }
