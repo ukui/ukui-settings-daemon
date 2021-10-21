@@ -81,31 +81,31 @@ ColorManager::ColorManager()
 
 ColorManager::~ColorManager()
 {
-    if(timer) {
+    if (timer) {
         delete timer;
         timer = nullptr;
     }
-    if(mColorManager) {
+    if (mColorManager) {
         delete mColorManager;
         mColorManager = nullptr;
     }
-    if(settings) {
+    if (settings) {
         delete settings;
         settings = nullptr;
     }
-    if(gtk_settings) {
+    if (gtk_settings) {
         delete gtk_settings;
         gtk_settings = nullptr;
     }
-    if(qt_settings) {
+    if (qt_settings) {
         delete qt_settings;
         qt_settings = nullptr;
     }
-    if(mColorState) {
+    if (mColorState) {
         delete mColorState;
         mColorState = nullptr;
     }
-    if(mColorProfiles) {
+    if (mColorProfiles) {
         delete mColorProfiles;
         mColorProfiles = nullptr;
     }
@@ -113,14 +113,14 @@ ColorManager::~ColorManager()
 
 ColorManager *ColorManager::ColorManagerNew()
 {
-    if(nullptr == mColorManager)
+    if (nullptr == mColorManager)
         mColorManager = new ColorManager();
     return  mColorManager;
 }
 
 GDateTime *ColorManager::NightLightGetDateTimeNow()
 {
-    if(datetime_override != NULL)
+    if (datetime_override != NULL)
         return g_date_time_ref (datetime_override);
     return g_date_time_new_now_local();
 }
