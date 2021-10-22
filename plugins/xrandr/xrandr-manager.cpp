@@ -55,9 +55,6 @@ extern "C"{
 
 #define MAX_SIZE_MATCH_DIFF         0.05
 
-#define DBUS_NAME  "org.ukui.SettingsDaemon"
-#define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
-#define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
 
 unsigned char *getDeviceNode (XIDeviceInfo devinfo);
 typedef struct
@@ -78,11 +75,11 @@ XrandrManager::XrandrManager()
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 
-    new WaylandAdaptor(mDbus);
+    new XrandrAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    if (sessionBus.registerService(DBUS_NAME)) {
-        sessionBus.registerObject(DBUS_PATH,
+    if (sessionBus.registerService(DBUS_XRANDR_NAME)) {
+        sessionBus.registerObject(DBUS_XRNADR_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
     }

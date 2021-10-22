@@ -24,47 +24,28 @@ class QVariant;
 QT_END_NAMESPACE
 
 /*
- * Adaptor class for interface org.ukui.SettingsDaemon.wayland
+ * Adaptor class for interface org.ukui.SettingsDaemon.xrandr
  */
-class WaylandAdaptor: public QDBusAbstractAdaptor
+class XrandrAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.ukui.SettingsDaemon.wayland")
+    Q_CLASSINFO("D-Bus Interface", "org.ukui.SettingsDaemon.xrandr")
     Q_CLASSINFO("D-Bus Introspection", ""
-                                       "  <interface name=\"org.ukui.SettingsDaemon.wayland\">\n"
-                                       "    <signal name=\"screenPrimaryChanged\">\n"
-                                       "      <arg direction=\"out\" type=\"i\" name=\"x\"/>\n"
-                                       "      <arg direction=\"out\" type=\"i\" name=\"y\"/>\n"
-                                       "      <arg direction=\"out\" type=\"i\" name=\"width\"/>\n"
-                                       "      <arg direction=\"out\" type=\"i\" name=\"height\"/>\n"
+                                       "  <interface name=\"org.ukui.SettingsDaemon.xrandr\">\n"
+                                       "    <signal name=\"screensParamChanged\">\n"
+                                       "    <arg direction=\"out\" type=\"i\" name=\"screensParam\"/>\n"
                                        "    </signal>\n"
-                                       "    <signal name=\"brightnessDown\"/>\n"
-                                       "    <signal name=\"brightnessUp\"/>\n"
-                                       "    <method name=\"x\">\n"
-                                       "      <arg direction=\"out\" type=\"i\"/>\n"
-                                       "    </method>\n"
-                                       "    <method name=\"y\">\n"
-                                       "      <arg direction=\"out\" type=\"i\"/>\n"
-                                       "    </method>\n"
-                                       "    <method name=\"width\">\n"
-                                       "      <arg direction=\"out\" type=\"i\"/>\n"
-                                       "    </method>\n"
-                                       "    <method name=\"height\">\n"
-                                       "      <arg direction=\"out\" type=\"i\"/>\n"
-                                       "    </method>\n"
-                                       "    <method name=\"scale\">\n"
-                                       "      <arg direction=\"out\" type=\"d\"/>\n"
-                                       "    </method>\n"
-                                       "    <method name=\"priScreenName\">\n"
+                                       "    <signal name=\"screenModeChanged\">\n"
+                                       "      <arg direction=\"out\" type=\"i\" name=\"screenMode\"/>\n"
+                                       "    </signal>\n"
+                                       "    <method name=\"getScreensParam\">\n"
                                        "      <arg direction=\"out\" type=\"s\"/>\n"
+                                       "      <arg direction=\"in\" type=\"s\" name=\"appName\"/>\n"
                                        "    </method>\n"
-                                       "    <method name=\"priScreenChanged\">\n"
+                                       "    <method name=\"setScreensParam\">\n"
                                        "      <arg direction=\"out\" type=\"i\"/>\n"
-                                       "      <arg direction=\"in\" type=\"i\" name=\"x\"/>\n"
-                                       "      <arg direction=\"in\" type=\"i\" name=\"y\"/>\n"
-                                       "      <arg direction=\"in\" type=\"i\" name=\"width\"/>\n"
-                                       "      <arg direction=\"in\" type=\"i\" name=\"height\"/>\n"
-                                       "      <arg direction=\"in\" type=\"s\" name=\"name\"/>\n"
+                                       "      <arg direction=\"in\" type=\"s\" name=\"screensParam\"/>\n"
+                                       "      <arg direction=\"in\" type=\"s\" name=\"appName\"/>\n"
                                        "    </method>\n"
                                        "    <method name=\"setScreenMode\">\n"
                                        "      <arg direction=\"out\" type=\"i\"/>\n"
@@ -78,24 +59,21 @@ class WaylandAdaptor: public QDBusAbstractAdaptor
                                        "  </interface>\n"
                                        "")
 public:
-    WaylandAdaptor(QObject *parent);
-    virtual ~WaylandAdaptor();
+    XrandrAdaptor(QObject *parent);
+    virtual ~XrandrAdaptor();
 
 public: // PROPERTIES
+
 public Q_SLOTS: // METHODS
-    int height();
-    int priScreenChanged(int x, int y, int width, int height, const QString &name);
     int setScreenMode(const QString &modeName, const QString &appName);
+    int setScreensParam(const QString &modeName, const QString &appName);
+
     int getScreenMode(const QString &appName);
-    QString priScreenName();
-    double scale();
-    int width();
-    int x();
-    int y();
+    QString getScreensParam(const QString &appName);
+
 Q_SIGNALS: // SIGNALS
-    void brightnessDown();
-    void brightnessUp();
-    void screenPrimaryChanged(int x, int y, int width, int height);
+    void screensParamChanged(const QString &screensParam);
+    void screenModeChanged(const int screenMode);
 };
 
 #endif
