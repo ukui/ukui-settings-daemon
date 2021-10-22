@@ -1809,7 +1809,7 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 
 void MediaKeysManager::doOpenKdsAction()
 {
-     executeCommand("kydisplayswitch","");
+     executeCommand("ukydisplayswitch","");
 }
 
 void MediaKeysManager::doWlanAction()
