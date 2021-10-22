@@ -88,7 +88,6 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
-<<<<<<< plugins/media-keys/mediakey-manager.cpp
     if (mSettings) {
         delete mSettings;
         mSettings = nullptr;
