@@ -44,6 +44,7 @@ Build-Depends: debhelper-compat (=12),
 	       libkf5globalaccel-dev,
 	       libqt5x11extras5-dev,
 	       libukui-common-dev,
+		   colord,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
@@ -60,7 +61,6 @@ Depends: mate-desktop-common (>= 1.18),
          x11-xserver-utils,
          xserver-xorg-input-synaptics [!s390x],
          libglib2.0-bin,
-		 colord,
          ${misc:Depends},
          ${shlibs:Depends},
 Conflicts:kylin-display-switch,

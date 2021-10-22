@@ -87,11 +87,7 @@ int main (int argc, char* argv[])
 
 
     USD_LOG(LOG_INFO, "ukui-settings-daemon started!");
-    app.exec();
-
-    if (manager)
-        delete manager;
-    return 0;
+    return app.exec();
 }
 
 static void parse_args (int argc, char *argv[])

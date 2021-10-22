@@ -33,12 +33,23 @@
 #include <QDBusInterface>
 #include <QGSettings/qgsettings.h>
 #include <QScreen>
-#include <usd_base_class.h>
 
+
+#include <KF5/KScreen/kscreen/config.h>
+#include <KF5/KScreen/kscreen/log.h>
+#include <KF5/KScreen/kscreen/output.h>
+#include <KF5/KScreen/kscreen/edid.h>
+#include <KF5/KScreen/kscreen/configmonitor.h>
+#include <KF5/KScreen/kscreen/getconfigoperation.h>
+#include <KF5/KScreen/kscreen/setconfigoperation.h>
+#include <usd_base_class.h>
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
 #include "usd_base_class.h"
+#include "usd_global_define.h"
+
+#define SAVE_CONFIG_TIME 800
 
 class XrandrManager: public QObject
 {
@@ -86,7 +97,8 @@ public:
     void setScreenModeToExtend();
     bool checkPrimaryScreenIsSetable();
     bool readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode);
-
+    int8_t getCurrentMode();
+    uint8_t getCurrentRotation();
 
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
