@@ -21,7 +21,7 @@
 
 #include <QObject>
 #include <QGSettings/qgsettings.h>
-
+#include <QTimer>
 #include <glib.h>
 #include <geoclue.h>
 
@@ -91,6 +91,7 @@ private:
     GDateTime  *disabled_until_tmw_dt;
     GDateTime  *datetime_override;
     GTimer     *smooth_timer;
+    QTimer      *timer;
     guint       smooth_id;
     double      smooth_target_temperature;
     GCancellable  *cancellable;

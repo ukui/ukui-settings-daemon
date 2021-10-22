@@ -71,8 +71,6 @@ XrandrManager::XrandrManager()
 {
     QGSettings *mXsettings = new QGSettings(XSETTINGS_SCHEMA);
     mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
-    if(mXsettings)
-        delete mXsettings;
 
     KScreen::Log::instance();
 
@@ -83,7 +81,7 @@ XrandrManager::XrandrManager()
     new WaylandAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    if(sessionBus.registerService(DBUS_NAME)){
+    if (sessionBus.registerService(DBUS_NAME)) {
         sessionBus.registerObject(DBUS_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
@@ -130,7 +128,7 @@ void XrandrManager::getInitialConfig()
             return;
         }
         if (mMonitoredConfig) {
-            if(mMonitoredConfig->data()){
+            if (mMonitoredConfig->data()) {
                 KScreen::ConfigMonitor::instance()->removeConfig(mMonitoredConfig->data());
                 for (const KScreen::OutputPtr &output : mMonitoredConfig->data()->outputs()) {
                     output->disconnect(this);
@@ -154,13 +152,23 @@ void XrandrManager::getInitialConfig()
 
 XrandrManager::~XrandrManager()
 {
-
-    if(mAcitveTime)
+    if (mAcitveTime) {
         delete mAcitveTime;
-    if(mXrandrSetting)
+        mAcitveTime = nullptr;
+    }
+    if (mXrandrSetting) {
         delete mXrandrSetting;
-    if(mLoginInter)
-        delete mLoginInter;
+        mXrandrSetting = nullptr;
+    }
+    if (mXsettings) {
+        delete mXsettings;
+        mXsettings = nullptr;
+    }
+
+    //  if(mLoginInter) {
+    //     delete mLoginInter;
+    //      mLoginInter = nullptr;
+    //  }
 }
 
 bool XrandrManager::XrandrManagerStart()
