@@ -66,6 +66,7 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 {
     mTimer = new QTimer(this);
 
+
     mVolumeWindow = new VolumeWindow();
     mDeviceWindow = new DeviceWindow();
     powerSettings = new QGSettings(POWER_SCHEMA);
@@ -73,6 +74,7 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
     mSettings = new QGSettings(MEDIAKEY_SCHEMA);
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
+
 
     gdk_init(NULL,NULL);
     //session bus 会话总线
@@ -86,6 +88,7 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
+<<<<<<< plugins/media-keys/mediakey-manager.cpp
     if (mSettings) {
         delete mSettings;
         mSettings = nullptr;
@@ -120,6 +123,7 @@ MediaKeysManager::~MediaKeysManager()
         delete mManager;
         mManager = nullptr;
     }
+
 }
 
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
@@ -174,6 +178,26 @@ bool MediaKeysManager::mediaKeysStart(GError*)
                                                             "GetLockState");
 
     return true;
+}
+
+int8_t MediaKeysManager::getCurrentMode()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_PATH,
+                                                          DBUS_STATUSMANAGER_NAME,
+                                                          DBUS_STATUSMANAGER_GET_MODE);
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() == QDBusMessage::ReplyMessage) {
+        if(response.arguments().isEmpty() == false) {
+            bool value = response.arguments().takeFirst().toBool();
+            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+            return value;
+        }
+    }
+
+    return -1;
 }
 
 void MediaKeysManager::initShortcuts()
@@ -654,6 +678,14 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     KGlobalAccel::self()->setShortcut(dSwitch, QList<QKeySequence>{Qt::META + Qt::Key_P});
     connect(dSwitch, &QAction::triggered, this, [this]() {
+
+        if (UsdBaseClass::isTablet()){
+            if (getCurrentMode()) {
+                return;
+            }
+        }
+
+
         static QTime startTime = QTime::currentTime();
         int elapsed = 0;
 
@@ -1347,11 +1379,15 @@ void MediaKeysManager::doMicSoundAction()
 {
     bool mute;
     mpulseAudioManager = new pulseAudioManager(this);
+
     mute = !mpulseAudioManager->getMicMute();
     mpulseAudioManager->setMicMute(mute);
     mDeviceWindow->setAction ( mute ? "ukui-microphone-off" : "ukui-microphone-on");
     mDeviceWindow->dialogShow();
+
     delete mpulseAudioManager;
+
+
 }
 
 void MediaKeysManager::doBrightAction(int type)
@@ -1390,6 +1426,7 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     int volumeStep = mSettings->get("volume-step").toInt();
     int volume  = mpulseAudioManager->getVolume();
     int muted  = mpulseAudioManager->getMute();
+    USD_LOG(LOG_DEBUG,"getMute muted : %d",muted);
 
     int volumeCvStep = mpulseAudioManager->getStepVolume();
     int volumeMin = mpulseAudioManager->getMinVolume();
@@ -1453,7 +1490,9 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
 
         delete panel_settings;
      }
-     delete mpulseAudioManager;
+
+    delete mpulseAudioManager;
+
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
@@ -1795,7 +1834,7 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 
 void MediaKeysManager::doOpenKdsAction()
 {
-     executeCommand("kydisplayswitch","");
+     executeCommand("ukydisplayswitch","");
 }
 
 void MediaKeysManager::doWlanAction()

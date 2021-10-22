@@ -231,7 +231,7 @@ bool xrandrConfig::writeFile(bool state)
 
 bool xrandrConfig::writeConfigAndBackupToModeDir()
 {
-
+    return true;
 }
 
 bool xrandrConfig::writeFile(const QString &filePath, bool state)

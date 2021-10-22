@@ -18,13 +18,17 @@
  */
 #include <QDebug>
 #include "color-plugin.h"
+#include "usd_base_class.h"
 
 PluginInterface *ColorPlugin::mInstance      = nullptr;
 ColorManager    *ColorPlugin::mColorManager  = nullptr;
 
 ColorPlugin::ColorPlugin()
 {
-    USD_LOG (LOG_DEBUG, "new %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
+    if(UsdBaseClass::isLoongarch()){
+        return;
+    }
+    USD_LOG (LOG_DEBUG  , "new %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
     if(nullptr == mColorManager)
         mColorManager = ColorManager::ColorManagerNew();
@@ -39,6 +43,9 @@ ColorPlugin::~ColorPlugin()
 }
 void ColorPlugin::activate()
 {
+    if(UsdBaseClass::isLoongarch()){
+        return;
+    }
     USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
     bool res = mColorManager->ColorManagerStart();

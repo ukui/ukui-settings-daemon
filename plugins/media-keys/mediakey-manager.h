@@ -38,6 +38,8 @@
 #include "pulseaudiomanager.h"
 #include "usd_base_class.h"
 
+#include "usd_global_define.h"
+
 #ifdef signals
 #undef signals
 #endif
@@ -131,6 +133,7 @@ private:
     bool findMediaPlayerByApplication(const QString&);
     uint findMediaPlayerByTime(MediaPlayer*);
     void removeMediaPlayerByApplication(const QString&,uint);
+    int8_t getCurrentMode();
 
 public Q_SLOTS:
     /** two dbus method, will be called in mpris plugin(mprismanager.cpp MprisManagerStart())
