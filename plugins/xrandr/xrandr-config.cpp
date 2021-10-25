@@ -136,6 +136,44 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readOpenLidFile()
     return config;
 }
 
+std::unique_ptr<xrandrConfig> xrandrConfig::readScreensConfigFromDbus(const QString &screensParam)
+{
+    std::unique_ptr<xrandrConfig> config = std::unique_ptr<xrandrConfig>(new xrandrConfig(mConfig->clone()));
+    config->setValidityFlags(mValidityFlags);
+
+    QJsonDocument parser;
+    QVariantList outputs = parser.fromJson(screensParam.toLatin1().data()).toVariant().toList();
+    xrandrOutput::readInOutputs(config->data(), outputs);
+    QSize screenSize;
+
+    for (const auto &output : config->data()->outputs()) {
+        if (!output->isConnected()) {
+            continue;
+        }
+
+        if (1 == outputs.count() && (0 != output->pos().x() || 0 != output->pos().y())) {
+            const QPoint pos(0,0);
+            output->setPos(std::move(pos));
+        }
+
+        const QRect geom = output->geometry();
+        if (geom.x() + geom.width() > screenSize.width()) {
+            screenSize.setWidth(geom.x() + geom.width());
+        }
+
+        if (geom.y() + geom.height() > screenSize.height()) {
+            screenSize.setHeight(geom.y() + geom.height());
+        }
+    }
+
+    if (!canBeApplied(config->data())) {
+        USD_LOG(LOG_ERR,"is a error param form dbus..");
+        return nullptr;
+    }
+
+    return config;
+}
+
 std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bool state)
 {
     int enabledOutputsCount = 0;

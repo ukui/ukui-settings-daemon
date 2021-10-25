@@ -31,10 +31,10 @@
 #include <QPainter>
 #include <QGSettings/qgsettings.h>
 #include "clib-syslog.h"
-
-#define DBUS_NAME       "org.ukui.SettingsDaemon"
-#define DBUS_PATH       "/org/ukui/SettingsDaemon/wayland"
-#define DBUS_INTERFACE  "org.ukui.SettingsDaemon.wayland"
+#include "usd_global_define.h"
+#define DBUS_NAME       DBUS_XRANDR_NAME
+#define DBUS_PATH       DBUS_XRANDR_PATH
+#define DBUS_INTERFACE  DBUS_XRANDR_INTERFACE
 
 #define QT_THEME_SCHEMA   "org.ukui.style"
 

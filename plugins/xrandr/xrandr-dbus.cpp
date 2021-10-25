@@ -12,9 +12,10 @@
 #include "clib-syslog.h"
 #include "usd_base_class.h"
 
+#include "xrandr-manager.h"
 
 #define UKUI_DAEMON_NAME    "ukui-settings-daemon"
-
+XrandrManager *xrandrManager = nullptr;
 xrandrDbus::xrandrDbus(QObject* parent) : QObject(parent)
 {
     mXsettings =new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
@@ -34,8 +35,8 @@ int xrandrDbus::setScreenMode(QString modeName,QString appName){
 }
 
 int xrandrDbus::getScreenMode(QString appName){
-    USD_LOG(LOG_DEBUG,"get screen mode appName:%s:%d", appName.toLatin1().data(),mScreenMode);
-    return mScreenMode;
+    USD_LOG(LOG_DEBUG,"get screen mode appName:%s:%d", appName.toLatin1().data());
+    return xrandrManager->discernScreenMode();
 }
 
 int xrandrDbus::setScreensParam(QString screensParam, QString appName)
@@ -47,18 +48,20 @@ int xrandrDbus::setScreensParam(QString screensParam, QString appName)
 
 QString xrandrDbus::getScreensParam(QString appName)
 {
-    USD_LOG(LOG_DEBUG,".");
+    USD_LOG(LOG_DEBUG,"dbus from %s",appName);
     return xrandrManager->getScreesParam();
 }
 
-int xrandrDbus::sendModeChangeSignal(int screensMode)
+void xrandrDbus::sendModeChangeSignal(int screensMode)
 {
-
+    USD_LOG(LOG_DEBUG,"send mode:%d",screensMode);
+    Q_EMIT screenModeChanged(screensMode);
 }
 
-void xrandrDbus::sendScreensParam(QString screensParam)
+void xrandrDbus::sendScreensParamChangeSignal(QString screensParam)
 {
-
+//    USD_LOG(LOG_DEBUG,"send param:%s",screensParam.toLatin1().data());
+     Q_EMIT screensParamChanged(screensParam);
 }
 
 

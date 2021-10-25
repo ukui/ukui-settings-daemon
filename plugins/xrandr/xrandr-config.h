@@ -48,7 +48,7 @@ public:
     std::unique_ptr<xrandrConfig> readFile(bool isUseModeConfig);
     std::unique_ptr<xrandrConfig> readOpenLidFile();
     std::unique_ptr<xrandrConfig> readFile(const QString &fileName, bool state);
-
+    std::unique_ptr<xrandrConfig> readScreensConfigFromDbus(const QString &screensParam);
     bool writeFile(bool state);
     bool writeOpenLidFile();
     bool writeConfigAndBackupToModeDir();

@@ -56,6 +56,15 @@ Widget::Widget(QWidget *parent) :
     m_superPresss = false;
 
     metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
+
+    QDBusInterface *screensChangedSignalHandle = new QDBusInterface(DBUS_XRANDR_NAME,DBUS_XRANDR_PATH,DBUS_XRANDR_INTERFACE,QDBusConnection::sessionBus(),this);
+
+     if (screensChangedSignalHandle->isValid()) {
+         connect(screensChangedSignalHandle, SIGNAL(screensParamChanged(QString)), this, SLOT(screensParamChangedSignal(QString)));
+         //USD_LOG(LOG_DEBUG, "..");
+     } else {
+         USD_LOG(LOG_ERR, "screensChangedSignalHandle");
+     }
 }
 
 Widget::~Widget()
@@ -65,6 +74,10 @@ Widget::~Widget()
     delete m_scaleSetting;
 }
 
+void Widget::screensParamChangedSignal(QString screensParam)
+{
+   close();
+}
 void Widget::beginSetup()
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
@@ -199,7 +212,7 @@ void Widget::setupConnect()
 int Widget::getCurrentStatus()
 {
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
-                                                          DBUS_XRNADR_PATH,
+                                                          DBUS_XRANDR_PATH,
                                                           DBUS_XRANDR_INTERFACE,
                                                           DBUS_XRANDR_GET_MODE);
     QList<QVariant> args;
@@ -306,7 +319,7 @@ void Widget::setScreenModeByDbus(QString modeName)
     const QStringList ukccModeList = {"first", "copy", "expand", "second"};
 
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
-                                                          DBUS_XRNADR_PATH,
+                                                          DBUS_XRANDR_PATH,
                                                           DBUS_XRANDR_INTERFACE,
                                                           DBUS_XRANDR_SET_MODE);
 

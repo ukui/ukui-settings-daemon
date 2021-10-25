@@ -12,7 +12,7 @@
 
 /*org.ukui.SettingsDaemon.xrandr*/
 #define DBUS_XRANDR_NAME "org.ukui.SettingsDaemon"
-#define DBUS_XRNADR_PATH "/org/ukui/SettingsDaemon/xrandr"
+#define DBUS_XRANDR_PATH "/org/ukui/SettingsDaemon/xrandr"
 #define DBUS_XRANDR_INTERFACE "org.ukui.SettingsDaemon.xrandr"
 #define DBUS_XRANDR_GET_MODE  "getScreenMode"
 #define DBUS_XRANDR_SET_MODE "setScreenMode"

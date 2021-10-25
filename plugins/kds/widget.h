@@ -97,8 +97,7 @@ public Q_SLOTS:
     void XkbButtonEvent(int,int);
     void msgReceiveAnotherOne(const QString &msg);
     void geometryChangedHandle();
-
-
+    void screensParamChangedSignal(QString screensParam);
 
 private:
 

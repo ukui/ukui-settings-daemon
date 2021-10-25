@@ -26,7 +26,7 @@ UsdBaseClass::~UsdBaseClass()
 
 bool UsdBaseClass::isMasterSP1()
 {
-
+    return false;
 }
 
 bool UsdBaseClass::isTablet()
