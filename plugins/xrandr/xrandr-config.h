@@ -53,7 +53,7 @@ public:
     bool writeOpenLidFile();
     bool writeConfigAndBackupToModeDir();
     bool writeFile(const QString &filePath, bool state);
-
+    QString getScreensParam();
     KScreen::ConfigPtr data() const {
         return mConfig;
     }

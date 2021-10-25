@@ -234,6 +234,40 @@ bool xrandrConfig::writeConfigAndBackupToModeDir()
     return true;
 }
 
+QString xrandrConfig::getScreensParam()
+{
+    const KScreen::OutputList outputs = mConfig->outputs();
+
+    QVariantList outputList;
+    for (const KScreen::OutputPtr &output : outputs) {
+        QVariantMap info;
+
+        if (false == output->isConnected()) {
+            continue;
+        }
+
+        xrandrOutput::writeGlobalPart(output, info, nullptr);
+        info[QStringLiteral("primary")] =  output->isPrimary();; //
+        info[QStringLiteral("enabled")] = output->isEnabled();
+
+        auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
+            if (!out) {
+                return;
+            }
+
+            QVariantMap pos;
+            pos[QStringLiteral("x")] = out->pos().x();
+            pos[QStringLiteral("y")] = out->pos().y();
+            info[QStringLiteral("pos")] = pos;
+        };
+        setOutputConfigInfo(output->isEnabled() ? output : nullptr);
+
+        outputList.append(info);
+    }
+
+    return QJsonDocument::fromVariant(outputList).toJson();
+}
+
 bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
     int screenConnectedCount = 0;

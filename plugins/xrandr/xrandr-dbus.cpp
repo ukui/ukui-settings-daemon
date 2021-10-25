@@ -19,6 +19,8 @@ xrandrDbus::xrandrDbus(QObject* parent) : QObject(parent)
 {
     mXsettings =new QGSettings("org.ukui.SettingsDaemon.plugins.xsettings");
     mScale = mXsettings->get("scaling-factor").toDouble();
+    xrandrManager = static_cast<XrandrManager*>(parent);
+
 }
 xrandrDbus::~xrandrDbus()
 {
@@ -46,10 +48,17 @@ int xrandrDbus::setScreensParam(QString screensParam, QString appName)
 QString xrandrDbus::getScreensParam(QString appName)
 {
     USD_LOG(LOG_DEBUG,".");
-    return QString::fromUtf8(__FUNCTION__);
+    return xrandrManager->getScreesParam();
 }
 
+int xrandrDbus::sendModeChangeSignal(int screensMode)
+{
 
+}
 
+void xrandrDbus::sendScreensParam(QString screensParam)
+{
+
+}
 
 

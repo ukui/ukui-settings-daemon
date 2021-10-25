@@ -30,6 +30,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#include "usd_global_define.h"
 #define LOG_LEVEL LOG_DEBUG
 
 #ifdef __cplusplus

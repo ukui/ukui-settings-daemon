@@ -198,10 +198,10 @@ void Widget::setupConnect()
 
 int Widget::getCurrentStatus()
 {
-    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
-                                                          "/org/ukui/SettingsDaemon/wayland",
-                                                          "org.ukui.SettingsDaemon.wayland",
-                                                          "getScreenMode");
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
+                                                          DBUS_XRNADR_PATH,
+                                                          DBUS_XRANDR_INTERFACE,
+                                                          DBUS_XRANDR_GET_MODE);
     QList<QVariant> args;
     args.append(qAppName());
     message.setArguments(args);
@@ -305,10 +305,10 @@ void Widget::setScreenModeByDbus(QString modeName)
     QList<QVariant> args;
     const QStringList ukccModeList = {"first", "copy", "expand", "second"};
 
-    QDBusMessage message = QDBusMessage::createMethodCall("org.ukui.SettingsDaemon",
-                                                          "/org/ukui/SettingsDaemon/wayland",
-                                                          "org.ukui.SettingsDaemon.wayland",
-                                                          "setScreenMode");
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
+                                                          DBUS_XRNADR_PATH,
+                                                          DBUS_XRANDR_INTERFACE,
+                                                          DBUS_XRANDR_SET_MODE);
 
     args.append(modeName);
     args.append(qAppName());
@@ -320,13 +320,11 @@ void Widget::setScreenModeByDbus(QString modeName)
 
 void Widget::msgReceiveAnotherOne(const QString &msg)
 {
-    //qDebug() << "another one " << msg;
     nextSelectedOption();
 }
 
 void Widget::receiveButtonClick(int x, int y)
 {
-    qDebug() << "receive button press " << x << y;
     if (!this->geometry().contains(x, y)) {
         close();
     }

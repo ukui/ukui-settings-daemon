@@ -4,6 +4,8 @@
 #include <QGSettings/qgsettings.h>
 #include <QObject>
 #include "usd_global_define.h"
+#include "xrandr-manager.h"
+
 class xrandrDbus : public QObject
 {
     Q_OBJECT
@@ -12,7 +14,7 @@ class xrandrDbus : public QObject
 public:
     xrandrDbus(QObject* parent=0);
     ~xrandrDbus();
-
+     XrandrManager *xrandrManager = nullptr;
 public Q_SLOTS:
     int setScreenMode(QString modeName, QString appName);
     int getScreenMode(QString appName);
@@ -20,6 +22,8 @@ public Q_SLOTS:
     int setScreensParam(QString screensParam, QString appName);
     QString getScreensParam(QString appName);
 
+    int sendModeChangeSignal(int screensMode);
+    int sendScreensParam(QString screensParam);
 Q_SIGNALS:
     //供xrandrManager监听
     void setScreenModeSignal(QString modeName);
@@ -28,6 +32,7 @@ Q_SIGNALS:
     //与adaptor一致
     void screensParamChanged(QString screensParam);
     void screenModeChanged(int screenMode);
+
 
 public:
     int mX = 0;

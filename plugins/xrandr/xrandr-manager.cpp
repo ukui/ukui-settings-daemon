@@ -742,7 +742,12 @@ void XrandrManager::SaveConfigTimerHandle()
     SetTouchscreenCursorRotation();
     mDbus->mScreenMode = discernScreenMode();
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
-    mMonitoredConfig->writeFile(true);
+    mMonitoredConfig->writeFile(true); 
+}
+
+QString XrandrManager::getScreesParam()
+{
+    return mMonitoredConfig->getScreensParam();
 }
 
 void XrandrManager::monitorsInit()
