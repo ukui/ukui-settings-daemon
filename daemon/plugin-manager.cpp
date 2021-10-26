@@ -51,8 +51,8 @@ PluginManager::PluginManager()
 PluginManager::~PluginManager()
 {
     //managerStop();
-    delete mPlugin;
-    mPlugin = nullptr;
+    //delete mPlugin;
+    //mPlugin = nullptr;
 }
 
 PluginManager* PluginManager::getInstance()

@@ -10,5 +10,12 @@
 #define DBUS_STATUSMANAGER_GET_ROTATION "get_current_rotation"
 /*****/
 
+/*org.ukui.SettingsDaemon.xrandr*/
+#define DBUS_XRANDR_NAME "org.ukui.SettingsDaemon"
+#define DBUS_XRANDR_PATH "/org/ukui/SettingsDaemon/xrandr"
+#define DBUS_XRANDR_INTERFACE "org.ukui.SettingsDaemon.xrandr"
+#define DBUS_XRANDR_GET_MODE  "getScreenMode"
+#define DBUS_XRANDR_SET_MODE "setScreenMode"
+/*****/
 
 #endif // USD_GLOBAL_DEFINE_H

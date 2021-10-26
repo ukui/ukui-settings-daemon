@@ -390,6 +390,7 @@ void ukuiXrdbManager::applySettings(){
  */
 void ukuiXrdbManager::themeChanged (const QString& key)
 {
+    USD_LOG(LOG_DEBUG,"key:%s", key.toLatin1().data());
     /* 监听主题更改，发送dbus信号 */
     if(key.compare("gtk-theme")==0){
         QString value = settings->get(key).toString();
