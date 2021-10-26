@@ -31,9 +31,10 @@ XSettingsPlugin::XSettingsPlugin()
 
 XSettingsPlugin::~XSettingsPlugin()
 {
-    if (m_pukuiXsettingManager)
+    if (m_pukuiXsettingManager) {
         delete m_pukuiXsettingManager;
-    m_pukuiXsettingManager = nullptr;
+        m_pukuiXsettingManager = nullptr;
+    }
 }
 
 void XSettingsPlugin::activate()

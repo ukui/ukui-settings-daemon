@@ -38,8 +38,6 @@ ColorPlugin::~ColorPlugin()
 {
     if(mColorManager)
         delete mColorManager;
-    if(mInstance)
-        delete mInstance;
 }
 void ColorPlugin::activate()
 {

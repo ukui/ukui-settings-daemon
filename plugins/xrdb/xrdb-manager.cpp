@@ -40,10 +40,6 @@ ukuiXrdbManager::ukuiXrdbManager()
 
 ukuiXrdbManager::~ukuiXrdbManager()
 {
-    if (mXrdbManager) {
-        delete mXrdbManager;
-        mXrdbManager = nullptr;
-    }
     if (settings) {
         delete settings;
         settings = nullptr;

@@ -118,10 +118,6 @@ MediaKeysManager::~MediaKeysManager()
         delete powerSettings;
         powerSettings = nullptr;
     }
-    if (mManager) {
-        delete mManager;
-        mManager = nullptr;
-    }
 
 }
 

@@ -525,6 +525,7 @@ void XrandrManager::applyConfig()
     connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
+        SetTouchscreenCursorRotation();
         mMonitoredConfig->writeFile(true);//首次接入
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
             USD_LOG_SHOW_OUTPUT(output);
@@ -824,7 +825,7 @@ void XrandrManager::monitorsInit()
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
 
-//            SetTouchscreenCursorRotation();
+            //SetTouchscreenCursorRotation();
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
@@ -1263,7 +1264,7 @@ void XrandrManager::StartXrandrIdleCb()
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));
 
-    SetTouchscreenCursorRotation();
+    //SetTouchscreenCursorRotation();
 
     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 

@@ -71,7 +71,7 @@ int main (int argc, char* argv[])
     app.installTranslator(&translator);
     parse_args (argc, argv);
 
-    if (replace) stop_daemon ();
+    //if (replace) stop_daemon ();
 
     manager = PluginManager::getInstance();
     if (!manager) {
@@ -97,9 +97,10 @@ static void parse_args (int argc, char *argv[])
     for (int i = 1; i < argc; ++i) {
         if (0 == QString::compare(QString(argv[i]).trimmed(), QString("--replace"))) {
             replace = true;
-        } else if (0 == QString::compare(QString(argv[i]).trimmed(), QString("--daemon"))) {
+            stop_daemon ();
+        } /*else if (0 == QString::compare(QString(argv[i]).trimmed(), QString("--daemon"))) {
             no_daemon = false;
-        } else {
+        }*/ else {
             if (argc > 1) {
                 print_help();
                 USD_LOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
