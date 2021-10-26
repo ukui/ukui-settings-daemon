@@ -71,7 +71,6 @@ XrandrManager::XrandrManager()
 
     KScreen::Log::instance();
 
-
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 

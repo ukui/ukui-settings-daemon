@@ -35,20 +35,20 @@ int xrandrDbus::setScreenMode(QString modeName,QString appName){
 }
 
 int xrandrDbus::getScreenMode(QString appName){
-    USD_LOG(LOG_DEBUG,"get screen mode appName:%s:%d", appName.toLatin1().data());
+    USD_LOG(LOG_DEBUG,"get screen mode appName:%s", appName.toLatin1().data());
     return xrandrManager->discernScreenMode();
 }
 
 int xrandrDbus::setScreensParam(QString screensParam, QString appName)
 {
-    USD_LOG(LOG_DEBUG,".appName:%s",screensParam.toLatin1().data(),appName);
+    USD_LOG(LOG_DEBUG,"appName:%s",screensParam.toLatin1().data(),appName);
     Q_EMIT setScreensParamSignal(screensParam);
     return 1;
 }
 
 QString xrandrDbus::getScreensParam(QString appName)
 {
-    USD_LOG(LOG_DEBUG,"dbus from %s",appName);
+    USD_LOG(LOG_DEBUG,"dbus from %s",appName.toLatin1().data());
     return xrandrManager->getScreesParam();
 }
 

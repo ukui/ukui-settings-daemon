@@ -76,5 +76,10 @@
         <source>Vice Screen</source>
         <translation>仅显示第二屏幕</translation>
     </message>
+    <message>
+        <location filename="../widget.cpp" line="161"/>
+        <source>None</source>
+        <translation>无</translation>
+    </message>
 </context>
 </TS>

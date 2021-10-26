@@ -16,6 +16,7 @@
 #define DBUS_XRANDR_INTERFACE "org.ukui.SettingsDaemon.xrandr"
 #define DBUS_XRANDR_GET_MODE  "getScreenMode"
 #define DBUS_XRANDR_SET_MODE "setScreenMode"
+#define DBUS_XRANDR_GET_SCREEN_PARAM "getScreensParam"
 /*****/
 
 #endif // USD_GLOBAL_DEFINE_H

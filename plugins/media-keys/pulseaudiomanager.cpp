@@ -115,7 +115,7 @@ void pulseAudioManager::initPulseAudio()
 void pulseAudioManager::contextDrainComplete(pa_context *ctx, void *userdata)
 {
     Q_UNUSED(userdata);
-        pa_context_disconnect(ctx);
+    pa_context_disconnect(ctx);
 }
 
 void pulseAudioManager::completeAction( )
@@ -137,7 +137,7 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
         return;
     }
 
-
+    USD_LOG(LOG_DEBUG,"set %s status %d ..", p_sinkName, success);
 }
 
 void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_info *so, int isLast, void *userdata)
@@ -163,7 +163,13 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
 
 
 
+
     if (isLast != 0) {
+        return;
+    }
+
+    USD_LOG(LOG_DEBUG,"%s state :%d",si->name, si->state);
+    if (false == PA_SINK_IS_OPENED(si->state)) {
         return;
     }
 
@@ -184,8 +190,6 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
 
     memset(p_sinkName,0x00,sizeof(p_sinkName));
     memcpy(p_sinkName,si->name,strlen(si->name));
-
-
 
 }
 
@@ -217,8 +221,6 @@ void pulseAudioManager::setVolume(int Volume)
 
 
     for (int k = 0; k < g_GetPaCV.channels; k++) {
-
-
         g_SetPaCV.values[k] = Volume;
 
     }
@@ -232,11 +234,12 @@ void pulseAudioManager::setVolume(int Volume)
     }
 
 
+//    USD_LOG(LOG_DEBUG,"set %s is %d", p_sinkName, MuteState);
 
     p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, pcv);
 
     if (nullptr == p_PaOp) {
-        USD_LOG(LOG_ERR, "pa_context_get_sink_info_by_name error!");
+        USD_LOG(LOG_ERR, "pa_context_get_sink_info_by_name error![%s]",p_sinkName);
         return;
     }
 
@@ -251,6 +254,7 @@ void pulseAudioManager::setMute(bool MuteState)
 {
     Q_UNUSED(MuteState);
 
+    USD_LOG(LOG_DEBUG,"set %s is %d", p_sinkName, MuteState);
     p_PaOp = pa_context_set_sink_mute_by_name(p_PaCtx, p_sinkName, MuteState, paActionDoneCallback, NULL);
 
     if ( nullptr == p_PaOp ) {
