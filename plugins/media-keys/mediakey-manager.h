@@ -79,7 +79,7 @@ private:
     void initKbd();
     void initXeventMonitor();
     bool getScreenLockState();
-
+    void sjhKeyTest();
 //    static void onStreamControlVolumeNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
 //    static void onStreamControlMuteNotify (MateMixerStreamControl *control,GParamSpec *pspec,MediaKeysManager *mManager);
     static GdkFilterReturn acmeFilterEvents(GdkXEvent*,GdkEvent*,void*);
@@ -144,7 +144,7 @@ public Q_SLOTS:
 
     int  getFlightState();
     void setFlightState(int value);
-
+    void mediaKeyForOtherApp(int action,QString appName);
 private Q_SLOTS:
     //void timeoutCallback();
     void updateKbdCallback(const QString&);

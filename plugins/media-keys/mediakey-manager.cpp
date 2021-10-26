@@ -125,11 +125,76 @@ MediaKeysManager::~MediaKeysManager()
 
 }
 
+
 MediaKeysManager* MediaKeysManager::mediaKeysNew()
 {
     if(nullptr == mManager)
         mManager = new MediaKeysManager();
     return mManager;
+}
+
+void MediaKeysManager::sjhKeyTest()
+{
+    QList<QVariant> args;
+    QString param = QString::fromLocal8Bit(""
+                                           "["
+                                           "{"
+                                           "\"enabled\": true,"
+                                           " \"id\": \"e3fa3cd9190f27820ab7c30a34b9f1fb\","
+                                           " \"metadata\": {"
+                                           "\"fullname\": \"xrandr-DO NOT USE - RTK-WCS Display\","
+                                           "\"name\": \"HDMI-1\""
+                                           " },"
+                                           " \"mode\": {"
+                                           " \"refresh\": 30,"
+                                           "\"size\": {"
+                                           "  \"height\": 2160,"
+                                           "  \"width\": 3840"
+                                           "}"
+                                           "},"
+                                           "\"pos\": {"
+                                           "   \"x\": 0,"
+                                           "  \"y\": 0"
+                                           "},"
+                                           "\"primary\": false,"
+                                           "\"rotation\": 1,"
+                                           "\"scale\": 1"
+                                           "},"
+                                           "{"
+                                           "   \"enabled\": true,"
+                                           "  \"id\": \"e2add05191c5c70db7824c9cd76e19f5\","
+                                           " \"metadata\": {"
+                                           "    \"fullname\": \"xrandr-Lenovo Group Limited-LEN LI2224A-U5619HB8\","
+                                           "   \"name\": \"DP-2\""
+                                           "},"
+                                           "\"mode\": {"
+                                           "   \"refresh\": 59.93387985229492,"
+                                           "  \"size\": {"
+                                           "     \"height\": 1080,"
+                                           "    \"width\": 1920"
+                                           "}"
+                                           "},"
+                                           "\"pos\": {"
+                                           "   \"x\": 3840,"
+                                           "  \"y\": 0"
+                                           "},"
+                                           "\"primary\": true,"
+                                           "\"rotation\": 1,"
+                                           "\"scale\": 1"
+                                           "}"
+                                           "]"
+                                           "");
+
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
+                                                          DBUS_XRANDR_PATH,
+                                                          DBUS_XRANDR_INTERFACE,
+                                                          "setScreensParam");
+
+    args.append(param);
+    args.append(qAppName());
+    message.setArguments(args);
+
+    QDBusConnection::sessionBus().send(message);
 }
 
 bool MediaKeysManager::getScreenLockState()
@@ -716,6 +781,17 @@ void MediaKeysManager::initShortcuts()
     connect(eyeCare, &QAction::triggered, this, [this]() {
         doAction(UKUI_EYECARE_CENTER);
     });
+
+//    QAction *sjhTest= new QAction(this);
+//    sjhTest->setObjectName(QStringLiteral("sjh test"));
+//    sjhTest->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+//    KGlobalAccel::self()->setDefaultShortcut(sjhTest, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_R});
+//    KGlobalAccel::self()->setShortcut(sjhTest, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_R});
+//    connect(sjhTest, &QAction::triggered, this, [this]() {
+//        USD_LOG(LOG_DEBUG,".");
+//        sjhKeyTest();
+//    });
+
     /*TODO Ukui Sidebar*/
 //    QAction *sideBar= new QAction(this);
 //    sideBar->setObjectName(QStringLiteral("Open ukui sidebar"));
@@ -1084,7 +1160,8 @@ bool MediaKeysManager::doAction(int type)
     int elapsed = 0;
     static uint lastKeySym = 0x00;
 
-    if (getScreenLockState() || shotSettings->get(SHOT_RUN_KEY).toBool() || sessionSettings->get(SESSION_WIN_KEY).toBool()) {
+    if ((getScreenLockState()) && (type!=MUTE_KEY && type!=VOLUME_DOWN_KEY && type!=VOLUME_UP_KEY)) {
+        USD_LOG(LOG_DEBUG,"can;t use it..");
         return false;
     }
 
@@ -1107,7 +1184,6 @@ bool MediaKeysManager::doAction(int type)
     case MUTE_KEY:
     case VOLUME_DOWN_KEY:
     case VOLUME_UP_KEY:
-//        doSoundAction(type);
         doSoundActionALSA(type);
         break;
     case MIC_MUTE_KEY:
@@ -1919,6 +1995,11 @@ void MediaKeysManager::GrabMediaPlayerKeys(QString app)
 
 }
 
+void MediaKeysManager::mediaKeyForOtherApp(int action,QString appName)
+{
+    USD_LOG(LOG_DEBUG,"action:%d appName:%s",action, appName.toLatin1().data());
+    doAction(action);
+}
 /**
  * @brief MediaKeysManager::ReleaseMediaPlayerKeys
  * @param app

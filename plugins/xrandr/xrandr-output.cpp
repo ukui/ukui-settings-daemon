@@ -79,30 +79,26 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
 
     for(const KScreen::ModePtr &mode : modes) {
         if (mode->size() != size) {
-//            USD_LOG(LOG_DEBUG,"%dx%d(id:%s) != %dx%d",mode->size().width(),mode->size().height(),mode->id().toLatin1().data(),size.width(),size.height());
             continue;
         }
         if (!qFuzzyCompare(mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat())) {
-//            USD_LOG(LOG_DEBUG,"%f != %f",mode->refreshRate(), modeInfo[QStringLiteral("refresh")].toFloat());
             continue;
         }
-        //qDebug() << "\tFound: " << mode->id() << " " << mode->size() << "@" << mode->refreshRate();
+        USD_LOG(LOG_DEBUG,"find mode id:%s %dx%d@%f", mode->id().toLatin1().data(), mode->size().height(), mode->size().width(),mode->refreshRate());
         matchingMode = mode;
         break;
     }
 
     if (!matchingMode) {
-        qWarning() << "\tFailed to find a matching mode - this means that our config is corrupted"
-                                   "or a different device with the same serial number has been connected (very unlikely)."
-                                   "Falling back to preferred modes.";
+        USD_LOG(LOG_DEBUG,"Failed to find a matching mode - this means that our config is corrupted");
         matchingMode = output->preferredMode();
     }
     if (!matchingMode) {
-        qWarning() << "\tFailed to get a preferred mode, falling back to biggest mode.";
+          USD_LOG(LOG_DEBUG,"Failed to get a preferred mode, falling back to biggest mode.");
         //matchingMode = Generator::biggestMode(modes);
     }
     if (!matchingMode) {
-        qWarning() << "\tFailed to get biggest mode. Which means there are no modes. Turning off the screen.";
+        USD_LOG(LOG_DEBUG,"Failed to get biggest mode. Which means there are no modes. Turning off the screen.");
         output->setEnabled(false);
         return;
     }
@@ -187,6 +183,7 @@ void xrandrOutput::adjustPositions(KScreen::ConfigPtr config, const QVariantList
             const bool portrait = isPortrait(outputInfo[QStringLiteral("rotation")]);
 
             if (posInfo.isEmpty() || modeSize.isEmpty() || !scaleInfo.canConvert<int>()) {
+                USD_LOG(LOG_DEBUG, "had error info...");
                 return false;
             }
 
@@ -292,7 +289,7 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
 
 
     if (readInGlobal(output)) {
-//        USD_LOG(LOG_DEBUG,"out it....");
+        USD_LOG(LOG_DEBUG,"out it....");
         // output data read from global output file
         return;
     }
@@ -324,7 +321,6 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     for (const KScreen::OutputPtr &output : outputs) {
         if (!output->isConnected()) {
             output->setEnabled(false);
-//            USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
             continue;
         }
 
@@ -334,7 +330,6 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
         for (const auto &variantInfo : outputsInfo) {
             const QVariantMap info = variantInfo.toMap();
             if (outputId != info[QStringLiteral("id")].toString()) {
-                USD_LOG(LOG_DEBUG,"skip it...%s", output->name().toLatin1().data());
                 continue;
             }
 
@@ -344,13 +339,11 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
                 const auto metadata = info[QStringLiteral("metadata")].toMap();
                 const auto outputName = metadata[QStringLiteral("name")].toString();
                 if (output->name() != outputName) {
-                     USD_LOG(LOG_DEBUG,"%s != %s",output->name(), outputName);
                     // was a duplicate id, but info not for this output
                     continue;
                 }
             }
 
-//            USD_LOG(LOG_DEBUG,"..%s ready set...", output->name().toLatin1().data());
             infoFound = true;
             readIn(output, info);//, control.getOutputRetention(output));
             break;
@@ -381,6 +374,9 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     // correct positional config regressions on global output data changes
 #if 1
     adjustPositions(config, outputsInfo);
+     for (const KScreen::OutputPtr &output : outputs) {
+        USD_LOG_SHOW_OUTPUT(output);
+     }
 #endif
 }
 

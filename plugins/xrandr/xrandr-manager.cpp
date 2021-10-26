@@ -55,9 +55,6 @@ extern "C"{
 
 #define MAX_SIZE_MATCH_DIFF         0.05
 
-#define DBUS_NAME  "org.ukui.SettingsDaemon"
-#define DBUS_PATH  "/org/ukui/SettingsDaemon/wayland"
-#define DBUS_INTER "org.ukui.SettingsDaemon.wayland"
 
 unsigned char *getDeviceNode (XIDeviceInfo devinfo);
 typedef struct
@@ -78,11 +75,11 @@ XrandrManager::XrandrManager()
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 
-    new WaylandAdaptor(mDbus);
+    new XrandrAdaptor(mDbus);
 
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    if (sessionBus.registerService(DBUS_NAME)) {
-        sessionBus.registerObject(DBUS_PATH,
+    if (sessionBus.registerService(DBUS_XRANDR_NAME)) {
+        sessionBus.registerObject(DBUS_XRANDR_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
     }
@@ -525,9 +522,13 @@ void XrandrManager::applyConfig()
     connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
+        USD_LOG(LOG_DEBUG,"set screen params ok. start map touch device!");
+        SetTouchscreenCursorRotation();
         mMonitoredConfig->writeFile(true);//首次接入
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-            USD_LOG_SHOW_OUTPUT(output);
+            if (output->isConnected()) {
+                USD_LOG_SHOW_OUTPUT(output);
+            }
         }
     });
 }
@@ -742,10 +743,18 @@ void XrandrManager::SaveConfigTimerHandle()
 {
     mSaveConfigTimer->stop();
 
-    SetTouchscreenCursorRotation();
-    mDbus->mScreenMode = discernScreenMode();
+
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     mMonitoredConfig->writeFile(true);
+
+    USD_LOG(LOG_DEBUG,"start send signal....");
+    mDbus->sendModeChangeSignal(discernScreenMode());
+    mDbus->sendScreensParamChangeSignal(mMonitoredConfig->getScreensParam());
+}
+
+QString XrandrManager::getScreesParam()
+{
+    return mMonitoredConfig->getScreensParam();
 }
 
 void XrandrManager::monitorsInit()
@@ -1158,8 +1167,22 @@ void XrandrManager::setScreenModeToExtend()
      }
     applyConfig();
 }
-/*
- * 当前显示模式
+
+void XrandrManager::setScreensParam(QString screensParam)
+{
+
+    USD_LOG(LOG_DEBUG,"param:%s", screensParam.toLatin1().data());
+
+     std::unique_ptr<xrandrConfig> temp  = mMonitoredConfig->readScreensConfigFromDbus(screensParam);
+     if (nullptr != temp) {
+         mMonitoredConfig = std::move(temp);
+     }
+
+    applyConfig();
+}
+
+/* 
+ * 设置显示模式
 */
 void XrandrManager::setScreenMode(QString modeName)
 {
@@ -1252,6 +1275,16 @@ UsdBaseClass::eScreenMode XrandrManager::discernScreenMode()
     return UsdBaseClass::eScreenMode::extendScreenMode;
 }
 
+void XrandrManager::screenModeChangedSignal(int mode)
+{
+    USD_LOG(LOG_DEBUG,"mode:%d",mode);
+}
+
+void XrandrManager::screensParamChangedSignal(QString param)
+{
+    USD_LOG(LOG_DEBUG,"param:%s",param.toLatin1().data());
+}
+
 /**
  * @brief XrandrManager::StartXrandrIdleCb
  * 开始时间回调函数
@@ -1268,9 +1301,30 @@ void XrandrManager::StartXrandrIdleCb()
     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 
     //    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
-      connect(mKscreenInitTimer,  SIGNAL(timeout()), this, SLOT(getInitialConfig()));
-      mKscreenInitTimer->start(1500);
-
+    connect(mKscreenInitTimer,  SIGNAL(timeout()), this, SLOT(getInitialConfig()));
+    mKscreenInitTimer->start(1500);
 
     connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
+    connect(mDbus, SIGNAL(setScreensParamSignal(QString)), this, SLOT(setScreensParam(QString)));
+
+#if 0
+    QDBusInterface *modeChangedSignalHandle = new QDBusInterface(DBUS_XRANDR_NAME,DBUS_XRANDR_PATH,DBUS_XRANDR_INTERFACE,QDBusConnection::sessionBus(),this);
+
+    if (modeChangedSignalHandle->isValid()) {
+        connect(modeChangedSignalHandle, SIGNAL(screenModeChanged(int)), this, SLOT(screenModeChangedSignal(int)));
+
+    } else {
+        USD_LOG(LOG_ERR, "modeChangedSignalHandle");
+    }
+
+    QDBusInterface *screensChangedSignalHandle = new QDBusInterface(DBUS_XRANDR_NAME,DBUS_XRANDR_PATH,DBUS_XRANDR_INTERFACE,QDBusConnection::sessionBus(),this);
+
+     if (screensChangedSignalHandle->isValid()) {
+         connect(screensChangedSignalHandle, SIGNAL(screensParamChanged(QString)), this, SLOT(screensParamChangedSignal(QString)));
+         //USD_LOG(LOG_DEBUG, "..");
+     } else {
+         USD_LOG(LOG_ERR, "screensChangedSignalHandle");
+     }
+#endif
+
 }

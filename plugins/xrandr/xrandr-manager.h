@@ -109,7 +109,12 @@ public Q_SLOTS:
     void primaryOutputChanged(const KScreen::OutputPtr &output);
    // void applyConfigTimerHandle();
     void setScreenMode(QString modeName);
-     void SaveConfigTimerHandle();
+    void setScreensParam(QString screensParam);
+    void SaveConfigTimerHandle();
+    QString getScreesParam();
+
+    void screenModeChangedSignal(int mode);
+    void screensParamChangedSignal(QString param);
 Q_SIGNALS:
     // DBus
     void outputConnected(const QString &outputName);

@@ -21,85 +21,43 @@
  * Implementation of adaptor class WaylandAdaptor
  */
 
-WaylandAdaptor::WaylandAdaptor(QObject *parent)
+XrandrAdaptor::XrandrAdaptor(QObject *parent)
     : QDBusAbstractAdaptor(parent)
 {
     // constructor
     setAutoRelaySignals(true);
 }
 
-WaylandAdaptor::~WaylandAdaptor()
+XrandrAdaptor::~XrandrAdaptor()
 {
     // destructor
 }
 
-int WaylandAdaptor::height()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.height
+int XrandrAdaptor::setScreensParam(const QString &screensParam, const QString &appName){
     int out0;
-    QMetaObject::invokeMethod(parent(), "height", Q_RETURN_ARG(int, out0));
+    USD_LOG(LOG_DEBUG," appName:%s", appName.toLatin1().data());
+    QMetaObject::invokeMethod(parent(), "setScreensParam", Q_RETURN_ARG(int, out0),  Q_ARG(QString, screensParam),  Q_ARG(QString, appName));
     return out0;
 }
 
-int WaylandAdaptor::priScreenChanged(int x, int y, int width, int height, const QString &name)
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.priScreenChanged
-    int out0;
-    QMetaObject::invokeMethod(parent(), "priScreenChanged", Q_RETURN_ARG(int, out0), Q_ARG(int, x), Q_ARG(int, y), Q_ARG(int, width), Q_ARG(int, height), Q_ARG(QString, name));
+QString XrandrAdaptor::getScreensParam( const QString &appName){
+    QString out0;
+    USD_LOG(LOG_DEBUG," appName:%s", appName.toLatin1().data());
+    QMetaObject::invokeMethod(parent(), "getScreensParam", Q_RETURN_ARG(QString, out0),  Q_ARG(QString, appName));
     return out0;
 }
 
-int WaylandAdaptor::setScreenMode(const QString &modeName, const QString &appName){
+int XrandrAdaptor::setScreenMode(const QString &modeName, const QString &appName){
     int out0;
     USD_LOG(LOG_DEBUG,"change screen :%s, appName:%s",modeName.toLatin1().data(), appName.toLatin1().data());
     QMetaObject::invokeMethod(parent(), "setScreenMode", Q_RETURN_ARG(int, out0),  Q_ARG(QString, modeName),  Q_ARG(QString, appName));
     return out0;
 }
 
-int WaylandAdaptor::getScreenMode(const QString &appName){
+int XrandrAdaptor::getScreenMode(const QString &appName){
     int out0;
     USD_LOG(LOG_DEBUG,"get screen mode request from appName:%s", appName.toLatin1().data());
     QMetaObject::invokeMethod(parent(), "getScreenMode", Q_RETURN_ARG(int, out0),  Q_ARG(QString, appName));
-    return out0;
-}
-
-QString WaylandAdaptor::priScreenName()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.priScreenName
-    QString out0;
-    QMetaObject::invokeMethod(parent(), "priScreenName", Q_RETURN_ARG(QString, out0));
-    return out0;
-}
-
-double WaylandAdaptor::scale()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.scale
-    double out0;
-    QMetaObject::invokeMethod(parent(), "scale", Q_RETURN_ARG(double, out0));
-    return out0;
-}
-
-int WaylandAdaptor::width()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.width
-    int out0;
-    QMetaObject::invokeMethod(parent(), "width", Q_RETURN_ARG(int, out0));
-    return out0;
-}
-
-int WaylandAdaptor::x()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.x
-    int out0;
-    QMetaObject::invokeMethod(parent(), "x", Q_RETURN_ARG(int, out0));
-    return out0;
-}
-
-int WaylandAdaptor::y()
-{
-    // handle method call org.ukui.SettingsDaemon.wayland.y
-    int out0;
-    QMetaObject::invokeMethod(parent(), "y", Q_RETURN_ARG(int, out0));
     return out0;
 }
 

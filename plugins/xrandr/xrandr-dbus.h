@@ -3,32 +3,38 @@
 
 #include <QGSettings/qgsettings.h>
 #include <QObject>
+#include "usd_global_define.h"
+
 
 class xrandrDbus : public QObject
 {
     Q_OBJECT
-        Q_CLASSINFO("D-Bus Interface","org.ukui.SettingsDaemon.wayland")
+        Q_CLASSINFO("D-Bus Interface",DBUS_XRANDR_INTERFACE)
 
 public:
     xrandrDbus(QObject* parent=0);
     ~xrandrDbus();
 
+    void sendModeChangeSignal(int screensMode);
+    void sendScreensParamChangeSignal(QString screensParam);
+
 public Q_SLOTS:
-    int x();
-    int y();
-    int width();
-    int height();
-    double scale();
-    QString priScreenName();
-    int priScreenChanged(int x, int y, int width, int height, QString name);
     int setScreenMode(QString modeName, QString appName);
     int getScreenMode(QString appName);
 
+    int setScreensParam(QString screensParam, QString appName);
+    QString getScreensParam(QString appName);
+
+
 Q_SIGNALS:
-    void screenPrimaryChanged(int x, int y, int width, int height);
+    //供xrandrManager监听
     void setScreenModeSignal(QString modeName);
-    void brightnessDown();
-    void brightnessUp();
+    void setScreensParamSignal(QString screensParam);
+
+    //与adaptor一致
+    void screensParamChanged(QString screensParam);
+    void screenModeChanged(int screenMode);
+
 
 public:
     int mX = 0;
