@@ -85,10 +85,6 @@ ColorManager::~ColorManager()
         delete timer;
         timer = nullptr;
     }
-    if (mColorManager) {
-        delete mColorManager;
-        mColorManager = nullptr;
-    }
     if (settings) {
         delete settings;
         settings = nullptr;

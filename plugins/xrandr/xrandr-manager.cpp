@@ -1303,7 +1303,7 @@ void XrandrManager::StartXrandrIdleCb()
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));
 
-    SetTouchscreenCursorRotation();
+    //SetTouchscreenCursorRotation();
 
     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 

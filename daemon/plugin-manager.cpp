@@ -50,9 +50,9 @@ PluginManager::PluginManager()
 
 PluginManager::~PluginManager()
 {
-    managerStop();
-    delete mPlugin;
-    mPlugin = nullptr;
+    //managerStop();
+    //delete mPlugin;
+    //mPlugin = nullptr;
 }
 
 PluginManager* PluginManager::getInstance()
@@ -143,11 +143,11 @@ void PluginManager::managerStop()
     while (!mPlugin->isEmpty()) {
         PluginInfo* plugin = mPlugin->takeFirst();
         plugin->pluginDeactivate();
-        delete plugin;
+        //delete plugin;
     }
 
     // exit main event loop
-    QCoreApplication::exit();
+    QCoreApplication::exit(0);
 }
 
 bool PluginManager::managerAwake()

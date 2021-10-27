@@ -131,7 +131,7 @@ static void stop_daemon ()
         QDBusPendingReply<> reply = pmd.managerStop();
         reply.waitForFinished();
         if (reply.isValid()) {
-            USD_LOG(LOG_DEBUG, "stop current 'ukui-settings-daemon'");
+            //USD_LOG(LOG_DEBUG, "stop current 'ukui-settings-daemon'");
         }
     }
 }
