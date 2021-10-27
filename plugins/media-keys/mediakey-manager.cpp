@@ -478,6 +478,7 @@ void MediaKeysManager::initShortcuts()
     connect(www, &QAction::triggered, this, [this]() {
         doAction(WWW_KEY);
     });
+
     /*media play*/
     QAction *mediaPlay= new QAction(this);
     mediaPlay->setObjectName(QStringLiteral("Play/Pause"));
@@ -778,6 +779,7 @@ void MediaKeysManager::initShortcuts()
         doAction(UKUI_EYECARE_CENTER);
     });
 
+    //just for test globalshut
 //    QAction *sjhTest= new QAction(this);
 //    sjhTest->setObjectName(QStringLiteral("sjh test"));
 //    sjhTest->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));

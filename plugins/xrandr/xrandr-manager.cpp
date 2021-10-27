@@ -531,7 +531,6 @@ void XrandrManager::applyConfig()
     connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
-        USD_LOG(LOG_DEBUG,"set screen params ok. start map touch device!");
         SetTouchscreenCursorRotation();
         mMonitoredConfig->writeFile(true);//首次接入
         Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
@@ -689,7 +688,6 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
-//            output->setEdid(senderOutput->edid()->clone());
             USD_LOG_SHOW_OUTPUT(output);
             break;
         }
@@ -707,6 +705,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
             }
 
            USD_LOG(LOG_DEBUG,"find and set it....%s",output->name().toLatin1().data());
+           USD_LOG_SHOW_OUTPUT(output);
        }
 
         if (output->isConnected()) {
@@ -741,17 +740,15 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
                 mMonitoredConfig = mMonitoredConfig->readFile(false);
             }
         }
-
-        lightLastScreen();
-        applyConfig();
     }
+    lightLastScreen();
+    applyConfig();
 }
 
 //处理来自控制面板的操作,保存配置
 void XrandrManager::SaveConfigTimerHandle()
 {
     mSaveConfigTimer->stop();
-
 
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     mMonitoredConfig->writeFile(true);
@@ -786,8 +783,7 @@ void XrandrManager::monitorsInit()
             connectedOutputCount++;
         }
 
-
-        //支负责插拔恢复
+        //只负责插拔恢复
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG_SHOW_OUTPUT(senderOutput);
@@ -802,9 +798,7 @@ void XrandrManager::monitorsInit()
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
-                    USD_LOG_SHOW_OUTPUT(output);
                     output->setPrimary(senderOutput->isPrimary());
-                    USD_LOG_SHOW_OUTPUT(output);
                     break;
                 }
             }
@@ -817,9 +811,7 @@ void XrandrManager::monitorsInit()
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
-                    USD_LOG_SHOW_OUTPUT(output);
                     output->setPos(senderOutput->pos());
-                    USD_LOG_SHOW_OUTPUT(output);
                     break;
                 }
             }
@@ -861,12 +853,9 @@ void XrandrManager::monitorsInit()
         connect(output.data(), &KScreen::Output::isEnabledChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"isEnabledChanged:%s",senderOutput->name().toLatin1().data());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
-                    USD_LOG_SHOW_OUTPUT(output);
                     output->setEnabled(senderOutput->isEnabled());
-                    USD_LOG_SHOW_OUTPUT(output);
                     break;
                 }
             }
@@ -1090,14 +1079,11 @@ void XrandrManager::setScreenModeToFirst(bool isFirstMode)
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
 
-        USD_LOG_SHOW_OUTPUT(output);
-
         if (output->isConnected()) {
             output->setEnabled(true);
         } else {
             continue;
         }
-
         //找到第一个屏幕（默认为内屏）
         if (hadFindFirstScreen) {
                 output->setEnabled(!isFirstMode);
@@ -1120,8 +1106,6 @@ void XrandrManager::setScreenModeToFirst(bool isFirstMode)
             output->setPos(QPoint(posX,0));
             posX+=output->size().width();
         }
-
-        USD_LOG_SHOW_OUTPUT(output);
     }
 
     applyConfig();
@@ -1177,13 +1161,12 @@ void XrandrManager::setScreenModeToExtend()
 
 void XrandrManager::setScreensParam(QString screensParam)
 {
-
     USD_LOG(LOG_DEBUG,"param:%s", screensParam.toLatin1().data());
 
-     std::unique_ptr<xrandrConfig> temp  = mMonitoredConfig->readScreensConfigFromDbus(screensParam);
-     if (nullptr != temp) {
-         mMonitoredConfig = std::move(temp);
-     }
+    std::unique_ptr<xrandrConfig> temp  = mMonitoredConfig->readScreensConfigFromDbus(screensParam);
+    if (nullptr != temp) {
+        mMonitoredConfig = std::move(temp);
+    }
 
     applyConfig();
 }
@@ -1193,7 +1176,6 @@ void XrandrManager::setScreensParam(QString screensParam)
 */
 void XrandrManager::setScreenMode(QString modeName)
 {
-
 
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
@@ -1220,9 +1202,6 @@ void XrandrManager::setScreenMode(QString modeName)
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());
         return;
     }
-
-    mDbus->mScreenMode = metaEnum.keyToValue(modeName.toLatin1().data());
-    mMonitoredConfig->setScreenMode(modeName);
 }
 
 /*
