@@ -64,8 +64,6 @@ XrandrPlugin::~XrandrPlugin()
 {
     if(mXrandrManager)
         delete mXrandrManager;
-    if(mInstance)
-        delete mInstance;
 }
 
 void XrandrPlugin::activate()

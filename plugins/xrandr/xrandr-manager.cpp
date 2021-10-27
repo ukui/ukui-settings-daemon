@@ -833,7 +833,7 @@ void XrandrManager::monitorsInit()
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
 
-//            SetTouchscreenCursorRotation();
+            //SetTouchscreenCursorRotation();
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
@@ -1296,7 +1296,7 @@ void XrandrManager::StartXrandrIdleCb()
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));
 
-    SetTouchscreenCursorRotation();
+    //SetTouchscreenCursorRotation();
 
     USD_LOG(LOG_DEBUG,"StartXrandrIdleCb ok.");
 

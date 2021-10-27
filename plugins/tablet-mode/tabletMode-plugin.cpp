@@ -31,10 +31,10 @@ TabletModePlugin::TabletModePlugin()
 
 TabletModePlugin::~TabletModePlugin()
 {
-    if(mTableManager)
+    if(mTableManager) {
         delete mTableManager;
-    if(mInstance)
-        delete mInstance;
+        mTableManager = nullptr;
+    }
 }
 
 void TabletModePlugin::activate()

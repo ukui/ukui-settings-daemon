@@ -57,6 +57,7 @@ KeyboardManager::KeyboardManager(QObject * parent)
 {
     if (mKeyXkb == nullptr)
         mKeyXkb = new KeyboardXkb;
+
     settings = new QGSettings(USD_KEYBOARD_SCHEMA);
 
     stInstalled = true;

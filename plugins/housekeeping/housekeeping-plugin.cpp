@@ -63,10 +63,6 @@ HousekeepingPlugin::~HousekeepingPlugin()
         delete mHouseManager;
         mHouseManager = nullptr;
     }
-    if (mInstance) {
-        delete mInstance;
-        mInstance = nullptr;
-    }
 }
 
 bool HousekeepingPlugin::isTrialMode()
@@ -112,7 +108,7 @@ void HousekeepingPlugin::deactivate()
 {
     //if(isTrialMode())
     //    return;
-    if (mHouseManager)
+    //if (mHouseManager)
         mHouseManager->HousekeepingManagerStop();
 }
 
