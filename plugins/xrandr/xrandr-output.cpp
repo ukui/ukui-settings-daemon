@@ -374,9 +374,6 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
     // correct positional config regressions on global output data changes
 #if 1
     adjustPositions(config, outputsInfo);
-     for (const KScreen::OutputPtr &output : outputs) {
-        USD_LOG_SHOW_OUTPUT(output);
-     }
 #endif
 }
 

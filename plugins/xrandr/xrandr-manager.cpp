@@ -71,7 +71,6 @@ XrandrManager::XrandrManager()
 
     KScreen::Log::instance();
 
-
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 
@@ -195,6 +194,7 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
         return false;
     }
 
+/*  //just for print device class
     for (i = 0; i < dev->num_classes; i++) {
 
         if (dev->classes[i]->type == XIButtonClass) {
@@ -214,15 +214,21 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
 
         }
     }
+*/
+
+    QString devName = QString::fromUtf8(dev->name);
+    if (devName.toUpper().contains("TOUCHPAD") || devName.toUpper().contains("PEN")) { //触摸板也需要映射
+        return true;
+    }
 
     for (i = 0; i < dev->num_classes; i++) {
 
         if (dev->classes[i]->type == XITouchClass)
         {
             XITouchClassInfo *t = (XITouchClassInfo*)dev->classes[i];
-            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
+//            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
             if (t->mode == XIDirectTouch) {
-                USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
+//                USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
                 return true;
             }
         }
@@ -270,16 +276,11 @@ getTouchscreen(Display* display)
 
     for (i = 0; i < n_devices; i ++)
     {
-        const char *udev_subsystems[] = {"input", NULL};
 
-        GUdevDevice *udev_device;
-        GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
-        udev_device = g_udev_client_query_by_device_file (udev_client,
-                                                          (const gchar *)getDeviceNode (devs_info[i]));
 
-        QString deviceName = QString::fromLocal8Bit(devs_info[i].name);
+//        if (g_udev_device_has_property(udev_device, "ID_INPUT_WIDTH_MM") || deviceName.toUpper().contains("TOUCHPAD"))
 
-        if (g_udev_device_has_property(udev_device, "ID_INPUT_WIDTH_MM") || deviceName.toUpper().contains("TOUCHPAD")) {
+        if (find_touchscreen_device(dpy, &devs_info[i])) {
             unsigned char *node;
             TsInfo *ts_info = g_new(TsInfo, 1);
             node = getDeviceNode (devs_info[i]);
@@ -291,6 +292,7 @@ getTouchscreen(Display* display)
             }
         }
     }
+
     return ts_devs;
 }
 
@@ -302,11 +304,16 @@ bool checkMatch(int output_width,  int output_height,
     w_diff = ABS (1 - ((double) output_width / input_width));
     h_diff = ABS (1 - ((double) output_height / input_height));
 
-    USD_LOG_SHOW_PARAM2(output_width, output_height);
-    USD_LOG_SHOW_PARAM2F(input_width, input_height);
 
-    if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF)
+
+    if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF) {
+//          printf("w_diff is %f, h_diff is %f\n", w_diff, h_diff);
+//        USD_LOG_SHOW_PARAM2(output_width, output_height);
+//        USD_LOG_SHOW_PARAM2F(input_width, input_height);
+//        USD_LOG_SHOW_PARAM2F(w_diff, h_diff);
+//        USD_LOG(LOG_DEBUG,"...right");
         return true;
+    }
     else
         return false;
 }
@@ -376,8 +383,8 @@ void SetTouchscreenCursorRotation()
             int output_mm_width = output_info->mm_width;
             int output_mm_height = output_info->mm_height;
 
-            USD_LOG_SHOW_PARAM2(output_mm_width,output_mm_height);
-            USD_LOG_SHOW_PARAM1(output_info->connection);
+//            USD_LOG_SHOW_PARAM2(output_mm_width,output_mm_height);
+//            USD_LOG_SHOW_PARAM1(output_info->connection);
 
             if (output_info->connection == 0) {
                 for ( l = ts_devs; l; l = l->next) {
@@ -385,6 +392,7 @@ void SetTouchscreenCursorRotation()
                     double width, height;
                     QString deviceName = QString::fromLocal8Bit(info->dev_info.name);
                     const char *udev_subsystems[] = {"input", NULL};
+
                     GUdevDevice *udev_device;
                     GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
                     udev_device = g_udev_client_query_by_device_file (udev_client,
@@ -394,12 +402,13 @@ void SetTouchscreenCursorRotation()
 
                     //sp1的触摸板不一定有此属性，所以根据名字进行适配by sjh 2021年10月20日11:23:58
                     if ((udev_device && g_udev_device_has_property (udev_device,
-                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
+                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD") || deviceName.toUpper().contains("PEN")) {
                         width = g_udev_device_get_property_as_double (udev_device,
                                                                     "ID_INPUT_WIDTH_MM");
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
 
+//                        USD_LOG(LOG_DEBUG,"%s %fx%f screen:%dx%d",info->dev_info.name, width,height, output_mm_width, output_mm_height);
 
                         if (checkMatch(output_mm_width, output_mm_height, width, height) || deviceName.toUpper().contains("TOUCHPAD")) {//
                             doAction(info->dev_info.deviceid,output_info->name);
@@ -832,8 +841,6 @@ void XrandrManager::monitorsInit()
         connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
-
-            //SetTouchscreenCursorRotation();
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 

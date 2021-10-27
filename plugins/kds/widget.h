@@ -63,7 +63,7 @@ public:
 
     void setScreenModeByDbus(QString modeName);
     int getCurrentStatus();
-
+    QString getScreensParam();
     void initCurrentStatus(int id);
 
     QDBusInterface * ukcciface;

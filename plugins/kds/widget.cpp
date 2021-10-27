@@ -31,7 +31,7 @@
 #include <QStyleOption>
 #include <KWindowEffects>
 #include <QBitmap>
-
+#include <QJsonDocument>
 
 #include "expendbutton.h"
 #include "qtsingleapplication.h"
@@ -129,16 +129,43 @@ void Widget::setupComponent()
 {
     QStringList btnTextList;
     QStringList btnImageList;
+    QJsonDocument parser;
+    QString firstScreen = "";
+    QString secondScreen = "";
+    QString screensParam = getScreensParam();
+
+    QVariantList screensParamList = parser.fromJson(screensParam.toLatin1().data()).toVariant().toList();
+
+    for (const auto &variantInfo : screensParamList) {
+        const QVariantMap info = variantInfo.toMap();
+        const auto metadata = info[QStringLiteral("metadata")].toMap();
+        const QString outputName = metadata[QStringLiteral("name")].toString();
+
+        if (firstScreen.isEmpty()){
+            firstScreen = outputName;
+            continue;
+        }
+
+        if (secondScreen.isEmpty()) {
+            secondScreen = outputName;
+            continue;
+        }
+
+    }
+
+    if (secondScreen.isEmpty()) {
+        secondScreen = "None";
+    }
 
     if (UsdBaseClass::isTablet()) {
         btnTextList<<"Clone Screen";
         btnTextList<<"Extend Screen";
 
     } else {
-        btnTextList<<"First Screen";
+        btnTextList<<firstScreen;
+        btnTextList<<secondScreen;
         btnTextList<<"Clone Screen";
         btnTextList<<"Extend Screen";
-        btnTextList<<"Vice Screen";
     }
 
     if (UsdBaseClass::isTablet()) {
@@ -146,9 +173,9 @@ void Widget::setupComponent()
         btnImageList<<":/img/extend.png";
     } else {
         btnImageList<<":/img/main.png";
+        btnImageList<<":/img/vice.png";
         btnImageList<<":/img/clone.png";
         btnImageList<<":/img/extend.png";
-        btnImageList<<":/img/vice.png";
     }
     this->setFixedWidth(384);
     this->setFixedHeight(TITLEHEIGHT + OPTIONSHEIGHT * btnTextList.length() + BOTTOMHEIGHT);
@@ -168,7 +195,6 @@ void Widget::setupComponent()
 
         ui->btnsVerLayout->addWidget(btn);
 
-        USD_LOG(LOG_DEBUG,"%s...",btnTextList[i].toLatin1().data());
     }
 
     m_qssDefaultOrDark = ("QFrame#titleFrame{background: transparent;}"\
@@ -200,13 +226,59 @@ void Widget::setupConnect()
                 close();
             }
         }
+
         //0,1  ->1,2
         if (true == UsdBaseClass::isTablet()) {
-            id += 1;
+            id += 2;
         }
-        setScreenModeByDbus(metaEnum.key(id));
+
+        {
+            QString mode = "";
+            switch (id) {
+            case UsdBaseClass::eScreenMode::firstScreenMode:
+                mode = metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode);
+                break;
+            case UsdBaseClass::eScreenMode::cloneScreenMode:
+                mode = metaEnum.key(UsdBaseClass::eScreenMode::secondScreenMode);
+                break;
+            case UsdBaseClass::eScreenMode::extendScreenMode:
+                mode = metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode);
+                break;
+            case UsdBaseClass::eScreenMode::secondScreenMode:
+                mode = metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode);
+                break;
+            default:
+                break;
+            }
+
+            setScreenModeByDbus(mode);
+        }
         close();
     });
+}
+
+QString Widget::getScreensParam()
+{
+    QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
+                                                          DBUS_XRANDR_PATH,
+                                                          DBUS_XRANDR_INTERFACE,
+                                                          DBUS_XRANDR_GET_SCREEN_PARAM);
+    QList<QVariant> args;
+    args.append(qAppName());
+    message.setArguments(args);
+
+    QDBusMessage response = QDBusConnection::sessionBus().call(message);
+
+    if (response.type() == QDBusMessage::ReplyMessage) {
+        if(response.arguments().isEmpty() == false) {
+            QString value = response.arguments().takeFirst().toString();
+            return value;
+        }
+    } else {
+        USD_LOG(LOG_DEBUG, "called failed cuz:%s", message.errorName().toLatin1().data());
+    }
+
+    return nullptr;
 }
 
 int Widget::getCurrentStatus()
@@ -226,7 +298,25 @@ int Widget::getCurrentStatus()
             int value = response.arguments().takeFirst().toInt();
             USD_LOG(LOG_DEBUG, "get mode :%s", metaEnum.key(value));
 
-            return value;
+
+            switch (value) {
+            case UsdBaseClass::eScreenMode::firstScreenMode:
+                value = UsdBaseClass::eScreenMode::firstScreenMode;
+                break;
+            case UsdBaseClass::eScreenMode::cloneScreenMode:
+                value = UsdBaseClass::eScreenMode::secondScreenMode;
+                break;
+            case UsdBaseClass::eScreenMode::extendScreenMode:
+                value = UsdBaseClass::eScreenMode::cloneScreenMode;
+                break;
+            case UsdBaseClass::eScreenMode::secondScreenMode:
+                value = UsdBaseClass::eScreenMode::extendScreenMode;
+                break;
+            default:
+                break;
+
+                return value;
+            }
         }
     } else {
         USD_LOG(LOG_DEBUG, "called failed cuz:%s", message.errorName().toLatin1().data());
@@ -239,7 +329,7 @@ void Widget::initCurrentStatus(int id)
 {
     //set all no checked
     if(true == UsdBaseClass::isTablet()) {
-        id -= 1;
+        id -= 2;
     }
     for (QAbstractButton * button : btnsGroup->buttons()) {
         ExpendButton * btn = dynamic_cast<ExpendButton *>(button);
@@ -316,7 +406,12 @@ void Widget::closeApp()
 void Widget::setScreenModeByDbus(QString modeName)
 {
     QList<QVariant> args;
-    const QStringList ukccModeList = {"first", "copy", "expand", "second"};
+
+    if (modeName.isEmpty()) {
+        return;
+    }
+
+    const QStringList ukccModeList = {"first", "second", "copy", "expand"};
 
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
                                                           DBUS_XRANDR_PATH,

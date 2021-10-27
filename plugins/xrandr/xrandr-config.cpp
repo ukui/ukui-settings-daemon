@@ -375,11 +375,11 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
         if (backFile.open(QIODevice::WriteOnly)) {
             backFile.write(QJsonDocument::fromVariant(outputList).toJson());
         } else {
-            USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),backFile.errorString().toLatin1().data());
+//            USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),backFile.errorString().toLatin1().data());
         }
     }
 
-    USD_LOG(LOG_DEBUG,"write file:\n%s ok \n%s ok.",filePath.toLatin1().data(),mScreenMode == nullptr? "" : fileModeConfigPath().toLatin1().data());
+//    USD_LOG(LOG_DEBUG,"write file:\n%s ok \n%s ok.",filePath.toLatin1().data(),mScreenMode == nullptr? "" : fileModeConfigPath().toLatin1().data());
     return true;
 }
 
