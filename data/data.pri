@@ -31,6 +31,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.peripherals-touchpad.gschema.xml         \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml      \
     $$PWD/zh_CN.po  \
+    $$PWD/power-ignore.conf \
 
 # desktop ok
 desktop.path = /etc/xdg/autostart/
@@ -52,7 +53,10 @@ QMAKE_EXTRA_TARGETS += zhCN
 zh_CN.path  = /usr/share/locale/zh_CN/LC_MESSAGES/
 zh_CN.files = $$PWD/ukui-settings-daemon.mo
 
-INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN
+power.path  = /etc/systemd/logind.conf.d/
+power.files += $$PWD/power-ignore.conf
+
+INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN power
 
 DISTFILES += \
     $$PWD/auto-brightness.ukui-settings-plugin  \

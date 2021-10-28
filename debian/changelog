@@ -1,3 +1,16 @@
+ukui-settings-daemon (3.1.0-1.12) v101; urgency=medium
+
+  * BUG号：83325 【快捷键】【PTOF】自动化脚本频繁多次使用快捷键后，快捷键会失效（如ctrl+alt+t打开终端） 
+           82385 [x100][主线]在外接屏下，win+p键无法正常切换镜像屏与扩展屏 
+           83542 【USD】进入系统，开启大写，系统重启后查看大写为关闭状态
+           86157 【需求转化-显示器】win+p文案需要和控制面板多屏显示设置项保持一致（文案为 接口1/接口2/镜像/扩展）
+           83945 【UKUI V3.1】【控制面板】【显示】控制面板中设置多屏显示不会同步到win+p中，在win+p中设置多屏显示可以同步到控制面板
+  * 需求说明：无
+  * 其他修改说明:1.优化音量控制快捷键的处理逻辑，采用实时获取的方式进行处理。
+                 2.添加systemd handlePowerkey 配置
+
+ -- sundagao <sundagao@skylinos.cn>  Wed, 27 Oct 2021 20:50:20 +0800
+
 ukui-settings-daemon (3.1.0-1.11) v101; urgency=medium
 
   * BUG号：无
