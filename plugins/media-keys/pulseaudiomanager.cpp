@@ -21,8 +21,6 @@ pulseAudioManager::pulseAudioManager(QObject *parent)
 
 pulseAudioManager::~pulseAudioManager()
 {
-
-
     if ( nullptr != p_PaCtx ) {
         pa_context_set_state_callback(p_PaCtx, NULL, NULL);
         pa_context_disconnect(p_PaCtx);
@@ -132,12 +130,10 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
     Q_UNUSED(userdata);
     Q_UNUSED(ctx);
 
-
     if (!success) {
         return;
     }
 
-    USD_LOG(LOG_DEBUG,"set %s status %d ..", p_sinkName, success);
 }
 
 void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_info *so, int isLast, void *userdata)
@@ -152,7 +148,6 @@ void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_i
     memset(p_sourceName,0x00,sizeof(p_sinkName));
     memcpy(p_sourceName,so->name,strlen(so->name));
     m_sourceMute = so->mute;
-
 }
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
@@ -161,14 +156,10 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
     Q_UNUSED(userdata);
     pa_channel_map map;
 
-
-
-
     if (isLast != 0) {
         return;
     }
 
-    USD_LOG(LOG_DEBUG,"%s state :%d",si->name, si->state);
     if (false == PA_SINK_IS_OPENED(si->state)) {
         return;
     }
@@ -187,7 +178,6 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
 
     g_balance = pa_cvolume_get_balance(&g_GetPaCV,&map);
 
-
     memset(p_sinkName,0x00,sizeof(p_sinkName));
     memcpy(p_sinkName,si->name,strlen(si->name));
 
@@ -198,10 +188,7 @@ void pulseAudioManager::getSinkVolumeAndSetCallback(pa_context *ctx, const pa_si
     Q_UNUSED(si);
     Q_UNUSED(isLast);
 
-
-
-  pa_operation_unref(pa_context_set_sink_volume_by_name(ctx, p_sinkName, (const pa_cvolume *)userdata, paActionDoneCallback, NULL));
-
+    pa_operation_unref(pa_context_set_sink_volume_by_name(ctx, p_sinkName, (const pa_cvolume *)userdata, paActionDoneCallback, NULL));
 }
 
 void pulseAudioManager::paCvOperationHandle(pa_operation *paOp)
@@ -225,16 +212,12 @@ void pulseAudioManager::setVolume(int Volume)
 
     }
 
-
     pa_cvolume *pcv = pa_cvolume_set_balance(&g_SetPaCV, &map, g_balance);
 
     if (NULL == pcv) {
         USD_LOG(LOG_ERR, "pa_cvolume_set_balance error!g_balance:%2.1f %d:%d",g_balance, g_GetPaCV.values[0], g_GetPaCV.values[1]);
         return;
     }
-
-
-//    USD_LOG(LOG_DEBUG,"set %s is %d", p_sinkName, MuteState);
 
     p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, pcv);
 

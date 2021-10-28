@@ -478,6 +478,7 @@ void MediaKeysManager::initShortcuts()
     connect(www, &QAction::triggered, this, [this]() {
         doAction(WWW_KEY);
     });
+
     /*media play*/
     QAction *mediaPlay= new QAction(this);
     mediaPlay->setObjectName(QStringLiteral("Play/Pause"));
@@ -778,6 +779,7 @@ void MediaKeysManager::initShortcuts()
         doAction(UKUI_EYECARE_CENTER);
     });
 
+    //just for test globalshut
 //    QAction *sjhTest= new QAction(this);
 //    sjhTest->setObjectName(QStringLiteral("sjh test"));
 //    sjhTest->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
@@ -1156,18 +1158,19 @@ bool MediaKeysManager::doAction(int type)
     int elapsed = 0;
     static uint lastKeySym = 0x00;
 
-    if ((getScreenLockState()) && (type!=MUTE_KEY && type!=VOLUME_DOWN_KEY && type!=VOLUME_UP_KEY)) {
-        USD_LOG(LOG_DEBUG,"can;t use it..");
-        return false;
-    }
+//    if ((getScreenLockState()) && (type!=MUTE_KEY && type!=VOLUME_DOWN_KEY && type!=VOLUME_UP_KEY)) {
+//        USD_LOG(LOG_DEBUG,"can;t use it..");
+//        return false;
+//    }
 
-    if (lastKeySym == type){//考虑到一个应用针对多个快捷键，所以不能以按键值进行次数区分必须以序号进行区分，否则第二个以后的快捷键不生效
-        elapsed = startTime.msecsTo(QTime::currentTime());
+    //TODO:需要考虑清楚如何过滤掉重复事件，
+//    if (lastKeySym == type){//考虑到一个应用针对多个快捷键，所以不能以按键值进行次数区分必须以序号进行区分，否则第二个以后的快捷键不生效
+//        elapsed = startTime.msecsTo(QTime::currentTime());
 
-        if (elapsed>=0 && elapsed<120){//避免过快刷屏,必须大于，120ms执行一次,
+//        if (elapsed>=0 && elapsed<50){//避免过快刷屏,必须大于，50ms执行一次,
 //            return false;    //goto FREE_DISPLAY;
-        }
-    }
+//        }
+//    }
 
     startTime = QTime::currentTime();
     lastKeySym = type;
@@ -1545,25 +1548,28 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
         break;
     }
 
-    if ( last_volume != volume) {
+    if (last_volume != volume) {
         soundChanged = true;
     }
 
-     mpulseAudioManager->setMute(muted);
-     mpulseAudioManager->setVolume(volume);
+    if (volumeMin == volume) {
+        muted = true;
+    }
 
-     mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
-     updateDialogForVolume(volume,muted,soundChanged);
-     if(QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)){
+    mpulseAudioManager->setVolume(volume);
+    mpulseAudioManager->setMute(muted);
+    mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
+
+    updateDialogForVolume(volume,muted,soundChanged);
+
+    if (QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)) {
         QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
         panel_settings->set(PANEL_SOUND_STATE,muted);
         panel_settings->set(PANEL_SOUND_VOLUMSIZE,volume/655.36);
-
         delete panel_settings;
-     }
+    }
 
     delete mpulseAudioManager;
-
 }
 
 void MediaKeysManager::doSoundAction(int keyType)
@@ -1651,7 +1657,6 @@ void MediaKeysManager::updateDialogForVolume(uint volume,bool muted,bool soundCh
     mVolumeWindow->setVolumeMuted(muted);
     mVolumeWindow->setVolumeLevel(volume);
     mVolumeWindow->dialogVolumeShow();
-    //ToDo...
 }
 
 void processAbstractPath(QString& process)
