@@ -21,8 +21,6 @@ pulseAudioManager::pulseAudioManager(QObject *parent)
 
 pulseAudioManager::~pulseAudioManager()
 {
-
-
     if ( nullptr != p_PaCtx ) {
         pa_context_set_state_callback(p_PaCtx, NULL, NULL);
         pa_context_disconnect(p_PaCtx);
