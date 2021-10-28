@@ -1516,16 +1516,67 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
     }
     return false;
 }
+// while remove mouse
+bool SetEnableTouchpad(XDeviceInfo *device_info,
+                       QGSettings  *settings)
+{
+    QString name;
+    name = device_info->name;
+    bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
+    bool Pusb = name.contains("USB", Qt::CaseInsensitive);
+    if(!Pmouse && Pusb) {
+        settings->set(KEY_TOUCHPAD_ENABLED, true);
+        return true;
+    }
+    return false;
+}
+
+void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
+{
+    int numdevices, i;
+    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+    if (devicelist == NULL){
+        return;
+    }
+    for (i = 0; i < numdevices; i++) {
+        if(SetEnableTouchpad (&devicelist[i], settings)) {
+            break;
+        }
+    }
+    XFreeDeviceList (devicelist);
+}
+
+bool checkMouseExists()
+{
+    int numdevices, i;
+    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
+    if (devicelist == NULL){
+        return false;
+    }
+    for (i = 0; i < numdevices; i++) {
+        QString name;
+        name = devicelist[i].name;
+        bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
+        bool Pusb = name.contains("USB", Qt::CaseInsensitive);
+        if(Pmouse && Pusb) {
+            return true;
+        }
+    }
+    XFreeDeviceList (devicelist);
+    return false;
+}
 
 void SetPlugMouseDisbleTouchpad(QGSettings *settings)
 {
     int numdevices, i;
     XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
-    if (devicelist == NULL)
-            return;
+    if (devicelist == NULL) {
+        return;
+    }
     for (i = 0; i < numdevices; i++) {
-            if(SetDisbleTouchpad (&devicelist[i], settings))
-                break;
+        if(SetDisbleTouchpad (&devicelist[i], settings)) {
+            break;
+        }
     }
     XFreeDeviceList (devicelist);
 }
@@ -1705,6 +1756,7 @@ void MouseManager::SetMouseSettings ()
     SetMotionAll ();
     SetMiddleButtonAll (settings_mouse->get(KEY_MIDDLE_BUTTON_EMULATION).toBool());
     SetMouseWheelSpeed (settings_mouse->get(KEY_MOUSE_WHEEL_SPEED).toInt());
+    SetPlugMouseDisbleTouchpad(settings_touchpad);
 
     SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
 }
@@ -1717,7 +1769,8 @@ void MouseManager::SetTouchSettings ()
     SetScrollingAll (settings_touchpad);
     SetNaturalScrollAll ();
     SetTouchpadEnabledAll (settings_touchpad->get(KEY_TOUCHPAD_ENABLED).toBool());
-    SetPlugMouseDisbleTouchpad(settings_touchpad);
+//    SetPlugMouseDisbleTouchpad(settings_touchpad);
+    SetPlugRemoveMouseEnableTouchpad(settings_touchpad);
     SetTouchpadDoubleClickAll(settings_touchpad->get(KEY_TOUCHPAD_DOUBLE_CLICK_DRAG).toBool());
     SetBottomRightConrnerClickMenu(settings_touchpad->get(KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M).toBool());
 
@@ -1737,7 +1790,9 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
             if (dpn->devchange == DeviceEnabled) {
-                    manager->SetMouseSettings ();
+                manager->SetMouseSettings ();
+            } else if(dpn->devchange == DeviceRemoved) {
+                manager->SetTouchSettings();
             }
     }
     return GDK_FILTER_CONTINUE;
@@ -1778,4 +1833,9 @@ void MouseManager::MouseManagerIdleCb()
     SetMouseSettings ();
     SetTouchSettings ();
     SetLocatePointer (settings_mouse->get(KEY_MOUSE_LOCATE_POINTER).toBool());
+    if(checkMouseExists()){
+        SetPlugMouseDisbleTouchpad(settings_touchpad);
+    } else {
+        SetPlugRemoveMouseEnableTouchpad(settings_touchpad);
+    }
 }
