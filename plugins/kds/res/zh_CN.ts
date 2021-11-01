@@ -64,7 +64,7 @@
     <message>
         <location filename="../widget.cpp" line="145"/>
         <source>Clone Screen</source>
-        <translation>复制</translation>
+        <translation>镜像</translation>
     </message>
     <message>
         <location filename="../widget.cpp" line="153"/>
