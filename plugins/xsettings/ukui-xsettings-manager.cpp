@@ -308,8 +308,7 @@ xsettings_callback (GSettings             *gsettings,
 //    USD_LOG(LOG_DEBUG,"key:%s",key);
 
     if (g_str_equal (key, CURSOR_THEME_KEY)||
-            g_str_equal (key, CURSOR_SIZE_KEY )||
-            g_str_equal (key,SCALING_FACTOR_KEY)){
+            g_str_equal (key, CURSOR_SIZE_KEY )){
         xft_callback (NULL, key, manager);
         USD_LOG(LOG_ERR," key=%s",key);
         return;
