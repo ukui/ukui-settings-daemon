@@ -732,8 +732,6 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
                 senderOutput->setEnabled(senderOutput->isConnected());
             }
             outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
-            mMonitoredConfig->writeFile(true);//首次接入，
-
         } else {
             USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
             if (outputConnectCount) {
@@ -750,7 +748,7 @@ void XrandrManager::SaveConfigTimerHandle()
 {
     mSaveConfigTimer->stop();
 
-    mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
+    mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
     mMonitoredConfig->writeFile(true);
 
     USD_LOG(LOG_DEBUG,"start send signal....");
