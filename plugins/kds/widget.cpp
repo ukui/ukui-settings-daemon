@@ -298,25 +298,24 @@ int Widget::getCurrentStatus()
             int value = response.arguments().takeFirst().toInt();
             USD_LOG(LOG_DEBUG, "get mode :%s", metaEnum.key(value));
 
-
+//0,1,2,3==>>>0,2,3,1
             switch (value) {
             case UsdBaseClass::eScreenMode::firstScreenMode:
                 value = UsdBaseClass::eScreenMode::firstScreenMode;
                 break;
             case UsdBaseClass::eScreenMode::cloneScreenMode:
-                value = UsdBaseClass::eScreenMode::secondScreenMode;
+                value = UsdBaseClass::eScreenMode::extendScreenMode;
                 break;
             case UsdBaseClass::eScreenMode::extendScreenMode:
-                value = UsdBaseClass::eScreenMode::cloneScreenMode;
+                value = UsdBaseClass::eScreenMode::secondScreenMode;
                 break;
             case UsdBaseClass::eScreenMode::secondScreenMode:
-                value = UsdBaseClass::eScreenMode::extendScreenMode;
+                value = UsdBaseClass::eScreenMode::cloneScreenMode;
                 break;
             default:
                 break;
-
-                return value;
             }
+            return value;
         }
     } else {
         USD_LOG(LOG_DEBUG, "called failed cuz:%s", message.errorName().toLatin1().data());
@@ -411,19 +410,20 @@ void Widget::setScreenModeByDbus(QString modeName)
         return;
     }
 
-    const QStringList ukccModeList = {"first", "second", "copy", "expand"};
+    const QStringList ukccModeList = {"first", "copy", "expand", "second"};
 
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
                                                           DBUS_XRANDR_PATH,
                                                           DBUS_XRANDR_INTERFACE,
                                                           DBUS_XRANDR_SET_MODE);
-
     args.append(modeName);
     args.append(qAppName());
     message.setArguments(args);
 
     ukcciface->call("setScreenMode", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())]);
     QDBusConnection::sessionBus().send(message);
+
+    USD_LOG(LOG_DEBUG,"SetScreenMode:%s:%d", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())].toLatin1().data(), metaEnum.keysToValue(modeName.toLatin1().data()));
 }
 
 void Widget::msgReceiveAnotherOne(const QString &msg)
