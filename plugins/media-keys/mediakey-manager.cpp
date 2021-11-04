@@ -262,6 +262,16 @@ int8_t MediaKeysManager::getCurrentMode()
 
 void MediaKeysManager::initShortcuts()
 {
+
+//    /* WebCam */
+//    QAction *webCam= new QAction(this);
+//    webCam->setObjectName(QStringLiteral("Toggle WebCam"));
+//    webCam->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+//    KGlobalAccel::self()->setDefaultShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
+//    KGlobalAccel::self()->setShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
+//    connect(webCam, &QAction::triggered, this, [this]() {
+//        doAction(WLAN_KEY);
+//    });
     /* WLAN */
     QAction *wlan= new QAction(this);
     wlan->setObjectName(QStringLiteral("Toggle wlan"));
@@ -1921,7 +1931,12 @@ void MediaKeysManager::doWlanAction()
     {
         return;
     }
-    mDeviceWindow->setAction(wlanState ? "ukui-wifi-on" : "ukui-wifi-off");
+    if(wlanState) {
+        mDeviceWindow->setAction("ukui-wifi-on");
+        RfkillSwitch::instance()->turnWifiOn();
+    } else {
+        mDeviceWindow->setAction("ukui-wifi-off");
+    }
     mDeviceWindow->dialogShow();
 }
 
