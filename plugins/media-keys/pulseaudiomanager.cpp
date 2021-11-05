@@ -8,10 +8,9 @@ int g_mute;
 int g_volume;
 
 float g_balance = 0.0f;//声道平衡，设置之前先计算出先前的声道平衡值，设置时，带入计算即可。。
-char p_sinkName[128]="";
-char p_sourceName[128]="";
-int8_t g_testValue = 0;
-bool m_sourceMute = false;
+char g_sinkName[128] = "";
+char g_sourceName[128] = "";
+bool g_sourceMute = false;
 
 pulseAudioManager::pulseAudioManager(QObject *parent)
     :QObject(parent)
@@ -26,13 +25,13 @@ pulseAudioManager::~pulseAudioManager()
         pa_context_disconnect(p_PaCtx);
         pa_context_unref(p_PaCtx);
     }
-     pa_signal_done();
+    pa_signal_done();
     if (nullptr != p_PaMl) {
         pa_mainloop_free(p_PaMl);
     }
 
-
-
+    memset(g_sinkName,0x00,sizeof(g_sinkName));
+    memset(g_sourceName,0x00,sizeof(g_sourceName));
 }
 
 //pulseAudioManager *pulseAudioManager::getIntance()
@@ -68,6 +67,7 @@ void pulseAudioManager::initPulseAudio()
     if (!(p_PaMl)) {
         return;
     }
+
     p_PaMlApi = pa_mainloop_get_api(p_PaMl);
     if (!p_PaMlApi) { return ; }
     p_PaCtx = pa_context_new(p_PaMlApi, description);
@@ -129,7 +129,6 @@ void pulseAudioManager::paActionDoneCallback(pa_context *ctx, int success, void 
 {
     Q_UNUSED(userdata);
     Q_UNUSED(ctx);
-
     if (!success) {
         return;
     }
@@ -145,9 +144,9 @@ void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_i
         return;
     }
 
-    memset(p_sourceName,0x00,sizeof(p_sinkName));
-    memcpy(p_sourceName,so->name,strlen(so->name));
-    m_sourceMute = so->mute;
+    memset(g_sourceName,0x00,sizeof(g_sinkName));
+    memcpy(g_sourceName,so->name,strlen(so->name));
+    g_sourceMute = so->mute;
 }
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
@@ -160,7 +159,7 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
         return;
     }
 
-    if (false == PA_SINK_IS_OPENED(si->state) && strlen(p_sinkName)) {
+    if (false == PA_SINK_IS_OPENED(si->state) && strlen(g_sinkName)) {
         return;
     }
 
@@ -178,8 +177,8 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
 
     g_balance = pa_cvolume_get_balance(&g_GetPaCV,&map);
 
-    memset(p_sinkName,0x00,sizeof(p_sinkName));
-    memcpy(p_sinkName,si->name,strlen(si->name));
+    memset(g_sinkName,0x00,sizeof(g_sinkName));
+    memcpy(g_sinkName,si->name,strlen(si->name));
 
 }
 
@@ -188,7 +187,7 @@ void pulseAudioManager::getSinkVolumeAndSetCallback(pa_context *ctx, const pa_si
     Q_UNUSED(si);
     Q_UNUSED(isLast);
 
-    pa_operation_unref(pa_context_set_sink_volume_by_name(ctx, p_sinkName, (const pa_cvolume *)userdata, paActionDoneCallback, NULL));
+    pa_operation_unref(pa_context_set_sink_volume_by_name(ctx, g_sinkName, (const pa_cvolume *)userdata, paActionDoneCallback, NULL));
 }
 
 void pulseAudioManager::paCvOperationHandle(pa_operation *paOp)
@@ -219,10 +218,10 @@ void pulseAudioManager::setVolume(int Volume)
         return;
     }
 
-    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkVolumeAndSetCallback, pcv);
+    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, g_sinkName, getSinkVolumeAndSetCallback, pcv);
 
     if (nullptr == p_PaOp) {
-        USD_LOG(LOG_ERR, "pa_context_get_sink_info_by_name error![%s]",p_sinkName);
+        USD_LOG(LOG_ERR, "pa_context_get_sink_info_by_name error![%s]",g_sinkName);
         return;
     }
 
@@ -237,8 +236,8 @@ void pulseAudioManager::setMute(bool MuteState)
 {
     Q_UNUSED(MuteState);
 
-    USD_LOG(LOG_DEBUG,"set %s is %d", p_sinkName, MuteState);
-    p_PaOp = pa_context_set_sink_mute_by_name(p_PaCtx, p_sinkName, MuteState, paActionDoneCallback, NULL);
+    USD_LOG(LOG_DEBUG,"set %s is %d", g_sinkName, MuteState);
+    p_PaOp = pa_context_set_sink_mute_by_name(p_PaCtx, g_sinkName, MuteState, paActionDoneCallback, NULL);
 
     if ( nullptr == p_PaOp ) {
 
@@ -262,7 +261,7 @@ void pulseAudioManager::lowVolume(int PerVolume)
 
 bool pulseAudioManager::getMute()
 {
-    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkInfoCallback, NULL);
+    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, g_sinkName, getSinkInfoCallback, NULL);
     if (nullptr == p_PaOp) {
         return 0;
     }
@@ -275,7 +274,7 @@ bool pulseAudioManager::getMute()
 }
 bool pulseAudioManager::getMicMute()
 {
-    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, p_sourceName, getSourceInfoCallback, NULL);
+    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, g_sourceName, getSourceInfoCallback, NULL);
     if (nullptr == p_PaOp) {
         return 0;
     }
@@ -283,12 +282,12 @@ bool pulseAudioManager::getMicMute()
     while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
-    return m_sourceMute;
+    return g_sourceMute;
 }
 
 void pulseAudioManager::setMicMute(bool MuteState)
 {
-    p_PaOp = pa_context_set_source_mute_by_name(p_PaCtx, p_sourceName, MuteState, paActionDoneCallback, NULL);
+    p_PaOp = pa_context_set_source_mute_by_name(p_PaCtx, g_sourceName, MuteState, paActionDoneCallback, NULL);
 
     if ( nullptr == p_PaOp ) {
 
@@ -304,7 +303,7 @@ int pulseAudioManager::getVolume()
 {
     int ret = 0;
 
-    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, p_sinkName, getSinkInfoCallback, NULL);
+    p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, g_sinkName, getSinkInfoCallback, NULL);
     if (nullptr == p_PaOp) {
         return 0;
     }
@@ -343,7 +342,7 @@ bool pulseAudioManager::getMuteAndVolume(int *volume, int *mute)
 
 bool pulseAudioManager::getSourceMute()
 {
-    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, p_sourceName, getSourceInfoCallback, NULL);
+    p_PaOp = pa_context_get_source_info_by_name(p_PaCtx, g_sourceName, getSourceInfoCallback, NULL);
 
     if (nullptr == p_PaOp) {
         return 0;
@@ -356,7 +355,7 @@ bool pulseAudioManager::getSourceMute()
 
 void pulseAudioManager::setSourceMute(bool Mute)
 {
-   pa_context_set_source_mute_by_name(p_PaCtx, p_sourceName, Mute, paActionDoneCallback, NULL);
+   pa_context_set_source_mute_by_name(p_PaCtx, g_sourceName, Mute, paActionDoneCallback, NULL);
 
    if ( nullptr == p_PaOp ) {
 
