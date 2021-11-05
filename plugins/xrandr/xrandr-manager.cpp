@@ -307,11 +307,6 @@ bool checkMatch(int output_width,  int output_height,
 
 
     if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF) {
-//          printf("w_diff is %f, h_diff is %f\n", w_diff, h_diff);
-//        USD_LOG_SHOW_PARAM2(output_width, output_height);
-//        USD_LOG_SHOW_PARAM2F(input_width, input_height);
-//        USD_LOG_SHOW_PARAM2F(w_diff, h_diff);
-//        USD_LOG(LOG_DEBUG,"...right");
         return true;
     }
     else
@@ -383,8 +378,7 @@ void SetTouchscreenCursorRotation()
             int output_mm_width = output_info->mm_width;
             int output_mm_height = output_info->mm_height;
 
-//            USD_LOG_SHOW_PARAM2(output_mm_width,output_mm_height);
-//            USD_LOG_SHOW_PARAM1(output_info->connection);
+
 
             if (output_info->connection == 0) {
                 for ( l = ts_devs; l; l = l->next) {
@@ -407,8 +401,6 @@ void SetTouchscreenCursorRotation()
                                                                     "ID_INPUT_WIDTH_MM");
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
-
-//                        USD_LOG(LOG_DEBUG,"%s %fx%f screen:%dx%d",info->dev_info.name, width,height, output_mm_width, output_mm_height);
 
                         if (checkMatch(output_mm_width, output_mm_height, width, height) || deviceName.toUpper().contains("TOUCHPAD")) {//
                             doAction(info->dev_info.deviceid,output_info->name);
@@ -618,7 +610,7 @@ void XrandrManager::lightLastScreen()
 
 uint8_t XrandrManager::getCurrentRotation()
 {
-    uint8_t ret;
+    uint8_t ret = 1;
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_STATUSMANAGER_NAME,
                                                           DBUS_STATUSMANAGER_PATH,
                                                           DBUS_STATUSMANAGER_NAME,
@@ -830,6 +822,14 @@ void XrandrManager::monitorsInit()
 
         connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+
+            Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+                if (output->name() == senderOutput->name()) {
+                    output->setRotation(senderOutput->rotation());
+                    break;
+                }
+            }
+
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
@@ -877,7 +877,17 @@ void XrandrManager::monitorsInit()
 
     if (mMonitoredConfig->fileExists()){
         USD_LOG(LOG_DEBUG,"read  config:%s.",mMonitoredConfig->filePath().toLatin1().data());
-        mMonitoredConfig = mMonitoredConfig->readFile(false);
+
+        if (UsdBaseClass::isTablet()) {
+            for (const KScreen::OutputPtr &output: mConfig->outputs()) {
+                if (output->isConnected() && output->isEnabled()) {
+                    output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
+                }
+            }
+        }else {
+            mMonitoredConfig = mMonitoredConfig->readFile(false);
+        }
+
         applyConfig();
     } else {
         int foreachTimes = 0;

@@ -81,6 +81,7 @@ private:
 
     QString mSinkName;
     pulseAudioManager *mInstance = nullptr;
+
 };
 
 #endif // PLUSEAUDIOMANAGER_H
