@@ -2,7 +2,8 @@
 #define RFKILLSWITCH_H
 
 #include <QObject>
-
+#include <QFile>
+#include <QTextStream>
 
 extern "C" {
 
@@ -58,9 +59,18 @@ public:
 public:
     bool isVirtualWlan(QString dp);
 
-    int getCurrentWlanMode();
     int getCurrentFlightMode();
     QString toggleFlightMode(bool enable);
+
+    int getCurrentWlanMode();
+    QString getWifiState();
+    bool wifiDeviceIsPresent();
+    void turnWifiOff();
+    void turnWifiOn();
+
+    QString getCameraBusinfo();
+    int getCameraDeviceEnable();
+    QString toggleCameraDevice(QString businfo);
 
 
 

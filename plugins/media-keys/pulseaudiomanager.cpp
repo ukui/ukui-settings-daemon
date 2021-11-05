@@ -160,7 +160,7 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
         return;
     }
 
-    if (false == PA_SINK_IS_OPENED(si->state)) {
+    if (false == PA_SINK_IS_OPENED(si->state) && strlen(p_sinkName)) {
         return;
     }
 
