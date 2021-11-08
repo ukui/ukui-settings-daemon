@@ -25,6 +25,8 @@
 #include "clib-syslog.h"
 #include "rfkillswitch.h"
 
+#include "usd_base_class.h"
+
 MediaKeysManager* MediaKeysManager::mManager = nullptr;
 
 const int VOLUMESTEP = 6;
@@ -414,15 +416,39 @@ void MediaKeysManager::initShortcuts()
     connect(mail, &QAction::triggered, this, [this]() {
         doAction(EMAIL_KEY);
     });
-    /*screensaver*/
-    QAction *screensaver= new QAction(this);
-    screensaver->setObjectName(QStringLiteral("Lock screen"));
-    screensaver->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
-    KGlobalAccel::self()->setShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
-    connect(screensaver, &QAction::triggered, this, [this]() {
-        doAction(SCREENSAVER_KEY);
-    });
+
+    if (false == UsdBaseClass::isTablet()) {
+        /*screensaver*/
+        QAction *screensaver= new QAction(this);
+        screensaver->setObjectName(QStringLiteral("Lock screen"));
+        screensaver->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
+        KGlobalAccel::self()->setShortcut(screensaver, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_L});
+        connect(screensaver, &QAction::triggered, this, [this]() {
+            doAction(SCREENSAVER_KEY);
+        });
+
+        /*peony2*/
+        QAction *peony2= new QAction(this);
+        peony2->setObjectName(QStringLiteral("Open File manager "));
+        peony2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
+        KGlobalAccel::self()->setShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
+        connect(peony2, &QAction::triggered, this, [this]() {
+            doAction(FILE_MANAGER_KEY_2);
+        });
+
+        /*terminal*/
+        QAction *terminal= new QAction(this);
+        terminal->setObjectName(QStringLiteral("Open terminal"));
+        terminal->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
+        KGlobalAccel::self()->setShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
+        connect(terminal, &QAction::triggered, this, [this]() {
+            doAction(TERMINAL_KEY);
+        });
+    }
+
     /*screensaver2*/
     QAction *screensaver2= new QAction(this);
     screensaver2->setObjectName(QStringLiteral("Lock screens"));
@@ -459,16 +485,6 @@ void MediaKeysManager::initShortcuts()
     connect(peony, &QAction::triggered, this, [this]() {
         doAction(FILE_MANAGER_KEY);
     });
-    /*peony2*/
-    QAction *peony2= new QAction(this);
-    peony2->setObjectName(QStringLiteral("Open File manager "));
-    peony2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
-    KGlobalAccel::self()->setShortcut(peony2, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_E});
-    connect(peony2, &QAction::triggered, this, [this]() {
-        doAction(FILE_MANAGER_KEY_2);
-    });
-
 
     /*help*/
     QAction *help= new QAction(this);
@@ -640,15 +656,7 @@ void MediaKeysManager::initShortcuts()
         doPowerOffAction();
     });
 
-    /*terminal*/
-    QAction *terminal= new QAction(this);
-    terminal->setObjectName(QStringLiteral("Open terminal"));
-    terminal->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
-    KGlobalAccel::self()->setShortcut(terminal, QList<QKeySequence>{Qt::CTRL + Qt::ALT + Qt::Key_T});
-    connect(terminal, &QAction::triggered, this, [this]() {
-        doAction(TERMINAL_KEY);
-    });
+
     /*terminal2*/
     QAction *terminal2= new QAction(this);
     terminal2->setObjectName(QStringLiteral("Open Terminal"));
