@@ -10,7 +10,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-settings.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.a11y-keyboard.gschema.xml \
     $$PWD/org.ukui.SettingsDaemon.plugins.auto-brightness.gschema.xml    \
-    $$PWD/org.ukui.SettingsDaemon.plugins.background.gschema.xml    \
+ #   $$PWD/org.ukui.SettingsDaemon.plugins.background.gschema.xml    \
     $$PWD/org.ukui.SettingsDaemon.plugins.clipboard.gschema.xml     \
     $$PWD/org.ukui.SettingsDaemon.plugins.color.gschema.xml         \
     $$PWD/org.ukui.SettingsDaemon.plugins.housekeeping.gschema.xml  \
