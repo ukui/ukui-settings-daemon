@@ -83,18 +83,17 @@ XrandrManager::XrandrManager()
                                   QDBusConnection::ExportAllContents);
     }
 
+    mUkccDbus = new QDBusInterface("org.ukui.ukcc.session",
+                                   "/",
+                                   "org.ukui.ukcc.session.interface",
+                                   QDBusConnection::sessionBus());
+
     mAcitveTime = new QTimer(this);
     mKscreenInitTimer = new QTimer(this);
 
-    {
-        QMetaObject mo = XrandrManager::staticMetaObject;
-        int index = mo.indexOfEnumerator("eScreenMode");
-
-        metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
-    }
+    metaEnum = QMetaEnum::fromType<UsdBaseClass::eScreenMode>();
 
     m_DbusRotation = new QDBusInterface("com.kylin.statusmanager.interface","/","com.kylin.statusmanager.interface",QDBusConnection::sessionBus(),this);
-
     if (nullptr != m_DbusRotation) {
         if (m_DbusRotation->isValid()) {
             connect(m_DbusRotation, SIGNAL(rotations_change_signal(QString)),this,SLOT(RotationChangedEvent(QString)));
@@ -184,7 +183,7 @@ void XrandrManager::XrandrManagerStop()
 static bool
 find_touchscreen_device(Display* display, XIDeviceInfo *dev)
 {
-    int i, j;
+    int i = 0;
     if (dev->use != XISlavePointer) {
         return false;
     }
@@ -426,7 +425,7 @@ void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 /*监听旋转键值回调 并设置旋转角度*/
 void XrandrManager::RotationChangedEvent(const QString &rotation)
 {
-    int value;
+    int value = 0;
     QString angle_Value = rotation;
 
     if (angle_Value == "normal") {
@@ -456,7 +455,7 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
 
 void XrandrManager::applyIdealConfig()
 {
-    const bool showOsd = mMonitoredConfig->data()->connectedOutputs().count() > 1 && !mStartingUp;
+//    const bool showOsd = mMonitoredConfig->data()->connectedOutputs().count() > 1 && !mStartingUp;
     //qDebug()<<"show Sod  is "<<showOsd;
 }
 
@@ -1204,12 +1203,23 @@ void XrandrManager::setScreenMode(QString modeName)
         break;
 
     default:
-        Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
-            USD_LOG_SHOW_OUTPUT(output);
-        }
+
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());
         return;
     }
+
+    ///send screens mode to ukcc(ukui-control-center) by sjh 2021.11.08
+   int screenConnectedCount = 0;
+   Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+       if (true == output->isConnected()) {
+           screenConnectedCount++;
+       }
+   }
+
+   if (screenConnectedCount > 1) {
+        const QStringList ukccModeList = {"first", "copy", "expand", "second"};
+        mUkccDbus->call("setScreenMode", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())]);
+   }
 }
 
 /*

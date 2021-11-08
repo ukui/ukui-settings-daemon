@@ -66,9 +66,6 @@ public:
     QString getScreensParam();
     void initCurrentStatus(int id);
 
-    QDBusInterface * ukcciface;
-
-
 private:
     Ui::Widget *ui;
     QButtonGroup *btnsGroup;

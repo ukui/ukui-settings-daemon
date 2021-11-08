@@ -70,7 +70,6 @@ Widget::Widget(QWidget *parent) :
 Widget::~Widget()
 {
     delete ui;
-    delete ukcciface;
     delete m_scaleSetting;
 }
 
@@ -84,10 +83,6 @@ void Widget::beginSetup()
 
     setAttribute(Qt::WA_TranslucentBackground, true);
 
-    ukcciface = new QDBusInterface("org.ukui.ukcc.session",
-                                   "/",
-                                   "org.ukui.ukcc.session.interface",
-                                   QDBusConnection::sessionBus());
     m_scaleSetting = new QGSettings(XSETTINGS_SCHEMA);
     m_scale = m_scaleSetting->get(XSETTINGS_KEY_SCALING).toDouble();
 
@@ -405,13 +400,9 @@ void Widget::closeApp()
 void Widget::setScreenModeByDbus(QString modeName)
 {
     QList<QVariant> args;
-
     if (modeName.isEmpty()) {
         return;
     }
-
-    const QStringList ukccModeList = {"first", "copy", "expand", "second"};
-
     QDBusMessage message = QDBusMessage::createMethodCall(DBUS_XRANDR_NAME,
                                                           DBUS_XRANDR_PATH,
                                                           DBUS_XRANDR_INTERFACE,
@@ -420,10 +411,7 @@ void Widget::setScreenModeByDbus(QString modeName)
     args.append(qAppName());
     message.setArguments(args);
 
-    ukcciface->call("setScreenMode", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())]);
     QDBusConnection::sessionBus().send(message);
-
-    USD_LOG(LOG_DEBUG,"SetScreenMode:%s:%d", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())].toLatin1().data(), metaEnum.keysToValue(modeName.toLatin1().data()));
 }
 
 void Widget::msgReceiveAnotherOne(const QString &msg)
