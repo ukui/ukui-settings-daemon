@@ -35,7 +35,7 @@ typedef struct {
 /* see http://www.oyranos.org/wiki/index.php?title=ICC_Profiles_in_X_Specification_0.3 */
 #define USD_ICC_PROFILE_IN_X_VERSION_MAJOR      0
 #define USD_ICC_PROFILE_IN_X_VERSION_MINOR      3
-
+bool g_hadQuit = false;
 ColorState::ColorState()
 {
 #ifdef GDK_WINDOWING_X11
@@ -61,22 +61,29 @@ ColorState::ColorState()
 
    client = cd_client_new ();
    cancellable = nullptr;
+   g_hadQuit = false;
 }
 
 ColorState::~ColorState()
 {
+    g_hadQuit = true;
     g_cancellable_cancel (cancellable);
     g_clear_object (&cancellable);
     g_clear_object (&client);
     g_clear_pointer (&edid_cache, g_hash_table_destroy);
     g_clear_pointer (&device_assign_hash, g_hash_table_destroy);
     g_clear_object (&state_screen);
+
 }
 void ColorState::ColorStateSetTemperature(guint temperature)
 {
     if (color_temperature == temperature) {
-        USD_LOG(LOG_DEBUG,".");
-                    return;
+        return;
+    }
+
+    if (g_hadQuit) {
+        USD_LOG(LOG_DEBUG, "usd had quit can't set gamma...");
+        return;
     }
 
     if(temperature < USD_COLOR_TEMPERATURE_MIN)
@@ -1037,6 +1044,11 @@ void ColorState::SessionProfileGammaFindDeviceCb (GObject *object,
                                           GAsyncResult *res,
                                           gpointer user_data)
 {
+    if (g_hadQuit) {
+        USD_LOG(LOG_DEBUG, "usd had quit can't set gamma...");
+        return;
+    }
+
         CdClient *client = CD_CLIENT (object);
         CdDevice *device = NULL;
         GError *error = NULL;
@@ -1209,18 +1221,18 @@ void ColorState::SessionClientConnectCb (GObject *source_object,
     /* is there an available colord instance? */
     ret = cd_client_get_has_server (state->client);
     if (!ret) {
-        qWarning ("There is no colord server available");
+        USD_LOG(LOG_DEBUG, "There is no colord server available");
         return;
     }
-
+     USD_LOG(LOG_DEBUG, "cd_client_get_has_server ok");
     /* add screens */
     mate_rr_screen_refresh (state->state_screen, &error);
     if (error != NULL) {
-        qWarning ("failed to refresh: %s", error->message);
+        USD_LOG(LOG_DEBUG,"failed to refresh: %s", error->message);
         g_error_free (error);
         return;
     }
-
+     USD_LOG(LOG_DEBUG, "mate_rr_screen_refresh ok");
     /* get STATE outputs */
     outputs = mate_rr_screen_list_outputs (state->state_screen);
 

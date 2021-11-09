@@ -76,14 +76,14 @@ ColorManager::ColorManager()
     qt_settings = new QGSettings (QT_THEME_SCHEMA);
     mColorState    = new ColorState();
     mColorProfiles = new ColorProfiles();
-    timer  = new QTimer(this);
+    m_NightChecktimer  = new QTimer(this);
 }
 
 ColorManager::~ColorManager()
 {
-    if (timer) {
-        delete timer;
-        timer = nullptr;
+    if (m_NightChecktimer) {
+        delete m_NightChecktimer;
+        m_NightChecktimer = nullptr;
     }
     if (settings) {
         delete settings;
@@ -404,11 +404,11 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
             theme_now = 0;
         else
             theme_now = 1;
-        if(theme_now){
+
+        if(theme_now) {
             manager->gtk_settings->set(GTK_THEME_KEY, "ukui-black-unity");
             manager->qt_settings->set(QT_THEME_KEY, "ukui-dark");
-        }
-        else{
+        } else {
             manager->gtk_settings->set(GTK_THEME_KEY, "ukui-white-unity");
             manager->qt_settings->set(QT_THEME_KEY, "ukui-light");
         }
@@ -624,8 +624,8 @@ bool ColorManager::ColorManagerStart()
     mColorState->ColorStateStart();
     NightLightRecheck(this);
 
-    connect(timer, SIGNAL(timeout()), this, SLOT(checkTime()));
-    timer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
+    connect(m_NightChecktimer, SIGNAL(timeout()), this, SLOT(checkTime()));
+    m_NightChecktimer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
     StartGeoclue();
 
     connect(settings,SIGNAL(changed(QString)),this,SLOT(SettingsChangedCb(QString)));

@@ -112,7 +112,6 @@ public Q_SLOTS:
     void setScreensParam(QString screensParam);
     void SaveConfigTimerHandle();
     QString getScreesParam();
-
     void screenModeChangedSignal(int mode);
     void screensParamChangedSignal(QString param);
 Q_SIGNALS:
@@ -134,7 +133,7 @@ private:
     QGSettings            *mXsettings = nullptr;
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
-
+    QDBusInterface        *mUkccDbus;
     std::unique_ptr<xrandrConfig> mMonitoredConfig = nullptr;
     KScreen::ConfigPtr mConfig = nullptr;
     xrandrDbus *mDbus;

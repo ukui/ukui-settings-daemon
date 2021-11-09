@@ -44,7 +44,6 @@ Build-Depends: debhelper-compat (=12),
 	       libkf5globalaccel-dev,
 	       libqt5x11extras5-dev,
 	       libukui-common-dev,
-		   colord,
 Standards-Version: 4.5.0
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
@@ -56,6 +55,7 @@ Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
          ukui-settings-daemon-common (= ${source:Version}),
+         colord,
          imwheel,
          ukui-polkit,
          x11-xserver-utils,

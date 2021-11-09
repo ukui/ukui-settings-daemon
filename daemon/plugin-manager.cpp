@@ -140,14 +140,18 @@ bool PluginManager::managerStart()
 void PluginManager::managerStop()
 {
     USD_LOG(LOG_DEBUG, "Stopping settings manager");
+
     while (!mPlugin->isEmpty()) {
         PluginInfo* plugin = mPlugin->takeFirst();
+        USD_LOG(LOG_DEBUG, "start Daectivity plugin: %s ...", plugin->getPluginName().toUtf8().data());
         plugin->pluginDeactivate();
+        USD_LOG(LOG_DEBUG, "Daectivity plugin: %s ...ok", plugin->getPluginName().toUtf8().data());
         //delete plugin;
     }
 
+    USD_LOG(LOG_DEBUG,"Daectivity all plugin over..");
     // exit main event loop
-    QCoreApplication::exit(0);
+    QApplication::exit(0);
 }
 
 bool PluginManager::managerAwake()
@@ -156,7 +160,7 @@ bool PluginManager::managerAwake()
     return managerStart();
 }
 
-static bool is_item_in_schema (const char* const* items, QString& item)
+static bool is_item_in_schema (const gchar* const* items, QString& item)
 {
     while (*items) {
        if (g_strcmp0 (*items++, item.toLatin1().data()) == 0) {

@@ -96,4 +96,6 @@ bool UsdBaseClass::isNotebook()
         qDebug()<<"LidlsPresent: "<<  result.toBool();
         return result.toBool();
     }
+
+    return false;
 }
