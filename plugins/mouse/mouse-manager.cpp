@@ -1758,13 +1758,10 @@ void MouseManager::SetMouseSettings ()
     SetMouseWheelSpeed (settings_mouse->get(KEY_MOUSE_WHEEL_SPEED).toInt());
     SetPlugMouseDisbleTouchpad(settings_touchpad);
 
-    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
 }
 
 void MouseManager::SetTouchSettings ()
 {
-    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
-
     SetTapToClickAll ();
     SetScrollingAll (settings_touchpad);
     SetNaturalScrollAll ();
@@ -1832,6 +1829,7 @@ void MouseManager::MouseManagerIdleCb()
     SetDevicepresenceHandler ();
     SetMouseSettings ();
     SetTouchSettings ();
+    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
     SetLocatePointer (settings_mouse->get(KEY_MOUSE_LOCATE_POINTER).toBool());
     if(checkMouseExists()){
         SetPlugMouseDisbleTouchpad(settings_touchpad);

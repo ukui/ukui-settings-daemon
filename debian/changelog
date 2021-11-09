@@ -1,3 +1,11 @@
+ukui-settings-daemon (3.1.0-1.14) v101; urgency=medium
+
+  * BUG号： 67356 【设置】【触摸板】在设置-设备-触摸板禁用触摸板相关功能，仍可以进行触摸板操作，设置不生效 
+  * 需求说明：无
+  * 其他改动说明：启动时判别项目类型，如果是tablet则直接读取statusmanager提供的角度值，否则从配置文件内获取，增加角度值的监听写入，避免控制面板设置完毕后，启动usd无法恢复的情况
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 09 Nov 2021 20:29:15 +0800
+
 ukui-settings-daemon (3.1.0-1.13) v101; urgency=medium
 
   * BUG号： 88798 【双屏】【必现】win+p调节双屏模式异常-无法通过win+p切换复制模式和拓展模式，切换到仅edp屏幕后会自动到镜像模式，从仅hdmi屏切到拓展屏幕，内置屏幕黑屏  
