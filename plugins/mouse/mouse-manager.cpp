@@ -52,6 +52,11 @@
 #define KEY_TOUCHPAD_BOTTOM_R_C_CLICK_M  "bottom-right-corner-click-menu"   //右下角点击菜单	true/false
 #define KEY_TOUCHPAD_MOUSE_SENSITVITY    "mouse-sensitivity"                //鼠标敏感度	1-4  四个档位  低中高最高
 
+
+extern "C"{
+#include <X11/extensions/XInput2.h>
+}
+
 typedef enum {
         TOUCHPAD_HANDEDNESS_RIGHT,
         TOUCHPAD_HANDEDNESS_LEFT,
@@ -1790,6 +1795,7 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
             if (dpn->devchange == DeviceEnabled) {
+                USD_LOG(LOG_DEBUG,"new add deviced ID  : %d",dpn->deviceid);
                 manager->SetMouseSettings ();
             } else if(dpn->devchange == DeviceRemoved) {
                 manager->SetTouchSettings();

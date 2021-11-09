@@ -22,11 +22,11 @@ OTHER_FILES += \
     $$PWD/org.ukui.SettingsDaemon.plugins.sound.gschema.xml       \
     $$PWD/org.ukui.SettingsDaemon.plugins.sharing.gschema.xml       \
     $$PWD/org.ukui.SettingsDaemon.plugins.tablet-mode.gschema.xml \
+    $$PWD/org.ukui.SettingsDaemon.plugins.xinput.gschema.xml   \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrandr.gschema.xml      \
     $$PWD/org.ukui.SettingsDaemon.plugins.xrdb.gschema.xml        \
     $$PWD/org.ukui.SettingsDaemon.plugins.xsettings.gschema.xml   \
     $$PWD/org.ukui.peripherals-keyboard.gschema.xml         \
-    $$PWD/org.ukui.SettingsDaemon.plugins.xinput.gschema.xml   \
     $$PWD/org.ukui.peripherals-mouse.gschema.xml            \
     $$PWD/org.ukui.peripherals-touchpad.gschema.xml         \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml      \

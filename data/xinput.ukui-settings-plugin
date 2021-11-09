@@ -1,0 +1,9 @@
+[UKUI Settings Plugin]
+Module=xinput
+IAge=0
+Name=Xinput-Device-Manager
+Name[zh_CN]=输入设备管理
+Description=Xinput plugin
+Authors=Zhu Yunpeng
+Copyright=Copyright (C) 2020 KylinSoft Co., Ltd.
+Website=
