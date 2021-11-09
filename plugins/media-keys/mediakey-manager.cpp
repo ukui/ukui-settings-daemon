@@ -85,11 +85,41 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
         sessionBus.registerObject("/org/ukui/SettingsDaemon/MediaKeys",this,
                                   QDBusConnection::ExportAllContents);
     }
+
+    mXEventMonitor = new xEventMonitor(this);
+
+    if (true == UsdBaseClass::isUseXEventAsShutKey()) {
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioMute));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioRaiseVolume));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioLowerVolume));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86MonBrightnessDown));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86MonBrightnessUp));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86RFKill));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_PRINT));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadToggle));
+
+        Q_FOREACH (QString keyName, mXHotKeysName) {
+            int keySum = gdk_keyval_from_name(keyName.toLatin1().data());
+            if (keySum) {
+                mUsdHotKeys.insert(keyName, keySum);
+            } else {
+                USD_LOG(LOG_DEBUG, "can't get %s's keysum by gdk",keyName.toLatin1().data());
+            }
+        }
+    }
+
+
+
 }
 
 MediaKeysManager::~MediaKeysManager()
 {
     delete mTimer;
+
+    if (mXEventMonitor) {
+        mXEventMonitor->deleteLater();
+    }
+
     if (mSettings) {
         delete mSettings;
         mSettings = nullptr;
@@ -274,6 +304,85 @@ void MediaKeysManager::initShortcuts()
 //    connect(webCam, &QAction::triggered, this, [this]() {
 //        doAction(WLAN_KEY);
 //    });
+
+    if (false == UsdBaseClass::isUseXEventAsShutKey()) {
+        /* touchpad */
+        QAction *touchpad= new QAction(this);
+        touchpad->setObjectName(QStringLiteral("Toggle touchpad"));
+        touchpad->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
+        KGlobalAccel::self()->setShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
+        connect(touchpad, &QAction::triggered, this, [this]() {
+            doAction(TOUCHPAD_KEY);
+        });
+
+        /* Brightness Down */
+        QAction *brightDown= new QAction(this);
+        brightDown->setObjectName(QStringLiteral("Brightness down"));
+        brightDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+        KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
+        connect(brightDown, &QAction::triggered, this, [this]() {
+            USD_LOG(LOG_DEBUG,"Brightness down...............");
+            doAction(BRIGHT_DOWN_KEY);
+        });
+
+        /* Brightness Up */
+        QAction *brightUp = new QAction(this);
+        brightUp->setObjectName(QStringLiteral("Brightness Up"));
+        brightUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+        KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
+        connect(brightUp, &QAction::triggered, this, [this]() {
+            USD_LOG(LOG_DEBUG,"Brightness Up ..................");
+            doAction(BRIGHT_UP_KEY);
+        });
+
+        /* sound mute*/
+        QAction *volumeMute= new QAction(this);
+        volumeMute->setObjectName(QStringLiteral("Volume mute"));
+        volumeMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+        KGlobalAccel::self()->setShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
+        connect(volumeMute, &QAction::triggered, this, [this]() {
+            doAction(MUTE_KEY);
+        });
+
+        /*sound down*/
+        QAction *volumeDown= new QAction(this);
+        volumeDown->setObjectName(QStringLiteral("Volume down"));
+        volumeDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+        KGlobalAccel::self()->setShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
+        connect(volumeDown, &QAction::triggered, this, [this]() {
+            doAction(VOLUME_DOWN_KEY);
+        });
+
+        /*sound up*/
+        QAction *volumeUp= new QAction(this);
+        volumeUp->setObjectName(QStringLiteral("Volume up"));
+        volumeUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+        KGlobalAccel::self()->setShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
+        connect(volumeUp, &QAction::triggered, this, [this]() {
+            doAction(VOLUME_UP_KEY);
+        });
+
+        /*screenshot*/
+        QAction *screenshot= new QAction(this);
+        screenshot->setObjectName(QStringLiteral("Take a screenshot"));
+        screenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
+        KGlobalAccel::self()->setShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
+        connect(screenshot, &QAction::triggered, this, [this]() {
+            if(!mTimer->isActive()){
+                mTimer->singleShot(1000, this, [=]() {
+                    doAction(SCREENSHOT_KEY);
+                });
+            }
+        });
+    }
+
     /* WLAN */
     QAction *wlan= new QAction(this);
     wlan->setObjectName(QStringLiteral("Toggle wlan"));
@@ -284,65 +393,8 @@ void MediaKeysManager::initShortcuts()
         doAction(WLAN_KEY);
     });
 
-    /* touchpad */
-    QAction *touchpad= new QAction(this);
-    touchpad->setObjectName(QStringLiteral("Toggle touchpad"));
-    touchpad->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
-    KGlobalAccel::self()->setShortcut(touchpad, QList<QKeySequence>{Qt::Key_TouchpadToggle});
-    connect(touchpad, &QAction::triggered, this, [this]() {
-        doAction(TOUCHPAD_KEY);
-    });
 
-    QAction *brightDown= new QAction(this);
-    brightDown->setObjectName(QStringLiteral("Brightness down"));
-    brightDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
-    KGlobalAccel::self()->setShortcut(brightDown, QList<QKeySequence>{Qt::Key_MonBrightnessDown});
-    connect(brightDown, &QAction::triggered, this, [this]() {
-        USD_LOG(LOG_DEBUG,"Brightness down...............");
-        doAction(BRIGHT_DOWN_KEY);
-    });
 
-    QAction *brightUp = new QAction(this);
-    brightUp->setObjectName(QStringLiteral("Brightness Up"));
-    brightUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
-    KGlobalAccel::self()->setShortcut(brightUp, QList<QKeySequence>{Qt::Key_MonBrightnessUp});
-    connect(brightUp, &QAction::triggered, this, [this]() {
-        USD_LOG(LOG_DEBUG,"Brightness Up ..................");
-        doAction(BRIGHT_UP_KEY);
-    });
-
-    /* sound mute*/
-    QAction *volumeMute= new QAction(this);
-    volumeMute->setObjectName(QStringLiteral("Volume mute"));
-    volumeMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
-    KGlobalAccel::self()->setShortcut(volumeMute, QList<QKeySequence>{Qt::Key_VolumeMute});
-    connect(volumeMute, &QAction::triggered, this, [this]() {
-        doAction(MUTE_KEY);
-    });
-
-    /*sound down*/
-    QAction *volumeDown= new QAction(this);
-    volumeDown->setObjectName(QStringLiteral("Volume down"));
-    volumeDown->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
-    KGlobalAccel::self()->setShortcut(volumeDown, QList<QKeySequence>{Qt::Key_VolumeDown});
-    connect(volumeDown, &QAction::triggered, this, [this]() {
-        doAction(VOLUME_DOWN_KEY);
-    });
-
-    /*sound up*/
-    QAction *volumeUp= new QAction(this);
-    volumeUp->setObjectName(QStringLiteral("Volume up"));
-    volumeUp->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
-    KGlobalAccel::self()->setShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
-    connect(volumeUp, &QAction::triggered, this, [this]() {
-        doAction(VOLUME_UP_KEY);
-    });
 
     /*mic mute*/
     QAction *micMute= new QAction(this);
@@ -476,6 +528,7 @@ void MediaKeysManager::initShortcuts()
     connect(ukuiControlCenter2, &QAction::triggered, this, [this]() {
         doAction(SETTINGS_KEY_2);
     });
+
     /*peony*/
     QAction *peony= new QAction(this);
     peony->setObjectName(QStringLiteral("Open file manager"));
@@ -666,19 +719,7 @@ void MediaKeysManager::initShortcuts()
     connect(terminal2, &QAction::triggered, this, [this]() {
         doAction(TERMINAL_KEY);
     });
-    /*screenshot*/
-    QAction *screenshot= new QAction(this);
-    screenshot->setObjectName(QStringLiteral("Take a screenshot"));
-    screenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
-    KGlobalAccel::self()->setShortcut(screenshot, QList<QKeySequence>{Qt::Key_Print});
-    connect(screenshot, &QAction::triggered, this, [this]() {
-        if(!mTimer->isActive()){
-            mTimer->singleShot(1000, this, [=]() {
-                doAction(SCREENSHOT_KEY);
-            });
-        }
-    });
+
     /*window screenshot*/
     QAction *wScreenshot= new QAction(this);
     wScreenshot->setObjectName(QStringLiteral("Take a screenshot of a window"));
@@ -827,7 +868,7 @@ void MediaKeysManager::mediaKeysStop()
 
     USD_LOG(LOG_DEBUG, "Stooping media keys manager!");
 
-    XEventMonitor::instance()->exit();
+//    XEventMonitor::instance()->exit();
 
     /*
     gdk_window_remove_filter(gdk_screen_get_root_window(gdk_screen_get_default()),
@@ -939,13 +980,54 @@ void MediaKeysManager::XkbEventsPress(const QString &keyStr)
     }
 }
 
+void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
+    Display* display;
+    guint eventKeysym;
+
+    display =  QX11Info::display();
+
+    xEvent * event = (xEvent *)data;
+    eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+
+    QString keyName = mUsdHotKeys.key(eventKeysym);
+
+    if (keyName.isEmpty()) {
+        return;
+    }
+
+    if (keyName == X_SHUTKEY_XF86AudioMute) {
+       xEventHandle(MUTE_KEY, event);
+
+    } else if (keyName == X_SHUTKEY_XF86AudioLowerVolume) {
+        doAction(VOLUME_DOWN_KEY);
+
+    } else if (keyName == X_SHUTKEY_XF86AudioRaiseVolume) {
+        doAction(VOLUME_UP_KEY);
+
+    } else if (keyName == X_SHUTKEY_XF86MonBrightnessDown) {
+        doAction(BRIGHT_DOWN_KEY);
+
+    } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
+        doAction(BRIGHT_UP_KEY);
+
+    } else if (keyName == X_SHUTKEY_PRINT) {
+        xEventHandle(SCREENSHOT_KEY, event);
+
+    } else if (keyName == X_SHUTKEY_XF86RFKill) {
+        xEventHandle(WLAN_KEY, event);
+
+    } else if (keyName == X_SHUTKEY_XF86TouchpadToggle) {
+        xEventHandle(TOUCHPAD_KEY, event);
+    }
+
+
+    return;
+}
+
 void MediaKeysManager::initXeventMonitor()
 {
-    XEventMonitor::instance()->start();
-    connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),
-            this, SLOT(XkbEventsRelease(QString)));
-    connect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),
-            this, SLOT(XkbEventsPress(QString)));
+    connect(mXEventMonitor, SIGNAL(keyPress(xEvent*)), this, SLOT(MMhandleRecordEvent(xEvent*)), Qt::QueuedConnection);
+    connect(mXEventMonitor, SIGNAL(keyRelease(xEvent*)), this, SLOT(MMhandleRecordEvent(xEvent*)), Qt::QueuedConnection);
 }
 
 void MediaKeysManager::initScreens()

@@ -27,7 +27,8 @@ SOURCES += \
         pulseaudiomanager.cpp \
         volumewindow.cpp \
         mediakey-manager.cpp \
-        mediakey-plugin.cpp
+        mediakey-plugin.cpp \
+        xEventMonitor.cpp
 
 HEADERS += \
     acme.h \
@@ -35,7 +36,8 @@ HEADERS += \
     pulseaudiomanager.h \
     volumewindow.h      \
     mediakey-manager.h  \
-    mediakey-plugin.h
+    mediakey-plugin.h   \
+    xEventMonitor.h
 
 FORMS += \
     devicewindow.ui \

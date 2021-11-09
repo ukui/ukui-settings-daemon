@@ -33,6 +33,7 @@ public:
 
     static bool isLoongarch();
 
+    static bool isUseXEventAsShutKey();
 };
 
 #endif // USDBASECLASS_H

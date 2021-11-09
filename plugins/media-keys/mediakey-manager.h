@@ -34,11 +34,12 @@
 #include "volumewindow.h"
 #include "devicewindow.h"
 #include "acme.h"
-#include "xeventmonitor.h"
 #include "pulseaudiomanager.h"
 #include "usd_base_class.h"
 
 #include "usd_global_define.h"
+#include "xEventMonitor.h"
+
 
 #ifdef signals
 #undef signals
@@ -55,6 +56,8 @@ extern "C"{
 #include "ukui-input-helper.h"
 }
 
+
+
 /** this value generate from mpris serviceRegisteredSlot(const QString&)
  *  这个值一般由mpris插件的serviceRegisteredSlot(const QString&)传递
  */
@@ -62,7 +65,7 @@ typedef struct{
     QString application;
     uint time;
 }MediaPlayer;
-
+typedef QMap<QString, uint32_t> HotKeys;
 class MediaKeysManager:public QObject
 {
     Q_OBJECT
@@ -150,7 +153,7 @@ private Q_SLOTS:
     void updateKbdCallback(const QString&);
     void XkbEventsPress(const QString &keyStr);
     void XkbEventsRelease(const QString &keyStr);
-
+    void MMhandleRecordEvent(xEvent* data);
 Q_SIGNALS:
     /** media-keys plugin will emit this signal by org.ukui.SettingsDaemon.MediaKeys
      *  when listen some key Pressed(such as XF86AudioPlay 、XF86AudioPause 、XF86AudioForward)
@@ -176,6 +179,7 @@ private:
 
     QProcess          *mExecCmd;
     GdkScreen         *mCurrentScreen;  //current GdkScreen
+    xEventMonitor *mXEventMonitor = nullptr;
 
 //    MateMixerStream   *mStream;
 //    MateMixerContext  *mContext;
@@ -186,7 +190,8 @@ private:
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
-
+    HotKeys mUsdHotKeys;
+    QStringList mXHotKeysName;      //所有全局的快捷键名字，根据这个名字在X里面反射出对应的keysum，然后与xevent的keysum进行匹配后处理
     int                power_state = 4;
     bool               m_ctrlFlag = false;
 };
