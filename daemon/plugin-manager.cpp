@@ -151,7 +151,6 @@ void PluginManager::managerStop()
 
     USD_LOG(LOG_DEBUG,"Daectivity all plugin over..");
     // exit main event loop
-//    QCoreApplication::exit(0);
     QApplication::exit(0);
 }
 

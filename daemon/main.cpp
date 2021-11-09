@@ -42,8 +42,6 @@ static bool replace         = false;
 void handler(int no)
 {
     USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no)
-//    exit(no);
-//    QCoreApplication::instance()->exit(no);
     QApplication::instance()->exit(no);
 }
 
@@ -78,13 +76,11 @@ int main (int argc, char* argv[])
         return 0;
     }
 
-
     bool res = manager->managerStart();
     if (!res) {
         qDebug( "manager start error!");
         return 0;
     }
-
 
     USD_LOG(LOG_INFO, "ukui-settings-daemon started!");
     return app.exec();

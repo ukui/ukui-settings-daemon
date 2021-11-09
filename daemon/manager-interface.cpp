@@ -10,7 +10,7 @@
  */
 
 #include "manager-interface.h"
-
+#include "clib-syslog.h"
 /*
  * Implementation of interface class OrgUkuiSettingsDaemonInterface
  */
@@ -22,5 +22,6 @@ PluginManagerDBus::PluginManagerDBus(const QString &service, const QString &path
 
 PluginManagerDBus::~PluginManagerDBus()
 {
+//    USD_LOG(LOG_DEBUG,"exit....");
 }
 
