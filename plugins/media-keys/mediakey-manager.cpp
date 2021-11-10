@@ -2103,8 +2103,10 @@ void MediaKeysManager::GrabMediaPlayerKeys(QString app)
 
 void MediaKeysManager::mediaKeyForOtherApp(int action,QString appName)
 {
-    USD_LOG(LOG_DEBUG,"action:%d appName:%s",action, appName.toLatin1().data());
-    doAction(action);
+    Q_UNUSED(action);
+    Q_UNUSED(appName);
+//    USD_LOG(LOG_DEBUG,"action:%d appName:%s",action, appName.toLatin1().data());
+//    doAction(action);
 }
 /**
  * @brief MediaKeysManager::ReleaseMediaPlayerKeys
