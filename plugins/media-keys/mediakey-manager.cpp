@@ -97,6 +97,7 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86RFKill));
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_PRINT));
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadToggle));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioMicMute));
 
         Q_FOREACH (QString keyName, mXHotKeysName) {
             int keySum = gdk_keyval_from_name(keyName.toLatin1().data());
@@ -381,6 +382,16 @@ void MediaKeysManager::initShortcuts()
                 });
             }
         });
+
+        /*mic mute*/
+        QAction *micMute= new QAction(this);
+        micMute->setObjectName(QStringLiteral("Mic mute"));
+        micMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+        KGlobalAccel::self()->setShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
+        connect(micMute, &QAction::triggered, this, [this]() {
+            doAction(MIC_MUTE_KEY);
+        });
     }
 
     /* WLAN */
@@ -395,16 +406,6 @@ void MediaKeysManager::initShortcuts()
 
 
 
-
-    /*mic mute*/
-    QAction *micMute= new QAction(this);
-    micMute->setObjectName(QStringLiteral("Mic mute"));
-    micMute->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
-    KGlobalAccel::self()->setShortcut(micMute, QList<QKeySequence>{Qt::Key_MicMute});
-    connect(micMute, &QAction::triggered, this, [this]() {
-        doAction(MIC_MUTE_KEY);
-    });
     /*shutdown*/
     QAction *powerDown= new QAction(this);
     powerDown->setObjectName(QStringLiteral("Shut down"));
@@ -1018,6 +1019,10 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
 
     } else if (keyName == X_SHUTKEY_XF86TouchpadToggle) {
         xEventHandle(TOUCHPAD_KEY, event);
+
+    } else if (keyName == X_SHUTKEY_XF86AudioMicMute) {
+        xEventHandle(MIC_MUTE_KEY, event);
+
     }
 
 

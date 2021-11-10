@@ -64,7 +64,7 @@ void xEventMonitor::run()
         return;
     }
 
-    if (!XRecordEnableContext(display_datalink,                  context,  callback, (XPointer) this)) {
+    if (!XRecordEnableContext(display_datalink, context, callback, (XPointer) this)) {
 //        fprintf(stderr, "XRecordEnableContext() failed\n");
         USD_LOG(LOG_DEBUG,"XRecordEnableContext() failed\n");
         return;
@@ -90,28 +90,29 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
             goto ERR;
         }
 
+
         switch (event->u.u.type) {
         case KeyPress:
             switch(event->u.u.detail){
-            case 0x32:
+            case LEFT_SHIFT:
                 shiftPress_l = true;
                 break;
-            case 0x25:
+            case LEFT_CTRL:
                 ctrlPress_l = true;
                 break;
-            case 0x40:
+            case LEFT_ALT:
                 altPress_l = true;
                 break;
-            case 0x3e:
+            case RIGHT_SHIFT:
                 shiftPress_r = true;
                 break;
-            case 0x6c:
+            case RIGHT_ALT:
                 altPress_r = true;
                 break;
-            case 0x69:
+            case RIGHT_CTRL:
                  ctrlPress_r = true;
                 break;
-             case 0x85:
+             case MATE_KEY:
                  winPress = true;
                 break;
              default :
@@ -121,25 +122,25 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
             break;
         case KeyRelease:
             switch(event->u.u.detail){
-            case 0x32:
+            case LEFT_SHIFT:
                 shiftPress_l = false;
                 break;
-            case 0x25:
+            case LEFT_CTRL:
                 ctrlPress_l = false;
                 break;
-            case 0x40:
+            case RIGHT_SHIFT:
                 altPress_l = false;
                 break;
-            case 0x3e:
+            case RIGHT_SHIFT:
                 shiftPress_r = false;
                 break;
-            case 0x6c:
+            case RIGHT_ALT:
                 altPress_r = false;
                 break;
-            case 0x69:
+            case RIGHT_CTRL:
                 ctrlPress_r = false;
                 break;
-            case 0x85:
+            case MATE_KEY:
                 winPress = false;
                 break;
             default :
