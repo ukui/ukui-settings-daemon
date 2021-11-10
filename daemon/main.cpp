@@ -41,7 +41,6 @@ static bool replace         = false;
 PluginManager*  manager = nullptr;
 void handler(int no)
 {
-    printf("fuck\n");
     USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no);
 //    manager->managerStop();
     QApplication::exit(0);
