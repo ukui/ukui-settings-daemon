@@ -25,6 +25,14 @@
 
 /*Xorg shutkey name*/
 
+#define LEFT_SHIFT 0x32
+#define LEFT_CTRL   0x25
+#define LEFT_ALT    0x40
+#define RIGHT_SHIFT 0x3E
+#define RIGHT_ALT 0x6C
+#define RIGHT_CTRL 0x69
+#define MATE_KEY 0x85
+
 #define xEventHandle(action,xEvent)       static bool action##hadRelease = false; \
                                                     if (xEvent->u.u.type == USD_BTN_RELEASE) {   \
                                                         action##hadRelease = false;         \
@@ -41,7 +49,9 @@
 #define X_SHUTKEY_XF86MonBrightnessUp       "XF86MonBrightnessUp"
 #define X_SHUTKEY_XF86RFKill                "XF86RFKill"
 #define X_SHUTKEY_PRINT                     "Print"     //截图
-#define X_SHUTKEY_XF86TouchpadToggle        "XF86TouchpadToggle"     //截图
+#define X_SHUTKEY_XF86TouchpadToggle        "XF86TouchpadToggle"     //触摸板
+#define X_SHUTKEY_XF86AudioMicMute        "XF86AudioMicMute"     //静音
+
 /*Xorg shutkey nameEnd*/
 
 #endif // USD_GLOBAL_DEFINE_H

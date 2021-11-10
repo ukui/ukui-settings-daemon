@@ -21,6 +21,7 @@
 
 extern "C"{
 #include "clib-syslog.h"
+#include "usd_global_define.h"
 }
 
 
