@@ -73,6 +73,7 @@ enum {
         KDS_KEY,
         KDS_KEY2,
         WLAN_KEY,
+        WEBCAM_KEY,
         HANDLED_KEYS,
         UKUI_SIDEBAR,
         UKUI_EYECARE_CENTER,
