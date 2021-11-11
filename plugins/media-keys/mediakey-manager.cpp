@@ -392,6 +392,33 @@ void MediaKeysManager::initShortcuts()
         connect(micMute, &QAction::triggered, this, [this]() {
             doAction(MIC_MUTE_KEY);
         });
+
+        /*window screenshot*/
+        QAction *wScreenshot= new QAction(this);
+        wScreenshot->setObjectName(QStringLiteral("Take a screenshot of a window"));
+        wScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
+        KGlobalAccel::self()->setShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
+        connect(wScreenshot, &QAction::triggered, this, [this]() {
+            if(!mTimer->isActive()){
+                mTimer->singleShot(1000, this, [=]() {
+                    doAction(WINDOW_SCREENSHOT_KEY);
+                });
+            }
+        });
+        /*area screenshot*/
+        QAction *aScreenshot= new QAction(this);
+        aScreenshot->setObjectName(QStringLiteral("Take a screenshot of an area"));
+        aScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
+        KGlobalAccel::self()->setShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
+        connect(aScreenshot, &QAction::triggered, this, [this]() {
+            if(!mTimer->isActive()){
+                mTimer->singleShot(1000, this, [=]() {
+                    doAction(AREA_SCREENSHOT_KEY);
+                });
+            }
+        });
     }
 
     /* WLAN */
@@ -721,32 +748,7 @@ void MediaKeysManager::initShortcuts()
         doAction(TERMINAL_KEY);
     });
 
-    /*window screenshot*/
-    QAction *wScreenshot= new QAction(this);
-    wScreenshot->setObjectName(QStringLiteral("Take a screenshot of a window"));
-    wScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
-    KGlobalAccel::self()->setShortcut(wScreenshot, QList<QKeySequence>{Qt::CTRL + Qt::Key_Print});
-    connect(wScreenshot, &QAction::triggered, this, [this]() {
-        if(!mTimer->isActive()){
-            mTimer->singleShot(1000, this, [=]() {
-                doAction(WINDOW_SCREENSHOT_KEY);
-            });
-        }
-    });
-    /*area screenshot*/
-    QAction *aScreenshot= new QAction(this);
-    aScreenshot->setObjectName(QStringLiteral("Take a screenshot of an area"));
-    aScreenshot->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
-    KGlobalAccel::self()->setShortcut(aScreenshot, QList<QKeySequence>{Qt::SHIFT + Qt::Key_Print});
-    connect(aScreenshot, &QAction::triggered, this, [this]() {
-        if(!mTimer->isActive()){
-            mTimer->singleShot(1000, this, [=]() {
-                doAction(AREA_SCREENSHOT_KEY);
-            });
-        }
-    });
+
     /*window switch*/
     QAction *wSwitch= new QAction(this);
     wSwitch->setObjectName(QStringLiteral("open windows switch"));
@@ -1011,9 +1013,15 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
     } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
         doAction(BRIGHT_UP_KEY);
 
+    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getShiftPressStatus()) {
+        xEventHandle(AREA_SCREENSHOT_KEY, event);
+        USD_LOG(LOG_DEBUG,".");
+    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getCtrlPressStatus()) {
+        xEventHandle(WINDOW_SCREENSHOT_KEY, event);
+        USD_LOG(LOG_DEBUG,".");
     } else if (keyName == X_SHUTKEY_PRINT) {
         xEventHandle(SCREENSHOT_KEY, event);
-
+        USD_LOG(LOG_DEBUG,".");
     } else if (keyName == X_SHUTKEY_XF86RFKill) {
         xEventHandle(WLAN_KEY, event);
 

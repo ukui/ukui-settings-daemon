@@ -25,21 +25,16 @@ extern "C"{
 }
 
 
-class EventMonitor_t : public QThread
+class xEventMonitor : public QThread
 {
     Q_OBJECT
 
 public:
-    EventMonitor_t(QObject *parent = 0);
-    bool winPress=false;
-    bool ctrlPress_l=false;
-    bool altPress_l=false;
-    bool shiftPress_l = false;
-
-
-    bool ctrlPress_r=false;
-    bool altPress_r=false;
-    bool shiftPress_r = false;
+    xEventMonitor(QObject *parent = 0);
+    bool getWinPressStatus();
+    bool getCtrlPressStatus();
+    bool getAltPressStatus();
+    bool getShiftPressStatus();
 
 Q_SIGNALS:
     void buttonPress(int x, int y);
@@ -56,6 +51,17 @@ protected:
     void run();
 
 private:
+    bool winPress=false;
+    bool ctrlPress_l=false;
+    bool altPress_l=false;
+    bool shiftPress_l = false;
+
+
+    bool ctrlPress_r=false;
+    bool altPress_r=false;
+    bool shiftPress_r = false;
+
+
     bool isPress;
 };
 
