@@ -517,18 +517,37 @@ void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
 
 }
 
+void XrandrManager::sendScreenModeToDbus()
+{
+    const QStringList ukccModeList = {"first", "copy", "expand", "second"};
+    int screenConnectedCount = 0;
+    int screenMode = discernScreenMode();
+
+    mDbus->sendModeChangeSignal(screenMode);
+    mDbus->sendScreensParamChangeSignal(mMonitoredConfig->getScreensParam());
+
+    ///send screens mode to ukcc(ukui-control-center) by sjh 2021.11.08
+
+   Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+       if (true == output->isConnected()) {
+           screenConnectedCount++;
+       }
+   }
+
+   if (screenConnectedCount > 1) {
+        mUkccDbus->call("setScreenMode", ukccModeList[screenMode]);
+   } else {
+        mUkccDbus->call("setScreenMode", ukccModeList[0]);
+   }
+}
+
 void XrandrManager::applyConfig()
 {
     connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
         SetTouchscreenCursorRotation();
-        mMonitoredConfig->writeFile(true);//首次接入
-        Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
-            if (output->isConnected()) {
-                USD_LOG_SHOW_OUTPUT(output);
-            }
-        }
+        sendScreenModeToDbus();
     });
 }
 
@@ -742,9 +761,7 @@ void XrandrManager::SaveConfigTimerHandle()
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
     mMonitoredConfig->writeFile(true);
 
-    USD_LOG(LOG_DEBUG,"start send signal....");
-    mDbus->sendModeChangeSignal(discernScreenMode());
-    mDbus->sendScreensParamChangeSignal(mMonitoredConfig->getScreensParam());
+    sendScreenModeToDbus();
 }
 
 QString XrandrManager::getScreesParam()
@@ -1207,19 +1224,7 @@ void XrandrManager::setScreenMode(QString modeName)
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());
         return;
     }
-
-    ///send screens mode to ukcc(ukui-control-center) by sjh 2021.11.08
-   int screenConnectedCount = 0;
-   Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
-       if (true == output->isConnected()) {
-           screenConnectedCount++;
-       }
-   }
-
-   if (screenConnectedCount > 1) {
-        const QStringList ukccModeList = {"first", "copy", "expand", "second"};
-        mUkccDbus->call("setScreenMode", ukccModeList[metaEnum.keysToValue(modeName.toLatin1().data())]);
-   }
+    sendScreenModeToDbus();
 }
 
 /*

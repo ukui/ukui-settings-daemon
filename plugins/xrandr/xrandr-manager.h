@@ -99,7 +99,7 @@ public:
     bool readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode);
     int8_t getCurrentMode();
     uint8_t getCurrentRotation();
-
+    void sendScreenModeToDbus();
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();

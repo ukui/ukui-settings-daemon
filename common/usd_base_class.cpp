@@ -29,6 +29,11 @@ bool UsdBaseClass::isMasterSP1()
     return false;
 }
 
+bool UsdBaseClass::isUseXEventAsShutKey()
+{
+    return true;
+}
+
 bool UsdBaseClass::isTablet()
 {
     static QString projectCode = nullptr;

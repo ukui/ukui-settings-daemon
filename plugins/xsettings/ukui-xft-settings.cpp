@@ -339,11 +339,10 @@ void UkuiXftSettings::xft_settings_set_xresources ()
     }
 
     QDir dir;
-    QString FilePath = dir.homePath() + "/.Xresources";
+    QString FilePath = dir.homePath() + "/.xresources";
     QFile file;
-    QString date = QString("Xft.dpi:%1\n"
-                           "Xcursor.size:%2\n"
-                           "Xcursor.theme:%3").arg(scaled_dpi/1024).arg(cursor_size).arg(cursor_theme);
+    QString date = QString("Xcursor.size:%1\n"
+                           "Xcursor.theme:%2").arg(cursor_size).arg(cursor_theme);
     file.setFileName(FilePath);
     if(file.open(QIODevice::WriteOnly | QIODevice::Text)){
         file.write(date.toLatin1().data());

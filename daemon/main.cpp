@@ -38,11 +38,12 @@ static void stop_daemon ();
 
 static bool no_daemon       = true;
 static bool replace         = false;
-
+PluginManager*  manager = nullptr;
 void handler(int no)
 {
-    USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no)
-    QApplication::instance()->exit(no);
+    USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no);
+//    manager->managerStop();
+    QApplication::exit(0);
 }
 
 int main (int argc, char* argv[])
@@ -55,13 +56,13 @@ int main (int argc, char* argv[])
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
 #endif
 
-    PluginManager*  manager = nullptr;
+
     QApplication app(argc, argv);
 
     USD_LOG (LOG_DEBUG, "Activating %s plugin compilation time:[%s] [%s]",MODULE_NAME,__DATE__,__TIME__);
 
 
-    signal(SIGTERM, handler);
+    signal(SIGTERM, &handler);
     QApplication::setQuitOnLastWindowClosed(false);
 
     QTranslator translator;
