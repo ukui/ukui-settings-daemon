@@ -1521,32 +1521,28 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
     }
     return false;
 }
-// while remove mouse
-bool SetEnableTouchpad(XDeviceInfo *device_info,
-                       QGSettings  *settings)
-{
-    QString name;
-    name = device_info->name;
-    bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
-    bool Pusb = name.contains("USB", Qt::CaseInsensitive);
-    if(!Pmouse && Pusb) {
-        settings->set(KEY_TOUCHPAD_ENABLED, true);
-        return true;
-    }
-    return false;
-}
 
+
+// while remove mouse
 void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
 {
     int numdevices, i;
+    bool isMouse = false;
     XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
     if (devicelist == NULL){
         return;
     }
     for (i = 0; i < numdevices; i++) {
-        if(SetEnableTouchpad (&devicelist[i], settings)) {
-            break;
+        QString name;
+        name = devicelist[i].name;
+        bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
+        bool Pusb = name.contains("USB", Qt::CaseInsensitive);
+        if(Pmouse && Pusb) {
+            isMouse = true;
         }
+    }
+    if(!isMouse) {
+        settings->set(KEY_TOUCHPAD_ENABLED, true);
     }
     XFreeDeviceList (devicelist);
 }
@@ -1763,13 +1759,10 @@ void MouseManager::SetMouseSettings ()
     SetMouseWheelSpeed (settings_mouse->get(KEY_MOUSE_WHEEL_SPEED).toInt());
     SetPlugMouseDisbleTouchpad(settings_touchpad);
 
-    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
 }
 
 void MouseManager::SetTouchSettings ()
 {
-    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
-
     SetTapToClickAll ();
     SetScrollingAll (settings_touchpad);
     SetNaturalScrollAll ();
@@ -1838,6 +1831,7 @@ void MouseManager::MouseManagerIdleCb()
     SetDevicepresenceHandler ();
     SetMouseSettings ();
     SetTouchSettings ();
+    SetDisableWTyping (settings_touchpad->get(KEY_TOUCHPAD_DISABLE_W_TYPING).toBool());
     SetLocatePointer (settings_mouse->get(KEY_MOUSE_LOCATE_POINTER).toBool());
     if(checkMouseExists()){
         SetPlugMouseDisbleTouchpad(settings_touchpad);
