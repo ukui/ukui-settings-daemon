@@ -393,6 +393,7 @@ void MediaKeysManager::initShortcuts()
             doAction(MIC_MUTE_KEY);
         });
 
+
         /*window screenshot*/
         QAction *wScreenshot= new QAction(this);
         wScreenshot->setObjectName(QStringLiteral("Take a screenshot of a window"));
@@ -419,6 +420,7 @@ void MediaKeysManager::initShortcuts()
                 });
             }
         });
+
     }
 
     /* WLAN */
