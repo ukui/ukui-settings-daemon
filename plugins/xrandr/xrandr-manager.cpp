@@ -140,9 +140,7 @@ void XrandrManager::getInitialConfig()
         mDbus->mScreenMode = discernScreenMode();
 
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
-        USD_LOG(LOG_DEBUG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!mDbus mode:%s!!!!!!!!!!!!!!!!!!!!!!!1",metaEnum.key(mDbus->mScreenMode));
     });
-    USD_LOG(LOG_DEBUG,"kscreen init ..");
 }
 
 XrandrManager::~XrandrManager()
@@ -914,9 +912,7 @@ void XrandrManager::monitorsInit()
             if (1==connectedOutputCount){
                 outputChangedHandle(output.data());
                 break;
-            }
-            else {
-
+            } else {
                 if (output->isConnected()){
                     foreachTimes++;
                 }
@@ -951,7 +947,7 @@ bool XrandrManager::checkPrimaryScreenIsSetable()
     if (nullptr == mMonitoredConfig->data()->primaryOutput()){
         USD_LOG(LOG_DEBUG,"can't find primary screen.");
         Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
-            if (output->isConnected()){
+            if (output->isConnected()) {
                 output->setPrimary(true);
                 output->setEnabled(true);
                 USD_LOG(LOG_DEBUG,"set %s as primary screen.",output->name().toLatin1().data());
@@ -965,9 +961,7 @@ bool XrandrManager::checkPrimaryScreenIsSetable()
 
 bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode eMode)
 {
-
-     if (UsdBaseClass::isTablet())
-     {
+     if (UsdBaseClass::isTablet()) {
          return false;
      }
 
@@ -1000,7 +994,6 @@ void XrandrManager::TabletSettingsChanged(const bool tablemode)
 
 void XrandrManager::setScreenModeToClone()
 {
-
     int rtResolution = 0;
     int bigestResolution = 0;
     bool hadFindFirstScreen = false;
@@ -1203,22 +1196,25 @@ void XrandrManager::setScreenMode(QString modeName)
 
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
+
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
         setScreenModeToClone();
         break;
     case UsdBaseClass::eScreenMode::firstScreenMode:
+
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
         setScreenModeToFirst(true);
         break;
     case UsdBaseClass::eScreenMode::secondScreenMode:
+
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
         setScreenModeToFirst(false);
         break;
     case UsdBaseClass::eScreenMode::extendScreenMode:
+
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
         setScreenModeToExtend();
         break;
-
     default:
 
         USD_LOG(LOG_DEBUG,"set mode fail can't set to %s",modeName.toLatin1().data());

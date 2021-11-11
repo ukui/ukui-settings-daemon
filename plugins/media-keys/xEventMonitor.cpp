@@ -25,6 +25,8 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
     start(QThread::LowestPriority);
 }
 
+
+
 void xEventMonitor::run()
 {
     Display* display = XOpenDisplay(0);
@@ -79,6 +81,28 @@ void xEventMonitor::callback(XPointer ptr, XRecordInterceptData* data)
     ((xEventMonitor *) ptr)->handleRecordEvent(data);
 }
 
+
+bool xEventMonitor::getWinPressStatus()
+{
+    return winPress;
+}
+
+bool xEventMonitor::getCtrlPressStatus()
+{
+    return ctrlPress_l | ctrlPress_r;
+}
+
+bool xEventMonitor::getAltPressStatus()
+{
+    return altPress_l | altPress_r;
+}
+
+bool xEventMonitor::getShiftPressStatus()
+{
+    USD_LOG(LOG_DEBUG,".");
+    return shiftPress_l | shiftPress_r;
+}
+
 void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
 {
     int eventKeysym;
@@ -128,7 +152,7 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
             case LEFT_CTRL:
                 ctrlPress_l = false;
                 break;
-            case RIGHT_SHIFT:
+            case LEFT_ALT:
                 altPress_l = false;
                 break;
             case RIGHT_SHIFT:
