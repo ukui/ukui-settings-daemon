@@ -32,6 +32,7 @@
 #include <KWindowEffects>
 #include <QBitmap>
 #include <QJsonDocument>
+#include <QTextCodec>
 
 #include "expendbutton.h"
 #include "qtsingleapplication.h"
@@ -125,11 +126,11 @@ void Widget::setupComponent()
     QStringList btnTextList;
     QStringList btnImageList;
     QJsonDocument parser;
-    QString firstScreen = "";
-    QString secondScreen = "";
+    QString firstScreen = nullptr;
+    QString secondScreen = nullptr;
     QString screensParam = getScreensParam();
-
-    QVariantList screensParamList = parser.fromJson(screensParam.toLatin1().data()).toVariant().toList();
+    QTextCodec *tc = QTextCodec::codecForName("UTF-8");
+    QVariantList screensParamList = parser.fromJson(screensParam.toUtf8().data()).toVariant().toList();
 
     for (const auto &variantInfo : screensParamList) {
         const QVariantMap info = variantInfo.toMap();
