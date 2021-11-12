@@ -98,6 +98,8 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_PRINT));
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadToggle));
         mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioMicMute));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadOn));
+        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadOff));
 
         Q_FOREACH (QString keyName, mXHotKeysName) {
             int keySum = gdk_keyval_from_name(keyName.toLatin1().data());
@@ -249,20 +251,17 @@ bool MediaKeysManager::mediaKeysStart(GError*)
     QList<GdkScreen*>::iterator l,begin,end;
 
     shotSettings = new QGSettings(SHOT_SCHEMA);
-    if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
-        if (shotSettings->get(SHOT_RUN_KEY).toBool())
-            shotSettings->set(SHOT_RUN_KEY, false);
+    if (nullptr != shotSettings) {
+        if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
+            if (shotSettings->get(SHOT_RUN_KEY).toBool())
+                shotSettings->set(SHOT_RUN_KEY, false);
+        }
     }
 
     mVolumeWindow->initWindowInfo();
     mDeviceWindow->initWindowInfo();
 
-
-
-
-
     initShortcuts();
-
     initXeventMonitor();
 
     mDbusScreensaveMessage = QDBusMessage::createMethodCall("org.ukui.ScreenSaver",
@@ -985,6 +984,8 @@ void MediaKeysManager::XkbEventsPress(const QString &keyStr)
     }
 }
 
+
+
 void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
     Display* display;
     guint eventKeysym;
@@ -1010,20 +1011,20 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
         doAction(VOLUME_UP_KEY);
 
     } else if (keyName == X_SHUTKEY_XF86MonBrightnessDown) {
-        doAction(BRIGHT_DOWN_KEY);
+        xEventHandle(BRIGHT_DOWN_KEY, event);
 
     } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
-        doAction(BRIGHT_UP_KEY);
+        xEventHandle(BRIGHT_UP_KEY, event);
 
     } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getShiftPressStatus()) {
         xEventHandle(AREA_SCREENSHOT_KEY, event);
-        USD_LOG(LOG_DEBUG,".");
+
     } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getCtrlPressStatus()) {
         xEventHandle(WINDOW_SCREENSHOT_KEY, event);
-        USD_LOG(LOG_DEBUG,".");
+
     } else if (keyName == X_SHUTKEY_PRINT) {
         xEventHandle(SCREENSHOT_KEY, event);
-        USD_LOG(LOG_DEBUG,".");
+
     } else if (keyName == X_SHUTKEY_XF86RFKill) {
         xEventHandle(WLAN_KEY, event);
 
@@ -1033,8 +1034,55 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
     } else if (keyName == X_SHUTKEY_XF86AudioMicMute) {
         xEventHandle(MIC_MUTE_KEY, event);
 
+    } else if (keyName == X_SHUTKEY_XF86TouchpadOn) {
+        xEventHandle(TOUCHPAD_ON_KEY, event);
+
+    } else if (keyName == X_SHUTKEY_XF86TouchpadOff) {
+        xEventHandle(TOUCHPAD_OFF_KEY, event);
+
+    }
+    return;
+}
+
+void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data){
+    Display* display;
+    guint eventKeysym;
+
+    display =  QX11Info::display();
+
+    xEvent * event = (xEvent *)data;
+    eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+
+    QString keyName = mUsdHotKeys.key(eventKeysym);
+
+    if (keyName.isEmpty()) {
+        return;
     }
 
+    if (keyName == X_SHUTKEY_XF86AudioMute) {
+       xEventHandleRelease(MUTE_KEY);
+    }  else if (keyName == X_SHUTKEY_XF86MonBrightnessDown) {
+        xEventHandleRelease(BRIGHT_DOWN_KEY);
+
+    } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
+        xEventHandleRelease(BRIGHT_UP_KEY);
+    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getShiftPressStatus()) {
+        xEventHandleRelease(AREA_SCREENSHOT_KEY);
+    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getCtrlPressStatus()) {
+        xEventHandleRelease(WINDOW_SCREENSHOT_KEY);
+    } else if (keyName == X_SHUTKEY_PRINT) {
+        xEventHandleRelease(SCREENSHOT_KEY);
+    } else if (keyName == X_SHUTKEY_XF86RFKill) {
+        xEventHandleRelease(WLAN_KEY);
+    } else if (keyName == X_SHUTKEY_XF86TouchpadToggle) {
+        xEventHandleRelease(TOUCHPAD_KEY);
+    } else if (keyName == X_SHUTKEY_XF86AudioMicMute) {
+        xEventHandleRelease(MIC_MUTE_KEY);
+    } else if (keyName == X_SHUTKEY_XF86TouchpadOn) {
+        xEventHandleRelease(TOUCHPAD_ON_KEY);
+    } else if (keyName == X_SHUTKEY_XF86TouchpadOff) {
+        xEventHandleRelease(TOUCHPAD_OFF_KEY);
+    }
 
     return;
 }
@@ -1042,7 +1090,7 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
 void MediaKeysManager::initXeventMonitor()
 {
     connect(mXEventMonitor, SIGNAL(keyPress(xEvent*)), this, SLOT(MMhandleRecordEvent(xEvent*)), Qt::QueuedConnection);
-    connect(mXEventMonitor, SIGNAL(keyRelease(xEvent*)), this, SLOT(MMhandleRecordEvent(xEvent*)), Qt::QueuedConnection);
+    connect(mXEventMonitor, SIGNAL(keyRelease(xEvent*)), this, SLOT(MMhandleRecordEventRelease(xEvent*)), Qt::QueuedConnection);
 }
 
 void MediaKeysManager::initScreens()
@@ -1293,7 +1341,13 @@ bool MediaKeysManager::doAction(int type)
 
     switch(type){
     case TOUCHPAD_KEY:
-        doTouchpadAction();
+        doTouchpadAction(STATE_TOGGLE);
+        break;
+    case TOUCHPAD_ON_KEY:
+        doTouchpadAction(STATE_ON);
+        break;
+    case TOUCHPAD_OFF_KEY:
+        doTouchpadAction(STATE_OFF);
         break;
     case MUTE_KEY:
     case VOLUME_DOWN_KEY:
@@ -1549,7 +1603,7 @@ void MediaKeysManager::updateKbdCallback(const QString &key)
         qWarning("Grab failed for some keys, another application may already have access the them.");
 }
 
-void MediaKeysManager::doTouchpadAction()
+void MediaKeysManager::doTouchpadAction(int state)
 {
     QGSettings *touchpadSettings;
     bool touchpadState;
@@ -1560,10 +1614,21 @@ void MediaKeysManager::doTouchpadAction()
         mDeviceWindow->setAction("touchpad-disabled");
         return;
     }
-    mDeviceWindow->setAction(!touchpadState ? "ukui-touchpad-on" : "ukui-touchpad-off");
+
+    if (STATE_TOGGLE == state) {
+        mDeviceWindow->setAction(!touchpadState ? "ukui-touchpad-on" : "ukui-touchpad-off");
+        touchpadSettings->set("touchpad-enabled",!touchpadState);
+    } else if (STATE_ON == state) {
+        mDeviceWindow->setAction("ukui-touchpad-on");
+        touchpadSettings->set("touchpad-enabled",STATE_ON);
+    } else if (STATE_OFF == state) {
+        mDeviceWindow->setAction("ukui-touchpad-off");
+        touchpadSettings->set("touchpad-enabled",STATE_OFF);
+    }
     mDeviceWindow->dialogShow();
 
-    touchpadSettings->set("touchpad-enabled",!touchpadState);
+
+
     delete touchpadSettings;
 }
 
