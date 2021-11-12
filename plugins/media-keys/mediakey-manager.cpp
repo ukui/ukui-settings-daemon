@@ -295,15 +295,15 @@ int8_t MediaKeysManager::getCurrentMode()
 void MediaKeysManager::initShortcuts()
 {
 
-//    /* WebCam */
-//    QAction *webCam= new QAction(this);
-//    webCam->setObjectName(QStringLiteral("Toggle WebCam"));
-//    webCam->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-//    KGlobalAccel::self()->setDefaultShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
-//    KGlobalAccel::self()->setShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
-//    connect(webCam, &QAction::triggered, this, [this]() {
-//        doAction(WLAN_KEY);
-//    });
+    /* WebCam */
+    QAction *webCam= new QAction(this);
+    webCam->setObjectName(QStringLiteral("Toggle WebCam"));
+    webCam->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
+    KGlobalAccel::self()->setShortcut(webCam, QList<QKeySequence>{Qt::Key_WebCam});
+    connect(webCam, &QAction::triggered, this, [this]() {
+        doAction(WEBCAM_KEY);
+    });
 
     if (false == UsdBaseClass::isUseXEventAsShutKey()) {
         /* touchpad */
@@ -1471,6 +1471,9 @@ bool MediaKeysManager::doAction(int type)
     case WLAN_KEY:
         doWlanAction();
         break;
+    case WEBCAM_KEY:
+        doWebcamAction();
+        break;
     case UKUI_SIDEBAR:
         doSidebarAction();
         break;
@@ -2133,6 +2136,44 @@ void MediaKeysManager::doUrlAction(const QString scheme)
     }else
         qWarning("Could not find default application for '%s' scheme",
                    scheme.toLatin1().data());
+}
+
+void MediaKeysManager::doWebcamAction()
+{
+
+    QDBusInterface *iface = new QDBusInterface("org.ukui.authority", \
+                           "/", \
+                           "org.ukui.authority.interface", \
+                           QDBusConnection::systemBus());
+
+    QDBusReply<QString> reply = iface->call("getCameraBusinfo");
+    if (reply.isValid()){
+        QString businfo = reply.value();
+        QDBusReply<QString> reply2 = iface->call("toggleCameraDevice", businfo);
+
+        if (reply2.isValid()){
+            QString result = reply2.value();
+
+            if (result == QString("binded")){
+                mDeviceWindow->setAction("ukui-camera-on");
+                iface->call("setCameraKeyboardLight", false);
+            } else if (result == QString("unbinded")){
+                mDeviceWindow->setAction("ukui-camera-off");
+
+                iface->call("setCameraKeyboardLight", true);
+            } else {
+                USD_LOG(LOG_DEBUG,"toggleCameraDevice result %s", result.toLatin1().data());
+            }
+            mDeviceWindow->dialogShow();
+
+        } else {
+            USD_LOG(LOG_ERR,"Toggle Camera device Failed!");
+        }
+
+    } else {
+        USD_LOG(LOG_ERR,"Get Camera Businfo Failed!");
+    }
+    delete iface;
 }
 
 /**

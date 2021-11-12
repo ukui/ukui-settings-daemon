@@ -29,6 +29,8 @@
 #include <QDir>
 #include <QList>
 #include <QDBusConnection>
+#include <QDBusInterface>
+#include <QDBusReply>
 #include <QDebug>
 
 #include "volumewindow.h"
@@ -129,6 +131,7 @@ private:
     void doOpenUkuiSearchAction();
     void doOpenKdsAction();
     void doWlanAction();
+    void doWebcamAction();
     void doEyeCenterAction();
 
 
