@@ -97,7 +97,7 @@ private:
 
     void initShortcuts();
     /******************Functional class function(功能类函数)****************/
-    void doTouchpadAction();
+    void doTouchpadAction(int);
     void doSoundAction(int);
     void doSoundActionALSA(int);
     void doMicSoundAction();
@@ -154,6 +154,7 @@ private Q_SLOTS:
     void XkbEventsPress(const QString &keyStr);
     void XkbEventsRelease(const QString &keyStr);
     void MMhandleRecordEvent(xEvent* data);
+    void MMhandleRecordEventRelease(xEvent* data);
 Q_SIGNALS:
     /** media-keys plugin will emit this signal by org.ukui.SettingsDaemon.MediaKeys
      *  when listen some key Pressed(such as XF86AudioPlay 、XF86AudioPause 、XF86AudioForward)
@@ -194,6 +195,21 @@ private:
     QStringList mXHotKeysName;      //所有全局的快捷键名字，根据这个名字在X里面反射出对应的keysum，然后与xevent的keysum进行匹配后处理
     int                power_state = 4;
     bool               m_ctrlFlag = false;
+
+    xEventHandleHadRelase(MUTE_KEY);
+    xEventHandleHadRelase(BRIGHT_DOWN_KEY);
+    xEventHandleHadRelase(BRIGHT_UP_KEY);
+    xEventHandleHadRelase(AREA_SCREENSHOT_KEY);
+    xEventHandleHadRelase(WINDOW_SCREENSHOT_KEY);
+    xEventHandleHadRelase(SCREENSHOT_KEY);
+    xEventHandleHadRelase(WLAN_KEY);
+    xEventHandleHadRelase(MIC_MUTE_KEY);
+    xEventHandleHadRelase(TOUCHPAD_KEY);
+    xEventHandleHadRelase(TOUCHPAD_ON_KEY);
+    xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
+
+
+
 };
 
 #endif // MEDIAKEYSMANAGER_H
