@@ -250,11 +250,13 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 //    mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
-    shotSettings = new QGSettings(SHOT_SCHEMA);
-    if (nullptr != shotSettings) {
-        if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
-            if (shotSettings->get(SHOT_RUN_KEY).toBool())
-                shotSettings->set(SHOT_RUN_KEY, false);
+    if (QGSettings.isSchemaInstalled(SHOT_SCHEMA)) {
+        shotSettings = new QGSettings(SHOT_SCHEMA);
+        if (nullptr != shotSettings) {
+            if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
+                if (shotSettings->get(SHOT_RUN_KEY).toBool())
+                    shotSettings->set(SHOT_RUN_KEY, false);
+            }
         }
     }
 
