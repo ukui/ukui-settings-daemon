@@ -300,8 +300,13 @@ REWRITE:
 
         fd = open(logFileName, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
     }
+
     lastWeekDay = rtWeekDay;
     if (wlock(fd, 1) == -1) {
+    //加锁失败，可能是因为其他已上锁，需要close操作。
+        if (fd > 0) {
+            close(fd);
+        }
         return;
     }
 
