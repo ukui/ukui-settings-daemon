@@ -191,41 +191,18 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
         return false;
     }
 
-/*  //just for print device class
-    for (i = 0; i < dev->num_classes; i++) {
-
-        if (dev->classes[i]->type == XIButtonClass) {
-            XIButtonClassInfo *t = (XIButtonClassInfo*)dev->classes[i];
-            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->type);
-        } else if (dev->classes[i]->type == XIValuatorClass) {
-            XIValuatorClassInfo *t = (XIValuatorClassInfo*)dev->classes[i];
-            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
-
-        } else if (dev->classes[i]->type == XIScrollClass) {
-            XIScrollClassInfo *t = (XIScrollClassInfo*)dev->classes[i];
-            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->type);
-
-        }else if (dev->classes[i]->type == XITouchClass) {
-            XITouchClassInfo *t = (XITouchClassInfo*)dev->classes[i];
-            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
-
-        }
-    }
-*/
-
     QString devName = QString::fromUtf8(dev->name);
-    if (devName.toUpper().contains("TOUCHPAD") || devName.toUpper().contains("PEN")) { //触摸板也需要映射
+    if (devName.toUpper().contains("TOUCHPAD")) {
         return true;
     }
 
-    for (i = 0; i < dev->num_classes; i++) {
+    for (int j = 0; j < dev->num_classes; j++) {
+        if (dev->classes[j]->type == XIValuatorClass) {
+            XIValuatorClassInfo *t = (XIValuatorClassInfo*)dev->classes[j];
+            // 如果当前的设备是绝对坐标映射 则认为该设备需要进行一次屏幕映射
 
-        if (dev->classes[i]->type == XITouchClass)
-        {
-            XITouchClassInfo *t = (XITouchClassInfo*)dev->classes[i];
-//            USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
-            if (t->mode == XIDirectTouch) {
-//                USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
+            if (t->mode == XIModeAbsolute) {
+                USD_LOG(LOG_DEBUG,"%s type:%d mode:%d", dev->name, dev->classes[i]->type, t->mode);
                 return true;
             }
         }
@@ -273,10 +250,6 @@ getTouchscreen(Display* display)
 
     for (i = 0; i < n_devices; i ++)
     {
-
-
-//        if (g_udev_device_has_property(udev_device, "ID_INPUT_WIDTH_MM") || deviceName.toUpper().contains("TOUCHPAD"))
-
         if (find_touchscreen_device(dpy, &devs_info[i])) {
             unsigned char *node;
             TsInfo *ts_info = g_new(TsInfo, 1);
@@ -382,6 +355,7 @@ void SetTouchscreenCursorRotation()
                     TsInfo *info = (TsInfo *)l -> data;
                     double width, height;
                     QString deviceName = QString::fromLocal8Bit(info->dev_info.name);
+                    QString ouputName = QString::fromLocal8Bit(output_info->name);
                     const char *udev_subsystems[] = {"input", NULL};
 
                     GUdevDevice *udev_device;
@@ -389,17 +363,20 @@ void SetTouchscreenCursorRotation()
                     udev_device = g_udev_client_query_by_device_file (udev_client,
                                                                       (const gchar *)info->input_node);
 
-//                    USD_LOG(LOG_DEBUG,"%s(%d) %d had touch",info->dev_info.name,info->dev_info.deviceid,g_udev_device_has_property(udev_device,"ID_INPUT_WIDTH_MM"), g_udev_device_has_property(udev_device,"ID_INPUT_HEIGHT_MM"));
+                    USD_LOG(LOG_DEBUG,"%s(%d) %d %d had touch",info->dev_info.name,info->dev_info.deviceid,g_udev_device_has_property(udev_device,"ID_INPUT_WIDTH_MM"), g_udev_device_has_property(udev_device,"ID_INPUT_HEIGHT_MM"));
 
                     //sp1的触摸板不一定有此属性，所以根据名字进行适配by sjh 2021年10月20日11:23:58
                     if ((udev_device && g_udev_device_has_property (udev_device,
-                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD") || deviceName.toUpper().contains("PEN")) {
+                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
                         width = g_udev_device_get_property_as_double (udev_device,
                                                                     "ID_INPUT_WIDTH_MM");
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
 
-                        if (checkMatch(output_mm_width, output_mm_height, width, height) || deviceName.toUpper().contains("TOUCHPAD")) {//
+                        if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
+                            doAction(info->dev_info.deviceid,output_info->name);
+                        } else if (deviceName.toUpper().contains("TOUCHPAD") && ouputName == "eDP-1"){//触摸板只映射主屏幕
+                            USD_LOG(LOG_DEBUG,".map touchpad.");
                             doAction(info->dev_info.deviceid,output_info->name);
                         }
                     }
