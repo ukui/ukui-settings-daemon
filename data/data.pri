@@ -32,6 +32,7 @@ OTHER_FILES += \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml      \
     $$PWD/zh_CN.po  \
     $$PWD/power-ignore.conf \
+    $$PWD/61-keyboard.hwdb  \
 
 # desktop ok
 desktop.path = /etc/xdg/autostart/
@@ -56,7 +57,11 @@ zh_CN.files = $$PWD/ukui-settings-daemon.mo
 power.path  = /etc/systemd/logind.conf.d/
 power.files += $$PWD/power-ignore.conf
 
-INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN power
+#touchpad hotkey
+touchpad_udev.path = /etc/udev/hwdb.d/
+touchpad_udev.files = $$PWD/61-keyboard.hwdb
+
+INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN power touchpad_udev
 
 DISTFILES += \
     $$PWD/auto-brightness.ukui-settings-plugin  \

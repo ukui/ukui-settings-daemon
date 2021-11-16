@@ -1,3 +1,11 @@
+ukui-settings-daemon (3.1.0-1.18) v101; urgency=medium
+
+  * BUG号：87140 [X100]X100笔记本下，通过快捷按键控制触摸板无法生效，其他按键正常
+  * 需求说明：无
+  * 其他改动说明：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 16 Nov 2021 18:36:52 +0800
+
 ukui-settings-daemon (3.1.0-1.16) v101; urgency=medium
 
   * BUG号：90170 【PTOF】【触控板】开启“插入鼠标时禁用触控板”，插入鼠标后触控板被禁用，拔出鼠标后触摸板仍被禁用（必现）
