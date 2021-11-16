@@ -250,11 +250,13 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 //    mate_mixer_init();
     QList<GdkScreen*>::iterator l,begin,end;
 
-    shotSettings = new QGSettings(SHOT_SCHEMA);
-    if (nullptr != shotSettings) {
-        if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
-            if (shotSettings->get(SHOT_RUN_KEY).toBool())
-                shotSettings->set(SHOT_RUN_KEY, false);
+    if (true == QGSettings::isSchemaInstalled(SHOT_SCHEMA)) {
+        shotSettings = new QGSettings(SHOT_SCHEMA);
+        if (nullptr != shotSettings) {
+            if (shotSettings->keys().contains(SHOT_RUN_KEY)) {
+                if (shotSettings->get(SHOT_RUN_KEY).toBool())
+                    shotSettings->set(SHOT_RUN_KEY, false);
+            }
         }
     }
 
@@ -950,8 +952,8 @@ void MediaKeysManager::XkbEventsRelease(const QString &keyStr)
     if (keyStr.compare("Control_L") == 0 ||
             keyStr.compare("Control_R") == 0) {
         if (pointSettings) {
-            try {
-               QStringList QGsettingskeys= pointSettings->keys();
+            try  {
+               QStringList QGsettingskeys = pointSettings->keys();
                if (QGsettingskeys.contains("locate-pointer")){
                 pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
                }
@@ -997,9 +999,12 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
 
     QString keyName = mUsdHotKeys.key(eventKeysym);
 
-    if (keyName.isEmpty()) {
+    if (keyName.isEmpty() && false == mXEventMonitor->getCtrlPressStatus()) {
+//        USD_LOG(LOG_DEBUG,"is Empty..");
         return;
     }
+
+
 
     if (keyName == X_SHUTKEY_XF86AudioMute) {
        xEventHandle(MUTE_KEY, event);
@@ -1040,6 +1045,20 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
     } else if (keyName == X_SHUTKEY_XF86TouchpadOff) {
         xEventHandle(TOUCHPAD_OFF_KEY, event);
 
+    } else if(true == mXEventMonitor->getCtrlPressStatus()) {
+        if (pointSettings) {
+            try  {
+                QStringList QGsettingskeys = pointSettings->keys();
+                if (QGsettingskeys.contains("locate-pointer")){
+                    pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
+                }
+                else {
+                }
+            }
+            catch(char *msg){
+
+            }
+        }
     }
     return;
 }
@@ -1089,6 +1108,12 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data){
 
 void MediaKeysManager::initXeventMonitor()
 {
+//   XEventMonitor::instance()->start();
+
+//   connect(XEventMonitor::instance(), SIGNAL(keyRelease(QString)),this, SLOT(XkbEventsRelease(QString)));
+//    connect(XEventMonitor::instance(), SIGNAL(keyPress(QString)),this, SLOT(XkbEventsPress(QString)));
+
+
     connect(mXEventMonitor, SIGNAL(keyPress(xEvent*)), this, SLOT(MMhandleRecordEvent(xEvent*)), Qt::QueuedConnection);
     connect(mXEventMonitor, SIGNAL(keyRelease(xEvent*)), this, SLOT(MMhandleRecordEventRelease(xEvent*)), Qt::QueuedConnection);
 }
