@@ -735,7 +735,7 @@ void XrandrManager::SaveConfigTimerHandle()
 
     mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
     mMonitoredConfig->writeFile(true);
-
+    SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
     sendScreenModeToDbus();
 }
 

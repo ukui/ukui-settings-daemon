@@ -1070,7 +1070,9 @@ void MouseManager::SetMouseWheelSpeed (int speed)
                    "Shift_L,   Down, Shift_L|Button5\n"
                    "Shift_R,   Down, Shift_R|Button5\n"
                    "None,      Up,   Button4, %1, 0, %2\n"
-                   "None,      Down, Button5, %3, 0, %4\n")
+                   "None,      Down, Button5, %3, 0, %4\n"
+                   "None,      Thumb1,  Alt_L|Left\n"
+                   "None,      Thumb2,  Alt_L|Right")
                 .arg(speed).arg(delay).arg(speed).arg(delay);
 
     file.setFileName(FilePath);
@@ -1083,12 +1085,12 @@ void MouseManager::SetMouseWheelSpeed (int speed)
     char **args;
     int    argc;
 
-    if (imwheelSpawned){
-        QProcess::execute("killall imwheel");
-        imwheelSpawned = false;
-    }
+//    if (imwheelSpawned){
+//        QProcess::execute("killall imwheel");
+//        imwheelSpawned = false;
+//    }
 
-    QString str = "/usr/bin/imwheel";
+    QString str = "/usr/bin/imwheel -k";
     if( g_shell_parse_argv (str.toLatin1().data(), &argc, &args, NULL)){
         g_spawn_async (g_get_home_dir (),
                        args,
