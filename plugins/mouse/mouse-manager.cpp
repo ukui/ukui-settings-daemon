@@ -1462,32 +1462,33 @@ void MouseManager::SetNaturalScrollAll ()
 void set_touchpad_enabled (XDeviceInfo *device_info,
                            bool         state)
 {
-    XDevice *device;
-    Atom prop_enabled;
-    unsigned char data = state;
-    Display *display =  gdk_x11_get_default_xdisplay ();//QX11Info::display();//
-
-    prop_enabled = property_from_name ("Device Enabled");
-    if (!prop_enabled)
-        return;
-
+    Display* display = gdk_x11_get_default_xdisplay ();
+    XDevice * device;
     device = device_is_touchpad (device_info);
     if (device == NULL) {
         return;
     }
-    try {
-        XChangeDeviceProperty (display, device,
-                               prop_enabled, XA_INTEGER, 8,
-                               PropModeReplace, &data, 1);
-
-        XCloseDevice (display, device);
-        gdk_display_flush (gdk_display_get_default());
-    } catch (int x) {
-        qWarning("Error %s device \"%s\"",
-                  (state) ? "enabling" : "disabling",
-                   device_info->name);
+    int realformat;
+    unsigned long nitems, bytes_after;
+    unsigned char *data;
+    Atom realtype, prop;
+    prop = XInternAtom (display, "Device Enabled", False);
+    if (!prop) {
+        return;
     }
 
+    if (XGetDeviceProperty (display, device, prop, 0, 1, False,
+                            XA_INTEGER, &realtype, &realformat, &nitems,
+                            &bytes_after, &data) == Success) {
+
+        if (nitems == 1){
+            data[0] = state ? 1 : 0;
+            XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
+        }
+        XFree(data);
+    }
+
+    XCloseDevice (display, device);
 }
 
 void SetTouchpadEnabledAll (bool state)
@@ -1724,7 +1725,6 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ENABLED)) == 0) {
         SetTouchpadEnabledAll (settings_touchpad->get(keys).toBool());//设置触摸板开关
-             SetDisableWTyping (true);
     } else if ((keys.compare((KEY_MOTION_ACCELERATION)) == 0)
             || (keys.compare((KEY_MOTION_THRESHOLD)) == 0)) {
         SetMotionAll ();                                    //设置鼠标速度
