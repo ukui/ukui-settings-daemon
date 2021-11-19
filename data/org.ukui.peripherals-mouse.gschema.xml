@@ -37,7 +37,7 @@
       <description>Length of a double click.</description>
     </key>
     <key type="b" name="middle-button-enabled">
-      <default>true</default>
+      <default>false</default>
       <summary>Middle button emulation</summary>
       <description>Enables middle mouse button emulation through simultaneous left and right button click.</description>
     </key>
