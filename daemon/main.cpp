@@ -79,7 +79,7 @@ int main (int argc, char* argv[])
 
     bool res = manager->managerStart();
     if (!res) {
-        qDebug( "manager start error!");
+         USD_LOG(LOG_INFO, "manager start error!");
         return 0;
     }
 

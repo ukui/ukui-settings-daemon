@@ -643,7 +643,7 @@ void MouseManager::SetMotionLibinput (XDeviceInfo *device_info)
     try {
         device = device_is_touchpad (device_info);
         if (device != NULL) {
-            qDebug()<<"device != NULL  settings = settings_touchpad";
+            USD_LOG(LOG_DEBUG,"device != NULL  settings = settings_touchpad");
             settings = settings_touchpad;
         } else {
             device = XOpenDevice (dpy, device_info->id);
@@ -819,7 +819,8 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
 
         rc = XGetDeviceProperty (dpy,device, prop, 0, 1, False, float_type, &type,
                                  &format, &nitems, &bytes_after, &data.c);
-        qDebug()<<"format = "<<format<<"nitems = "<<nitems;
+
+        USD_LOG_SHOW_PARAM2(format,nitems)
         if (rc == Success && type == float_type && format == 32 && nitems >= 1) {
                 *(float *) data.l = accel;
                 XChangeDeviceProperty (dpy, device, prop, float_type, 32,
@@ -1517,8 +1518,7 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
             settings->set(KEY_TOUCHPAD_ENABLED, false);
             return true;
         }else {
-            //
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
+//            settings->set(KEY_TOUCHPAD_ENABLED, true);
             return true;
         }
     }
@@ -1786,8 +1786,7 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     MouseManager * manager = (MouseManager *) data;
 
     DevicePresence (gdk_x11_get_default_xdisplay (), xi_presence, class_presence);
-    if (xev->type == xi_presence)
-    {
+    if (xev->type == xi_presence) {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
             if (dpn->devchange == DeviceEnabled) {
                 USD_LOG(LOG_DEBUG,"new add deviced ID  : %d",dpn->deviceid);

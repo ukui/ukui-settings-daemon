@@ -27,7 +27,7 @@ void MonitorInputTask::initConnect()
 
 void MonitorInputTask::StartManager()
 {
-    qDebug() << "info: [MonitorInputTask][StartManager]: thread id = " << QThread::currentThreadId();
+    USD_LOG(LOG_DEBUG,"info: [MonitorInputTask][StartManager]: thread id =%d",QThread::currentThreadId());
     QTimer::singleShot(0, this, &MonitorInputTask::ListeningToInputEvent);
 }
 
