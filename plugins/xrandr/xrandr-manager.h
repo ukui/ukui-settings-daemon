@@ -131,6 +131,7 @@ private:
     QTimer                *mApplyConfigTimer = nullptr;
     QGSettings            *mXrandrSetting = nullptr;
     QGSettings            *mXsettings = nullptr;
+
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
     QDBusInterface        *mUkccDbus;
@@ -146,6 +147,7 @@ private:
     bool mAddScreen = false;
     QScreen *mScreen = nullptr;
     bool mStartingUp = true;
+    bool mIsApplyConfigWhenSave = false;
 };
 
 #endif // XRANDRMANAGER_H
