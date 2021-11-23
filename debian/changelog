@@ -1,3 +1,15 @@
+ukui-settings-daemon (3.1.0-1.20) v101; urgency=medium
+
+  * BUG号：92730 【S】【PTOF】【键盘】锁屏后登入或者从S2idle唤醒后多次按F5静音键，静音灯状态不变（hp：3/3units,11/12times;kylin:3/3units,20/24times）
+           92445 【S】【声音】进入s2idle后，登录系统按下F5静音键，第一次按静音键灯不亮且静音无效但音量值会突然变大，第二次按F5静音灯亮静音有效（1/2units；25/60times）
+           89528 【S】【PTOF】【键盘】打开任一音频播放，按f5静音后插入tpyec/usb耳机，耳机内声音播放正常，但静音灯未灭（必现）
+           92738 【S】【PTOF】【键盘】连续按F5十次以上，音量会产生跳变，且静音灯会不熄灭或者常亮（必现）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 22 Nov 2021 20:53:26 +0800
+
 ukui-settings-daemon (3.1.0-1.19) v101; urgency=medium
 
   * BUG号：79667 【同SP1 【UKUI V3.1】【OSD】触摸板锁未出现热键弹窗，且触摸板锁功能失效

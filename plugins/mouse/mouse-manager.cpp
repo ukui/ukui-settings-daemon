@@ -18,6 +18,7 @@
  */
 #include "mouse-manager.h"
 #include "clib-syslog.h"
+#include "usd_base_class.h"
 
 /* Keys with same names for both touchpad and mouse */
 #define KEY_LEFT_HANDED                  "left-handed"          /*  a boolean for mouse, an enum for touchpad */
@@ -1516,10 +1517,6 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
         if(state){
             settings->set(KEY_TOUCHPAD_ENABLED, false);
             return true;
-        }else {
-            //
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
-            return true;
         }
     }
     return false;
@@ -1544,9 +1541,17 @@ void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
             isMouse = true;
         }
     }
-    if(!isMouse) {
-        settings->set(KEY_TOUCHPAD_ENABLED, true);
+
+    if(UsdBaseClass::isTablet()){
+        if(settings->get(KEY_TOUCHPAD_ENABLED).toBool()) {
+            settings->set(KEY_TOUCHPAD_ENABLED, true);
+        }
+    } else {
+        if(!isMouse) {
+            settings->set(KEY_TOUCHPAD_ENABLED, true);
+        }
     }
+
     XFreeDeviceList (devicelist);
 }
 

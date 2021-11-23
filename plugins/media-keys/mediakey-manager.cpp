@@ -1719,7 +1719,6 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     last_volume = volume;
     lastmuted = muted;
 
-    USD_LOG(LOG_DEBUG,"volumeStep:%d",volumeStep);
     switch(keyType){
     case MUTE_KEY:
             muted = !muted;
@@ -1728,10 +1727,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
         if(volume <= (volumeMin + volumeStep)){
             volume = volumeMin;
             muted = true;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         }else{
             volume -= volumeStep;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
 
@@ -1740,7 +1737,6 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             muted = true;
         }
 
-        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         break;
     case VOLUME_UP_KEY:
         if(muted){
@@ -1765,17 +1761,10 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     }
 
     mpulseAudioManager->setVolume(volume);
-    mpulseAudioManager->setMute(muted);
     mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
+    mpulseAudioManager->setMute(muted);
 
     updateDialogForVolume(volume,muted,soundChanged);
-
-    if (QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)) {
-        QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
-        panel_settings->set(PANEL_SOUND_STATE,muted);
-        panel_settings->set(PANEL_SOUND_VOLUMSIZE,volume/655.36);
-        delete panel_settings;
-    }
 
     delete mpulseAudioManager;
 }
