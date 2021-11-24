@@ -1014,16 +1014,9 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
 
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
-                try  {
-                    QStringList QGsettingskeys = pointSettings->keys();
-                    if (QGsettingskeys.contains("locate-pointer")){
-                        pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
-                    }
-                    else {
-                    }
-                }
-                catch(char *msg){
-
+                QStringList QGsettingskeys = pointSettings->keys();
+                if (QGsettingskeys.contains("locate-pointer")){
+                    pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
                 }
             }
         }
@@ -2106,11 +2099,9 @@ void MediaKeysManager::doWlanAction()
 void MediaKeysManager::doFlightModeAction()
 {
     int flightState = RfkillSwitch::instance()->getCurrentFlightMode();
-    USD_LOG(LOG_DEBUG,"getCurrentFlightMode %d",flightState);
 
-
-    if(flightState == -1)
-    {
+    if(flightState == -1) {
+        USD_LOG(LOG_ERR,"get flight mode error");
         return;
     }
 
