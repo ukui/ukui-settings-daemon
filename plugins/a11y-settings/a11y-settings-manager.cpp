@@ -48,23 +48,23 @@ void A11ySettingsManager::AppsSettingsChanged(QString key){
        (key == "screen-keyboard-enabled") == false)
         return;
 
-    qDebug("screen reader or OSK enabledment changed");
+   USD_LOG(LOG_DEBUG,"screen reader or OSK enabledment changed");
 
     screen_reader = a11y_apps_settings->get("screen-reader-enabled").toBool();
     keyboard = a11y_apps_settings->get("screen-keyboard-enabled").toBool();
 
     if(screen_reader || keyboard){
-        qDebug("Enabling accessibility,screen reader or OSK enabled!");
+        USD_LOG(LOG_DEBUG,"Enabling accessibility,screen reader or OSK enabled!");
         interface_settings->set("accessibility",true);
     }else if((screen_reader == false) && (keyboard == false)){
-        qDebug("Disabling accessibility,screen reader or OSK disabled!");
+        USD_LOG(LOG_DEBUG,"Disabling accessibility,screen reader or OSK disabled!");
         interface_settings->set("accessibility",false);
     }
 }
 
 bool A11ySettingsManager::A11ySettingsManagerStart()
 {
-    qDebug("Starting a11y_settings manager!");
+    USD_LOG(LOG_DEBUG,"Starting a11y_settings manager!");
 
     connect(a11y_apps_settings, SIGNAL(changed(QString)),
                           this, SLOT(AppsSettingsChanged(QString)));

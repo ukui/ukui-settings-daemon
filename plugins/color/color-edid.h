@@ -23,6 +23,7 @@
 #include <colord.h>
 extern "C"{
 #include <libgnome-desktop/gnome-pnp-ids.h>
+#include "clib-syslog.h"
 }
 
 #define USD_COLOR_TEMPERATURE_MIN               1000    /* Kelvin */

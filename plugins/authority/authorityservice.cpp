@@ -36,7 +36,7 @@ QString AuthorityService::getCameraBusinfo()
         if (fileinfo.fileName().startsWith("usb")){
             continue;
         }
-//        qDebug() << "" << fileinfo.fileName() << fileinfo.absoluteFilePath();
+
         QDir subdir(fileinfo.absoluteFilePath());
         subdir.setFilter(QDir::Files);
         QFileInfoList fileinfoList2 = subdir.entryInfoList();
@@ -47,7 +47,7 @@ QString AuthorityService::getCameraBusinfo()
                     return QString();
                 QTextStream pstream(&pfile);
                 QString output = pstream.readAll();
-//                qDebug() << "output: " << output;
+
                 if (output.contains("camera", Qt::CaseInsensitive)){
                     return fileinfo.fileName();
                 }
