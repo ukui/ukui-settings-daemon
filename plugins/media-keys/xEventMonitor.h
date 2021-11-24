@@ -7,6 +7,7 @@
 #include <X11/extensions/record.h>
 #include <X11/keysym.h>
 #include <X11/XKBlib.h>
+#include <xkbcommon/xkbcommon-keysyms.h>
 #include <QX11Info>
 // Virtual button codes that are not defined by X11.
 #define Button1			1
