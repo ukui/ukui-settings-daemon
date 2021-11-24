@@ -486,7 +486,7 @@ MateRROutput *ColorState::SessionGetStateOutputById (ColorState *state,
             }
         }
         if (output == NULL) {
-                qDebug("Failed to find output %s", device_id);
+                USD_LOG(LOG_DEBUG,"Failed to find output %s", device_id);
         }
 out:
         return output;
@@ -554,7 +554,7 @@ static gboolean UtilsMkdirForFilename (GFile *file)
         /* get parent directory */
         parent_dir = g_file_get_parent (file);
         if (parent_dir == NULL) {
-                qDebug("could not get parent dir");
+                USD_LOG(LOG_DEBUG,"could not get parent dir");
                 goto out;
         }
 
