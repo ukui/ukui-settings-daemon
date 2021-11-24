@@ -29,6 +29,9 @@ pulseAudioManager::~pulseAudioManager()
     if (nullptr != p_PaMl) {
         pa_mainloop_free(p_PaMl);
     }
+    g_balance = 0;
+    memset(&g_GetPaCV,0x00,sizeof(g_GetPaCV));
+    memset(&g_SetPaCV,0x00,sizeof(g_SetPaCV));
 
     memset(g_sinkName,0x00,sizeof(g_sinkName));
     memset(g_sourceName,0x00,sizeof(g_sourceName));
@@ -95,18 +98,11 @@ void pulseAudioManager::initPulseAudio()
         return ;
     }
 
-    p_PaOp = pa_context_get_sink_info_list(p_PaCtx, getSinkInfoCallback, NULL);
+    p_PaOp = pa_context_get_server_info(p_PaCtx, getServerInfoCallback, NULL);
 
     while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
         pa_mainloop_iterate(p_PaMl, 1, nullptr);
     }
-
-    p_PaOp = pa_context_get_source_info_list(p_PaCtx, getSourceInfoCallback, NULL);
-
-    while (pa_operation_get_state(p_PaOp) == PA_OPERATION_RUNNING) {
-        pa_mainloop_iterate(p_PaMl, 1, nullptr);
-    }
-
 
 }
 
@@ -143,11 +139,22 @@ void pulseAudioManager::getSourceInfoCallback(pa_context *ctx, const pa_source_i
     if (isLast != 0) {
         return;
     }
-
-    memset(g_sourceName,0x00,sizeof(g_sinkName));
-    memcpy(g_sourceName,so->name,strlen(so->name));
     g_sourceMute = so->mute;
 }
+
+void pulseAudioManager:: getServerInfoCallback(pa_context *ctx, const pa_server_info *si, void *userdata)
+{
+    Q_UNUSED(ctx);
+    Q_UNUSED(userdata);
+    pa_channel_map map;
+
+    memset(g_sinkName,0x00,sizeof(g_sinkName));
+    memcpy(g_sinkName,si->default_sink_name,strlen(si->default_sink_name));
+    memset(g_sourceName,0x00,sizeof(g_sourceName));
+    memcpy(g_sourceName,si->default_source_name,strlen(si->default_source_name));
+
+}
+
 
 void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata)
 {
@@ -156,10 +163,6 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
     pa_channel_map map;
 
     if (isLast != 0) {
-        return;
-    }
-
-    if (false == PA_SINK_IS_OPENED(si->state) && strlen(g_sinkName)) {
         return;
     }
 
@@ -176,9 +179,6 @@ void pulseAudioManager::getSinkInfoCallback(pa_context *ctx, const pa_sink_info 
     }
 
     g_balance = pa_cvolume_get_balance(&g_GetPaCV,&map);
-
-    memset(g_sinkName,0x00,sizeof(g_sinkName));
-    memcpy(g_sinkName,si->name,strlen(si->name));
 
 }
 
@@ -208,7 +208,6 @@ void pulseAudioManager::setVolume(int Volume)
 
     for (int k = 0; k < g_GetPaCV.channels; k++) {
         g_SetPaCV.values[k] = Volume;
-
     }
 
     pa_cvolume *pcv = pa_cvolume_set_balance(&g_SetPaCV, &map, g_balance);
@@ -288,7 +287,6 @@ bool pulseAudioManager::getMicMute()
 void pulseAudioManager::setMicMute(bool MuteState)
 {
     p_PaOp = pa_context_set_source_mute_by_name(p_PaCtx, g_sourceName, MuteState, paActionDoneCallback, NULL);
-
     if ( nullptr == p_PaOp ) {
 
         return;
@@ -304,6 +302,8 @@ int pulseAudioManager::getVolume()
     int ret = 0;
 
     p_PaOp = pa_context_get_sink_info_by_name(p_PaCtx, g_sinkName, getSinkInfoCallback, NULL);
+
+    USD_LOG(LOG_DEBUG,"..........g_sinkName : %s",g_sinkName);
     if (nullptr == p_PaOp) {
         return 0;
     }

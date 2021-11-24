@@ -299,8 +299,9 @@ void VolumeWindow::dialogBrightShow()
 
 void VolumeWindow::setVolumeMuted(bool muted)
 {
-    if(this->mVolumeMuted != muted)
+    if(this->mVolumeMuted != muted) {
         mVolumeMuted = muted;
+    }
 }
 
 void VolumeWindow::setVolumeLevel(int level)

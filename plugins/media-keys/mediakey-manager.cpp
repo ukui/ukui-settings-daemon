@@ -87,32 +87,6 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
     }
 
     mXEventMonitor = new xEventMonitor(this);
-
-    if (true == UsdBaseClass::isUseXEventAsShutKey()) {
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioMute));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioRaiseVolume));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioLowerVolume));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86MonBrightnessDown));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86MonBrightnessUp));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86RFKill));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_PRINT));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadToggle));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86AudioMicMute));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadOn));
-        mXHotKeysName.append(QString::fromLocal8Bit(X_SHUTKEY_XF86TouchpadOff));
-
-        Q_FOREACH (QString keyName, mXHotKeysName) {
-            int keySum = gdk_keyval_from_name(keyName.toLatin1().data());
-            if (keySum) {
-                mUsdHotKeys.insert(keyName, keySum);
-            } else {
-                USD_LOG(LOG_DEBUG, "can't get %s's keysum by gdk",keyName.toLatin1().data());
-            }
-        }
-    }
-
-
-
 }
 
 MediaKeysManager::~MediaKeysManager()
@@ -421,20 +395,17 @@ void MediaKeysManager::initShortcuts()
                 });
             }
         });
+        /* WLAN */
+        QAction *wlan= new QAction(this);
+        wlan->setObjectName(QStringLiteral("Toggle wlan"));
+        wlan->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
+        KGlobalAccel::self()->setShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
+        connect(wlan, &QAction::triggered, this, [this]() {
+            doAction(WLAN_KEY);
+        });
 
     }
-
-    /* WLAN */
-    QAction *wlan= new QAction(this);
-    wlan->setObjectName(QStringLiteral("Toggle wlan"));
-    wlan->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
-    KGlobalAccel::self()->setShortcut(wlan, QList<QKeySequence>{Qt::Key_WLAN});
-    connect(wlan, &QAction::triggered, this, [this]() {
-        doAction(WLAN_KEY);
-    });
-
-
 
     /*shutdown*/
     QAction *powerDown= new QAction(this);
@@ -988,122 +959,117 @@ void MediaKeysManager::XkbEventsPress(const QString &keyStr)
 
 
 
-void MediaKeysManager::MMhandleRecordEvent(xEvent* data){
-    Display* display;
-    guint eventKeysym;
+void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
+{
+    if(UsdBaseClass::isUseXEventAsShutKey()) {
+        Display* display;
+        guint eventKeysym;
 
-    display =  QX11Info::display();
+        display =  QX11Info::display();
 
-    xEvent * event = (xEvent *)data;
-    eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+        xEvent * event = (xEvent *)data;
+        eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
-    QString keyName = mUsdHotKeys.key(eventKeysym);
+        if (eventKeysym == XKB_KEY_XF86AudioMute) {
+           xEventHandle(MUTE_KEY, event);
 
-    if (keyName.isEmpty() && false == mXEventMonitor->getCtrlPressStatus()) {
-//        USD_LOG(LOG_DEBUG,"is Empty..");
-        return;
-    }
+        } else if (eventKeysym == XKB_KEY_XF86AudioLowerVolume) {
+            doAction(VOLUME_DOWN_KEY);
 
+        } else if (eventKeysym == XKB_KEY_XF86AudioRaiseVolume) {
+            doAction(VOLUME_UP_KEY);
 
+        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
+            xEventHandle(BRIGHT_DOWN_KEY, event);
 
-    if (keyName == X_SHUTKEY_XF86AudioMute) {
-       xEventHandle(MUTE_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
+            xEventHandle(BRIGHT_UP_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86AudioLowerVolume) {
-        doAction(VOLUME_DOWN_KEY);
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus() && mXEventMonitor->getCtrlPressStatus()) {
+            xEventHandle(AREA_SCREENSHOT_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86AudioRaiseVolume) {
-        doAction(VOLUME_UP_KEY);
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getCtrlPressStatus()) {
+            xEventHandle(WINDOW_SCREENSHOT_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86MonBrightnessDown) {
-        xEventHandle(BRIGHT_DOWN_KEY, event);
+        } else if (eventKeysym == XKB_KEY_Print) {
+            xEventHandle(SCREENSHOT_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
-        xEventHandle(BRIGHT_UP_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86RFKill) {
+            xEventHandle(RFKILL_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getShiftPressStatus()) {
-        xEventHandle(AREA_SCREENSHOT_KEY, event);
+        } else if(eventKeysym == XKB_KEY_XF86WLAN) {
+            xEventHandle(WLAN_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getCtrlPressStatus()) {
-        xEventHandle(WINDOW_SCREENSHOT_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86TouchpadToggle) {
+            xEventHandle(TOUCHPAD_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_PRINT) {
-        xEventHandle(SCREENSHOT_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86AudioMicMute) {
+            xEventHandle(MIC_MUTE_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86RFKill) {
-        xEventHandle(WLAN_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86TouchpadOn) {
+            xEventHandle(TOUCHPAD_ON_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86TouchpadToggle) {
-        xEventHandle(TOUCHPAD_KEY, event);
+        } else if (eventKeysym == XKB_KEY_XF86TouchpadOff) {
+            xEventHandle(TOUCHPAD_OFF_KEY, event);
 
-    } else if (keyName == X_SHUTKEY_XF86AudioMicMute) {
-        xEventHandle(MIC_MUTE_KEY, event);
-
-    } else if (keyName == X_SHUTKEY_XF86TouchpadOn) {
-        xEventHandle(TOUCHPAD_ON_KEY, event);
-
-    } else if (keyName == X_SHUTKEY_XF86TouchpadOff) {
-        xEventHandle(TOUCHPAD_OFF_KEY, event);
-
-    } else if(true == mXEventMonitor->getCtrlPressStatus()) {
-        if (pointSettings) {
-            try  {
+        } else if(true == mXEventMonitor->getCtrlPressStatus()) {
+            if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
                 if (QGsettingskeys.contains("locate-pointer")){
                     pointSettings->set("locate-pointer", !pointSettings->get(POINTER_KEY).toBool());
                 }
-                else {
-                }
-            }
-            catch(char *msg){
-
             }
         }
     }
-    return;
 }
 
-void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data){
-    Display* display;
-    guint eventKeysym;
+void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
+{
+    if(UsdBaseClass::isUseXEventAsShutKey()) {
+        Display* display;
+        guint eventKeysym;
+        display =  QX11Info::display();
 
-    display =  QX11Info::display();
+        xEvent * event = (xEvent *)data;
+        eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
-    xEvent * event = (xEvent *)data;
-    eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
+        if (eventKeysym == XKB_KEY_XF86AudioMute) {
+           xEventHandleRelease(MUTE_KEY);
+        }  else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
+            xEventHandleRelease(BRIGHT_DOWN_KEY);
 
-    QString keyName = mUsdHotKeys.key(eventKeysym);
+        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
+            xEventHandleRelease(BRIGHT_UP_KEY);
 
-    if (keyName.isEmpty()) {
-        return;
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus() && mXEventMonitor->getCtrlPressStatus()) {
+            xEventHandleRelease(AREA_SCREENSHOT_KEY);
+
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getCtrlPressStatus()) {
+            xEventHandleRelease(WINDOW_SCREENSHOT_KEY);
+
+        } else if (eventKeysym == XKB_KEY_Print) {
+            xEventHandleRelease(SCREENSHOT_KEY);
+
+        } else if(eventKeysym == XKB_KEY_XF86RFKill) {
+            xEventHandleRelease(RFKILL_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86WLAN) {
+            xEventHandleRelease(WLAN_KEY);
+
+        }else if (eventKeysym == XKB_KEY_XF86TouchpadToggle) {
+            xEventHandleRelease(TOUCHPAD_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86AudioMicMute) {
+            xEventHandleRelease(MIC_MUTE_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86TouchpadOn) {
+            xEventHandleRelease(TOUCHPAD_ON_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86TouchpadOff) {
+            xEventHandleRelease(TOUCHPAD_OFF_KEY);
+
+        }
     }
-
-    if (keyName == X_SHUTKEY_XF86AudioMute) {
-       xEventHandleRelease(MUTE_KEY);
-    }  else if (keyName == X_SHUTKEY_XF86MonBrightnessDown) {
-        xEventHandleRelease(BRIGHT_DOWN_KEY);
-
-    } else if (keyName == X_SHUTKEY_XF86MonBrightnessUp) {
-        xEventHandleRelease(BRIGHT_UP_KEY);
-    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getShiftPressStatus()) {
-        xEventHandleRelease(AREA_SCREENSHOT_KEY);
-    } else if (keyName == X_SHUTKEY_PRINT && mXEventMonitor->getCtrlPressStatus()) {
-        xEventHandleRelease(WINDOW_SCREENSHOT_KEY);
-    } else if (keyName == X_SHUTKEY_PRINT) {
-        xEventHandleRelease(SCREENSHOT_KEY);
-    } else if (keyName == X_SHUTKEY_XF86RFKill) {
-        xEventHandleRelease(WLAN_KEY);
-    } else if (keyName == X_SHUTKEY_XF86TouchpadToggle) {
-        xEventHandleRelease(TOUCHPAD_KEY);
-    } else if (keyName == X_SHUTKEY_XF86AudioMicMute) {
-        xEventHandleRelease(MIC_MUTE_KEY);
-    } else if (keyName == X_SHUTKEY_XF86TouchpadOn) {
-        xEventHandleRelease(TOUCHPAD_ON_KEY);
-    } else if (keyName == X_SHUTKEY_XF86TouchpadOff) {
-        xEventHandleRelease(TOUCHPAD_OFF_KEY);
-    }
-
-    return;
 }
 
 void MediaKeysManager::initXeventMonitor()
@@ -1505,6 +1471,9 @@ bool MediaKeysManager::doAction(int type)
     case UKUI_EYECARE_CENTER:
         doEyeCenterAction();
         break;
+    case RFKILL_KEY:
+        doFlightModeAction();
+        break;
     default:
         break;
     }
@@ -1719,7 +1688,6 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     last_volume = volume;
     lastmuted = muted;
 
-    USD_LOG(LOG_DEBUG,"volumeStep:%d",volumeStep);
     switch(keyType){
     case MUTE_KEY:
             muted = !muted;
@@ -1728,10 +1696,8 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
         if(volume <= (volumeMin + volumeStep)){
             volume = volumeMin;
             muted = true;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         }else{
             volume -= volumeStep;
-            USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
             muted = false;
         }
 
@@ -1740,7 +1706,6 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
             muted = true;
         }
 
-        USD_LOG(LOG_DEBUG,"volumeMin volume%d",volume);
         break;
     case VOLUME_UP_KEY:
         if(muted){
@@ -1765,17 +1730,10 @@ void MediaKeysManager::doSoundActionALSA(int keyType)
     }
 
     mpulseAudioManager->setVolume(volume);
-    mpulseAudioManager->setMute(muted);
     mVolumeWindow->setVolumeRange(volumeMin, volumeMax);
+    mpulseAudioManager->setMute(muted);
 
     updateDialogForVolume(volume,muted,soundChanged);
-
-    if (QGSettings::isSchemaInstalled(PANEL_QUICK_OPERATION)) {
-        QGSettings* panel_settings = new QGSettings(PANEL_QUICK_OPERATION);
-        panel_settings->set(PANEL_SOUND_STATE,muted);
-        panel_settings->set(PANEL_SOUND_VOLUMSIZE,volume/655.36);
-        delete panel_settings;
-    }
 
     delete mpulseAudioManager;
 }
@@ -2135,6 +2093,19 @@ void MediaKeysManager::doWlanAction()
     } else {
         mDeviceWindow->setAction("ukui-wifi-off");
     }
+    mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doFlightModeAction()
+{
+    int flightState = RfkillSwitch::instance()->getCurrentFlightMode();
+
+    if(flightState == -1) {
+        USD_LOG(LOG_ERR,"get flight mode error");
+        return;
+    }
+
+    mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
 }
 
