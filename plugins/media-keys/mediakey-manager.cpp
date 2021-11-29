@@ -985,7 +985,7 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
             xEventHandle(BRIGHT_UP_KEY, event);
 
-        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus() && mXEventMonitor->getCtrlPressStatus()) {
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandle(AREA_SCREENSHOT_KEY, event);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getCtrlPressStatus()) {
@@ -1041,7 +1041,7 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
             xEventHandleRelease(BRIGHT_UP_KEY);
 
-        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus() && mXEventMonitor->getCtrlPressStatus()) {
+        } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandleRelease(AREA_SCREENSHOT_KEY);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getCtrlPressStatus()) {
