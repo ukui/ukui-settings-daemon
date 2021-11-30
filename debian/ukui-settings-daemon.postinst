@@ -1,36 +1,4 @@
 #!/bin/sh
-function deleteKdsDestktop() {
-    desktop="/etc/xdg/autostart/kylin-display-switch-daemon.desktop"
-    if [ -f "${desktop}" ];then
-        rm ${desktop}
-        echo "${desktop} has been deleted!"
-    fi
-    
-    desktop2="/etc/xdg/autostart/kylin-display-switch-mkt.desktop"
-    if [ -f "${desktop}" ];then
-        rm ${desktop}
-        echo "${desktop} has been deleted!"
-    fi
-}
-
-function stopKdsservice() {
-    if [ -d /run/systemd/system ]; then
-        systemctl stop 'kylin-display-switch.service' >/dev/null || true
-        systemctl disable 'kylin-display-switch.service' >/dev/null || true
-        killall -q mktip
-        systemctl --system daemon-reload >/dev/null || true
-        echo "Stop kylin-display-switch..."
-    fi
-}
-
-if [[ "$#" = 1 ]] && [[ "$1" = "reconfigure" ]] ; then
-    # OTA升级时的执行分支
-    stopKdsservice
-    deleteKdsDestktop
-else
-    # 安装包正常安装的安装后脚本执行顺序
-    stopKdsservice
-    deleteKdsDestktop
-fi
+set -e
 
 glib-compile-schemas /usr/share/glib-2.0/schemas/
