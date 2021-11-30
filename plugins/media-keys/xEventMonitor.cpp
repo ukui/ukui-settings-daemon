@@ -99,7 +99,6 @@ bool xEventMonitor::getAltPressStatus()
 
 bool xEventMonitor::getShiftPressStatus()
 {
-    USD_LOG(LOG_DEBUG,".");
     return shiftPress_l | shiftPress_r;
 }
 
