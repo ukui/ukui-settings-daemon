@@ -95,7 +95,7 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
     }
     if (!matchingMode) {
           USD_LOG(LOG_DEBUG,"Failed to get a preferred mode, falling back to biggest mode.");
-        //matchingMode = Generator::biggestMode(modes);
+//        matchingMode = Generator::biggestMode(modes);
     }
     if (!matchingMode) {
         USD_LOG(LOG_DEBUG,"Failed to get biggest mode. Which means there are no modes. Turning off the screen.");
@@ -183,7 +183,6 @@ void xrandrOutput::adjustPositions(KScreen::ConfigPtr config, const QVariantList
             const bool portrait = isPortrait(outputInfo[QStringLiteral("rotation")]);
 
             if (posInfo.isEmpty() || modeSize.isEmpty() || !scaleInfo.canConvert<int>()) {
-                USD_LOG(LOG_DEBUG, "had error info...");
                 return false;
             }
 
