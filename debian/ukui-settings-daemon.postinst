@@ -1,36 +1,17 @@
 #!/bin/sh
-function deleteKdsDestktop() {
-    desktop="/etc/xdg/autostart/kylin-display-switch-daemon.desktop"
-    if [ -f "${desktop}" ];then
-        rm ${desktop}
-        echo "${desktop} has been deleted!"
-    fi
-    
-    desktop2="/etc/xdg/autostart/kylin-display-switch-mkt.desktop"
-    if [ -f "${desktop}" ];then
-        rm ${desktop}
-        echo "${desktop} has been deleted!"
-    fi
-}
+set -e
 
-function stopKdsservice() {
-    if [ -d /run/systemd/system ]; then
-        systemctl stop 'kylin-display-switch.service' >/dev/null || true
-        systemctl disable 'kylin-display-switch.service' >/dev/null || true
-        killall -q mktip
-        systemctl --system daemon-reload >/dev/null || true
-        echo "Stop kylin-display-switch..."
-    fi
-}
+PowerIgnorePath="/etc/systemd/logind.conf.d/"
+PowerIgnorePathFile="power-ignore.conf"
 
-if [[ "$#" = 1 ]] && [[ "$1" = "reconfigure" ]] ; then
-    # OTA升级时的执行分支
-    stopKdsservice
-    deleteKdsDestktop
-else
-    # 安装包正常安装的安装后脚本执行顺序
-    stopKdsservice
-    deleteKdsDestktop
+if [ ! -d "$PowerIgnorePath" ];then
+  mkdir $PowerIgnorePath
+fi
+
+if [ ! -f "$PowerIgnorePath$PowerIgnorePathFile" ];then
+  touch $PowerIgnorePath$PowerIgnorePathFile
+  echo "[Login]" >> $PowerIgnorePath$PowerIgnorePathFile
+  echo "HandlePowerKey=ignore" >> $PowerIgnorePath$PowerIgnorePathFile
 fi
 
 glib-compile-schemas /usr/share/glib-2.0/schemas/

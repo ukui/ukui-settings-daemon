@@ -1,3 +1,12 @@
+ukui-settings-daemon (3.1.0-1.22) v101; urgency=medium
+
+  * BUG号：93748 【PTOF】【快捷键】按快捷键shift+prtSC截取全屏，应为自由裁剪（必现）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 29 Nov 2021 21:02:59 +0800
+
 ukui-settings-daemon (3.1.0-1.21) v101; urgency=medium
 
   * BUG号：91774 【显示】【双屏】色温调节失败
