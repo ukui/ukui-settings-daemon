@@ -752,7 +752,6 @@ void XrandrManager::SaveConfigTimerHandle()
         mIsApplyConfigWhenSave = false;
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode));
     } else {
-        USD_LOG(LOG_DEBUG,".");
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
         mMonitoredConfig->writeFile(true);
         SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
@@ -905,11 +904,14 @@ void XrandrManager::monitorsInit()
             std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
 
             if (MonitoredConfig == nullptr) {
+
                 USD_LOG(LOG_DEBUG,"config a error");
                 setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
                 return;
             }
 
+
+            mMonitoredConfig = std::move(MonitoredConfig);
         }
 
         applyConfig();
