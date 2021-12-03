@@ -31,7 +31,6 @@ OTHER_FILES += \
     $$PWD/org.ukui.peripherals-touchpad.gschema.xml         \
     $$PWD/org.ukui.peripherals-touchscreen.gschema.xml      \
     $$PWD/zh_CN.po  \
-    $$PWD/61-keyboard.hwdb  \
 
 # desktop ok
 desktop.path = /etc/xdg/autostart/
@@ -53,11 +52,7 @@ QMAKE_EXTRA_TARGETS += zhCN
 zh_CN.path  = /usr/share/locale/zh_CN/LC_MESSAGES/
 zh_CN.files = $$PWD/ukui-settings-daemon.mo
 
-#touchpad hotkey
-touchpad_udev.path = /etc/udev/hwdb.d/
-touchpad_udev.files = $$PWD/61-keyboard.hwdb
-
-INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN touchpad_udev
+INSTALLS += desktop plugin_info plugin_schema ukui_daemon_dbus zh_CN
 
 DISTFILES += \
     $$PWD/auto-brightness.ukui-settings-plugin  \

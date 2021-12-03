@@ -211,6 +211,7 @@ private:
     xEventHandleHadRelase(TOUCHPAD_KEY);
     xEventHandleHadRelase(TOUCHPAD_ON_KEY);
     xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
+    xEventHandleHadRelase(SCREENSAVER_KEY);
 
 
 

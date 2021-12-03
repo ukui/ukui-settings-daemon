@@ -1,3 +1,30 @@
+ukui-settings-daemon (3.1.0-1.25) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：删除触摸板热键配置，交由systemd实现
+  * 其他改动影响域：触摸板热键
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 15:50:21 +0800
+
+ukui-settings-daemon (3.1.0-1.24) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：重启后不会回复双屏参数的问题。
+  * 其他改动影响域：双屏重启后，恢复双屏。（双屏）
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 09:12:56 +0800
+
+ukui-settings-daemon (3.1.0-1.23) v101; urgency=medium
+
+  * BUG号：89582 【S】【声音】连接蓝牙耳机，HFP协议下出现使用快捷键F6/F7调节调节音量卡住无法调节，按键无效​，此时按第一次静音无效静音灯闪烁一下，按第二下静音有效静音灯亮（A2DP协议下无此现象）（偶现：10/30times）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域说明：无
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 09:11:52 +0800
+
 ukui-settings-daemon (3.1.0-1.22) v101; urgency=medium
 
   * BUG号：93748 【PTOF】【快捷键】按快捷键shift+prtSC截取全屏，应为自由裁剪（必现）
