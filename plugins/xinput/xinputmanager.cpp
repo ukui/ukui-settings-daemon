@@ -41,7 +41,7 @@ XinputManager::~XinputManager()
 
 void XinputManager::start()
 {
-    qDebug() << "info: [XinputManager][start]: thread id = " << QThread::currentThreadId();
+    USD_LOG(LOG_DEBUG,"info: [XinputManager][StartManager]: thread id =%d",QThread::currentThreadId());
     m_runningMutex.lock();
     m_pMonitorInputTask->m_running = true;
     m_runningMutex.unlock();
@@ -93,7 +93,7 @@ void XinputManager::SetPenRotation(int device_id)
     }
     if(!penDeviceQue.size())
     {
-        qDebug() << "info: [XrandrManager][SetPenRotation]: Do not neet to pen device map-to-output outDevice!";
+//        qDebug() << "info: [XrandrManager][SetPenRotation]: Do not neet to pen device map-to-output outDevice!";
         //return;
         goto FREE_DPY;
     }
@@ -112,7 +112,7 @@ FREE_DPY:
 
 void XinputManager::onSlaveAdded(int device_id)
 {
-    qDebug() << "info: [XinputManager][onSlaveAdded]: Slave Device(id =" << device_id << ") Added!";
+//    qDebug() << "info: [XinputManager][onSlaveAdded]: Slave Device(id =" << device_id << ") Added!";
     SetPenRotation(device_id);//新设备不是触控笔就不要处理了！
 }
 

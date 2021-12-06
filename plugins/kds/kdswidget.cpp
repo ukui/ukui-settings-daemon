@@ -550,7 +550,7 @@ void KDSWidget::setLeftExtendModeSetup(){
 
 
     Q_FOREACH(const KScreen::OutputPtr &output, config->connectedOutputs()) {
-        qDebug() << "\n" << output.data()->name() << output.data()->clones() << output.data()->clone();
+//        qDebug() << "\n" << output.data()->name() << output.data()->clones() << output.data()->clone();
     }
 }
 

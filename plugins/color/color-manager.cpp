@@ -398,14 +398,13 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
         theme_from = 18.0;
         /* get the current hour of a day as a fraction */
         frac_day = NightLightFracDayFromDt (dt_now);
-//        qDebug ("fractional day = %.3f, limits = %.3f->%.3f",
-//             frac_day, theme_from, theme_to);
+
         if(frac_day > theme_to && frac_day < theme_from)
             theme_now = 0;
         else
             theme_now = 1;
 
-        if(theme_now) {
+        if(theme_now) {//需要根据项目进行设置
             manager->gtk_settings->set(GTK_THEME_KEY, "ukui-black-unity");
             manager->qt_settings->set(QT_THEME_KEY, "ukui-dark");
         } else {
@@ -415,7 +414,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     }
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
-//        qDebug("night light disabled, resetting");
+
         USD_LOG(LOG_DEBUG,"color disable..");
         manager->NightLightSetActive (false);
         return;
@@ -447,7 +446,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
 
     /* get the current hour of a day as a fraction */
     frac_day = NightLightFracDayFromDt (dt_now);
-//    qDebug ("fractional day = %.3f, limits = %.3f->%.3f",
+//    //qDebug("fractional day = %.3f, limits = %.3f->%.3f",
 //         frac_day, schedule_from, schedule_to);
 
     /* disabled until tomorrow */
@@ -459,7 +458,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
 
         /* Reset if disabled until tomorrow is more than 24h ago. */
         if (time_span > (GTimeSpan) 24 * 60 * 60 * 1000000) {
-            qDebug ("night light disabled until tomorrow is older than 24h, resetting disabled until tomorrow");
+            //qDebug("night light disabled until tomorrow is older than 24h, resetting disabled until tomorrow");
             reset = true;
         } else if (time_span > 0) {
             /* Or if a sunrise lies between the time it was disabled and now. */
@@ -469,7 +468,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
                 NightLightFracDayIsBetween (schedule_to,
                                             frac_disabled,
                                             frac_day)) {
-                    qDebug ("night light sun rise happened, resetting disabled until tomorrow");
+                    //qDebug("night light sun rise happened, resetting disabled until tomorrow");
                     reset = true;
             }
         }
@@ -492,7 +491,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     if (!NightLightFracDayIsBetween (frac_day,
                                      schedule_from - smear,
                                      schedule_to)) {
-//        qDebug() << "not time for night-light";
+
         manager->NightLightSetActive (false);
         return;
     }
@@ -526,7 +525,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     } else {
         temp_smeared = temperature;
     }
-//    qDebug ("night light mode on, using temperature of %uK (aiming for %uK)",
+//    //qDebug("night light mode on, using temperature of %uK (aiming for %uK)",
 //         temp_smeared, temperature);
     manager->NightLightSetActive (true);
     manager->NightLightSetTemperature (temp_smeared);
@@ -550,7 +549,7 @@ void ColorManager::OnLocationNotify(GClueSimple *simple,
                           g_variant_new ("(dd)", latitude, longitude));
     g_clear_object(&setting);
 
-    // qDebug ("got geoclue latitude %f, longitude %f", latitude, longitude);
+    // //qDebug("got geoclue latitude %f, longitude %f", latitude, longitude);
 
     /* recheck the levels if the location changed significantly */
     if (manager->UpdateCachedSunriseSunset ())
@@ -606,7 +605,7 @@ void ColorManager::StopGeoclue()
 
 void ColorManager::SettingsChangedCb(QString key)
 {
-//    qDebug ("settings changed");
+//    //qDebug("settings changed");
     if(key == COLOR_KEY_AUTOMATIC_FROM || key == COLOR_KEY_AUTOMATIC_TO){
         return;
     }
@@ -639,7 +638,7 @@ void ColorManager::checkTime()
 
 void ColorManager::ColorManagerStop()
 {
-    qDebug()<<"Color manager stop";
+    USD_LOG(LOG_DEBUG,"Color manager stop");
     mColorProfiles->ColorProfilesStop();
     mColorState->ColorStateStop();
     StopGeoclue();

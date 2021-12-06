@@ -55,6 +55,7 @@ public:
 //    pulseAudioManager* getIntance();
    static void PaContextStateCallback(pa_context* pa_ctx, void* userdata);
    static void getSinkInfoCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata);
+   static void getServerInfoCallback(pa_context *ctx, const pa_server_info *si, void *userdata);
    static void getSinkVolumeAndSetCallback(pa_context *ctx, const pa_sink_info *si, int isLast, void *userdata);
 
    static void contextDrainComplete(pa_context *ctx, void *userdata);

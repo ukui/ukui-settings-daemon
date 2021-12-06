@@ -99,7 +99,6 @@ bool xEventMonitor::getAltPressStatus()
 
 bool xEventMonitor::getShiftPressStatus()
 {
-    USD_LOG(LOG_DEBUG,".");
     return shiftPress_l | shiftPress_r;
 }
 
@@ -123,6 +122,7 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
                 break;
             case LEFT_CTRL:
                 ctrlPress_l = true;
+                 Q_EMIT keyPress(event);
                 break;
             case LEFT_ALT:
                 altPress_l = true;
@@ -135,6 +135,7 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
                 break;
             case RIGHT_CTRL:
                  ctrlPress_r = true;
+                  Q_EMIT keyPress(event);
                 break;
              case MATE_KEY:
                  winPress = true;

@@ -1,9 +1,22 @@
 #!/bin/sh
-
 set -e
 
+PowerIgnorePath="/etc/systemd/logind.conf.d/"
+PowerIgnorePathFile="power-ignore.conf"
+touchpad_udev="/etc/udev/hwdb.d/61-keyboard.hwdb"
+
+if [ ! -d "$PowerIgnorePath" ];then
+  	mkdir $PowerIgnorePath
+fi
+
+if [ ! -f "$PowerIgnorePath$PowerIgnorePathFile" ];then
+  	touch $PowerIgnorePath$PowerIgnorePathFile
+  	echo "[Login]" >> $PowerIgnorePath$PowerIgnorePathFile
+  	echo "HandlePowerKey=ignore" >> $PowerIgnorePath$PowerIgnorePathFile
+fi
+
+if [ -f"$touchpad_udev" ];then
+	rm -rf $touchpad_udev
+fi
+
 glib-compile-schemas /usr/share/glib-2.0/schemas/
-
-chmod +x /usr/bin/touchpad-state
-
-#DEBHELPER#
