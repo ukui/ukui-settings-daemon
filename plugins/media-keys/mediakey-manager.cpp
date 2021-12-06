@@ -1012,6 +1012,9 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86TouchpadOff) {
             xEventHandle(TOUCHPAD_OFF_KEY, event);
 
+        } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
+            xEventHandle(SCREENSAVER_KEY, event);
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -1067,6 +1070,9 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86TouchpadOff) {
             xEventHandleRelease(TOUCHPAD_OFF_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
+            xEventHandleRelease(SCREENSAVER_KEY);
 
         }
     }
