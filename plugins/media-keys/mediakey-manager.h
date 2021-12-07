@@ -200,8 +200,6 @@ private:
     bool               m_ctrlFlag = false;
 
     xEventHandleHadRelase(MUTE_KEY);
-    xEventHandleHadRelase(BRIGHT_DOWN_KEY);
-    xEventHandleHadRelase(BRIGHT_UP_KEY);
     xEventHandleHadRelase(AREA_SCREENSHOT_KEY);
     xEventHandleHadRelase(WINDOW_SCREENSHOT_KEY);
     xEventHandleHadRelase(SCREENSHOT_KEY);

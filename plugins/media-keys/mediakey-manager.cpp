@@ -980,10 +980,10 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
             doAction(VOLUME_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandle(BRIGHT_DOWN_KEY, event);
+            doAction(BRIGHT_DOWN_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandle(BRIGHT_UP_KEY, event);
+            doAction(BRIGHT_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandle(AREA_SCREENSHOT_KEY, event);
@@ -1038,12 +1038,6 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
            xEventHandleRelease(MUTE_KEY);
-        }  else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandleRelease(BRIGHT_DOWN_KEY);
-
-        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandleRelease(BRIGHT_UP_KEY);
-
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandleRelease(AREA_SCREENSHOT_KEY);
 

@@ -181,6 +181,7 @@ void VolumeWindow::setWidgetLayout()
     setFixedSize(QSize(64,300) * mScale);
     //button图片操作
     mBut->setFixedSize(QSize(31,24) * mScale);
+    mBut->setAlignment(Qt::AlignCenter);
     mBut->move(17 * mScale , 253 * mScale);
     //音量条操作
     mVolumeBar->setOrientation(Qt::Vertical);
@@ -191,7 +192,7 @@ void VolumeWindow::setWidgetLayout()
     //亮度条操作
     mBrightBar->setOrientation(Qt::Vertical);
     mBrightBar->setFixedSize(QSize(6,200) * mScale);
-    mVolumeBar->move(29 * mScale,37 * mScale);
+    mBrightBar->move(29 * mScale,37 * mScale);
     mBrightBar->setTextVisible(false);
     mBrightBar->hide();
 }
@@ -244,7 +245,7 @@ void VolumeWindow::dialogVolumeShow()
     geometryChangedHandle();
     mBrightBar->hide();
     mVolumeBar->show();
-    QSize iconSize(31 * mScale,31 * mScale);
+    QSize iconSize(24 * mScale,24 * mScale);
 
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
@@ -258,7 +259,7 @@ void VolumeWindow::dialogBrightShow()
     mBrightBar->show();
     mBrightBar->setValue(mbrightValue);
 
-    QSize iconSize(31 * mScale,31 * mScale);
+    QSize iconSize(24 * mScale,24 * mScale);
 
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
@@ -328,7 +329,7 @@ void VolumeWindow::timeoutHandle()
 
 void VolumeWindow::showEvent(QShowEvent* e)
 {
-     QSize iconSize(31*mScale,31*mScale);
+     QSize iconSize(24 * mScale,24*mScale);
     /*适应主题颜色*/
     if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
@@ -344,7 +345,7 @@ void VolumeWindow::showEvent(QShowEvent* e)
         mVolumeBar->setStyleSheet("QProgressBar{border:none;border-radius:3px;background:#CC000000}"
                             "QProgressBar::chunk{border-radius:3px;background:white}");
         mBrightBar->setStyleSheet("QProgressBar{border:none;border-radius:3px;background:#33000000}"
-                            "QProgressBar::chunk{border-radius:4px;background:white}");
+                            "QProgressBar::chunk{border-radius:3px;background:white}");
         setPalette(QPalette(QColor("#232426")));//设置窗口背景色
     }
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
