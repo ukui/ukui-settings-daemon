@@ -34,12 +34,12 @@ sharingDbus::~sharingDbus()
 
 void sharingDbus::EnableService(QString serviceName)
 {
-    qDebug()<<__func__<<serviceName;
+//    qDebug()<<__func__<<serviceName;
     Q_EMIT serviceChange("enable", serviceName);
 }
 
 void sharingDbus::DisableService(QString serviceName)
 {
-    qDebug()<<__func__<<serviceName;
+//    qDebug()<<__func__<<serviceName;
     Q_EMIT serviceChange("disable", serviceName);
 }

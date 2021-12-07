@@ -32,7 +32,7 @@
 #include <QGSettings/qgsettings.h>
 #include <syslog.h>
 #include <glib.h>
-
+#include "clib-syslog.h"
 
 LdsmDialog::LdsmDialog(QWidget *parent)
     : QDialog(parent)
@@ -190,10 +190,11 @@ void LdsmDialog::allConnectEvent(bool display_baobab)
         connect(analyze_button, &QPushButton::clicked,
                 this, &LdsmDialog::checkButtonAnalyze);
 
-    if(sender() == ignore_button)
-        qDebug()<<"Ignore button pressed!";
-    else
-        qDebug()<<"Other button pressed!";
+    if(sender() == ignore_button) {
+        USD_LOG(LOG_DEBUG,"Ignore button pressed!");
+    } else {
+        USD_LOG(LOG_DEBUG,"Other button pressed!");
+    }
 }
 
 //update gsettings "ignore-paths" key contents
