@@ -37,6 +37,7 @@
 #define DBUS_INTERFACE  DBUS_XRANDR_INTERFACE
 
 #define QT_THEME_SCHEMA   "org.ukui.style"
+#define ICON_SIZE 24
 
 
 const QString allIconName[] = {
@@ -245,7 +246,7 @@ void VolumeWindow::dialogVolumeShow()
     geometryChangedHandle();
     mBrightBar->hide();
     mVolumeBar->show();
-    QSize iconSize(24 * mScale,24 * mScale);
+    QSize iconSize(ICON_SIZE * mScale,ICON_SIZE * mScale);
 
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
@@ -259,7 +260,7 @@ void VolumeWindow::dialogBrightShow()
     mBrightBar->show();
     mBrightBar->setValue(mbrightValue);
 
-    QSize iconSize(24 * mScale,24 * mScale);
+    QSize iconSize(ICON_SIZE * mScale,ICON_SIZE * mScale);
 
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
@@ -329,7 +330,7 @@ void VolumeWindow::timeoutHandle()
 
 void VolumeWindow::showEvent(QShowEvent* e)
 {
-     QSize iconSize(24 * mScale,24*mScale);
+     QSize iconSize(ICON_SIZE * mScale,ICON_SIZE * mScale);
     /*适应主题颜色*/
     if(m_styleSettings->get("style-name").toString() == "ukui-light")
     {
