@@ -39,12 +39,11 @@
 #define QT_THEME_SCHEMA   "org.ukui.style"
 #define ICON_SIZE 24
 
-
 const QString allIconName[] = {
-    "audio-volume-muted",
-    "audio-volume-low",
-    "audio-volume-medium",
-    "audio-volume-high",
+    "audio-volume-muted-symbolic",
+    "audio-volume-low-symbolic",
+    "audio-volume-medium-symbolic",
+    "audio-volume-high-symbolic",
     nullptr
 };
 
@@ -136,12 +135,18 @@ void VolumeWindow::geometryChangedHandle()
     priScreenChanged(x,y,width,height);
 }
 
-void VolumeWindow::onStyleChanged(const QString&)
+void VolumeWindow::onStyleChanged(const QString& style)
 {
-    if(!this->isHidden())
-    {
-        hide();
-        show();
+    if(style == "icon-theme-name") {
+        QSize iconSize(ICON_SIZE * mScale,ICON_SIZE * mScale);
+        QIcon::setThemeName(m_styleSettings->get("icon-theme-name").toString());
+        mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize))
+                                               ,m_styleSettings->get("style-name").toString()));
+    } else if(style == "style-name") {
+        if(!this->isHidden()) {
+            hide();
+            show();
+        }
     }
 }
 
@@ -247,7 +252,6 @@ void VolumeWindow::dialogVolumeShow()
     mBrightBar->hide();
     mVolumeBar->show();
     QSize iconSize(ICON_SIZE * mScale,ICON_SIZE * mScale);
-
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
     show();
     mTimer->start(2000);
@@ -350,8 +354,6 @@ void VolumeWindow::showEvent(QShowEvent* e)
         setPalette(QPalette(QColor("#232426")));//设置窗口背景色
     }
     mBut->setPixmap(drawLightColoredPixmap((QIcon::fromTheme(mIconName).pixmap(iconSize)),m_styleSettings->get("style-name").toString()));
-
-
 }
 
 void VolumeWindow::paintEvent(QPaintEvent* e)
