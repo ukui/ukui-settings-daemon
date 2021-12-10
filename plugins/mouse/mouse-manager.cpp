@@ -606,7 +606,6 @@ void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
         qWarning("SetLeftHandedAll: device_info is null");
         return;
     }
-
     for (i = 0; i < n_devices; i++) {
         SetLeftHanded (&device_info[i], mouse_left_handed, touchpad_left_handed);
     }
@@ -1515,9 +1514,13 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
     bool Pusb = name.contains("USB", Qt::CaseInsensitive);
     if(Pmouse && Pusb){
         state = settings->get(KEY_TOUCHPAD_DISBLE_O_E_MOUSE).toBool();
-        if(state){
-            settings->set(KEY_TOUCHPAD_ENABLED, false);
+
+        if(state){//如果开启插入鼠标禁用触摸板，则直接修改触摸板状态
+            SetTouchpadEnabledAll(!state);
             return true;
+        } else {//如果没有开启插入鼠标禁用触摸板，则根据触摸板总开关的状态，设置触摸板的enable状态
+            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
+
         }
     }
     return false;
@@ -1542,17 +1545,16 @@ void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
             isMouse = true;
         }
     }
-
     if(UsdBaseClass::isTablet()){
         if(settings->get(KEY_TOUCHPAD_ENABLED).toBool()) {
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
+            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
         }
+
     } else {
         if(!isMouse) {
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
+            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
         }
     }
-
     XFreeDeviceList (devicelist);
 }
 
