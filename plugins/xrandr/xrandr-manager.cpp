@@ -45,6 +45,7 @@ extern "C"{
 #include <xorg/xserver-properties.h>
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
+#include <libudev.h>
 }
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
@@ -54,6 +55,9 @@ extern "C"{
 #define XSETTINGS_KEY_SCALING       "scaling-factor"
 
 #define MAX_SIZE_MATCH_DIFF         0.05
+
+#define MAP_CONFIG "/.config/touchcfg.ini"
+#define MONITOR_NULL_SERIAL "kydefault"
 
 
 unsigned char *getDeviceNode (XIDeviceInfo devinfo);
@@ -296,6 +300,193 @@ void doAction (int input_name, char *output_name)
 }
 
 
+static int find_event_from_name(char *_name, char *_serial, char *_event)
+{
+    int ret = -1;
+    if((NULL == _name) || (NULL == _serial) || (NULL == _event)) {
+        USD_LOG(LOG_DEBUG,"parameter NULL ptr.");
+        return ret;
+    }
+
+    struct udev *udev;
+    struct udev_enumerate *enumerate;
+    struct udev_list_entry *devices, *dev_list_entry;
+    struct udev_device *dev;
+
+    udev = udev_new();
+    enumerate = udev_enumerate_new(udev);
+
+    udev_enumerate_add_match_subsystem(enumerate, "input");
+    udev_enumerate_scan_devices(enumerate);
+    devices = udev_enumerate_get_list_entry(enumerate);
+
+    udev_list_entry_foreach(dev_list_entry, devices) {
+        const char *pPath;
+        const char *pEvent;
+        const char cName[] = "event";
+        pPath = udev_list_entry_get_name(dev_list_entry);
+        dev = udev_device_new_from_syspath(udev, pPath);
+        //touchScreen is usb_device
+        dev = udev_device_get_parent_with_subsystem_devtype(
+                dev,
+                "usb",
+                "usb_device");
+        if (!dev) {
+            continue;
+        }
+
+        pEvent = strstr(pPath, cName);
+        if(NULL == pEvent) {
+            continue;
+        }
+
+        const char *pProduct = udev_device_get_sysattr_value(dev,"product");
+        const char *pSerial = udev_device_get_sysattr_value(dev, "serial");
+
+        if(NULL == pProduct) {
+            continue;
+        }
+        //有的设备没有pSerial， 可能导致映射错误， 不处理
+        //pProduct 是_name的子串
+        if((NULL == _serial)||(0 == strcmp(MONITOR_NULL_SERIAL, _serial))) {
+            if(NULL != strstr(_name, pProduct)) {
+                strcpy(_event, pEvent);
+                ret = Success;
+                USD_LOG(LOG_DEBUG,"pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s" ,pEvent, _name, _serial, pProduct, pSerial);
+                break;
+            }
+        } else {
+            if((NULL != strstr(_name, pProduct)) && (0 == strcmp(_serial, pSerial))) {
+                strcpy(_event, pEvent);
+                ret = Success;
+                USD_LOG(LOG_DEBUG,"pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s" ,pEvent, _name, _serial, pProduct, pSerial);
+                break;
+            }
+        }
+        udev_device_unref(dev);
+    }
+    udev_enumerate_unref(enumerate);
+    udev_unref(udev);
+
+    return ret;
+}
+
+static int find_touchId_from_event(Display *_dpy, char *_event, int *pId)
+{
+    int ret = -1;
+    if((NULL == pId) || (NULL == _event) || (NULL == _dpy)) {
+        USD_LOG(LOG_DEBUG,"parameter NULL ptr.");
+        return ret;
+    }
+    int         	i            = 0;
+    int             j            = 0;
+    int         	num_devices  = 0;
+    XDeviceInfo 	*pXDevs_info = NULL;
+    XDevice         *pXDev       = NULL;
+    unsigned char 	*cNode       = NULL;
+    const char  	cName[]      = "event";
+    const char        	*cEvent      = NULL;
+    int             nprops       = 0;
+    Atom            *props       = NULL;
+    char            *name;
+    Atom            act_type;
+    int             act_format;
+    unsigned long   nitems, bytes_after;
+    unsigned char   *data;
+
+    pXDevs_info = XListInputDevices(_dpy, &num_devices);
+    for(i = 0; i < num_devices; i++) {
+        pXDev = XOpenDevice(_dpy, pXDevs_info[i].id);
+        if (!pXDev) {
+            USD_LOG(LOG_DEBUG,"unable to open device '%s'\n", pXDevs_info[i].name);
+            continue;
+        }
+
+        props = XListDeviceProperties(_dpy, pXDev, &nprops);
+        if (!props) {
+            USD_LOG(LOG_DEBUG,"Device '%s' does not report any properties.\n", pXDevs_info[i].name);
+            continue;
+        }
+
+        for(j = 0; j < nprops; j++) {
+            name = XGetAtomName(_dpy, props[j]);
+            if(0 != strcmp(name, "Device Node"))
+            {
+                continue;
+            }
+            XGetDeviceProperty(_dpy, pXDev, props[j], 0, 1000, False,
+                                   AnyPropertyType, &act_type, &act_format,
+                                   &nitems, &bytes_after, &data);
+            cNode = data;
+        }
+
+        if(NULL == cNode) {
+            continue;
+        }
+
+        cEvent = strstr((const char *)cNode, cName);
+
+        if( 0 == strcmp(_event, cEvent)) {
+            *pId = pXDevs_info[i].id;
+            USD_LOG(LOG_DEBUG,"cNode:%s id:%d ",cNode, *pId);
+            ret = Success;
+            break;
+        }
+    }
+
+    return ret;
+}
+
+static int find_touchId_from_name(Display *_dpy, char *_name, char *_serial, int *_pId)
+{
+    int ret = -1;
+    if((NULL == _name) || (NULL == _serial) || (NULL == _pId) || (NULL == _dpy)){
+        USD_LOG(LOG_DEBUG,"parameter NULL ptr. ");
+        goto LEAVE;
+    }
+    char cEventName[32]; // eg:event25
+
+    ret = find_event_from_name(_name, _serial, cEventName);
+    if(Success != ret) {
+        USD_LOG(LOG_DEBUG,"find_event_from_name ret[%d]", ret);
+        goto LEAVE;
+    }
+
+    ret = find_touchId_from_event(_dpy, cEventName, _pId);
+    if(Success != ret) {
+        USD_LOG(LOG_DEBUG,"find_touchId_from_event ret[%d]", ret);
+        goto LEAVE;
+    }
+LEAVE:
+    return ret;
+}
+
+
+int getMapInfoListFromConfig(QString confPath,MapInfoFromFile* mapInfoList)
+{
+    int ret = -1;
+    QSettings *configIniRead = new QSettings(confPath, QSettings::IniFormat);
+    int mapNum = configIniRead->value("/COUNT/num").toInt();
+    if(mapNum < 1) {
+        return ret;
+    }
+    for(int i = 0; i < mapNum ;++i){
+        QString mapName = QString("/MAP%1/%2");
+        QString touchName = configIniRead->value(mapName.arg(i+1).arg("name")).toString();
+        QString scrname = configIniRead->value(mapName.arg(i+1).arg("scrname")).toString();
+        QString serial = configIniRead->value(mapName.arg(i+1).arg("serial")).toString();
+        if(NULL != touchName) {
+            mapInfoList[i].sTouchName = touchName;
+        }
+        if(NULL != scrname) {
+            mapInfoList[i].sMonitorName = scrname;
+        }
+        if(NULL != serial) {
+            mapInfoList[i].sTouchSerial = serial;
+        }
+    }
+    return mapNum;
+}
 /*
  *
  * 触摸设备映射方案：
@@ -315,8 +506,7 @@ void SetTouchscreenCursorRotation()
 
     ts_devs = getTouchscreen (dpy);
 
-    if (!g_list_length (ts_devs))
-    {
+    if (!g_list_length (ts_devs)) {
         fprintf(stdin, "No touchscreen find...\n");
         return;
     }
@@ -324,8 +514,7 @@ void SetTouchscreenCursorRotation()
     GList *l = NULL;
 
     if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
-        !XRRQueryVersion (dpy, &major, &minor))
-    {
+        !XRRQueryVersion (dpy, &major, &minor)) {
         fprintf (stderr, "RandR extension missing\n");
         return;
     }
@@ -338,8 +527,7 @@ void SetTouchscreenCursorRotation()
         if (!res)
           return;
 
-        for (o = 0; o < res->noutput; o++)
-        {
+        for (o = 0; o < res->noutput; o++) {
             XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
             if (!output_info){
                 fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
@@ -347,8 +535,6 @@ void SetTouchscreenCursorRotation()
             }
             int output_mm_width = output_info->mm_width;
             int output_mm_height = output_info->mm_height;
-
-
 
             if (output_info->connection == 0) {
                 for ( l = ts_devs; l; l = l->next) {
@@ -374,6 +560,7 @@ void SetTouchscreenCursorRotation()
                                                                      "ID_INPUT_HEIGHT_MM");
 
                         if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
+                            USD_LOG(LOG_DEBUG,".output_mm_width:%d  output_mm_height:%d  width:%d. height:%d",output_mm_width,output_mm_height,width,height);
                             doAction(info->dev_info.deviceid,output_info->name);
                         } else if (deviceName.toUpper().contains("TOUCHPAD") && ouputName == "eDP-1"){//触摸板只映射主屏幕
                             USD_LOG(LOG_DEBUG,".map touchpad.");
@@ -392,9 +579,30 @@ void SetTouchscreenCursorRotation()
     g_list_free(ts_devs);
 }
 
+void remapFromConfig(QString confPath)
+{
+    MapInfoFromFile mapInfoList[16];
+    Display *pDpy = XOpenDisplay(NULL);
+    int deviceId = 0;
+    int mapNum = getMapInfoListFromConfig(confPath,mapInfoList);
+    USD_LOG(LOG_DEBUG,"getMapInfoListFromConfig : %d",mapNum);
+    if(mapNum < 1) {
+        USD_LOG(LOG_DEBUG,"get map num error");
+        SetTouchscreenCursorRotation();
+        return;
+    }
+    for (int i = 0; i < mapNum; ++i) {
+        find_touchId_from_name(pDpy, mapInfoList[i].sTouchName.toLatin1().data(),mapInfoList[i].sTouchSerial.toLatin1().data(), &deviceId);
+        USD_LOG(LOG_DEBUG,"find_touchId_from_name : %d",deviceId);
+        doAction(deviceId,mapInfoList[i].sMonitorName.toLatin1().data());
+    }
+}
+
+
 void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
 {
-    SetTouchscreenCursorRotation();
+//    SetTouchscreenCursorRotation();
+    autoRemapTouchscreen();
 }
 
 /*监听旋转键值回调 并设置旋转角度*/
@@ -487,6 +695,17 @@ void XrandrManager::applyKnownConfig(bool state)
 
 }
 
+void XrandrManager::autoRemapTouchscreen()
+{
+    QString configPath = QDir::homePath() +  MAP_CONFIG;
+    QFileInfo file(configPath);
+    if(file.exists()) {
+        remapFromConfig(configPath);
+    } else {
+        SetTouchscreenCursorRotation();
+    }
+}
+
 void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
 {
 
@@ -522,7 +741,8 @@ void XrandrManager::applyConfig()
     connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
             &KScreen::SetConfigOperation::finished,
             this, [this]() {
-        SetTouchscreenCursorRotation();
+//        SetTouchscreenCursorRotation();
+        autoRemapTouchscreen();
         sendScreenModeToDbus();
     });
 }
@@ -754,7 +974,8 @@ void XrandrManager::SaveConfigTimerHandle()
     } else {
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
         mMonitoredConfig->writeFile(true);
-        SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
+//        SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
+        autoRemapTouchscreen();
         sendScreenModeToDbus();
     }
 
@@ -1343,7 +1564,6 @@ void XrandrManager::StartXrandrIdleCb()
     //    QMetaObject::invokeMethod(this, "getInitialConfig", Qt::QueuedConnection);
     connect(mKscreenInitTimer,  SIGNAL(timeout()), this, SLOT(getInitialConfig()));
     mKscreenInitTimer->start(1500);
-
     connect(mDbus, SIGNAL(setScreenModeSignal(QString)), this, SLOT(setScreenMode(QString)));
     connect(mDbus, SIGNAL(setScreensParamSignal(QString)), this, SLOT(setScreensParam(QString)));
 
