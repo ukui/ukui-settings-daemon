@@ -76,30 +76,30 @@ void TabletModeManager::TabletUpdateState()
     QOrientationReading *reading = mSensor->reading();
     switch (reading->orientation()) {
     case QOrientationReading::Undefined:
-        qDebug("return TabletModeManager::Orientation::Undefined");
+        // qDebug("return TabletModeManager::Orientation::Undefined");
         //return TabletModeManager::Orientation::Undefined;
         break;
     case QOrientationReading::TopUp:
-        qDebug("return TabletModeManager::Orientation::TopUp");
+        // qDebug("return TabletModeManager::Orientation::TopUp");
         mXrandrSettings->setEnum(XRANDR_ROTATION_KEY,0);
         break;
     case QOrientationReading::TopDown:
-        qDebug("return TabletModeManager::Orientation::TopDown");
+        // qDebug("return TabletModeManager::Orientation::TopDown");
         mXrandrSettings->setEnum(XRANDR_ROTATION_KEY,2);
         break;
     case QOrientationReading::LeftUp:
-        qDebug("return TabletModeManager::Orientation::LeftUp");
+        // qDebug("return TabletModeManager::Orientation::LeftUp");
         mXrandrSettings->setEnum(XRANDR_ROTATION_KEY,1);
         break;
     case QOrientationReading::RightUp:
-        qDebug("return TabletModeManager::Orientation::RightUp");
+        // qDebug("return TabletModeManager::Orientation::RightUp");
         mXrandrSettings->setEnum(XRANDR_ROTATION_KEY,3);
         break;
     case QOrientationReading::FaceUp:
-        qDebug("return TabletModeManager::Orientation::FaceUp");
+        // qDebug("return TabletModeManager::Orientation::FaceUp");
         break;
     case QOrientationReading::FaceDown:
-        qDebug("return TabletModeManager::Orientation::FaceDown");
+        // qDebug("return TabletModeManager::Orientation::FaceDown");
         break;
     default:
         Q_UNREACHABLE();
@@ -108,12 +108,12 @@ void TabletModeManager::TabletUpdateState()
 
 void TabletModeManager::TabletRefresh()
 {
-    qDebug()<<__func__;
+//    qDebug()<<__func__;
     if(mSensor->isActive()){
-        qDebug()<<mSensor->isActive();
+//        qDebug()<<mSensor->isActive();
         TabletUpdateState();
     } else {
-        qDebug()<<mSensor->isActive();
+//        qDebug()<<mSensor->isActive();
     }
 
 }
@@ -165,7 +165,7 @@ void TabletModeManager::TabletSettingsChanged(const bool tablemode)
 
 bool TabletModeManager::TabletModeManagerStart()
 {
-    qDebug("TabletMode Manager Start");
+    // qDebug("TabletMode Manager Start");
     bool rotations, table;
     rotations = mTableSettings->get(TABLET_AUTO_KEY).toBool();
     table     = mTableSettings->get(TABLET_MODE_KEY).toBool();
@@ -180,5 +180,5 @@ bool TabletModeManager::TabletModeManagerStart()
 void TabletModeManager::TabletModeManagerStop()
 {
     SetEnabled(false);
-    qDebug("TabletMode Manager stop");
+    // qDebug("TabletMode Manager stop");
 }

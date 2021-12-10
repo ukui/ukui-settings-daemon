@@ -67,7 +67,7 @@ typedef struct{
     QString application;
     uint time;
 }MediaPlayer;
-typedef QMap<QString, uint32_t> HotKeys;
+
 class MediaKeysManager:public QObject
 {
     Q_OBJECT
@@ -133,6 +133,8 @@ private:
     void doWlanAction();
     void doWebcamAction();
     void doEyeCenterAction();
+    void doFlightModeAction();
+
 
 
     /******************Function for DBus(DBus相关处理函数)******************************/
@@ -194,8 +196,6 @@ private:
     VolumeWindow      *mVolumeWindow;   //volume size window 声音大小窗口
     DeviceWindow      *mDeviceWindow;   //other widow，such as touchapad、volume 例如触摸板、磁盘卷设备
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
-    HotKeys mUsdHotKeys;
-    QStringList mXHotKeysName;      //所有全局的快捷键名字，根据这个名字在X里面反射出对应的keysum，然后与xevent的keysum进行匹配后处理
     int                power_state = 4;
     bool               m_ctrlFlag = false;
 
@@ -207,9 +207,11 @@ private:
     xEventHandleHadRelase(SCREENSHOT_KEY);
     xEventHandleHadRelase(WLAN_KEY);
     xEventHandleHadRelase(MIC_MUTE_KEY);
+    xEventHandleHadRelase(RFKILL_KEY);
     xEventHandleHadRelase(TOUCHPAD_KEY);
     xEventHandleHadRelase(TOUCHPAD_ON_KEY);
     xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
+    xEventHandleHadRelase(SCREENSAVER_KEY);
 
 
 

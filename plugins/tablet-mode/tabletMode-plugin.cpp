@@ -24,7 +24,7 @@ TabletModeManager *TabletModePlugin::mTableManager = nullptr;
 
 TabletModePlugin::TabletModePlugin()
 {
-    qDebug("TabletMode Plugin initializing");
+    USD_LOG(LOG_DEBUG,"TabletMode Plugin initializing");
     if(nullptr == mTableManager)
         mTableManager = TabletModeManager::TabletModeManagerNew();
 }
@@ -57,7 +57,7 @@ PluginInterface *TabletModePlugin::getInstance()
 
 void TabletModePlugin::deactivate()
 {
-    qDebug("Deactivating Xrandr plugin");
+    USD_LOG(LOG_DEBUG,"Deactivating Xrandr plugin");
     mTableManager->TabletModeManagerStop();
 }
 

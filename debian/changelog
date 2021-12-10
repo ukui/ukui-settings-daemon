@@ -1,3 +1,88 @@
+ukui-settings-daemon (3.1.0-1.25) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：删除触摸板热键配置，交由systemd实现
+  * 其他改动影响域：触摸板热键
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 15:50:21 +0800
+
+ukui-settings-daemon (3.1.0-1.24) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：重启后不会回复双屏参数的问题。
+  * 其他改动影响域：双屏重启后，恢复双屏。（双屏）
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 09:12:56 +0800
+
+ukui-settings-daemon (3.1.0-1.23) v101; urgency=medium
+
+  * BUG号：89582 【S】【声音】连接蓝牙耳机，HFP协议下出现使用快捷键F6/F7调节调节音量卡住无法调节，按键无效​，此时按第一次静音无效静音灯闪烁一下，按第二下静音有效静音灯亮（A2DP协议下无此现象）（偶现：10/30times）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域说明：无
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 03 Dec 2021 09:11:52 +0800
+
+ukui-settings-daemon (3.1.0-1.22) v101; urgency=medium
+
+  * BUG号：93748 【PTOF】【快捷键】按快捷键shift+prtSC截取全屏，应为自由裁剪（必现）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 29 Nov 2021 21:02:59 +0800
+
+ukui-settings-daemon (3.1.0-1.21) v101; urgency=medium
+
+  * BUG号：91774 【显示】【双屏】色温调节失败
+           92559 【触摸屏】【用例175001】双屏扩展模式，触摸屏触摸功能失效
+           92146 【显示器】【用例103534】xrandr --output "屏幕名称" --off关闭显示器后，插拔显示器无法恢复显示
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Wed, 24 Nov 2021 19:23:02 +0800
+
+ukui-settings-daemon (3.1.0-1.20) v101; urgency=medium
+
+  * BUG号：92730 【S】【PTOF】【键盘】锁屏后登入或者从S2idle唤醒后多次按F5静音键，静音灯状态不变（hp：3/3units,11/12times;kylin:3/3units,20/24times）
+           92445 【S】【声音】进入s2idle后，登录系统按下F5静音键，第一次按静音键灯不亮且静音无效但音量值会突然变大，第二次按F5静音灯亮静音有效（1/2units；25/60times）
+           89528 【S】【PTOF】【键盘】打开任一音频播放，按f5静音后插入tpyec/usb耳机，耳机内声音播放正常，但静音灯未灭（必现）
+           92738 【S】【PTOF】【键盘】连续按F5十次以上，音量会产生跳变，且静音灯会不熄灭或者常亮（必现）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 22 Nov 2021 20:53:26 +0800
+
+ukui-settings-daemon (3.1.0-1.19) v101; urgency=medium
+
+  * BUG号：79667 【同SP1 【UKUI V3.1】【OSD】触摸板锁未出现热键弹窗，且触摸板锁功能失效
+           59425 【亮剑行动】【联想】【快捷键】按下触摸板控制按键，无法禁用触摸板
+           89183 【声音】连接hdmi或蓝牙耳机，快捷键静音和快捷键调节音量不生效
+
+
+  * 需求说明：无
+  * 其他改动说明：无
+  
+ -- sundagao <sundagao@kylinos.cn>  Fri, 19 Nov 2021 15:40:15 +0800
+
+ukui-settings-daemon (3.1.0-1.18) v101; urgency=medium
+
+  * BUG号：(ZI)91100 【S】【PTOF】【键盘】通过快捷键f3、f4调节屏幕亮度时，亮度值调节间隔不一致（必现）
+           (ZI)91005 【键盘】【电源管理】使用快捷键F3降低亮度至最小值10后，再次点击F3，每次点击亮度会继续变暗或变亮（必现）
+           (ZI)91162 【S】【PTOF】【鼠标】控制面板鼠标界面开启按ctrl键时显示指针位置，在各界面点击ctrl无反应（必现）
+           (ZI)91299 【S】【触控笔】平板模式旋转方向以后，按触控笔的按钮一，触控点偏移(必现)
+           (ZS)82433 【截图】【PTOF】下拉框展开状态下，快捷键截图失效
+          （ZI）91771 【S】【PTOF】【显示器】【触摸】连接外显，控制面板中设置系统投屏模式为镜像后，触摸偏移，通过快捷键设置无此现象（必现）
+          （ZI）91299 【S】【触控笔】平板模式旋转方向以后，按触控笔的按钮一，触控点偏移(必现)
+  * 需求说明：无
+  * 其他改动说明：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 16 Nov 2021 18:36:52 +0800
+
 ukui-settings-daemon (3.1.0-1.16) v101; urgency=medium
 
   * BUG号：90170 【PTOF】【触控板】开启“插入鼠标时禁用触控板”，插入鼠标后触控板被禁用，拔出鼠标后触摸板仍被禁用（必现）

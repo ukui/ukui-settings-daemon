@@ -488,20 +488,6 @@ void KeyboardManager::XkbEventsFilter(int keyCode)
         }
 
     }
-    if (keyCode == 255)
-    {
-        int flightState = RfkillSwitch::instance()->getCurrentFlightMode();
-        USD_LOG(LOG_DEBUG,"getCurrentFlightMode %d",flightState);
-
-
-        if(flightState == -1)
-        {
-            return;
-        }
-
-        m_statusWidget->setIcons(flightState?"ukui-airplane-on":"ukui-airplane-off");
-        m_statusWidget->showWidget();
-    }
     XCloseDisplay (display);
 }
 

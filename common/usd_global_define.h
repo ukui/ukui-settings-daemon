@@ -42,21 +42,6 @@
                                                         action##HadRelease = true;             \
                                                     }
 
-#define X_SHUTKEY_XF86AudioMute             "XF86AudioMute"
-#define X_SHUTKEY_XF86AudioRaiseVolume      "XF86AudioRaiseVolume"
-#define X_SHUTKEY_XF86AudioLowerVolume      "XF86AudioLowerVolume"
-#define X_SHUTKEY_XF86MonBrightnessDown     "XF86MonBrightnessDown"
-#define X_SHUTKEY_XF86MonBrightnessUp       "XF86MonBrightnessUp"
-#define X_SHUTKEY_XF86RFKill                "XF86RFKill"
-#define X_SHUTKEY_PRINT                     "Print"     //截图
-#define X_SHUTKEY_XF86TouchpadToggle        "XF86TouchpadToggle"     //触摸板
-#define X_SHUTKEY_XF86TouchpadOn        "XF86TouchpadOn"     //触摸板打开
-#define X_SHUTKEY_XF86TouchpadOff        "XF86TouchpadOff"     //触摸板关闭
-#define X_SHUTKEY_XF86AudioMicMute        "XF86AudioMicMute"     //静音
-
-
-
-
 #define STATE_OFF     0
 #define STATE_ON      1
 #define STATE_TOGGLE  2

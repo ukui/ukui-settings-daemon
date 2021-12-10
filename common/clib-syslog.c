@@ -263,6 +263,9 @@ int ulock(int fd) {
 void write_log_to_file(char *buf, __uint16_t buf_len)
 {
     static int lastWeekDay = 0xff;
+    int month = 0;
+    int day = 0;
+
     const char *pWeekName[7] = {"SUN.log","MON.log","TUE.log","WED.log","THU.log","FRI.log","SAT.log"};
     FILE *lockfp;
     int fd;
@@ -270,9 +273,12 @@ void write_log_to_file(char *buf, __uint16_t buf_len)
     int rtWeekDay;
     char logFileName[128];
     char logMsg[2048];
+    char readMsg[2048]="";
     time_t t;
     struct tm tmTime;
+    int reWriteTimes = 0;
 
+REWRITE:
     t = writeLen;
     time(&t);
 //    localtime_r(&t, tmTime);//虽然线程安全但是容易死锁
@@ -287,26 +293,50 @@ void write_log_to_file(char *buf, __uint16_t buf_len)
     strcat(logFileName,pWeekName[rtWeekDay]);
 
     if(rtWeekDay!=lastWeekDay && lastWeekDay!=0xff){
-        //清空文件打开，
+
         fd = open(logFileName, O_TRUNC|O_RDWR);
     }
     else {
-        //追加打开
-        fd = open(logFileName, O_RDWR | O_CREAT|O_APPEND, S_IRUSR | S_IWUSR);
+
+        fd = open(logFileName, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
     }
+
     lastWeekDay = rtWeekDay;
     if (wlock(fd, 1) == -1) {
+    //加锁失败，可能是因为其他已上锁，需要close操作。
+        if (fd > 0) {
+            close(fd);
+        }
         return;
     }
-    //写并同步！
+
     lockfp = fdopen(fd,"w+");
-    snprintf(logMsg,sizeof(logMsg),"{%d-%02d-%02d %02d:%02d:%02d}:%s\n",tmTime.tm_year+1970, tmTime.tm_mon+1, tmTime.tm_mday,tmTime.tm_hour, tmTime.tm_min,tmTime.tm_sec,buf);
-   writeLen = write(fd,(const void*)logMsg,strlen(logMsg));
+    snprintf(logMsg,sizeof(logMsg),"{%04d-%02d-%02d %02d:%02d:%02d}:%s\n",tmTime.tm_year+1970, tmTime.tm_mon+1, tmTime.tm_mday,tmTime.tm_hour, tmTime.tm_min,tmTime.tm_sec,buf);
+    writeLen = write(fd,(const void*)logMsg,strlen(logMsg));
+
+    fseek(lockfp,0L,SEEK_SET);
+    if (fgets(readMsg, sizeof(readMsg), lockfp)) {
+
+         month = (readMsg[6]-0x30)*10 + readMsg[7]-0x30;
+         day = (readMsg[9]-0x30)*10 + readMsg[10]-0x30;
+
+         if (month!=(tmTime.tm_mon+1) || day!=tmTime.tm_mday) {
+             if (0 == reWriteTimes) {
+                 fflush(lockfp);
+
+                 ulock(fd);
+                 fclose (lockfp);
+                 reWriteTimes++;
+                 lastWeekDay=0xfe;
+                 goto REWRITE;
+             }
+         }
+    }
 
     printf("%s",logMsg);
 
     fflush(lockfp);
-    //上锁
+
     ulock(fd);
     fclose (lockfp);
 }

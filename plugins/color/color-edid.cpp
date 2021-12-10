@@ -221,12 +221,12 @@ gboolean ColorEdid::EdidParse (const guint8 *data, gsize length)
 
     /* check header */
     if (length < 128) {
-            qDebug("EDID length is too small");
+            USD_LOG(LOG_DEBUG,"EDID length is too small");
             ret = FALSE;
             goto out;
     }
     if (data[0] != 0x00 || data[1] != 0xff) {
-            qDebug("Failed to parse EDID header");
+            USD_LOG(LOG_DEBUG,"Failed to parse EDID header");
             ret = FALSE;
             goto out;
     }

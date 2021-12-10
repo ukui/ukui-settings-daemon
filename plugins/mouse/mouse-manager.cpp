@@ -18,6 +18,7 @@
  */
 #include "mouse-manager.h"
 #include "clib-syslog.h"
+#include "usd_base_class.h"
 
 /* Keys with same names for both touchpad and mouse */
 #define KEY_LEFT_HANDED                  "left-handed"          /*  a boolean for mouse, an enum for touchpad */
@@ -643,7 +644,7 @@ void MouseManager::SetMotionLibinput (XDeviceInfo *device_info)
     try {
         device = device_is_touchpad (device_info);
         if (device != NULL) {
-            qDebug()<<"device != NULL  settings = settings_touchpad";
+            USD_LOG(LOG_DEBUG,"device != NULL  settings = settings_touchpad");
             settings = settings_touchpad;
         } else {
             device = XOpenDevice (dpy, device_info->id);
@@ -819,7 +820,8 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
 
         rc = XGetDeviceProperty (dpy,device, prop, 0, 1, False, float_type, &type,
                                  &format, &nitems, &bytes_after, &data.c);
-        qDebug()<<"format = "<<format<<"nitems = "<<nitems;
+
+        USD_LOG_SHOW_PARAM2(format,nitems)
         if (rc == Success && type == float_type && format == 32 && nitems >= 1) {
                 *(float *) data.l = accel;
                 XChangeDeviceProperty (dpy, device, prop, float_type, 32,
@@ -1070,7 +1072,9 @@ void MouseManager::SetMouseWheelSpeed (int speed)
                    "Shift_L,   Down, Shift_L|Button5\n"
                    "Shift_R,   Down, Shift_R|Button5\n"
                    "None,      Up,   Button4, %1, 0, %2\n"
-                   "None,      Down, Button5, %3, 0, %4\n")
+                   "None,      Down, Button5, %3, 0, %4\n"
+                   "None,      Thumb1,  Alt_L|Left\n"
+                   "None,      Thumb2,  Alt_L|Right")
                 .arg(speed).arg(delay).arg(speed).arg(delay);
 
     file.setFileName(FilePath);
@@ -1083,12 +1087,12 @@ void MouseManager::SetMouseWheelSpeed (int speed)
     char **args;
     int    argc;
 
-    if (imwheelSpawned){
-        QProcess::execute("killall imwheel");
-        imwheelSpawned = false;
-    }
+//    if (imwheelSpawned){
+//        QProcess::execute("killall imwheel");
+//        imwheelSpawned = false;
+//    }
 
-    QString str = "/usr/bin/imwheel";
+    QString str = "/usr/bin/imwheel -k";
     if( g_shell_parse_argv (str.toLatin1().data(), &argc, &args, NULL)){
         g_spawn_async (g_get_home_dir (),
                        args,
@@ -1460,32 +1464,33 @@ void MouseManager::SetNaturalScrollAll ()
 void set_touchpad_enabled (XDeviceInfo *device_info,
                            bool         state)
 {
-    XDevice *device;
-    Atom prop_enabled;
-    unsigned char data = state;
-    Display *display =  gdk_x11_get_default_xdisplay ();//QX11Info::display();//
-
-    prop_enabled = property_from_name ("Device Enabled");
-    if (!prop_enabled)
-        return;
-
+    Display* display = gdk_x11_get_default_xdisplay ();
+    XDevice * device;
     device = device_is_touchpad (device_info);
     if (device == NULL) {
         return;
     }
-    try {
-        XChangeDeviceProperty (display, device,
-                               prop_enabled, XA_INTEGER, 8,
-                               PropModeReplace, &data, 1);
-
-        XCloseDevice (display, device);
-        gdk_display_flush (gdk_display_get_default());
-    } catch (int x) {
-        qWarning("Error %s device \"%s\"",
-                  (state) ? "enabling" : "disabling",
-                   device_info->name);
+    int realformat;
+    unsigned long nitems, bytes_after;
+    unsigned char *data;
+    Atom realtype, prop;
+    prop = XInternAtom (display, "Device Enabled", False);
+    if (!prop) {
+        return;
     }
 
+    if (XGetDeviceProperty (display, device, prop, 0, 1, False,
+                            XA_INTEGER, &realtype, &realformat, &nitems,
+                            &bytes_after, &data) == Success) {
+
+        if (nitems == 1){
+            data[0] = state ? 1 : 0;
+            XChangeDeviceProperty(display, device, prop, XA_INTEGER, realformat, PropModeReplace, data, nitems);
+        }
+        XFree(data);
+    }
+
+    XCloseDevice (display, device);
 }
 
 void SetTouchpadEnabledAll (bool state)
@@ -1513,10 +1518,6 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
         if(state){
             settings->set(KEY_TOUCHPAD_ENABLED, false);
             return true;
-        }else {
-            //
-            settings->set(KEY_TOUCHPAD_ENABLED, true);
-            return true;
         }
     }
     return false;
@@ -1541,9 +1542,17 @@ void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
             isMouse = true;
         }
     }
-    if(!isMouse) {
-        settings->set(KEY_TOUCHPAD_ENABLED, true);
+
+    if(UsdBaseClass::isTablet()){
+        if(settings->get(KEY_TOUCHPAD_ENABLED).toBool()) {
+            settings->set(KEY_TOUCHPAD_ENABLED, true);
+        }
+    } else {
+        if(!isMouse) {
+            settings->set(KEY_TOUCHPAD_ENABLED, true);
+        }
     }
+
     XFreeDeviceList (devicelist);
 }
 
@@ -1722,7 +1731,6 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ENABLED)) == 0) {
         SetTouchpadEnabledAll (settings_touchpad->get(keys).toBool());//设置触摸板开关
-             SetDisableWTyping (true);
     } else if ((keys.compare((KEY_MOTION_ACCELERATION)) == 0)
             || (keys.compare((KEY_MOTION_THRESHOLD)) == 0)) {
         SetMotionAll ();                                    //设置鼠标速度
@@ -1784,8 +1792,7 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     MouseManager * manager = (MouseManager *) data;
 
     DevicePresence (gdk_x11_get_default_xdisplay (), xi_presence, class_presence);
-    if (xev->type == xi_presence)
-    {
+    if (xev->type == xi_presence) {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
             if (dpn->devchange == DeviceEnabled) {
                 USD_LOG(LOG_DEBUG,"new add deviced ID  : %d",dpn->deviceid);

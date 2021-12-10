@@ -98,7 +98,6 @@ bool UsdBaseClass::isNotebook()
         QVariant v = res.arguments().at(0);
         QDBusVariant dv = qvariant_cast<QDBusVariant>(v);
         QVariant result = dv.variant();
-        qDebug()<<"LidlsPresent: "<<  result.toBool();
         return result.toBool();
     }
 
