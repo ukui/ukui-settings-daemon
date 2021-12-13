@@ -51,6 +51,14 @@
 
 #define SAVE_CONFIG_TIME 800
 
+typedef struct _MapInfoFromFile
+{
+    QString sTouchName;     //触摸屏的名称
+    QString sTouchSerial;   //触摸屏的序列号
+    QString sMonitorName;   //显示器的名称
+}MapInfoFromFile;             //配置文件中记录的映射关系信息
+//END 触摸屏自动映射相关
+
 class XrandrManager: public QObject
 {
     Q_OBJECT
@@ -100,6 +108,7 @@ public:
     int8_t getCurrentMode();
     uint8_t getCurrentRotation();
     void sendScreenModeToDbus();
+    void autoRemapTouchscreen();
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();
