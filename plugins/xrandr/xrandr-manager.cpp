@@ -337,6 +337,7 @@ static int find_event_from_name(char *_name, char *_serial, char *_event)
 
         pEvent = strstr(pPath, cName);
         if(NULL == pEvent) {
+            udev_device_unref(dev);
             continue;
         }
 
@@ -352,6 +353,7 @@ static int find_event_from_name(char *_name, char *_serial, char *_event)
             if(NULL != strstr(_name, pProduct)) {
                 strcpy(_event, pEvent);
                 ret = Success;
+                udev_device_unref(dev);
                 USD_LOG(LOG_DEBUG,"pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s" ,pEvent, _name, _serial, pProduct, pSerial);
                 break;
             }
@@ -359,6 +361,7 @@ static int find_event_from_name(char *_name, char *_serial, char *_event)
             if((NULL != strstr(_name, pProduct)) && (0 == strcmp(_serial, pSerial))) {
                 strcpy(_event, pEvent);
                 ret = Success;
+                udev_device_unref(dev);
                 USD_LOG(LOG_DEBUG,"pEvent: %s _name:%s  _serial:%s  product:%s  serial:%s" ,pEvent, _name, _serial, pProduct, pSerial);
                 break;
             }
@@ -410,8 +413,7 @@ static int find_touchId_from_event(Display *_dpy, char *_event, int *pId)
 
         for(j = 0; j < nprops; j++) {
             name = XGetAtomName(_dpy, props[j]);
-            if(0 != strcmp(name, "Device Node"))
-            {
+            if(0 != strcmp(name, "Device Node")) {
                 continue;
             }
             XGetDeviceProperty(_dpy, pXDev, props[j], 0, 1000, False,
