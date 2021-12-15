@@ -347,7 +347,7 @@ void VolumeWindow::showEvent(QShowEvent* e)
     }
     else
     {
-        mVolumeBar->setStyleSheet("QProgressBar{border:none;border-radius:3px;background:#CC000000}"
+        mVolumeBar->setStyleSheet("QProgressBar{border:none;border-radius:3px;background:#33000000}"
                             "QProgressBar::chunk{border-radius:3px;background:white}");
         mBrightBar->setStyleSheet("QProgressBar{border:none;border-radius:3px;background:#33000000}"
                             "QProgressBar::chunk{border-radius:3px;background:white}");
