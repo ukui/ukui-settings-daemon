@@ -450,13 +450,13 @@ static int find_touchId_from_name(Display *_dpy, char *_name, char *_serial, int
 
     ret = find_event_from_name(_name, _serial, cEventName);
     if(Success != ret) {
-        USD_LOG(LOG_DEBUG,"find_event_from_name ret[%d]", ret);
+//        USD_LOG(LOG_DEBUG,"find_event_from_name ret[%d]", ret);
         goto LEAVE;
     }
 
     ret = find_touchId_from_event(_dpy, cEventName, _pId);
     if(Success != ret) {
-        USD_LOG(LOG_DEBUG,"find_touchId_from_event ret[%d]", ret);
+//        USD_LOG(LOG_DEBUG,"find_touchId_from_event ret[%d]", ret);
         goto LEAVE;
     }
 LEAVE:
@@ -594,9 +594,11 @@ void remapFromConfig(QString confPath)
         return;
     }
     for (int i = 0; i < mapNum; ++i) {
-        find_touchId_from_name(pDpy, mapInfoList[i].sTouchName.toLatin1().data(),mapInfoList[i].sTouchSerial.toLatin1().data(), &deviceId);
+        int ret = find_touchId_from_name(pDpy, mapInfoList[i].sTouchName.toLatin1().data(),mapInfoList[i].sTouchSerial.toLatin1().data(), &deviceId);
         USD_LOG(LOG_DEBUG,"find_touchId_from_name : %d",deviceId);
-        doAction(deviceId,mapInfoList[i].sMonitorName.toLatin1().data());
+        if(Success == ret){
+            doAction(deviceId,mapInfoList[i].sMonitorName.toLatin1().data());
+        }
     }
 }
 
@@ -1204,13 +1206,17 @@ bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode e
 
     if (mMonitoredConfig->fileScreenModeExists(metaEnum.valueToKey(eMode))) {
 
-        std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
+
+        std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(true);
 
         if (MonitoredConfig == nullptr) {
             USD_LOG(LOG_DEBUG,"config a error");
-            setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
+            return false;
         } else {
+
+            mMonitoredConfig = std::move(MonitoredConfig);
             applyConfig();
+            return true;
         }
     }
 

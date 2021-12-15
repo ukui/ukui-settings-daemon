@@ -109,7 +109,7 @@ bool xrandrConfig::fileScreenModeExists(QString screenMode)
  * isUseModeConfig:是否读取模式配置
  * 模式配置只是在kds调用接口时使用
 */
-std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool isUseModeConfig)
+std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool isUseModeDirConfig)
 {
     bool res = false;
     if (res){//Device::self()->isLaptop() && !Device::self()->isLidClosed()) {
@@ -125,7 +125,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool isUseModeConfig)
             }
         }
     }
-    return readFile(id(), isUseModeConfig);
+    return readFile(id(), isUseModeDirConfig);
 }
 
 std::unique_ptr<xrandrConfig> xrandrConfig::readOpenLidFile()
@@ -185,7 +185,6 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
 
     std::unique_ptr<xrandrConfig> config = std::unique_ptr<xrandrConfig>(new xrandrConfig(mConfig->clone()));
     config->setValidityFlags(mValidityFlags);
-
     QFile file;
     if(!state){
         if (QFile::exists(configsDirPath() % mFixedConfigFileName)) {
@@ -215,6 +214,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     QSize screenSize;
 
     for (const auto &output : config->data()->outputs()) {
+
         if (output->isEnabled()) {
             enabledOutputsCount++;
         }
@@ -222,7 +222,6 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
         if (!output->isConnected()) {
             continue;
         }
-
         if (1 == outputs.count() && (0 != output->pos().x() || 0 != output->pos().y())) {
             const QPoint pos(0,0);
             output->setPos(std::move(pos));
