@@ -245,6 +245,51 @@ Atom property_from_name (const char *property_name)
     return XInternAtom (QX11Info::display(), property_name, True);
 }
 
+bool query_device_had_property(XDeviceInfo *device_info,const char *property_name)
+{
+    XDevice *device;
+    int nProps = 0;
+    Atom* type_data;
+    unsigned char *data;
+    Atom Xdata;
+    bool ret = false;
+    Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
+    device = XOpenDevice (display, device_info->id);
+    USD_LOG(LOG_DEBUG,"device name：%s",device_info->name);
+
+    if (device == NULL) {
+        USD_LOG(LOG_DEBUG, "%s find %s had a error:can't open id(%d) device in XOpenDevice,type：%d",device_info->name, property_name,device_info->id,device_info->type);
+        return false;
+    }
+
+    type_data =  XListDeviceProperties(display ,device, &nProps);
+    Xdata = XInternAtom (QX11Info::display(), property_name, True);
+
+    //USD_LOG_SHOW_PARAM1(nProps);
+    //USD_LOG_SHOW_PARAM1(Xdata);
+    //USD_LOG_SHOW_PARAMS(property_name);
+
+    if (Xdata == 0) {
+        ret = false;
+        goto END;
+    }
+
+    for (int k = 0; k < nProps; k++) {
+        USD_LOG_SHOW_PARAM1(type_data[k]);
+        if (Xdata == type_data[k]) {
+            USD_LOG(LOG_DEBUG,"find: props");
+            //USD_LOG_SHOW_PARAM1(type_data[k]);
+            ret = true;
+            goto END;
+        }
+    }
+
+END:
+    XCloseDevice (display, device);
+    return ret;
+}
+
+/* This is an example of the last function.
 bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_name)
 {
     XDevice *device;
@@ -270,6 +315,7 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
         rc = XGetDeviceProperty (display,
                                  device, prop, 0, 1, False, XA_INTEGER, &type, &format,
                                  &nitems, &bytes_after, &data);
+        USD_LOG_SHOW_PARAM1(rc);
         if (rc == Success)
                 XFree (data);
 
@@ -281,6 +327,7 @@ bool property_exists_on_device (XDeviceInfo *device_info, const char  *property_
 
     return rc == Success;
 }
+*/
 
 void property_set_bool (XDeviceInfo *device_info,
                         XDevice     *device,
@@ -313,12 +360,12 @@ void property_set_bool (XDeviceInfo *device_info,
         }
         if (rc == Success)
                 XFree (data);
+
         if(gdk_x11_display_error_trap_pop (gdk_display_get_default()))
-            qWarning ("Error while setting %s on \"%s\"", property_name, device_info->name);
+             USD_LOG(LOG_DEBUG,"Error while setting %s on \"%s\"", property_name, device_info->name);
 
     } catch (int x) {
         USD_LOG(LOG_DEBUG,"MOUSE:Error while setting %s on \"%s\"", property_name, device_info->name)
-
     }
 }
 
@@ -449,6 +496,8 @@ void set_tap_to_click_synaptics (XDeviceInfo *device_info,
         if (rc == Success)
                 XFree (data);
 
+        USD_LOG(LOG_DEBUG,"...");
+
         XCloseDevice (display, device);
     } catch (int x) {
         qWarning("Error in setting tap to click on \"%s\"", device_info->name);
@@ -539,6 +588,8 @@ void MouseManager::SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
                     int one_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_ONE_FINGER_TAP).toInt();
                     int two_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_TWO_FINGER_TAP).toInt();
                     int three_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toInt();
+
+                    USD_LOG_SHOW_PARAM1(left_handed);
                     set_tap_to_click_synaptics (device_info, tap, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
             }
 
@@ -547,6 +598,9 @@ void MouseManager::SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
                     return;
     } else {
             left_handed = mouse_left_handed;
+            USD_LOG(LOG_DEBUG,"SET IT");
+            USD_LOG_SHOW_PARAM1(left_handed);
+            //USD_LOG(LOG_DEBUG,".");
     }
 
     try {
@@ -586,10 +640,11 @@ void MouseManager::SetLeftHanded (XDeviceInfo  *device_info,
                       bool         mouse_left_handed,
                       bool         touchpad_left_handed)
 {
-    if (property_exists_on_device (device_info, "libinput Left Handed Enabled")){
+    if (query_device_had_property (device_info, "libinput Left Handed Enabled")){
         set_left_handed_libinput (device_info, mouse_left_handed, touchpad_left_handed);
-
+        USD_LOG_SHOW_PARAM1(mouse_left_handed);
     } else {
+        USD_LOG_SHOW_PARAM1(touchpad_left_handed);
         SetLeftHandedLegacyDriver (device_info, mouse_left_handed, touchpad_left_handed);
     }
 }
@@ -833,7 +888,6 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
 
     } catch (int x) {
         USD_LOG(LOG_ERR,"catch a bug...");
-//        qWarning("%s Error while setting accel speed on \"%s\"", device_info->name);
         return;
     }
 }
@@ -888,20 +942,18 @@ void MouseManager::SetMouseAccel(XDeviceInfo *device_info)
 
 void MouseManager::SetMotion (XDeviceInfo *device_info)
 {
-    if (property_exists_on_device (device_info, "libinput Accel Speed")) {
+    if (query_device_had_property (device_info, "libinput Accel Speed")) {
 
         SetMotionLibinput (device_info);
     }
     else {
         SetMotionLegacyDriver (device_info);
     }
-
-    if(property_exists_on_device (device_info, "Device Accel Constant Deceleration")) {
+    if(query_device_had_property (device_info, "Device Accel Constant Deceleration")) {
 
         SetTouchpadMotionAccel(device_info);
     }
-
-    if(property_exists_on_device (device_info, "libinput Accel Profile Enabled")) {
+    if(query_device_had_property (device_info, "libinput Accel Profile Enabled")) {
 
         SetMouseAccel(device_info);
     }
@@ -1114,7 +1166,8 @@ void MouseManager::MouseCallback (QString keys)
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
         SetLeftHandedAll (mouse_left_handed, touchpad_left_handed);
-
+        USD_LOG(LOG_DEBUG,"...............");
+        SetTapToClickAll ();
     } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION))==0) ||
                (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0) ||
                (keys.compare(QString::fromLocal8Bit(KEY_MOUSE_ACCEL)) == 0)){
@@ -1246,12 +1299,15 @@ set_tap_to_click_libinput (XDeviceInfo *device_info, bool   state)
 }
 
 static void
-set_tap_to_click (XDeviceInfo *device_info,  bool state,  bool left_handed,
+set_tap_to_click(XDeviceInfo *device_info,  bool state,  bool left_handed,
                   int one_finger_tap, int two_finger_tap, int three_finger_tap)
 {
-        if (property_from_name ("Synaptics Tap Action"))
-                set_tap_to_click_synaptics (device_info, state, left_handed,
-                                            one_finger_tap, two_finger_tap, three_finger_tap);
+    if (query_device_had_property(device_info,"Synaptics Tap Action")) {
+        set_tap_to_click_synaptics (device_info, state, 0,
+                                    one_finger_tap, two_finger_tap, three_finger_tap);
+        USD_LOG_SHOW_PARAM1(left_handed);
+        USD_LOG(LOG_DEBUG,"device name：%s",device_info->name);
+    }
 
         if (property_from_name ("libinput Tapping Enabled"))
                 set_tap_to_click_libinput (device_info, state);
@@ -1273,7 +1329,7 @@ void MouseManager::SetTapToClickAll ()
     int three_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toInt();
 
     for (i = 0; i < numdevices; i++) {
-        set_tap_to_click (&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
+        set_tap_to_click(&devicelist[i], state, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
     }
     XFreeDeviceList (devicelist);
 }
@@ -1317,7 +1373,8 @@ static void set_scrolling_libinput (XDeviceInfo *device_info,
      */
     if (want_2fg)
             want_edge = false;
-    qDebug ("setting scroll method on %s", device_info->name);
+
+    USD_LOG(LOG_DEBUG,"setting scroll method on %s", device_info->name);
     try {
         rc = XGetDeviceProperty (display, device, prop, 0, 2,
                                  False, XA_INTEGER, &type, &format, &nitems,
@@ -1333,7 +1390,7 @@ static void set_scrolling_libinput (XDeviceInfo *device_info,
                 XFree (data);
         XCloseDevice (display, device);
     } catch (int x) {
-        qWarning("Error in setting scroll method on \"%s\"", device_info->name);
+        USD_LOG(LOG_DEBUG,"Error in setting scroll method on \"%s\"", device_info->name);
     }
 
     /* Horizontal scrolling is handled by xf86-input-libinput and
@@ -1714,6 +1771,7 @@ void MouseManager::TouchpadCallback (QString keys)
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
         SetLeftHandedAll (mouse_left_handed, touchpad_left_handed); //设置左右手
+
 
     } else if ((keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_TAP_TO_CLICK))    == 0)
             || (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ONE_FINGER_TAP))  == 0)
