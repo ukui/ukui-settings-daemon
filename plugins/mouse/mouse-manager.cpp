@@ -275,7 +275,7 @@ bool query_device_had_property(XDeviceInfo *device_info,const char *property_nam
     }
 
     for (int k = 0; k < nProps; k++) {
-        USD_LOG_SHOW_PARAM1(type_data[k]);
+//        USD_LOG_SHOW_PARAM1(type_data[k]);
         if (Xdata == type_data[k]) {
             USD_LOG(LOG_DEBUG,"find: props");
             //USD_LOG_SHOW_PARAM1(type_data[k]);
@@ -1567,52 +1567,20 @@ bool SetDisbleTouchpad(XDeviceInfo *device_info,
     QString name;
     bool   state;
     name = device_info->name;
+    bool PReceiver = name.contains("Receiver", Qt::CaseInsensitive);
+    bool PWireless = name.contains("Wireless", Qt::CaseInsensitive);
     bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
     bool Pusb = name.contains("USB", Qt::CaseInsensitive);
-    if(Pmouse && Pusb){
+    if(Pmouse && ( PWireless || PReceiver || Pusb )) {
         state = settings->get(KEY_TOUCHPAD_DISBLE_O_E_MOUSE).toBool();
-
         if(state){//如果开启插入鼠标禁用触摸板，则直接修改触摸板状态
             SetTouchpadEnabledAll(!state);
             return true;
         } else {//如果没有开启插入鼠标禁用触摸板，则根据触摸板总开关的状态，设置触摸板的enable状态
             SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
-
         }
     }
     return false;
-}
-
-
-// while remove mouse
-void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
-{
-    int numdevices, i;
-    bool isMouse = false;
-    XDeviceInfo *devicelist = XListInputDevices (QX11Info::display(), &numdevices);
-    if (devicelist == NULL){
-        return;
-    }
-    for (i = 0; i < numdevices; i++) {
-        QString name;
-        name = devicelist[i].name;
-        bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
-        bool Pusb = name.contains("USB", Qt::CaseInsensitive);
-        if(Pmouse && Pusb) {
-            isMouse = true;
-        }
-    }
-    if(UsdBaseClass::isTablet()){
-        if(settings->get(KEY_TOUCHPAD_ENABLED).toBool()) {
-            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
-        }
-
-    } else {
-        if(!isMouse) {
-            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
-        }
-    }
-    XFreeDeviceList (devicelist);
 }
 
 bool checkMouseExists()
@@ -1625,14 +1593,30 @@ bool checkMouseExists()
     for (i = 0; i < numdevices; i++) {
         QString name;
         name = devicelist[i].name;
+        bool PReceiver = name.contains("Receiver", Qt::CaseInsensitive);
+        bool PWireless = name.contains("Wireless", Qt::CaseInsensitive);
         bool Pmouse = name.contains("Mouse", Qt::CaseInsensitive);
         bool Pusb = name.contains("USB", Qt::CaseInsensitive);
-        if(Pmouse && Pusb) {
+        if(Pmouse && ( PWireless || PReceiver || Pusb )) {
             return true;
         }
     }
     XFreeDeviceList (devicelist);
     return false;
+}
+
+// while remove mouse
+void SetPlugRemoveMouseEnableTouchpad(QGSettings *settings)
+{
+    if(UsdBaseClass::isTablet()){
+        if(settings->get(KEY_TOUCHPAD_ENABLED).toBool()) {
+            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
+        }
+    } else {
+        if(!checkMouseExists()) {
+            SetTouchpadEnabledAll(settings->get(KEY_TOUCHPAD_ENABLED).toBool());
+        }
+    }
 }
 
 void SetPlugMouseDisbleTouchpad(QGSettings *settings)
