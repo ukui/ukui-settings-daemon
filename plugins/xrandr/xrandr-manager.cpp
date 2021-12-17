@@ -946,7 +946,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         }
     }
 
-    lightLastScreen();
+//    lightLastScreen();
     applyConfig();
 }
 
@@ -1021,8 +1021,8 @@ void XrandrManager::monitorsInit()
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
-//            USD_LOG(LOG_DEBUG,"PrimaryChanged:%s",senderOutput->name().toLatin1().data());
+//            USD_LOG_SHOW_OUTPUT(senderOutput);
+            USD_LOG(LOG_DEBUG,"PrimaryChanged:%s",senderOutput->name().toLatin1().data());
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
@@ -1060,7 +1060,7 @@ void XrandrManager::monitorsInit()
 
         connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-
+             USD_LOG(LOG_DEBUG,"clonesChanged:%s",senderOutput->name().toLatin1().data());
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
                 if (output->name() == senderOutput->name()) {
                     output->setRotation(senderOutput->rotation());

@@ -43,7 +43,7 @@ void handler(int no)
 {
     USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no);
 //    manager->managerStop();
-    QApplication::exit(0);
+    QApplication::exit(15);
 }
 
 int main (int argc, char* argv[])
