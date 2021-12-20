@@ -968,6 +968,7 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         display =  QX11Info::display();
 
         xEvent * event = (xEvent *)data;
+//        int keyCode = event->u.u.detail;
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
@@ -1014,6 +1015,12 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandle(SCREENSAVER_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandle(TASKPANE_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandle(CALCULATOR_KEY, event);
 
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
@@ -1067,6 +1074,12 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandleRelease(SCREENSAVER_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandleRelease(TASKPANE_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandleRelease(CALCULATOR_KEY);
 
         }
     }
@@ -1473,6 +1486,12 @@ bool MediaKeysManager::doAction(int type)
         break;
     case RFKILL_KEY:
         doFlightModeAction();
+        break;
+    case CALCULATOR_KEY:
+        doOpenCalculator();
+        break;
+    case TASKPANE_KEY:
+        doOpenTaskPane();
         break;
     default:
         break;
@@ -2107,6 +2126,16 @@ void MediaKeysManager::doFlightModeAction()
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doOpenTaskPane()
+{
+    executeCommand("ukui-window-switch","--show-workspace");
+}
+
+void MediaKeysManager::doOpenCalculator()
+{
+    executeCommand("kylin-calculator","");
 }
 
 void MediaKeysManager::doEyeCenterAction()
