@@ -941,7 +941,12 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         } else {
             USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
             if (outputConnectCount) {
-                mMonitoredConfig = mMonitoredConfig->readFile(false);
+                std::unique_ptr<xrandrConfig> MonitoredConfig  = mMonitoredConfig->readFile(false);
+                if (MonitoredConfig!=nullptr) {
+                    mMonitoredConfig = std::move(MonitoredConfig);
+                } else {
+                    USD_LOG(LOG_DEBUG,"config double error! ");
+                }
             }
         }
     }
