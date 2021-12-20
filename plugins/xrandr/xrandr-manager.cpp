@@ -945,7 +945,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
                 if (MonitoredConfig!=nullptr) {
                     mMonitoredConfig = std::move(MonitoredConfig);
                 } else {
-                    USD_LOG(LOG_DEBUG,"config double error! ");
+                    USD_LOG(LOG_DEBUG,"read config file error! ");
                 }
             }
         }
