@@ -134,7 +134,7 @@ private:
     void doWebcamAction();
     void doEyeCenterAction();
     void doFlightModeAction();
-    void doOpenCalculator();
+    void doOpenKylinCalculator();
     void doOpenTaskPane();
 
 

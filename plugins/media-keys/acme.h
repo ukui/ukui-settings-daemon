@@ -80,7 +80,6 @@ enum {
     TOUCHPAD_ON_KEY,
     TOUCHPAD_OFF_KEY,
     RFKILL_KEY,
-    CALCULATOR_KEY,
     TASKPANE_KEY,
 };
 

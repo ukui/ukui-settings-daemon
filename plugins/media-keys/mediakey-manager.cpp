@@ -452,6 +452,17 @@ void MediaKeysManager::initShortcuts()
     connect(cal, &QAction::triggered, this, [this]() {
         doAction(CALCULATOR_KEY);
     });
+
+    /*settings*/
+    QAction *set= new QAction(this);
+    set->setObjectName(QStringLiteral("Open settings"));
+    set->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
+    KGlobalAccel::self()->setShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
+    connect(set, &QAction::triggered, this, [this]() {
+        doAction(SETTINGS_KEY);
+    });
+
     /*search*/
     QAction *search= new QAction(this);
     search->setObjectName(QStringLiteral("Open search"));
@@ -1407,9 +1418,6 @@ bool MediaKeysManager::doAction(int type)
     case MEDIA_KEY:
         doMediaAction();
         break;
-    case CALCULATOR_KEY:
-        doOpenCalcAction();
-        break;
     case PLAY_KEY:
         doMultiMediaPlayerAction("Play");
         break;
@@ -1488,7 +1496,7 @@ bool MediaKeysManager::doAction(int type)
         doFlightModeAction();
         break;
     case CALCULATOR_KEY:
-        doOpenCalculator();
+        doOpenKylinCalculator();
         break;
     case TASKPANE_KEY:
         doOpenTaskPane();
@@ -2012,6 +2020,7 @@ void MediaKeysManager::doMediaAction()
 
 void MediaKeysManager::doOpenCalcAction()
 {
+    //其他平台计算器
     QString tool1,tool2,tool3;
 
     tool1 = "galculator";
@@ -2133,7 +2142,7 @@ void MediaKeysManager::doOpenTaskPane()
     executeCommand("ukui-window-switch","--show-workspace");
 }
 
-void MediaKeysManager::doOpenCalculator()
+void MediaKeysManager::doOpenKylinCalculator()
 {
     executeCommand("kylin-calculator","");
 }
