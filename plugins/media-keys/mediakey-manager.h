@@ -134,6 +134,10 @@ private:
     void doWebcamAction();
     void doEyeCenterAction();
     void doFlightModeAction();
+    void doOpenKylinCalculator();
+    void doOpenTaskPane();
+
+
 
 
 
@@ -210,6 +214,8 @@ private:
     xEventHandleHadRelase(TOUCHPAD_ON_KEY);
     xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
     xEventHandleHadRelase(SCREENSAVER_KEY);
+    xEventHandleHadRelase(TASKPANE_KEY);
+    xEventHandleHadRelase(CALCULATOR_KEY);
 
 
 
