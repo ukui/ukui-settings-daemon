@@ -452,6 +452,17 @@ void MediaKeysManager::initShortcuts()
     connect(cal, &QAction::triggered, this, [this]() {
         doAction(CALCULATOR_KEY);
     });
+
+    /*settings*/
+    QAction *set= new QAction(this);
+    set->setObjectName(QStringLiteral("Open settings"));
+    set->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+    KGlobalAccel::self()->setDefaultShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
+    KGlobalAccel::self()->setShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
+    connect(set, &QAction::triggered, this, [this]() {
+        doAction(SETTINGS_KEY);
+    });
+
     /*search*/
     QAction *search= new QAction(this);
     search->setObjectName(QStringLiteral("Open search"));
@@ -968,6 +979,7 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         display =  QX11Info::display();
 
         xEvent * event = (xEvent *)data;
+//        int keyCode = event->u.u.detail;
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
@@ -980,10 +992,10 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
             doAction(VOLUME_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandle(BRIGHT_DOWN_KEY, event);
+            doAction(BRIGHT_DOWN_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandle(BRIGHT_UP_KEY, event);
+            doAction(BRIGHT_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandle(AREA_SCREENSHOT_KEY, event);
@@ -1015,6 +1027,12 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandle(SCREENSAVER_KEY, event);
 
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandle(TASKPANE_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandle(CALCULATOR_KEY, event);
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -1038,12 +1056,6 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
            xEventHandleRelease(MUTE_KEY);
-        }  else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandleRelease(BRIGHT_DOWN_KEY);
-
-        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandleRelease(BRIGHT_UP_KEY);
-
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandleRelease(AREA_SCREENSHOT_KEY);
 
@@ -1073,6 +1085,12 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandleRelease(SCREENSAVER_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandleRelease(TASKPANE_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandleRelease(CALCULATOR_KEY);
 
         }
     }
@@ -1400,9 +1418,6 @@ bool MediaKeysManager::doAction(int type)
     case MEDIA_KEY:
         doMediaAction();
         break;
-    case CALCULATOR_KEY:
-        doOpenCalcAction();
-        break;
     case PLAY_KEY:
         doMultiMediaPlayerAction("Play");
         break;
@@ -1479,6 +1494,12 @@ bool MediaKeysManager::doAction(int type)
         break;
     case RFKILL_KEY:
         doFlightModeAction();
+        break;
+    case CALCULATOR_KEY:
+        doOpenKylinCalculator();
+        break;
+    case TASKPANE_KEY:
+        doOpenTaskPane();
         break;
     default:
         break;
@@ -1999,6 +2020,7 @@ void MediaKeysManager::doMediaAction()
 
 void MediaKeysManager::doOpenCalcAction()
 {
+    //其他平台计算器
     QString tool1,tool2,tool3;
 
     tool1 = "galculator";
@@ -2113,6 +2135,16 @@ void MediaKeysManager::doFlightModeAction()
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doOpenTaskPane()
+{
+    executeCommand("ukui-window-switch","--show-workspace");
+}
+
+void MediaKeysManager::doOpenKylinCalculator()
+{
+    executeCommand("kylin-calculator","");
 }
 
 void MediaKeysManager::doEyeCenterAction()

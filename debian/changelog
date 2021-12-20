@@ -1,3 +1,42 @@
+ukui-settings-daemon (3.1.0-1.29) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：镜像模式下控制面板切换分辨率，切换另外的显示模式，在切换回来，分辨率没有回复
+  * 其他改动影响域：双屏切换配置保存
+
+ -- sundagao <sundagao@kylinos.cn>  Wed, 15 Dec 2021 13:52:59 +0800
+
+ukui-settings-daemon (3.1.0-1.28) v101; urgency=medium
+
+
+  * BUG号：95487 【触摸】【触摸映射】【控制面板】手动设置触摸映射后重启设备，登录后没有保持之前的映射关系；设置触摸映射后删除配置文件重启设备没有恢复默认自动映射关系(可以使用触摸映射设置回来)(必现)
+  * 需求号：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 13 Dec 2021 16:32:06 +0800
+
+ukui-settings-daemon (3.1.0-1.27) v101; urgency=medium
+
+  * BUG号：93538 【SP2 UI走查】【OSD】UI待按照设计稿优化，间距尺寸等
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 07 Dec 2021 17:16:54 +0800
+
+ukui-settings-daemon (3.1.0-1.26) v101; urgency=medium
+
+  * BUG号：89404 【需求-触摸-7467】【触摸】【显示】控制面板设置旋转方向为 顺/逆时针90度、上下颠倒，旋转方向后触摸偏移(必现)
+           93707 【显示】【USD】【必现】存在状态异常的配置文件时，连接1个显示器开机，打开控制面板-显示器，插上4K显示器，USD崩溃，产生core文件
+           92571 【触摸板】打开插入鼠标时禁用触摸板，拔掉鼠标后触摸板仍然不可用
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 06 Dec 2021 18:45:38 +0800
+
 ukui-settings-daemon (3.1.0-1.25) v101; urgency=medium
 
   * BUG号：无

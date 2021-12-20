@@ -134,6 +134,10 @@ private:
     void doWebcamAction();
     void doEyeCenterAction();
     void doFlightModeAction();
+    void doOpenKylinCalculator();
+    void doOpenTaskPane();
+
+
 
 
 
@@ -200,8 +204,6 @@ private:
     bool               m_ctrlFlag = false;
 
     xEventHandleHadRelase(MUTE_KEY);
-    xEventHandleHadRelase(BRIGHT_DOWN_KEY);
-    xEventHandleHadRelase(BRIGHT_UP_KEY);
     xEventHandleHadRelase(AREA_SCREENSHOT_KEY);
     xEventHandleHadRelase(WINDOW_SCREENSHOT_KEY);
     xEventHandleHadRelase(SCREENSHOT_KEY);
@@ -212,6 +214,8 @@ private:
     xEventHandleHadRelase(TOUCHPAD_ON_KEY);
     xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
     xEventHandleHadRelase(SCREENSAVER_KEY);
+    xEventHandleHadRelase(TASKPANE_KEY);
+    xEventHandleHadRelase(CALCULATOR_KEY);
 
 
 
