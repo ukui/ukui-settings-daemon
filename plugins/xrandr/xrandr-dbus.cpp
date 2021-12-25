@@ -64,4 +64,9 @@ void xrandrDbus::sendScreensParamChangeSignal(QString screensParam)
      Q_EMIT screensParamChanged(screensParam);
 }
 
+void xrandrDbus::setScreenMap()
+{
+    xrandrManager->autoRemapTouchscreen();
+}
+
 

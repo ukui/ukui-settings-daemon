@@ -25,6 +25,8 @@ public Q_SLOTS:
     int setScreensParam(QString screensParam, QString appName);
     QString getScreensParam(QString appName);
 
+    void setScreenMap();
+
 
 Q_SIGNALS:
     //供xrandrManager监听

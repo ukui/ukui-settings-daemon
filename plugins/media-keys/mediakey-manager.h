@@ -135,11 +135,6 @@ private:
     void doEyeCenterAction();
     void doFlightModeAction();
     void doOpenKylinCalculator();
-    void doOpenTaskPane();
-
-
-
-
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);
@@ -164,6 +159,7 @@ private Q_SLOTS:
     void XkbEventsRelease(const QString &keyStr);
     void MMhandleRecordEvent(xEvent* data);
     void MMhandleRecordEventRelease(xEvent* data);
+
 Q_SIGNALS:
     /** media-keys plugin will emit this signal by org.ukui.SettingsDaemon.MediaKeys
      *  when listen some key Pressed(such as XF86AudioPlay 、XF86AudioPause 、XF86AudioForward)
@@ -214,7 +210,7 @@ private:
     xEventHandleHadRelase(TOUCHPAD_ON_KEY);
     xEventHandleHadRelase(TOUCHPAD_OFF_KEY);
     xEventHandleHadRelase(SCREENSAVER_KEY);
-    xEventHandleHadRelase(TASKPANE_KEY);
+    xEventHandleHadRelase(WINDOWSWITCH_KEY);
     xEventHandleHadRelase(CALCULATOR_KEY);
 
 

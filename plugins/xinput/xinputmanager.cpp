@@ -3,6 +3,9 @@
 #include <QProcess>
 #include <QQueue>
 #include <QGSettings/QGSettings>
+#include <QDBusInterface>
+#include <QDBusPendingCall>
+
 
 #define UKUI_CONTROL_CENTER_PEN_SCHEMA    "org.ukui.control-center.pen"
 #define RIGHT_CLICK_KEY                   "right-click"
@@ -64,42 +67,55 @@ void XinputManager::stop()
 
 void XinputManager::SetPenRotation(int device_id)
 {
-    Q_UNUSED(device_id);
+//    Q_UNUSED(device_id);
     // 得到触控笔的ID
     QQueue<int> penDeviceQue;
     int  ndevices = 0;
     Display *dpy = XOpenDisplay(NULL);
     XIDeviceInfo *info = XIQueryDevice(dpy, XIAllDevices, &ndevices);
 
-    for (int i = 0; i < ndevices; i++)
-    {
+    for (int i = 0; i < ndevices; i++) {
+        XIDeviceInfo* dev = &info[i];
+        if(!dev->enabled) continue;
+        if(device_id != dev->deviceid) {
+            continue;
+        }
+        if(dev->use != XISlavePointer) continue;
+        for (int j = 0; j < dev->num_classes; j++) {
+            if (dev->classes[j]->type == XITouchClass) {
+                // 如果当前的设备是绝对坐标映射 则认为该设备需要进行一次屏幕映射
+                QDBusInterface *xrandDbus = new QDBusInterface(DBUS_XRANDR_NAME,DBUS_XRANDR_PATH,DBUS_XRANDR_INTERFACE,QDBusConnection::sessionBus(),this);
+                if (xrandDbus->isValid()) {
+                     //USD_LOG(LOG_DEBUG, "..");
+                      xrandDbus->asyncCall("setScreenMap");
+                }
+            }
+        }
+    }
+
+    for (int i = 0; i < ndevices; i++) {
         XIDeviceInfo* dev = &info[i];
         // 判断当前设备是不是触控笔
         if(dev->use != XISlavePointer) continue;
         if(!dev->enabled) continue;
-        for (int j = 0; j < dev->num_classes; j++)
-        {
-            if (dev->classes[j]->type == XIValuatorClass)
-            {
+        for (int j = 0; j < dev->num_classes; j++) {
+            if (dev->classes[j]->type == XIValuatorClass) {
                 XIValuatorClassInfo *t = (XIValuatorClassInfo*)dev->classes[j];
                 // 如果当前的设备是绝对坐标映射 则认为该设备需要进行一次屏幕映射
-                if (t->mode == XIModeAbsolute)
-                {
+                if (t->mode == XIModeAbsolute) {
                     penDeviceQue.enqueue(dev->deviceid);
                     break;
                 }
             }
         }
     }
-    if(!penDeviceQue.size())
-    {
+    if(!penDeviceQue.size()) {
 //        qDebug() << "info: [XrandrManager][SetPenRotation]: Do not neet to pen device map-to-output outDevice!";
         //return;
         goto FREE_DPY;
     }
     // 设置map-to-output
-    while(penDeviceQue.size())
-    {
+    while(penDeviceQue.size()) {
         int pen_device_id = penDeviceQue.dequeue();
         QString name = "eDP-1"; //针对该项目而言，笔记本内显固定为 eDP-1
         QString cmd = QString("xinput map-to-output %1 %2").arg(pen_device_id).arg(name);

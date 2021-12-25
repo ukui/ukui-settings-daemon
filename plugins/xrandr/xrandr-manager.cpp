@@ -583,7 +583,8 @@ void SetTouchscreenCursorRotation()
 
 void remapFromConfig(QString confPath)
 {
-    MapInfoFromFile mapInfoList[16];
+
+    MapInfoFromFile mapInfoList[64];
     Display *pDpy = XOpenDisplay(NULL);
     int deviceId = 0;
     int mapNum = getMapInfoListFromConfig(confPath,mapInfoList);
@@ -1457,7 +1458,7 @@ void XrandrManager::setScreensParam(QString screensParam)
     applyConfig();
 }
 
-/* 
+/*
  * 设置显示模式
 */
 void XrandrManager::setScreenMode(QString modeName)
