@@ -54,7 +54,14 @@ QString xrandrDbus::getScreensParam(QString appName)
 
 void xrandrDbus::sendModeChangeSignal(int screensMode)
 {
+    static int lastScreenMode = 0xff;
+    if (lastScreenMode == screensMode) {
+        return;
+    }
+
+    lastScreenMode = screensMode;
     USD_LOG(LOG_DEBUG,"send mode:%d",screensMode);
+
     Q_EMIT screenModeChanged(screensMode);
 }
 
