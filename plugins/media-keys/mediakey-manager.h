@@ -135,6 +135,7 @@ private:
     void doEyeCenterAction();
     void doFlightModeAction();
     void doOpenKylinCalculator();
+    void doBluetoothAction();
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);
@@ -212,6 +213,7 @@ private:
     xEventHandleHadRelase(SCREENSAVER_KEY);
     xEventHandleHadRelase(WINDOWSWITCH_KEY);
     xEventHandleHadRelase(CALCULATOR_KEY);
+    xEventHandleHadRelase(BLUETOOTH_KEY);
 
 
 

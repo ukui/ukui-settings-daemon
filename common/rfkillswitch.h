@@ -72,8 +72,8 @@ public:
     int getCameraDeviceEnable();
     QString toggleCameraDevice(QString businfo);
 
-
-
+    int getCurrentBluetoothMode();
+    QString toggleBluetoothMode(bool enable);
 
 private:
     static RfkillSwitch* m_rfkillInstance;
