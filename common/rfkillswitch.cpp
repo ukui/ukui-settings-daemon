@@ -414,7 +414,7 @@ int RfkillSwitch::getCurrentBluetoothMode()
         len = read(fd, &event, sizeof(event));
         if (len < 0) {
             if (errno == EAGAIN)
-                break;
+                continue;
             qWarning("Reading of RFKILL events failed");
             break;
         }
@@ -476,6 +476,7 @@ QString RfkillSwitch::toggleBluetoothMode(bool enable)
     len = write(fd, &event, sizeof(event));
 
     if (len < 0){
+        close(fd);
         return QString("Failed to change RFKILL state");
     }
 

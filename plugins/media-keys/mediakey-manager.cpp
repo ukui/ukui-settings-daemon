@@ -1029,6 +1029,9 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86Bluetooth) {
             xEventHandle(BLUETOOTH_KEY, event);
 
+        } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
+//            doPowerOffAction();
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
