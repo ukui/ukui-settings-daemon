@@ -1640,8 +1640,6 @@ void MediaKeysManager::doTouchpadAction(int state)
     }
     mDeviceWindow->dialogShow();
 
-
-
     delete touchpadSettings;
 }
 
