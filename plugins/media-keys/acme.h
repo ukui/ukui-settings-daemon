@@ -80,6 +80,7 @@ enum {
     TOUCHPAD_ON_KEY,
     TOUCHPAD_OFF_KEY,
     RFKILL_KEY,
+    BLUETOOTH_KEY,
 };
 
 static struct {

@@ -1025,6 +1025,13 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86Battery) {
 
+
+        } else if (eventKeysym == XKB_KEY_XF86Bluetooth) {
+            xEventHandle(BLUETOOTH_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
+//            doPowerOffAction();
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -1086,6 +1093,10 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
             xEventHandleRelease(CALCULATOR_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86Battery) {
+
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+            xEventHandleRelease(BLUETOOTH_KEY);
 
         }
     }
@@ -1492,6 +1503,9 @@ bool MediaKeysManager::doAction(int type)
         break;
     case CALCULATOR_KEY:
         doOpenKylinCalculator();
+        break;
+    case BLUETOOTH_KEY:
+        doBluetoothAction();
         break;
     default:
         break;
@@ -2126,6 +2140,17 @@ void MediaKeysManager::doFlightModeAction()
     }
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
+    mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doBluetoothAction()
+{
+    int bluetoothState = RfkillSwitch::instance()->getCurrentBluetoothMode();
+    if(bluetoothState == -1) {
+        USD_LOG(LOG_ERR,"get bluetooth mode error");
+        return;
+    }
+    mDeviceWindow->setAction(bluetoothState?"ukui-bluetooth-on":"ukui-bluetooth-off");
     mDeviceWindow->dialogShow();
 }
 
