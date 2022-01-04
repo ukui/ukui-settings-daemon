@@ -317,8 +317,8 @@ static void setKwinMouseSize(int size) {
             QDBusMessage::createSignal("/KGlobalSettings", "org.kde.KGlobalSettings", "notifyChange");
 
     QList<QVariant> args;
-    args.append(5);
-    args.append(0);
+    args.append(5);//cursor size change signal
+    args.append(0);//The sceond param unuse..
     message.setArguments(args);
 
     QDBusConnection::sessionBus().send(message);
