@@ -86,7 +86,6 @@ private:
 
 protected:
     void keyPressEvent(QKeyEvent *event);
-    void keyReleaseEvent(QKeyEvent *event);
     void paintEvent(QPaintEvent *event);
     void showEvent(QShowEvent* event);
 
