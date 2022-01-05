@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QFrame" name="titleFrame">
+    <widget class="QWidget" name="titleWidget" native="true">
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -42,12 +42,6 @@
        <width>16777215</width>
        <height>98</height>
       </size>
-     </property>
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <property name="spacing">
@@ -197,14 +191,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="bottomFrame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-    </widget>
+    <widget class="QWidget" name="bottomWidget" native="true"/>
    </item>
   </layout>
  </widget>
