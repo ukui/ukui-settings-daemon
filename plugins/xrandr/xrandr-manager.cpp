@@ -211,7 +211,6 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
             }
         }
     }
-
     return false;
 }
 
@@ -1463,6 +1462,16 @@ void XrandrManager::setScreensParam(QString screensParam)
 */
 void XrandrManager::setScreenMode(QString modeName)
 {
+    //检查当前屏幕数量，只有一个屏幕时不设置
+    int screenConnectedCount = 0;
+    Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (true == output->isConnected()) {
+            screenConnectedCount++;
+        }
+    }
+    if(screenConnectedCount <= 1) {
+        return;
+    }
 
     switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
