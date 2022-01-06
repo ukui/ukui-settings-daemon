@@ -415,7 +415,8 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     KGlobalAccel::self()->setShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     connect(powerDown, &QAction::triggered, this, [this]() {
-        doAction(POWER_KEY);
+        USD_LOG(LOG_DEBUG,"press key powerdown !");
+        doAction(POWER_DOWN_KEY);
     });
     /*TODO eject*/
     QAction *eject= new QAction(this);
@@ -710,7 +711,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
 
     connect(logout2, &QAction::triggered, this, [this]() {
-        doPowerOffAction();
+        doAction(POWER_OFF_KEY);
     });
 
 
@@ -1382,8 +1383,11 @@ bool MediaKeysManager::doAction(int type)
     case BRIGHT_DOWN_KEY:
         doBrightAction(type);
         break;
-    case POWER_KEY:
+    case POWER_DOWN_KEY:
         doShutdownAction();
+        break;
+    case POWER_OFF_KEY:
+        doPowerOffAction();
         break;
     case LOGOUT_KEY:
         doLogoutAction();
@@ -1955,7 +1959,6 @@ void MediaKeysManager::doPowerOffAction()
                 doAction(LOGOUT_KEY);
                 break;
             case POWER_SHUTDOWN:
-                //doAction(POWER_KEY);
                 executeCommand("ukui-session-tools"," --shutdown");
                 break;
             case POWER_SUSPEND:
