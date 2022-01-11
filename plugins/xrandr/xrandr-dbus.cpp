@@ -22,7 +22,11 @@ xrandrDbus::xrandrDbus(QObject* parent) : QObject(parent)
     mScale = mXsettings->get("scaling-factor").toDouble();
     xrandrManager = static_cast<XrandrManager*>(parent);
 
+    //QDBusConnection::sessionBus().unregisterService("org.ukui.SettingsDaemon.xrandr");
+    //QDBusConnection::sessionBus().registerService("org.ukui.SettingsDaemon.xrandr");
+    QDBusConnection::sessionBus().registerObject("0",this,QDBusConnection::ExportAllSlots);
 }
+
 xrandrDbus::~xrandrDbus()
 {
     delete mXsettings;
@@ -74,6 +78,13 @@ void xrandrDbus::sendScreensParamChangeSignal(QString screensParam)
 void xrandrDbus::setScreenMap()
 {
     xrandrManager->autoRemapTouchscreen();
+}
+
+QString xrandrDbus::controlScreenSlot(const QString &conRotation)
+{
+    USD_LOG(LOG_DEBUG,"control call this slot");
+    Q_EMIT controlScreen(conRotation);
+    return QString("Get messageMethod reply: %1").arg(conRotation);
 }
 
 

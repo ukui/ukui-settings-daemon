@@ -27,6 +27,8 @@ public Q_SLOTS:
 
     void setScreenMap();
 
+    QString controlScreenSlot(const QString &arg);
+
 
 Q_SIGNALS:
     //供xrandrManager监听
@@ -36,6 +38,9 @@ Q_SIGNALS:
     //与adaptor一致
     void screensParamChanged(QString screensParam);
     void screenModeChanged(int screenMode);
+
+    //控制面板旋转触摸映射
+    void controlScreen(QString conRotation);
 
 
 public:

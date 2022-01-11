@@ -115,6 +115,9 @@ XrandrManager::XrandrManager()
     } else {
         USD_LOG(LOG_ERR, "m_DbusRotation");
     }
+
+    connect(mDbus,&xrandrDbus::controlScreen,this,&XrandrManager::controlScreenMap);
+//    connect(mDbus,SIGNAL(xrandrDbus::controlScreen()),this,SLOT(controlScreenMap()));
 }
 
 void XrandrManager::getInitialConfig()
@@ -297,7 +300,6 @@ void doAction (int input_name, char *output_name)
     USD_LOG(LOG_DEBUG,"map touch-screen [%s]\n", buff);
     QProcess::execute(buff);
 }
-
 
 static int find_event_from_name(char *_name, char *_serial, char *_event)
 {
@@ -559,7 +561,7 @@ void SetTouchscreenCursorRotation()
                                                                     "ID_INPUT_WIDTH_MM");
                         height = g_udev_device_get_property_as_double (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
-
+                        USD_LOG(LOG_DEBUG,".output_mm_width:%d  output_mm_height:%d  width:%d. height:%d",output_mm_width,output_mm_height,width,height);
                         if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
                             USD_LOG(LOG_DEBUG,".output_mm_width:%d  output_mm_height:%d  width:%d. height:%d",output_mm_width,output_mm_height,width,height);
                             doAction(info->dev_info.deviceid,output_info->name);
@@ -1569,6 +1571,13 @@ void XrandrManager::screenModeChangedSignal(int mode)
 void XrandrManager::screensParamChangedSignal(QString param)
 {
     USD_LOG(LOG_DEBUG,"param:%s",param.toLatin1().data());
+}
+
+void XrandrManager::controlScreenMap(const QString screenMap)
+{
+    USD_LOG(LOG_DEBUG,"controlScreenMap ...");
+    RotationChangedEvent(screenMap);
+    SetTouchscreenCursorRotation();
 }
 
 /**
