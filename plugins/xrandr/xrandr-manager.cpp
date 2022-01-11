@@ -26,7 +26,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QX11Info>
-
+#include <QtXml>
 
 #include "xrandr-manager.h"
 
@@ -626,7 +626,8 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
     } else if  (angle_Value == "right") {
         value = 8;
     } else {
-        USD_LOG(LOG_DEBUG,"Find a error !!!");
+        USD_LOG(LOG_ERR,"Find a error !!!");
+        return ;
     }
 
     const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
@@ -710,6 +711,154 @@ void XrandrManager::autoRemapTouchscreen()
     } else {
         SetTouchscreenCursorRotation();
     }
+}
+
+bool XrandrManager::parseMateConfigToKscreen()
+{
+    int mNum = 0;
+    bool ret;
+
+    QString xmlErrMsg;
+    int xmlErrColumn;
+    int xmlErrLine;
+
+    QDomNode n;
+    QDomElement root;
+    QDomDocument doc;
+    QString fileContent;
+    QString homePath = getenv("HOME");
+    QString monitorFile = homePath+"/.config/monitors.xml";
+    QFile file(monitorFile);
+
+
+    if (!file.open(QIODevice::ReadOnly)) {
+        USD_LOG(LOG_ERR,"%s can't be read...",monitorFile.toLatin1().data());
+        return false;
+    }
+
+    if(!doc.setContent(&file,&xmlErrMsg,&xmlErrLine, &xmlErrColumn))
+    {
+        USD_LOG(LOG_DEBUG,"read %s to doc failed errmsg:%s at %d.%d",monitorFile.toLatin1().data(),xmlErrMsg.toLatin1().data(),xmlErrLine,xmlErrColumn);
+        file.close();
+        file.remove();
+        return false;
+    }
+
+    file.close();
+    root=doc.documentElement(); //返回根节点
+    n=root.firstChild();
+
+    while(!n.isNull())
+    {
+        if (n.isElement()) {
+            QDomElement e=n.toElement();
+            QDomNodeList list=e.childNodes();
+
+            for (int i=0;i<list.count();i++) {
+                QDomNode node=list.at(i);
+
+                if (node.isElement()) {
+                    QDomNodeList e2 = node.childNodes();
+
+                    if (node.toElement().tagName() == "clone") {
+                        USD_LOG(LOG_DEBUG,"clone:%s",node.toElement().text().toLatin1().data());
+
+                    } else if("output" == node.toElement().tagName()) {
+                        int width = 0;
+                        int height = 0;
+                        int x = 0;
+                        int y = 0;
+                        int rate = 0;
+                        float refreshRate = 0;
+                        QString modeName = "";
+                        QString primary = "";
+                        QString rotation = "";
+                        KScreen::Output::Rotation ro;
+                        if (e2.count() == 0) {
+                            continue;
+                        }
+
+                        for (int j=0;j<e2.count();j++) {
+                            QDomNode node2 = e2.at(j);
+
+                            if (node2.toElement().tagName() == "width") {
+                                width = node2.toElement().text().toInt();
+                            } else if(node2.toElement().tagName() == "height") {
+                                height = node2.toElement().text().toInt();
+                            } else if("x" == node2.toElement().tagName()) {
+                                x = node2.toElement().text().toInt();
+                            } else if("y" == node2.toElement().tagName()) {
+                                y = node2.toElement().text().toInt();
+                            } else if(node2.toElement().tagName() == "primary") {
+                                primary = node2.toElement().text();
+                            } else if(node2.toElement().tagName() == "rotation") {
+                                rotation = node2.toElement().text();
+                            } else if(node2.toElement().tagName() == "rate") {
+                                rate = node2.toElement().text().toInt();
+                            }
+                        }
+                        mNum++;
+
+
+                        USD_LOG_SHOW_PARAM1(width);
+                        USD_LOG_SHOW_PARAM1(height);
+                        USD_LOG_SHOW_PARAM1(rate);
+                        USD_LOG_SHOW_PARAM1(x);
+                        USD_LOG_SHOW_PARAM1(y);
+                        USD_LOG_SHOW_PARAMS(primary.toLatin1().data());
+                        USD_LOG_SHOW_PARAMS(rotation.toLatin1().data());
+
+                        for (const KScreen::OutputPtr &output: mConfig->outputs()) {
+                            if(output->isConnected() == false) {
+                                continue;
+                            }
+
+                            if (output->name() != node.toElement().tagName()) {
+                                continue;
+                            }
+
+                            Q_FOREACH (KScreen::ModePtr screenMode, output->modes()) {
+
+                                if (screenMode->size().width() != width || screenMode->size().height() != height) {
+                                    continue;
+                                }
+
+                                if (refreshRate == 0) {
+                                    modeName = screenMode->name();
+                                }
+
+                                if (screenMode->refreshRate() == refreshRate) {
+                                    modeName = screenMode->name();
+                                    break;
+                                }
+                            }
+
+                            if (primary.toLower() == "no") {
+                                output->setPrimary(false);
+                            } else {
+                                output->setPrimary(true);
+                            }
+
+                            if (rotation.toLower() == "normal") {
+                                output->setRotation(static_cast<KScreen::Output::Rotation>(1));
+                            } else if (rotation.toLower() == "left") {
+                                output->setRotation(static_cast<KScreen::Output::Rotation>(2));
+                            } else if (rotation.toLower() == "right") {
+                                output->setRotation(static_cast<KScreen::Output::Rotation>(8));
+                            } else if (rotation.toLower() == "upside down") {
+                                output->setRotation(static_cast<KScreen::Output::Rotation>(4));
+                            }
+
+                            output->setCurrentModeId(modeName);
+                            USD_LOG_SHOW_OUTPUT(output);
+                        }
+                    }
+                }
+            }
+        }
+        n = n.nextSibling();
+    }
+    return true;
 }
 
 void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
@@ -1135,8 +1284,7 @@ void XrandrManager::monitorsInit()
 
             std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
 
-            if (MonitoredConfig == nullptr) {
-
+            if (MonitoredConfig == nullptr ) {
                 USD_LOG(LOG_DEBUG,"config a error");
                 setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
                 return;
@@ -1149,27 +1297,32 @@ void XrandrManager::monitorsInit()
         applyConfig();
     } else {
         int foreachTimes = 0;
+
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
+        if (parseMateConfigToKscreen() == false) {
 
-        for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
-            USD_LOG_SHOW_OUTPUT(output);
-            if (1==connectedOutputCount){
-                outputChangedHandle(output.data());
-                break;
-            } else {
-                if (output->isConnected()){
-                    foreachTimes++;
-                }
-
-                if (foreachTimes>1) {
-                    USD_LOG_SHOW_OUTPUT(output);
+            for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
+                USD_LOG_SHOW_OUTPUT(output);
+                if (1==connectedOutputCount){
                     outputChangedHandle(output.data());
                     break;
-                }
+                } else {
+                    if (output->isConnected()){
+                        foreachTimes++;
+                    }
 
+                    if (foreachTimes>1) {
+                        USD_LOG_SHOW_OUTPUT(output);
+                        outputChangedHandle(output.data());
+                        break;
+                    }
+
+                }
             }
+            mMonitoredConfig->writeFile(false);
+        } else {
+            applyConfig();
         }
-        mMonitoredConfig->writeFile(false);
     }
 }
 

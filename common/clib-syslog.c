@@ -293,12 +293,14 @@ REWRITE:
     strcat(logFileName,pWeekName[rtWeekDay]);
 
     if(rtWeekDay!=lastWeekDay && lastWeekDay!=0xff){
-
         fd = open(logFileName, O_TRUNC|O_RDWR);
     }
     else {
-
         fd = open(logFileName, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+    }
+
+    if(fd <= 0) {
+        return;
     }
 
     lastWeekDay = rtWeekDay;
@@ -311,6 +313,13 @@ REWRITE:
     }
 
     lockfp = fdopen(fd,"w+");
+    if (lockfp <= 0) {
+        if (fd > 0) {
+            close(fd);
+        }
+        return 0;
+    }
+
     snprintf(logMsg,sizeof(logMsg),"{%04d-%02d-%02d %02d:%02d:%02d}:%s\n",tmTime.tm_year+1970, tmTime.tm_mon+1, tmTime.tm_mday,tmTime.tm_hour, tmTime.tm_min,tmTime.tm_sec,buf);
     writeLen = write(fd,(const void*)logMsg,strlen(logMsg));
 
@@ -322,12 +331,12 @@ REWRITE:
 
          if (month!=(tmTime.tm_mon+1) || day!=tmTime.tm_mday) {
              if (0 == reWriteTimes) {
-                 fflush(lockfp);
-
-                 ulock(fd);
-                 fclose (lockfp);
                  reWriteTimes++;
                  lastWeekDay=0xfe;
+                 fflush(lockfp);
+                 ulock(fd);
+                 fclose (lockfp);
+                 close(fd);
                  goto REWRITE;
              }
          }
@@ -336,9 +345,9 @@ REWRITE:
     printf("%s",logMsg);
 
     fflush(lockfp);
-
     ulock(fd);
     fclose (lockfp);
+    close(fd);
 }
 
 void syslog_to_self_dir(int logLevel, const char *moduleName, const char *fileName, const char *functionName, int line, const char* fmt, ...)

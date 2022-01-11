@@ -109,6 +109,7 @@ public:
     uint8_t getCurrentRotation();
     void sendScreenModeToDbus();
     void autoRemapTouchscreen();
+    bool parseMateConfigToKscreen();
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();
