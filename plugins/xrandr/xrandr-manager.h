@@ -123,6 +123,9 @@ public Q_SLOTS:
     QString getScreesParam();
     void screenModeChangedSignal(int mode);
     void screensParamChangedSignal(QString param);
+    /*台式机screen旋转后触摸*/
+    void controlScreenMap(const QString screenMap);
+
 Q_SIGNALS:
     // DBus
     void outputConnected(const QString &outputName);

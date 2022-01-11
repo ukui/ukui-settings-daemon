@@ -22,7 +22,11 @@ xrandrDbus::xrandrDbus(QObject* parent) : QObject(parent)
     mScale = mXsettings->get("scaling-factor").toDouble();
     xrandrManager = static_cast<XrandrManager*>(parent);
 
+    //QDBusConnection::sessionBus().unregisterService("org.ukui.SettingsDaemon.xrandr");
+    //QDBusConnection::sessionBus().registerService("org.ukui.SettingsDaemon.xrandr");
+    QDBusConnection::sessionBus().registerObject("0",this,QDBusConnection::ExportAllSlots);
 }
+
 xrandrDbus::~xrandrDbus()
 {
     delete mXsettings;
@@ -54,7 +58,14 @@ QString xrandrDbus::getScreensParam(QString appName)
 
 void xrandrDbus::sendModeChangeSignal(int screensMode)
 {
+    static int lastScreenMode = 0xff;
+    if (lastScreenMode == screensMode) {
+        return;
+    }
+
+    lastScreenMode = screensMode;
     USD_LOG(LOG_DEBUG,"send mode:%d",screensMode);
+
     Q_EMIT screenModeChanged(screensMode);
 }
 
@@ -62,6 +73,18 @@ void xrandrDbus::sendScreensParamChangeSignal(QString screensParam)
 {
 //    USD_LOG(LOG_DEBUG,"send param:%s",screensParam.toLatin1().data());
      Q_EMIT screensParamChanged(screensParam);
+}
+
+void xrandrDbus::setScreenMap()
+{
+    xrandrManager->autoRemapTouchscreen();
+}
+
+QString xrandrDbus::controlScreenSlot(const QString &conRotation)
+{
+    USD_LOG(LOG_DEBUG,"control call this slot");
+    Q_EMIT controlScreen(conRotation);
+    return QString("Get messageMethod reply: %1").arg(conRotation);
 }
 
 

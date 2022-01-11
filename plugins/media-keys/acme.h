@@ -32,7 +32,8 @@ enum {
     MIC_MUTE_KEY,
     BRIGHT_UP_KEY,
     BRIGHT_DOWN_KEY,
-    POWER_KEY,
+    POWER_DOWN_KEY,
+    POWER_OFF_KEY,
     EJECT_KEY,
     HOME_KEY,
     MEDIA_KEY,
@@ -80,7 +81,7 @@ enum {
     TOUCHPAD_ON_KEY,
     TOUCHPAD_OFF_KEY,
     RFKILL_KEY,
-    TASKPANE_KEY,
+    BLUETOOTH_KEY,
 };
 
 static struct {

@@ -21,6 +21,7 @@
 #include <QDBusMessage>
 #include <QDBusConnection>
 #include <QScreen>
+#include <qdir.h>
 
 #include "ukui-xsettings-manager.h"
 #include "xsettings-manager.h"
@@ -31,6 +32,11 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include "clib-syslog.h"
+
+#include <QSettings>
+#include <QDBusConnection>
+#include <QDBusMessage>
+
 #define MOUSE_SCHEMA          "org.ukui.peripherals-mouse"
 #define INTERFACE_SCHEMA      "org.mate.interface"
 #define SOUND_SCHEMA          "org.mate.sound"
@@ -224,8 +230,10 @@ static void terminate_cb (void *data)
     if (*terminated) {
         return;
     }
+
     *terminated = TRUE;
-    exit(0);//gtk_main_quit ();
+    USD_LOG(LOG_DEBUG,"terminate self.....");
+    exit(15);//gtk_main_quit ();
 }
 
 void setScreenScale()
@@ -295,6 +303,26 @@ find_translation_entry (GSettings *gsettings, const char *key)
     return NULL;
 }
 
+static void setKwinMouseSize(int size) {
+    QString filename = QDir::homePath() + "/.config/kcminputrc";
+
+    QSettings *mouseSettings = new QSettings(filename, QSettings::IniFormat);
+    mouseSettings->beginGroup("Mouse");
+    mouseSettings->setValue("cursorSize", size);
+    mouseSettings->endGroup();
+
+    mouseSettings->deleteLater();
+
+    QDBusMessage message =
+            QDBusMessage::createSignal("/KGlobalSettings", "org.kde.KGlobalSettings", "notifyChange");
+
+    QList<QVariant> args;
+    args.append(5);//cursor size change signal
+    args.append(0);//The sceond param unuse..
+    message.setArguments(args);
+
+    QDBusConnection::sessionBus().send(message);
+}
 
 static void
 xsettings_callback (GSettings             *gsettings,
@@ -308,9 +336,14 @@ xsettings_callback (GSettings             *gsettings,
 //    USD_LOG(LOG_DEBUG,"key:%s",key);
 
     if (g_str_equal (key, CURSOR_THEME_KEY)||
-            g_str_equal (key, CURSOR_SIZE_KEY )){
+            g_str_equal (key, CURSOR_SIZE_KEY )) {
         xft_callback (NULL, key, manager);
-        USD_LOG(LOG_ERR," key=%s",key);
+         USD_LOG(LOG_ERR," key=%s",key);
+        if (g_str_equal (key, CURSOR_SIZE_KEY)) {
+            setKwinMouseSize(g_settings_get_int (gsettings, key));
+
+            USD_LOG_SHOW_PARAM1(g_settings_get_int (gsettings, key));
+        }
         return;
     }
 
