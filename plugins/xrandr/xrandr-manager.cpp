@@ -1577,7 +1577,6 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 {
     USD_LOG(LOG_DEBUG,"controlScreenMap ...");
     RotationChangedEvent(screenMap);
-    SetTouchscreenCursorRotation();
 }
 
 /**
