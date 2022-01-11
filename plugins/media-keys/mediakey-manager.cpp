@@ -57,6 +57,7 @@ const int VOLUMESTEP = 6;
 #define GPM_SETTINGS_SCHEMA		            "org.ukui.power-manager"
 #define GPM_SETTINGS_BRIGHTNESS_AC			"brightness-ac"
 
+
 typedef enum {
     POWER_SUSPEND = 1,
     POWER_SHUTDOWN = 2,
@@ -414,7 +415,8 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     KGlobalAccel::self()->setShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     connect(powerDown, &QAction::triggered, this, [this]() {
-        doAction(POWER_KEY);
+        USD_LOG(LOG_DEBUG,"press key powerdown !");
+        doAction(POWER_DOWN_KEY);
     });
     /*TODO eject*/
     QAction *eject= new QAction(this);
@@ -452,6 +454,7 @@ void MediaKeysManager::initShortcuts()
     connect(cal, &QAction::triggered, this, [this]() {
         doAction(CALCULATOR_KEY);
     });
+
     /*search*/
     QAction *search= new QAction(this);
     search->setObjectName(QStringLiteral("Open search"));
@@ -708,7 +711,7 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
 
     connect(logout2, &QAction::triggered, this, [this]() {
-        doPowerOffAction();
+        doAction(POWER_OFF_KEY);
     });
 
 
@@ -980,10 +983,10 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
             doAction(VOLUME_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandle(BRIGHT_DOWN_KEY, event);
+            doAction(BRIGHT_DOWN_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandle(BRIGHT_UP_KEY, event);
+            doAction(BRIGHT_UP_KEY);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandle(AREA_SCREENSHOT_KEY, event);
@@ -1015,6 +1018,21 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandle(SCREENSAVER_KEY, event);
 
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandle(WINDOWSWITCH_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandle(CALCULATOR_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+
+
+        } else if (eventKeysym == XKB_KEY_XF86Bluetooth) {
+            xEventHandle(BLUETOOTH_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
+//            doPowerOffAction();
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -1037,12 +1055,7 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
-           xEventHandleRelease(MUTE_KEY);
-        }  else if (eventKeysym == XKB_KEY_XF86MonBrightnessDown) {
-            xEventHandleRelease(BRIGHT_DOWN_KEY);
-
-        } else if (eventKeysym == XKB_KEY_XF86MonBrightnessUp) {
-            xEventHandleRelease(BRIGHT_UP_KEY);
+            xEventHandleRelease(MUTE_KEY);
 
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandleRelease(AREA_SCREENSHOT_KEY);
@@ -1073,6 +1086,18 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
 
         } else if (eventKeysym == XKB_KEY_XF86ScreenSaver) {
             xEventHandleRelease(SCREENSAVER_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
+            xEventHandleRelease(WINDOWSWITCH_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86Calculator) {
+            xEventHandleRelease(CALCULATOR_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+            xEventHandleRelease(BLUETOOTH_KEY);
 
         }
     }
@@ -1358,8 +1383,11 @@ bool MediaKeysManager::doAction(int type)
     case BRIGHT_DOWN_KEY:
         doBrightAction(type);
         break;
-    case POWER_KEY:
+    case POWER_DOWN_KEY:
         doShutdownAction();
+        break;
+    case POWER_OFF_KEY:
+        doPowerOffAction();
         break;
     case LOGOUT_KEY:
         doLogoutAction();
@@ -1399,9 +1427,6 @@ bool MediaKeysManager::doAction(int type)
         break;
     case MEDIA_KEY:
         doMediaAction();
-        break;
-    case CALCULATOR_KEY:
-        doOpenCalcAction();
         break;
     case PLAY_KEY:
         doMultiMediaPlayerAction("Play");
@@ -1479,6 +1504,12 @@ bool MediaKeysManager::doAction(int type)
         break;
     case RFKILL_KEY:
         doFlightModeAction();
+        break;
+    case CALCULATOR_KEY:
+        doOpenKylinCalculator();
+        break;
+    case BLUETOOTH_KEY:
+        doBluetoothAction();
         break;
     default:
         break;
@@ -1626,8 +1657,6 @@ void MediaKeysManager::doTouchpadAction(int state)
         touchpadSettings->set("touchpad-enabled",STATE_OFF);
     }
     mDeviceWindow->dialogShow();
-
-
 
     delete touchpadSettings;
 }
@@ -1930,7 +1959,6 @@ void MediaKeysManager::doPowerOffAction()
                 doAction(LOGOUT_KEY);
                 break;
             case POWER_SHUTDOWN:
-                //doAction(POWER_KEY);
                 executeCommand("ukui-session-tools"," --shutdown");
                 break;
             case POWER_SUSPEND:
@@ -1999,6 +2027,7 @@ void MediaKeysManager::doMediaAction()
 
 void MediaKeysManager::doOpenCalcAction()
 {
+    //其他平台计算器
     QString tool1,tool2,tool3;
 
     tool1 = "galculator";
@@ -2113,6 +2142,22 @@ void MediaKeysManager::doFlightModeAction()
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doBluetoothAction()
+{
+    int bluetoothState = RfkillSwitch::instance()->getCurrentBluetoothMode();
+    if(bluetoothState == -1) {
+        USD_LOG(LOG_ERR,"get bluetooth mode error");
+        return;
+    }
+    mDeviceWindow->setAction(bluetoothState?"ukui-bluetooth-on":"ukui-bluetooth-off");
+    mDeviceWindow->dialogShow();
+}
+
+void MediaKeysManager::doOpenKylinCalculator()
+{
+    executeCommand("kylin-calculator","");
 }
 
 void MediaKeysManager::doEyeCenterAction()

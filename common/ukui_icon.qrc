@@ -38,5 +38,7 @@
         <file>ukui_res/ukui_intel/ukui-airplane-off.svg</file>
         <file>ukui_res/ukui/ukui-airplane-on.svg</file>
         <file>ukui_res/ukui/ukui-airplane-off.svg</file>
+        <file>ukui_res/ukui/ukui-performance-symbolic.svg</file>
+        <file>ukui_res/ukui/ukui-eco-symbolic.svg</file>
     </qresource>
 </RCC>

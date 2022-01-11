@@ -43,7 +43,7 @@ void handler(int no)
 {
     USD_LOG(LOG_DEBUG,"catch SIGTERM signal, with exitcode %d",no);
 //    manager->managerStop();
-    QApplication::exit(0);
+    QApplication::exit(15);
 }
 
 int main (int argc, char* argv[])
@@ -66,8 +66,13 @@ int main (int argc, char* argv[])
     QApplication::setQuitOnLastWindowClosed(false);
 
     QTranslator translator;
-    translator.load("/usr/share/ukui-settings-daemon/daemon/res/i18n/zh_CN.qm");
-    app.installTranslator(&translator);
+    if(translator.load(QLocale(),QLatin1String("/usr/share/ukui-settings-daemon/daemon/res/i18n/"))) {
+        app.installTranslator(&translator);
+    } else {
+        qDebug() << "zh_CH translator error!";
+    }
+    //translator.load("/usr/share/ukui-settings-daemon/daemon/res/i18n/zh_CN.qm");
+    //app.installTranslator(&translator);
     parse_args (argc, argv);
 
     if (replace) stop_daemon ();

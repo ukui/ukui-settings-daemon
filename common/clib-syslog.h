@@ -54,6 +54,7 @@ extern "C" {
         output->currentModeId().toLatin1().data(), output->pos().x(), output->pos().y())
 
 #define USD_LOG_SHOW_PARAM1(a) USD_LOG(LOG_DEBUG,"%s : %d",#a,a)
+#define USD_LOG_SHOW_PARAMS(a) USD_LOG(LOG_DEBUG,"%s : %s",#a,a)
 #define USD_LOG_SHOW_PARAM2(a,b) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a,a,#b, b)
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
 #define USD_LOG_SHOW_PARAM4(a,b,c,d) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
