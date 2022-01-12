@@ -288,7 +288,7 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
 
 
     if (readInGlobal(output)) {
-//        USD_LOG(LOG_DEBUG,"out it....");
+        USD_LOG(LOG_DEBUG,"out it....");
         // output data read from global output file
         return;
     }

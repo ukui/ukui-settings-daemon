@@ -32,7 +32,9 @@ SUBDIRS += \
     $$PWD/plugins/locate-pointer/usd-locate-pointer.pro \
     $$PWD/plugins/kds/kds.pro\
     $$PWD/plugins/authority/authority.pro\
+    $$PWD/plugins/save-param/save-param.pro\
     $$PWD/daemon/daemon.pro
+
 
 include($$PWD/data/data.pri)
 

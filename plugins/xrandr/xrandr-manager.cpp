@@ -142,10 +142,12 @@ void XrandrManager::getInitialConfig()
 
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
+
+        USD_LOG_SHOW_PARAM1(mMonitoredConfig->data()->outputs().count());
+
         monitorsInit();
 
         mDbus->mScreenMode = discernScreenMode();
-
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     });
 }
@@ -713,159 +715,6 @@ void XrandrManager::autoRemapTouchscreen()
     }
 }
 
-bool XrandrManager::parseMateConfigToKscreen()
-{
-    int mNum = 0;
-
-    QString xmlErrMsg;
-    int xmlErrColumn;
-    int xmlErrLine;
-
-    QDomNode n;
-    QDomElement root;
-    QDomDocument doc;
-    QString homePath = getenv("HOME");
-    QString monitorFile = homePath+"/.config/monitors.xml";
-    QFile file(monitorFile);
-
-
-    if (!file.open(QIODevice::ReadOnly)) {
-        USD_LOG(LOG_ERR,"%s can't be read...",monitorFile.toLatin1().data());
-        return false;
-    }
-
-    if(!doc.setContent(&file,&xmlErrMsg,&xmlErrLine, &xmlErrColumn))
-    {
-        USD_LOG(LOG_DEBUG,"read %s to doc failed errmsg:%s at %d.%d",monitorFile.toLatin1().data(),xmlErrMsg.toLatin1().data(),xmlErrLine,xmlErrColumn);
-        file.close();
-        file.remove();
-        return false;
-    }
-
-    file.close();
-    root=doc.documentElement(); //返回根节点
-    n=root.firstChild();
-    USD_LOG(LOG_DEBUG,"start parse monitors...");
-
-    while(!n.isNull())
-    {
-        if (n.isElement()) {
-            QDomElement e = n.toElement();
-            QDomNodeList list = e.childNodes();
-
-            for (int i=0;i<list.count();i++) {
-                QDomNode node=list.at(i);
-
-                if (node.isElement()) {
-                    QDomNodeList e2 = node.childNodes();
-
-                    if (node.toElement().tagName() == "clone") {
-                        USD_LOG(LOG_DEBUG,"clone:%s",node.toElement().text().toLatin1().data());
-
-                    } else if("output" == node.toElement().tagName()) {
-
-                        int width = 0;
-                        int height = 0;
-                        int x = 0;
-                        int y = 0;
-                        int rate = 0;
-                        float refreshRate = 0;
-
-                        QString modeName = "";
-                        QString primary = "";
-                        QString rotation = "";
-                        QString outputName = node.toElement().attributeNode("name").value();
-                        USD_LOG_SHOW_PARAMS(outputName.toLatin1().data());
-
-
-                        if (e2.count() == 0) {
-                            continue;
-                        }
-
-                        for (int j=0;j<e2.count();j++) {
-                            QDomNode node2 = e2.at(j);
-
-                            if (node2.toElement().tagName() == "width") {
-                                width = node2.toElement().text().toInt();
-                            } else if(node2.toElement().tagName() == "height") {
-                                height = node2.toElement().text().toInt();
-                            } else if("x" == node2.toElement().tagName()) {
-                                x = node2.toElement().text().toInt();
-                            } else if("y" == node2.toElement().tagName()) {
-                                y = node2.toElement().text().toInt();
-                            } else if(node2.toElement().tagName() == "primary") {
-                                primary = node2.toElement().text();
-                            } else if(node2.toElement().tagName() == "rotation") {
-                                rotation = node2.toElement().text();
-                            } else if(node2.toElement().tagName() == "rate") {
-                                rate = node2.toElement().text().toInt();
-                            }
-                        }
-                        mNum++;
-
-                    //TODO：功能稳定后删除日志打印
-                        USD_LOG_SHOW_PARAM1(width);
-                        USD_LOG_SHOW_PARAM1(height);
-                        USD_LOG_SHOW_PARAM1(rate);
-                        USD_LOG_SHOW_PARAM1(x);
-                        USD_LOG_SHOW_PARAM1(y);
-                        USD_LOG_SHOW_PARAMS(primary.toLatin1().data());
-                        USD_LOG_SHOW_PARAMS(rotation.toLatin1().data());
-
-                        for (const KScreen::OutputPtr &output: mConfig->outputs()) {
-                            if (output->name() != outputName) {
-                                continue;
-                            }
-
-                            Q_FOREACH (KScreen::ModePtr screenMode, output->modes()) {
-
-                                if (screenMode->size().width() != width || screenMode->size().height() != height) {
-                                    continue;
-                                }
-
-                                if (refreshRate == 0) {
-                                    refreshRate = 1;
-                                    modeName = screenMode->id();
-                                    USD_LOG_SHOW_PARAMS(modeName.toLatin1().data());
-                                }
-
-                                if (screenMode->refreshRate() == rate) {
-                                    modeName = screenMode->id();
-                                    USD_LOG_SHOW_PARAMS(modeName.toLatin1().data());
-                                    break;
-                                }
-                            }
-
-                            if (primary.toLower() == "no") {
-                                output->setPrimary(false);
-                            } else {
-                                output->setPrimary(true);
-                            }
-
-                            if (rotation.toLower() == "normal") {
-                                output->setRotation(static_cast<KScreen::Output::Rotation>(1));
-                            } else if (rotation.toLower() == "left") {
-                                output->setRotation(static_cast<KScreen::Output::Rotation>(2));
-                            } else if (rotation.toLower() == "right") {
-                                output->setRotation(static_cast<KScreen::Output::Rotation>(8));
-                            } else if (rotation.toLower() == "upside down") {
-                                output->setRotation(static_cast<KScreen::Output::Rotation>(4));
-                            }
-
-                            output->setCurrentModeId(modeName);
-                            USD_LOG_SHOW_OUTPUT(output);
-                        }
-                    }
-                }
-            }
-        }
-        n = n.nextSibling();
-    }
-
-    USD_LOG(LOG_DEBUG,"end parse monitors...");
-    return true;
-}
-
 void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
 {
 
@@ -914,24 +763,24 @@ void XrandrManager::outputConnectedChanged()
 
 void XrandrManager::outputAddedHandle(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::outputRemoved(int outputId)
 {
-     USD_LOG(LOG_DEBUG,".");
+//     USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::primaryScreenChange()
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
@@ -1034,7 +883,7 @@ int8_t XrandrManager::getCurrentMode()
     if (response.type() == QDBusMessage::ReplyMessage) {
         if(response.arguments().isEmpty() == false) {
             bool value = response.arguments().takeFirst().toBool();
-            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+//            USD_LOG(LOG_DEBUG, "get mode :%d", value);
             return value;
         }
     }
@@ -1044,17 +893,15 @@ int8_t XrandrManager::getCurrentMode()
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
-    USD_LOG_SHOW_OUTPUT(senderOutput);
+
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
-            USD_LOG(LOG_DEBUG,"reset output..");
-            USD_LOG_SHOW_OUTPUT(output);
             senderOutput->setEnabled(true);
 
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
-//            USD_LOG_SHOW_OUTPUT(output);
+
             break;
         }
     }
@@ -1087,15 +934,12 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
         }
     } else {//非intel项目无此接口
-         USD_LOG(LOG_DEBUG,"need to use config file");
         if (false == mMonitoredConfig->fileExists()) {
-            USD_LOG(LOG_DEBUG,"config %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
             if (senderOutput->isConnected()) {
                 senderOutput->setEnabled(senderOutput->isConnected());
             }
             outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
         } else {
-            USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
             if (outputConnectCount) {
                 std::unique_ptr<xrandrConfig> MonitoredConfig  = mMonitoredConfig->readFile(false);
                 if (MonitoredConfig!=nullptr) {
@@ -1106,8 +950,6 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
             }
         }
     }
-
-//    lightLastScreen();
     applyConfig();
 }
 
@@ -1175,7 +1017,7 @@ void XrandrManager::monitorsInit()
         //只负责插拔恢复
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
+//            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
@@ -1295,7 +1137,6 @@ void XrandrManager::monitorsInit()
                 return;
             }
 
-
             mMonitoredConfig = std::move(MonitoredConfig);
         }
 
@@ -1304,34 +1145,30 @@ void XrandrManager::monitorsInit()
         int foreachTimes = 0;
 
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
-        if (parseMateConfigToKscreen() == false)
-        {
 
-            for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
-                USD_LOG_SHOW_OUTPUT(output);
-                if (1==connectedOutputCount){
+        for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
+            USD_LOG_SHOW_OUTPUT(output);
+            if (1==connectedOutputCount){
+                outputChangedHandle(output.data());
+                break;
+            } else {
+
+                if (output->isConnected()){
+                    foreachTimes++;
+                }
+
+                if (foreachTimes>1) {
+                    USD_LOG_SHOW_OUTPUT(output);
                     outputChangedHandle(output.data());
                     break;
-                } else {
-
-                    if (output->isConnected()){
-                        foreachTimes++;
-                    }
-
-                    if (foreachTimes>1) {
-                        USD_LOG_SHOW_OUTPUT(output);
-                        outputChangedHandle(output.data());
-                        break;
-                    }
-
                 }
+
             }
-            mMonitoredConfig->writeFile(false);
-        } else {
-            applyConfig();
         }
+        mMonitoredConfig->writeFile(false);
     }
 }
+
 
 bool XrandrManager::checkPrimaryScreenIsSetable()
 {

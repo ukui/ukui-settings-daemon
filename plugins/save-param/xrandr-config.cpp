@@ -27,7 +27,6 @@
 #include <QJsonDocument>
 #include <QDir>
 
-//#include <QHBoxLayout>
 #include <QtXml>
 
 #include "xrandr-config.h"
@@ -96,22 +95,6 @@ QString xrandrConfig::id() const
 
 bool xrandrConfig::fileExists() const
 {
-    QString oldConfig = "/etc/usd/" % id();
-    QString newConfig = configsDirPath() % id();
-    if (QFile::exists(configsDirPath() % id()) == false) {
-        USD_LOG(LOG_DEBUG,".");
-        if (QFile::exists(oldConfig)) {
-            USD_LOG(LOG_DEBUG,".");
-            QFile::copy(oldConfig, configsDirPath() % id());
-            USD_LOG(LOG_DEBUG,"copy from %s to %s", oldConfig.toLatin1().data(), newConfig.toLatin1().data());
-        } else {
-            USD_LOG(LOG_DEBUG,".");
-            USD_LOG(LOG_DEBUG,"fail copy....%s ",oldConfig.toLatin1().data());
-        }
-    } else {
-        USD_LOG(LOG_DEBUG,"skip copy....%s ",oldConfig.toLatin1().data());
-    }
-
     return (QFile::exists(configsDirPath() % id()));
 }
 
@@ -278,8 +261,15 @@ bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
 
 bool xrandrConfig::writeFile(bool state)
 {
+    bool ret = 0;
+    QDir *qDir = new QDir();
     mAddScreen = state;
-    return writeFile(filePath(), false);
+    writeFile(filePath(), false);
+    qDir->mkdir("/etc/usd/");
+
+    ret = QFile::copy(filePath(), "/etc/usd/" % id());
+    USD_LOG(LOG_DEBUG,"go...%d",ret);
+    return true;
 }
 
 bool xrandrConfig::writeConfigAndBackupToModeDir()
@@ -393,8 +383,9 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 //            USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),backFile.errorString().toLatin1().data());
         }
     }
+//    printf("save [%s] ok\n",);
+    USD_LOG(LOG_DEBUG,"write file:\n %s ok",filePath.toLatin1().data());
 
-//    USD_LOG(LOG_DEBUG,"write file:\n%s ok \n%s ok.",filePath.toLatin1().data(),mScreenMode == nullptr? "" : fileModeConfigPath().toLatin1().data());
     return true;
 }
 
