@@ -96,7 +96,7 @@ QString xrandrConfig::id() const
 
 bool xrandrConfig::fileExists() const
 {
-    return (QFile::exists(configsDirPath() % id()) || QFile::exists(configsDirPath() % mFixedConfigFileName));
+    return (QFile::exists(configsDirPath() % id()));
 }
 
 bool xrandrConfig::fileScreenModeExists(QString screenMode)

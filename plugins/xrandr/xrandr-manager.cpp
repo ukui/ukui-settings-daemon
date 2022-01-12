@@ -716,7 +716,6 @@ void XrandrManager::autoRemapTouchscreen()
 bool XrandrManager::parseMateConfigToKscreen()
 {
     int mNum = 0;
-    bool ret;
 
     QString xmlErrMsg;
     int xmlErrColumn;
@@ -725,7 +724,6 @@ bool XrandrManager::parseMateConfigToKscreen()
     QDomNode n;
     QDomElement root;
     QDomDocument doc;
-    QString fileContent;
     QString homePath = getenv("HOME");
     QString monitorFile = homePath+"/.config/monitors.xml";
     QFile file(monitorFile);
@@ -747,12 +745,13 @@ bool XrandrManager::parseMateConfigToKscreen()
     file.close();
     root=doc.documentElement(); //返回根节点
     n=root.firstChild();
+    USD_LOG(LOG_DEBUG,"start parse monitors...");
 
     while(!n.isNull())
     {
         if (n.isElement()) {
-            QDomElement e=n.toElement();
-            QDomNodeList list=e.childNodes();
+            QDomElement e = n.toElement();
+            QDomNodeList list = e.childNodes();
 
             for (int i=0;i<list.count();i++) {
                 QDomNode node=list.at(i);
@@ -764,16 +763,21 @@ bool XrandrManager::parseMateConfigToKscreen()
                         USD_LOG(LOG_DEBUG,"clone:%s",node.toElement().text().toLatin1().data());
 
                     } else if("output" == node.toElement().tagName()) {
+
                         int width = 0;
                         int height = 0;
                         int x = 0;
                         int y = 0;
                         int rate = 0;
                         float refreshRate = 0;
+
                         QString modeName = "";
                         QString primary = "";
                         QString rotation = "";
-                        KScreen::Output::Rotation ro;
+                        QString outputName = node.toElement().attributeNode("name").value();
+                        USD_LOG_SHOW_PARAMS(outputName.toLatin1().data());
+
+
                         if (e2.count() == 0) {
                             continue;
                         }
@@ -799,7 +803,7 @@ bool XrandrManager::parseMateConfigToKscreen()
                         }
                         mNum++;
 
-
+                    //TODO：功能稳定后删除日志打印
                         USD_LOG_SHOW_PARAM1(width);
                         USD_LOG_SHOW_PARAM1(height);
                         USD_LOG_SHOW_PARAM1(rate);
@@ -809,11 +813,7 @@ bool XrandrManager::parseMateConfigToKscreen()
                         USD_LOG_SHOW_PARAMS(rotation.toLatin1().data());
 
                         for (const KScreen::OutputPtr &output: mConfig->outputs()) {
-                            if(output->isConnected() == false) {
-                                continue;
-                            }
-
-                            if (output->name() != node.toElement().tagName()) {
+                            if (output->name() != outputName) {
                                 continue;
                             }
 
@@ -824,11 +824,14 @@ bool XrandrManager::parseMateConfigToKscreen()
                                 }
 
                                 if (refreshRate == 0) {
-                                    modeName = screenMode->name();
+                                    refreshRate = 1;
+                                    modeName = screenMode->id();
+                                    USD_LOG_SHOW_PARAMS(modeName.toLatin1().data());
                                 }
 
-                                if (screenMode->refreshRate() == refreshRate) {
-                                    modeName = screenMode->name();
+                                if (screenMode->refreshRate() == rate) {
+                                    modeName = screenMode->id();
+                                    USD_LOG_SHOW_PARAMS(modeName.toLatin1().data());
                                     break;
                                 }
                             }
@@ -858,6 +861,8 @@ bool XrandrManager::parseMateConfigToKscreen()
         }
         n = n.nextSibling();
     }
+
+    USD_LOG(LOG_DEBUG,"end parse monitors...");
     return true;
 }
 
@@ -1299,7 +1304,8 @@ void XrandrManager::monitorsInit()
         int foreachTimes = 0;
 
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
-        if (parseMateConfigToKscreen() == false) {
+        if (parseMateConfigToKscreen() == false)
+        {
 
             for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
                 USD_LOG_SHOW_OUTPUT(output);
@@ -1307,6 +1313,7 @@ void XrandrManager::monitorsInit()
                     outputChangedHandle(output.data());
                     break;
                 } else {
+
                     if (output->isConnected()){
                         foreachTimes++;
                     }
