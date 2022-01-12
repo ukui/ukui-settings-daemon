@@ -314,6 +314,8 @@ QString xrandrConfig::getScreensParam()
 bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
     int screenConnectedCount = 0;
+    bool priState = false;
+
     if (id().isEmpty()) {
         USD_LOG(LOG_DEBUG,"id is empty!");
         return false;
@@ -329,7 +331,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
             continue;
         }
         screenConnectedCount++;
-        bool priState = false;
+
         if (state || mAddScreen){
             if (priName.compare(output->name()) == 0){
                 priState = true;

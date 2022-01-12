@@ -18,22 +18,16 @@
  *
  */
 
-#include "kdswidget.h"
 #include <QApplication>
-//#include "qtsingleapplication.h"
-
-#include <X11/Xlib.h>
-
-#include <QTranslator>
-#include <QScreen>
+#include "kdswidget.h"
 
 
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    KDSWidget kdsw;
-    kdsw.beginSetupKF5();
+    SaveScreenParam saveParam;
+    saveParam.getConfig();
 
     return app.exec();
 

@@ -1,9 +1,6 @@
 #ifndef KDSWIDGET_H
 #define KDSWIDGET_H
 
-#include <QWidget>
-#include <QButtonGroup>
-
 #include <KF5/KScreen/kscreen/output.h>
 #include <KF5/KScreen/kscreen/edid.h>
 #include <KF5/KScreen/kscreen/mode.h>
@@ -13,21 +10,17 @@
 #include "xrandr-config.h"
 
 
-namespace Ui {
-class KDSWidget;
-}
-
-class KDSWidget : public QWidget
+class SaveScreenParam : QObject
 {
     Q_OBJECT
 
 public:
-    explicit KDSWidget(QWidget *parent = nullptr);
-    ~KDSWidget();
+    explicit SaveScreenParam(QObject *parent = nullptr);
+    ~SaveScreenParam();
 
-    void beginSetupKF5();
+    void getConfig();
 private:
-    std::unique_ptr<xrandrConfig> mMonitoredConfig = nullptr;
+    std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
 };
 
 #endif // KDSWIDGET_H

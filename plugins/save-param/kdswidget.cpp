@@ -1,69 +1,40 @@
-#include "kdswidget.h"
-//#include "ui_kdswidget.h"
-
 #include <QScreen>
 #include <QDBusConnection>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <kwindowsystem.h>
 
+#include "kdswidget.h"
 #include "clib-syslog.h"
-#define TITLEHEIGHT 90
-#define OPTIONSHEIGHT 70
-#define BOTTOMHEIGHT 60
 
-
-enum {
-    FIRSTSCREEN,
-    CLONESCREEN,
-    EXTENDSCREEN,
-//    LEXTENDSCREEN,
-    OTHERSCREEN,
-    ALLMODES,
-};
-
-bool operator<(const QSize &s1, const QSize &s2)
+SaveScreenParam::SaveScreenParam(QObject *parent)
 {
-    return s1.width() * s1.height() < s2.width() * s2.height();
+    Q_UNUSED(parent);
 }
 
-template<>
-bool qMapLessThanKey(const QSize &s1, const QSize &s2)
+SaveScreenParam::~SaveScreenParam()
 {
-    return s1 < s2;
-}
-
-KDSWidget::KDSWidget(QWidget *parent) :
-    QWidget(parent)
-{
-//    ui->setupUi(this);
 
 }
 
-KDSWidget::~KDSWidget()
-{
-//    delete ui;
-}
-
-void KDSWidget::beginSetupKF5(){
+void SaveScreenParam::getConfig(){
     QObject::connect(new KScreen::GetConfigOperation(), &KScreen::GetConfigOperation::finished,
                      [&](KScreen::ConfigOperation *op) {
-//        setConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config());
 
-        if (mMonitoredConfig) {
-            if (mMonitoredConfig->data()) {
-                KScreen::ConfigMonitor::instance()->removeConfig(mMonitoredConfig->data());
-                for (const KScreen::OutputPtr &output : mMonitoredConfig->data()->outputs()) {
+        if (m_MonitoredConfig) {
+            if (m_MonitoredConfig->data()) {
+                KScreen::ConfigMonitor::instance()->removeConfig(m_MonitoredConfig->data());
+                for (const KScreen::OutputPtr &output : m_MonitoredConfig->data()->outputs()) {
                     output->disconnect(this);
                 }
-                mMonitoredConfig->data()->disconnect(this);
+                m_MonitoredConfig->data()->disconnect(this);
             }
-            mMonitoredConfig = nullptr;
+            m_MonitoredConfig = nullptr;
         }
 
-        mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
-        mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
-        mMonitoredConfig->writeFile(false);
+        m_MonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
+        m_MonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
+        m_MonitoredConfig->writeFile(false);
         exit(0);
     });
 }
