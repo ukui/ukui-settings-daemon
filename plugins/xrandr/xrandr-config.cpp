@@ -50,6 +50,27 @@ void xrandrConfig::setScreenMode(QString modeName)
     USD_LOG(LOG_DEBUG,"set mScreenMode to :%s",mScreenMode.toLatin1().data());
 }
 
+bool xrandrConfig::copyMateConfig()
+{
+    QString oldConfig = "/etc/usd/" % id();
+    QString newConfig = configsDirPath() % id();
+    if (QFile::exists(configsDirPath() % id()) == false) {
+        USD_LOG(LOG_DEBUG,".");
+        if (QFile::exists(oldConfig)) {
+            USD_LOG(LOG_DEBUG,".");
+            QFile::copy(oldConfig, configsDirPath() % id());
+            USD_LOG(LOG_DEBUG,"copy from %s to %s", oldConfig.toLatin1().data(), newConfig.toLatin1().data());
+        } else {
+            USD_LOG(LOG_DEBUG,".");
+            USD_LOG(LOG_DEBUG,"fail copy....%s ",oldConfig.toLatin1().data());
+        }
+    } else {
+        USD_LOG(LOG_DEBUG,"skip copy....%s ",oldConfig.toLatin1().data());
+    }
+
+    return true;
+}
+
 QString xrandrConfig::configsModeDirPath()
 {
     QString dirPath = QStandardPaths::writableLocation(QStandardPaths::GenericDataLocation) %
@@ -94,24 +115,10 @@ QString xrandrConfig::id() const
     return mConfig->connectedOutputsHash();
 }
 
+
+
 bool xrandrConfig::fileExists() const
 {
-    QString oldConfig = "/etc/usd/" % id();
-    QString newConfig = configsDirPath() % id();
-    if (QFile::exists(configsDirPath() % id()) == false) {
-        USD_LOG(LOG_DEBUG,".");
-        if (QFile::exists(oldConfig)) {
-            USD_LOG(LOG_DEBUG,".");
-            QFile::copy(oldConfig, configsDirPath() % id());
-            USD_LOG(LOG_DEBUG,"copy from %s to %s", oldConfig.toLatin1().data(), newConfig.toLatin1().data());
-        } else {
-            USD_LOG(LOG_DEBUG,".");
-            USD_LOG(LOG_DEBUG,"fail copy....%s ",oldConfig.toLatin1().data());
-        }
-    } else {
-        USD_LOG(LOG_DEBUG,"skip copy....%s ",oldConfig.toLatin1().data());
-    }
-
     return (QFile::exists(configsDirPath() % id()));
 }
 

@@ -72,6 +72,7 @@ public:
     QString fileModeConfigPath();
 
     void setScreenMode(QString modeName);
+    bool copyMateConfig();
 private:
 
 

@@ -143,7 +143,12 @@ void XrandrManager::getInitialConfig()
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
 
-        USD_LOG_SHOW_PARAM1(mMonitoredConfig->data()->outputs().count());
+        if (mXrandrSetting->keys().contains("hadmate2kscreen")) {
+            if (mXrandrSetting->get("hadmate2kscreen").toBool() == false) {
+                mXrandrSetting->set("hadmate2kscreen", true);
+                mMonitoredConfig->copyMateConfig();
+            }
+        }
 
         monitorsInit();
 
@@ -934,6 +939,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
         }
     } else {//非intel项目无此接口
+
         if (false == mMonitoredConfig->fileExists()) {
             if (senderOutput->isConnected()) {
                 senderOutput->setEnabled(senderOutput->isConnected());
@@ -1583,6 +1589,8 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 void XrandrManager::StartXrandrIdleCb()
 {
     mAcitveTime->stop();
+
+
 
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));
