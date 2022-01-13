@@ -26,7 +26,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QX11Info>
-
+#include <QtXml>
 
 #include "xrandr-manager.h"
 
@@ -142,10 +142,17 @@ void XrandrManager::getInitialConfig()
 
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
+
+        if (mXrandrSetting->keys().contains("hadmate2kscreen")) {
+            if (mXrandrSetting->get("hadmate2kscreen").toBool() == false) {
+                mXrandrSetting->set("hadmate2kscreen", true);
+                mMonitoredConfig->copyMateConfig();
+            }
+        }
+
         monitorsInit();
 
         mDbus->mScreenMode = discernScreenMode();
-
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     });
 }
@@ -626,7 +633,8 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
     } else if  (angle_Value == "right") {
         value = 8;
     } else {
-        USD_LOG(LOG_DEBUG,"Find a error !!!");
+        USD_LOG(LOG_ERR,"Find a error !!!");
+        return ;
     }
 
     const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
@@ -760,24 +768,24 @@ void XrandrManager::outputConnectedChanged()
 
 void XrandrManager::outputAddedHandle(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::outputRemoved(int outputId)
 {
-     USD_LOG(LOG_DEBUG,".");
+//     USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::primaryScreenChange()
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
@@ -880,7 +888,7 @@ int8_t XrandrManager::getCurrentMode()
     if (response.type() == QDBusMessage::ReplyMessage) {
         if(response.arguments().isEmpty() == false) {
             bool value = response.arguments().takeFirst().toBool();
-            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+//            USD_LOG(LOG_DEBUG, "get mode :%d", value);
             return value;
         }
     }
@@ -890,17 +898,15 @@ int8_t XrandrManager::getCurrentMode()
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
-    USD_LOG_SHOW_OUTPUT(senderOutput);
+
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
-            USD_LOG(LOG_DEBUG,"reset output..");
-            USD_LOG_SHOW_OUTPUT(output);
             senderOutput->setEnabled(true);
 
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
-//            USD_LOG_SHOW_OUTPUT(output);
+
             break;
         }
     }
@@ -933,15 +939,13 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
         }
     } else {//非intel项目无此接口
-         USD_LOG(LOG_DEBUG,"need to use config file");
+
         if (false == mMonitoredConfig->fileExists()) {
-            USD_LOG(LOG_DEBUG,"config %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
             if (senderOutput->isConnected()) {
                 senderOutput->setEnabled(senderOutput->isConnected());
             }
             outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
         } else {
-            USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
             if (outputConnectCount) {
                 std::unique_ptr<xrandrConfig> MonitoredConfig  = mMonitoredConfig->readFile(false);
                 if (MonitoredConfig!=nullptr) {
@@ -952,8 +956,6 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
             }
         }
     }
-
-//    lightLastScreen();
     applyConfig();
 }
 
@@ -1021,7 +1023,7 @@ void XrandrManager::monitorsInit()
         //只负责插拔恢复
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
+//            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
@@ -1135,13 +1137,11 @@ void XrandrManager::monitorsInit()
 
             std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
 
-            if (MonitoredConfig == nullptr) {
-
+            if (MonitoredConfig == nullptr ) {
                 USD_LOG(LOG_DEBUG,"config a error");
                 setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
                 return;
             }
-
 
             mMonitoredConfig = std::move(MonitoredConfig);
         }
@@ -1149,6 +1149,7 @@ void XrandrManager::monitorsInit()
         applyConfig();
     } else {
         int foreachTimes = 0;
+
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
 
         for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
@@ -1157,6 +1158,7 @@ void XrandrManager::monitorsInit()
                 outputChangedHandle(output.data());
                 break;
             } else {
+
                 if (output->isConnected()){
                     foreachTimes++;
                 }
@@ -1172,6 +1174,7 @@ void XrandrManager::monitorsInit()
         mMonitoredConfig->writeFile(false);
     }
 }
+
 
 bool XrandrManager::checkPrimaryScreenIsSetable()
 {
@@ -1577,7 +1580,6 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 {
     USD_LOG(LOG_DEBUG,"controlScreenMap ...");
     RotationChangedEvent(screenMap);
-    SetTouchscreenCursorRotation();
 }
 
 /**
@@ -1587,6 +1589,8 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 void XrandrManager::StartXrandrIdleCb()
 {
     mAcitveTime->stop();
+
+
 
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));
