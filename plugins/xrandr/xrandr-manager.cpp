@@ -1051,17 +1051,15 @@ void XrandrManager::monitorsInit()
             connectedOutputCount++;
         }
 
-        //只负责插拔恢复
+
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
             USD_LOG(LOG_DEBUG,"PrimaryChanged:%s",senderOutput->name().toLatin1().data());
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
