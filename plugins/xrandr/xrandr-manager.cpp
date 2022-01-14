@@ -805,7 +805,38 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput, char outputCount)
 {
     if (1 == outputCount) {//单屏接入时需要设置模式，主屏
-        newOutput->setCurrentModeId(newOutput->preferredModeId());
+        int width = 0;
+        int height = 0;
+        float rate = 0;
+        QString modeId = "";
+
+        Q_FOREACH (auto primaryMode, newOutput->modes()) {
+               if (primaryMode->size().width() * primaryMode->size().height() < width * height) {
+                   continue;
+               }
+
+               if (primaryMode->size().width() * primaryMode->size().height() > width * height) {
+                   modeId = primaryMode->id();
+                   width = primaryMode->size().width();
+                   height = primaryMode->size().height();
+                   rate = primaryMode->refreshRate();
+                   USD_LOG(LOG_DEBUG,"set modeId:%s",modeId.toLatin1().data());
+                   continue;
+               }
+
+               if (primaryMode->refreshRate() > rate) {
+                   modeId = primaryMode->id();
+                   USD_LOG(LOG_DEBUG,"set modeId:%s",modeId.toLatin1().data());
+               }
+        }
+
+        if ("" != modeId) {
+            USD_LOG(LOG_DEBUG,"set %s modeId:%s",newOutput->name().toLatin1().data(),modeId.toLatin1().data());
+            newOutput->setCurrentModeId(modeId);
+        } else {
+            USD_LOG(LOG_DEBUG,"cuz modeId is null, set %s mode with preferred id:%s",newOutput->name().toLatin1().data(),newOutput->preferredModeId().data());
+            newOutput->setCurrentModeId(newOutput->preferredModeId());
+        }
         newOutput->setPrimary(true);
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
@@ -1020,17 +1051,15 @@ void XrandrManager::monitorsInit()
             connectedOutputCount++;
         }
 
-        //只负责插拔恢复
+
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
             USD_LOG(LOG_DEBUG,"PrimaryChanged:%s",senderOutput->name().toLatin1().data());
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
