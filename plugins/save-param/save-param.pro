@@ -43,15 +43,16 @@ INSTALLS +=  \
             target
 
 SOURCES += \
+    save-screen.cpp \
     xrandr-config.cpp \
     xrandr-output.cpp   \
-    kdswidget.cpp \
     main.cpp
 
 HEADERS += \
+    color-temp-info.h \
+    save-screen.h \
     xrandr-config.h \
-    xrandr-output.h \
-    kdswidget.h
+    xrandr-output.h
 
 
 

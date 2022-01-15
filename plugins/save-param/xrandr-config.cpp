@@ -262,13 +262,19 @@ bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
 bool xrandrConfig::writeFile(bool state)
 {
     bool ret = 0;
-    QDir *qDir = new QDir();
+    QDir dir;
     mAddScreen = state;
     writeFile(filePath(), false);
-    qDir->mkdir("/etc/usd/");
+
+    if (dir.exists("/etc/usd/") == false) {
+        dir.mkdir("/etc/usd/");
+        printf("mkdir.....\n");
+    }
+
 
     ret = QFile::copy(filePath(), "/etc/usd/" % id());
     USD_LOG(LOG_DEBUG,"go...%d",ret);
+
     return true;
 }
 

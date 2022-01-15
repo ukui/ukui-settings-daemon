@@ -19,6 +19,7 @@ public:
     ~SaveScreenParam();
 
     void getConfig();
+
 private:
     std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
 };

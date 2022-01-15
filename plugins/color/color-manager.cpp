@@ -18,6 +18,10 @@
  */
 #include <QDebug>
 #include <math.h>
+#include <QTime>
+#include <QDBusInterface>
+#include <QDBusArgument>
+#include <color-info.h>
 
 #include "color-manager.h"
 
@@ -39,6 +43,15 @@
 #define QT_THEME_SCHEMA             "org.ukui.style"
 #define QT_THEME_KEY                "style-name"
 
+#define HAD_READ_KWIN               "had-read-kwin-config"
+
+#define KWIN_COLOR_ACTIVE            "Active"
+#define KWIN_NIGHT_TEMP              "NightTemperature"
+#define KWIN_COLOR_MODE              "Mode"
+#define KWIN_COLOR_START             "EveningBeginFixed"
+#define KWIN_COLOR_END               "MorningBeginFixed"
+#define KWIN_CURRENT_TEMP            "CurrentColorTemperature"
+
 #define USD_NIGHT_LIGHT_SCHEDULE_TIMEOUT    5       /* seconds */
 #define USD_NIGHT_LIGHT_POLL_TIMEOUT        60      /* seconds */
 #define USD_NIGHT_LIGHT_POLL_SMEAR          1       /* hours */
@@ -56,6 +69,10 @@ enum theme_status_switch{
     black_mode
 };
 
+double hour_minute_to_value(int hour, int minute) {
+    double value = (double)minute/60;
+    return (double)hour + value;
+}
 
 ColorManager *ColorManager::mColorManager = nullptr;
 
@@ -201,7 +218,6 @@ void ColorManager::NightLightSetActive(bool active)
     /* ensure set to unity temperature */
     if (!active){
         NightLightSetTemperature (USD_COLOR_TEMPERATURE_DEFAULT);
-        USD_LOG(LOG_DEBUG,"use default tempature..");
     }
 }
 
@@ -361,6 +377,74 @@ bool ColorManager::UpdateCachedSunriseSunset()
     }
     return ret;
 }
+/*Active:1,使能，0禁用。
+ *0:全天，1跟随日出日落，2自定义
+ *Mode:1 自定义
+ *Mode:2--EveningBeginFixed（17:55:01）---跟随日出日落
+ *Mode:3--全天
+*/
+void ColorManager::ReadKwinColorTempConfig()
+{
+    QVector<ColorInfo> nightColor;
+    if (settings->keys().contains(HAD_READ_KWIN)) {
+        if (settings->get(HAD_READ_KWIN).toBool() == true) {
+            USD_LOG(LOG_DEBUG,"Kwin had read over..");
+            return;
+        }
+    } else {
+        USD_LOG(LOG_DEBUG,"can't find key:%s", HAD_READ_KWIN);
+        return ;
+    }
+
+    QDBusInterface colorIft("org.ukui.KWin",
+                            "/ColorCorrect",
+                            "org.ukui.kwin.ColorCorrect",
+                            QDBusConnection::sessionBus());
+
+    QDBusMessage result = colorIft.call("nightColorInfo");
+    const QDBusArgument &dbusArgs = result.arguments().at(0).value<QDBusArgument>().asVariant().value<QDBusArgument>();
+
+    dbusArgs.beginArray();
+    while (!dbusArgs.atEnd()) {
+        ColorInfo color;
+        dbusArgs >> color;
+        nightColor.push_back(color);
+    }
+    dbusArgs.endArray();
+
+    for (ColorInfo it : nightColor) {
+        mNightConfig.insert(it.arg, it.out.variant());
+    }
+
+    settings->set(COLOR_KEY_TEMPERATURE, mNightConfig[KWIN_NIGHT_TEMP].toInt());
+    settings->set(COLOR_KEY_ENABLED,mNightConfig[KWIN_COLOR_ACTIVE].toBool());
+
+    if (3 == mNightConfig[KWIN_COLOR_MODE].toInt()) {
+        settings->set(COLOR_KEY_ALLDAY, true);
+    } else if (2 == mNightConfig[KWIN_COLOR_MODE].toInt() && mNightConfig[KWIN_COLOR_START].toString() == "17:55:01"){
+        settings->set(COLOR_KEY_AUTOMATIC, true);
+    } else {
+        QTime startTime = QTime::fromString(mNightConfig[KWIN_COLOR_START].toString(),"hh:mm:ss");
+        QTime endTime = QTime::fromString(mNightConfig[KWIN_COLOR_END].toString(),"hh:mm:ss");
+
+        settings->set(COLOR_KEY_AUTOMATIC_FROM, hour_minute_to_value(startTime.hour(), startTime.minute()));
+        settings->set(COLOR_KEY_AUTOMATIC_TO, hour_minute_to_value(endTime.hour(), endTime.minute()));
+    }
+
+    USD_LOG_SHOW_PARAM1(mNightConfig[KWIN_COLOR_ACTIVE].toBool());
+    USD_LOG_SHOW_PARAM1(mNightConfig[KWIN_COLOR_MODE].toInt());
+    USD_LOG_SHOW_PARAMS(mNightConfig[KWIN_COLOR_START].toString().toLatin1().data());
+    USD_LOG_SHOW_PARAMS(mNightConfig[KWIN_COLOR_END].toString().toLatin1().data());
+
+    settings->set(HAD_READ_KWIN,true);
+    mNightConfig[KWIN_COLOR_ACTIVE] = false;
+    colorIft.call("setNightColorConfig", mNightConfig);
+
+    mNightConfig[KWIN_NIGHT_TEMP] = mNightConfig[KWIN_CURRENT_TEMP];
+    mNightConfig[KWIN_COLOR_ACTIVE] = false;
+    colorIft.call("setNightColorConfig", mNightConfig);
+//    USD_LOG(LOG_DEBUG,".");
+}
 
 void ColorManager::NightLightRecheck(ColorManager *manager)
 {
@@ -414,8 +498,6 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     }
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
-
-        USD_LOG(LOG_DEBUG,"color disable..");
         manager->NightLightSetActive (false);
         return;
     }
@@ -628,6 +710,8 @@ bool ColorManager::ColorManagerStart()
     StartGeoclue();
 
     connect(settings,SIGNAL(changed(QString)),this,SLOT(SettingsChangedCb(QString)));
+
+    ReadKwinColorTempConfig();
     return  true;
 }
 

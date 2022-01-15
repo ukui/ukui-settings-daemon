@@ -320,7 +320,7 @@ int RfkillSwitch::getCameraDeviceEnable(){
 
     QString businfo = getCameraBusinfo();
     if (businfo.isEmpty()){
-        char * cmd = "lsusb -t | grep 'Driver=uvcvideo'";
+        const char cmd[] = "lsusb -t | grep 'Driver=uvcvideo'";
         char output[1024] = "\0";
 
         FILE * stream;

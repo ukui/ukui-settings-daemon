@@ -3,9 +3,13 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <kwindowsystem.h>
+#include <QFile>
+#include <QDir>
+#include <QtXml>
 
-#include "kdswidget.h"
+#include "save-screen.h"
 #include "clib-syslog.h"
+
 
 SaveScreenParam::SaveScreenParam(QObject *parent)
 {
@@ -38,5 +42,6 @@ void SaveScreenParam::getConfig(){
         exit(0);
     });
 }
+
 
 
