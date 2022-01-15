@@ -805,8 +805,7 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput, char outputCount)
 {
     if (1 == outputCount) {//单屏接入时需要设置模式，主屏
-        newOutput->setCurrentModeId(newOutput->preferredModeId());
-        newOutput->setPrimary(true);
+        setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode));
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     }
