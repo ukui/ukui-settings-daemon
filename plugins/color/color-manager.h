@@ -65,7 +65,7 @@ public:
     static bool NightLightSmoothCb (ColorManager *manager);
     void NightLightSetActive(bool active);
     bool UpdateCachedSunriseSunset();
-    void ReadKwinColorTempConfig();
+    bool ReadKwinColorTempConfig();
 
 public Q_SLOTS:
     void SettingsChangedCb(QString);

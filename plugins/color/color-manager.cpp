@@ -383,17 +383,17 @@ bool ColorManager::UpdateCachedSunriseSunset()
  *Mode:2--EveningBeginFixed（17:55:01）---跟随日出日落
  *Mode:3--全天
 */
-void ColorManager::ReadKwinColorTempConfig()
+bool ColorManager::ReadKwinColorTempConfig()
 {
     QVector<ColorInfo> nightColor;
     if (settings->keys().contains(HAD_READ_KWIN)) {
         if (settings->get(HAD_READ_KWIN).toBool() == true) {
             USD_LOG(LOG_DEBUG,"Kwin had read over..");
-            return;
+            return false;
         }
     } else {
         USD_LOG(LOG_DEBUG,"can't find key:%s", HAD_READ_KWIN);
-        return ;
+        return false;
     }
 
     QDBusInterface colorIft("org.ukui.KWin",
@@ -427,8 +427,8 @@ void ColorManager::ReadKwinColorTempConfig()
         QTime startTime = QTime::fromString(mNightConfig[KWIN_COLOR_START].toString(),"hh:mm:ss");
         QTime endTime = QTime::fromString(mNightConfig[KWIN_COLOR_END].toString(),"hh:mm:ss");
 
-        settings->set(COLOR_KEY_AUTOMATIC_FROM, hour_minute_to_value(startTime.hour(), startTime.minute()));
-        settings->set(COLOR_KEY_AUTOMATIC_TO, hour_minute_to_value(endTime.hour(), endTime.minute()));
+        settings->set(COLOR_KEY_FROM, hour_minute_to_value(startTime.hour(), startTime.minute()));
+        settings->set(COLOR_KEY_TO, hour_minute_to_value(endTime.hour(), endTime.minute()));
     }
 
     USD_LOG_SHOW_PARAM1(mNightConfig[KWIN_COLOR_ACTIVE].toBool());
@@ -444,6 +444,7 @@ void ColorManager::ReadKwinColorTempConfig()
     mNightConfig[KWIN_COLOR_ACTIVE] = false;
     colorIft.call("setNightColorConfig", mNightConfig);
 //    USD_LOG(LOG_DEBUG,".");
+    return true;
 }
 
 void ColorManager::NightLightRecheck(ColorManager *manager)
@@ -498,6 +499,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     }
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
+        USD_LOG(LOG_DEBUG, "stop it..");
         manager->NightLightSetActive (false);
         return;
     }
@@ -701,17 +703,24 @@ void ColorManager::SettingsChangedCb(QString key)
 bool ColorManager::ColorManagerStart()
 {
     USD_LOG(LOG_DEBUG,"--Color manager start--");
-    mColorProfiles->ColorProfilesStart();
-    mColorState->ColorStateStart();
-    NightLightRecheck(this);
+    int ms = 2000;
+    if (false == ReadKwinColorTempConfig()) {
+        ms = 100;
+    }
 
-    connect(m_NightChecktimer, SIGNAL(timeout()), this, SLOT(checkTime()));
-    m_NightChecktimer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
-    StartGeoclue();
+    QTimer::singleShot(ms, this, [=](){
+        mColorProfiles->ColorProfilesStart();
+        mColorState->ColorStateStart();
+        NightLightRecheck(this);
+        connect(m_NightChecktimer, SIGNAL(timeout()), this, SLOT(checkTime()));
+        m_NightChecktimer->start(USD_NIGHT_LIGHT_POLL_TIMEOUT*1000);
+        StartGeoclue();
+        connect(settings,SIGNAL(changed(QString)),this,SLOT(SettingsChangedCb(QString)));
+    });
 
-    connect(settings,SIGNAL(changed(QString)),this,SLOT(SettingsChangedCb(QString)));
 
-    ReadKwinColorTempConfig();
+
+
     return  true;
 }
 
