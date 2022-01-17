@@ -61,5 +61,10 @@
       <summary>The end time</summary>
       <description>(intel)When “night-light-schedule-automatic” is enabled, calculate this end time in hours from midnight.</description>
     </key>
+    <key name="had-read-kwin-config" type="b">
+      <default>false</default>
+      <summary>Use the read kwin config</summary>
+      <description>.</description>
+    </key>
   </schema>
 </schemalist>

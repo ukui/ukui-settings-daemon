@@ -65,7 +65,7 @@ int AuthorityService::getCameraDeviceEnable()
 
     QString businfo = getCameraBusinfo();
     if (businfo.isEmpty()){
-        char * cmd = "lsusb -t | grep 'Driver=uvcvideo'";
+        const char cmd[] = "lsusb -t | grep 'Driver=uvcvideo'";
         char output[1024] = "\0";
 
         FILE * stream;
@@ -135,7 +135,7 @@ QString AuthorityService::toggleCameraDevice(QString businfo)
 
 int AuthorityService::setCameraKeyboardLight(bool lightup)
 {
-    char * target = "/sys/class/leds/platform::cameramute/brightness";
+    const char target[] = "/sys/class/leds/platform::cameramute/brightness";
     if (access(target, F_OK) == -1){
         return -1;
     }

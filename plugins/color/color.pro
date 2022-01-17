@@ -40,6 +40,7 @@ SOURCES += \
 
 HEADERS += \
     color-edid.h \
+    color-info.h \
     color-manager.h \
     color-plugin.h \
     color-profiles.h \

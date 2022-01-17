@@ -46,11 +46,6 @@ public:
     bool ColorManagerStart();
     void ColorManagerStop();
 
-public Q_SLOTS:
-    void SettingsChangedCb(QString);
-    void checkTime();
-
-public:
     void StartGeoclue();
     void StopGeoclue();
     static void OnGeoclueSimpleReady (GObject *source_object,
@@ -70,7 +65,11 @@ public:
     static bool NightLightSmoothCb (ColorManager *manager);
     void NightLightSetActive(bool active);
     bool UpdateCachedSunriseSunset();
+    bool ReadKwinColorTempConfig();
 
+public Q_SLOTS:
+    void SettingsChangedCb(QString);
+    void checkTime();
 private:
     static ColorManager *mColorManager;
     ColorProfiles       *mColorProfiles;
@@ -97,6 +96,7 @@ private:
     GCancellable  *cancellable;
     GClueClient   *geoclue_client;
     GClueSimple   *geoclue_simple;
+    QHash<QString, QVariant> mNightConfig;
 };
 
 #endif // COLORMANAGER_H

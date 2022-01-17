@@ -19,7 +19,7 @@
  */
 
 #include <QApplication>
-#include "kdswidget.h"
+#include "save-screen.h"
 
 
 int main(int argc, char *argv[])
