@@ -752,13 +752,20 @@ void XrandrManager::sendScreenModeToDbus()
 
 void XrandrManager::applyConfig()
 {
-    connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
-            &KScreen::SetConfigOperation::finished,
-            this, [this]() {
-//        SetTouchscreenCursorRotation();
-        autoRemapTouchscreen();
-        sendScreenModeToDbus();
-    });
+    if (mMonitoredConfig->canBeApplied()) {
+        connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
+                &KScreen::SetConfigOperation::finished,
+                this, [this]() {
+            autoRemapTouchscreen();
+            sendScreenModeToDbus();
+        });
+    } else {
+        USD_LOG(LOG_ERR,"--|can't be apply|--");
+
+        Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            USD_LOG_SHOW_OUTPUT(output);
+        }
+    }
 }
 
 void XrandrManager::outputConnectedChanged()
@@ -1001,7 +1008,6 @@ QString XrandrManager::getScreesParam()
 void XrandrManager::monitorsInit()
 {
     char connectedOutputCount = 0;
-    char enableOutputCount = 0;
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
@@ -1243,7 +1249,6 @@ void XrandrManager::TabletSettingsChanged(const bool tablemode)
 
 void XrandrManager::setScreenModeToClone()
 {
-    int rtResolution = 0;
     int bigestResolution = 0;
     bool hadFindFirstScreen = false;
 
