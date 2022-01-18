@@ -59,6 +59,13 @@ typedef struct _MapInfoFromFile
 }MapInfoFromFile;             //配置文件中记录的映射关系信息
 //END 触摸屏自动映射相关
 
+typedef struct _TouchpadMap
+{
+    int     sTouchId;
+    QString sMonitorName;   //显示器的名称
+}touchpadMap;             //配置文件中记录的映射关系信息
+//END 触摸屏自动映射相关
+
 class XrandrManager: public QObject
 {
     Q_OBJECT
@@ -108,7 +115,14 @@ public:
     int8_t getCurrentMode();
     uint8_t getCurrentRotation();
     void sendScreenModeToDbus();
+
     void autoRemapTouchscreen();
+    void remapFromConfig(QString mapPath);
+    void SetTouchscreenCursorRotation();
+    void doRemapAction (int input_name, char *output_name , bool isRemapFromFile = false);
+    bool checkScreenByName(QString screenName);
+    bool checkMapTouchDeviceById(int id);
+    bool checkMapScreenByName(const QString screenName);
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();
@@ -133,6 +147,7 @@ Q_SIGNALS:
 
 private:
 
+    QList<touchpadMap*>    mTouchMapList; //存储已映射的关系
     Q_INVOKABLE void getInitialConfig();
     QDBusInterface        *t_DbusTableMode;
     QDBusInterface        *m_DbusRotation;
