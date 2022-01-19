@@ -63,7 +63,7 @@ typedef struct _TouchpadMap
 {
     int     sTouchId;
     QString sMonitorName;   //显示器的名称
-}touchpadMap;             //配置文件中记录的映射关系信息
+}touchpadMap;
 //END 触摸屏自动映射相关
 
 class XrandrManager: public QObject
