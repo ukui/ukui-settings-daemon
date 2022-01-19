@@ -405,7 +405,15 @@ void MediaKeysManager::initShortcuts()
         connect(wlan, &QAction::triggered, this, [this]() {
             doAction(WLAN_KEY);
         });
-
+        /* POWEROFF */
+        QAction *logout2 = new QAction(this);
+        logout2->setObjectName(QStringLiteral("open shutdown interface"));
+        logout2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+        KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+        connect(logout2, &QAction::triggered, this, [this]() {
+            doAction(POWER_OFF_KEY);
+        });
     }
 
     /*shutdown*/
@@ -703,17 +711,6 @@ void MediaKeysManager::initShortcuts()
     connect(sideBar, &QAction::triggered, this, [this]() {
         doAction(UKUI_SIDEBAR);
     });
-
-    QAction *logout2 = new QAction(this);
-    logout2->setObjectName(QStringLiteral("open shutdown interface"));
-    logout2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
-    KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
-
-    connect(logout2, &QAction::triggered, this, [this]() {
-        doAction(POWER_OFF_KEY);
-    });
-
 
     /*terminal2*/
     QAction *terminal2= new QAction(this);
@@ -1031,7 +1028,7 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
             xEventHandle(BLUETOOTH_KEY, event);
 
         } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
-//            doPowerOffAction();
+            doAction(POWER_OFF_KEY);
 
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
@@ -1956,8 +1953,17 @@ void MediaKeysManager::doPowerOffAction()
                 executeCommand("ukui-session-tools"," --hibernate");
                 break;
             case POWER_INTER_ACTIVE:
-                doAction(LOGOUT_KEY);
+            {
+                bool session = false;
+                if(sessionSettings->keys().contains(SESSION_WIN_KEY)) {
+                    session = sessionSettings->get(SESSION_WIN_KEY).toBool();
+                    if(session) {
+                        return;
+                    }
+                }
+                executeCommand("ukui-session-tools","");
                 break;
+            }
             case POWER_SHUTDOWN:
                 executeCommand("ukui-session-tools"," --shutdown");
                 break;
