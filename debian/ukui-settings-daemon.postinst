@@ -4,7 +4,7 @@ set -e
 PowerIgnorePath="/etc/systemd/logind.conf.d/"
 PowerIgnorePathFile="power-ignore.conf"
 touchpad_udev="/etc/udev/hwdb.d/61-keyboard.hwdb"
-
+dpy=$(echo $DISPLAY)
 if [ ! -d "$PowerIgnorePath" ];then
   	mkdir $PowerIgnorePath
 fi
@@ -20,5 +20,14 @@ if [ -f"$touchpad_udev" ];then
 fi
 
 glib-compile-schemas /usr/share/glib-2.0/schemas/
-save-param
+
+echo "DISPLAY=" $dpy
+if  [  "$dpy" != ""  ]  ;then
+save-param 
+echo "run it"
+else
+echo "skip it"
+fi
+
+
 

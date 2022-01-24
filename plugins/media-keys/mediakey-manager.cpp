@@ -2077,7 +2077,7 @@ void MediaKeysManager::doOnScreenKeyboardAction()
 
 void MediaKeysManager::doOpenTerminalAction()
 {
-    executeCommand("mate-terminal","");
+    executeCommand("x-terminal-emulator","");
 }
 
 void MediaKeysManager::doScreenshotAction(const QString pramater)
