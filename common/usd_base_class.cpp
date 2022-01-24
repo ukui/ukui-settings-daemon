@@ -8,12 +8,17 @@
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 
 #define STR_EQUAL 0
 
 #define DBUS_SERVICE "org.freedesktop.UPower"
 #define DBUS_OBJECT "/org/freedesktop/UPower"
 #define DBUS_INTERFACE "org.freedesktop.DBus.Properties"
+#define POWER_OFF_CONFIG_FILE "/sys/class/dmi/id/modalias"
+
+QString g_motify_poweroff;
 
 UsdBaseClass::UsdBaseClass()
 {
@@ -101,5 +106,38 @@ bool UsdBaseClass::isNotebook()
         return result.toBool();
     }
 
+    return false;
+}
+
+bool UsdBaseClass::readPowerOffConfig()
+{
+    QDir dir;
+    QFile file;
+    QString filePath = POWER_OFF_CONFIG_FILE;
+
+    file.setFileName(filePath);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        false;
+
+    QTextStream pstream(&file);
+    g_motify_poweroff = pstream.readAll();
+    file.close();
+    return true;
+}
+
+bool UsdBaseClass::isPowerOff()
+{
+    const QStringList devName ={"pnPF215T"};
+
+    if(g_motify_poweroff.isEmpty())
+        readPowerOffConfig();
+
+    for(auto devNameTmp : devName)
+    {
+        if (g_motify_poweroff.contains(devNameTmp, Qt::CaseSensitive))
+        {
+            return true;
+        }
+    }
     return false;
 }

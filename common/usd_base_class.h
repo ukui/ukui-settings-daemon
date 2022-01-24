@@ -4,6 +4,8 @@
 #include <QMetaEnum>
 #include <ukuisdk/kylin-com4cxx.h>
 
+extern QString g_motify_poweroff;
+
 class UsdBaseClass: public QObject
 {
     Q_OBJECT
@@ -34,6 +36,10 @@ public:
     static bool isLoongarch();
 
     static bool isUseXEventAsShutKey();
+
+    static bool readPowerOffConfig();
+
+    static bool isPowerOff();
 };
 
 #endif // USDBASECLASS_H
