@@ -2077,7 +2077,11 @@ void MediaKeysManager::doOnScreenKeyboardAction()
 
 void MediaKeysManager::doOpenTerminalAction()
 {
-    executeCommand("mate-terminal","");
+    if(UsdBaseClass::isTablet()) {
+        executeCommand("mate-terminal","");
+    } else {
+        executeCommand("x-terminal-emulator","");
+    }
 }
 
 void MediaKeysManager::doScreenshotAction(const QString pramater)
