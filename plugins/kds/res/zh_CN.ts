@@ -44,7 +44,7 @@
     <message>
         <location filename="../widget.ui" line="14"/>
         <source>KDS</source>
-        <translation>系统投屏湿哒哒</translation>
+        <translation>系统投屏</translation>
     </message>
     <message>
         <location filename="../widget.ui" line="95"/>
