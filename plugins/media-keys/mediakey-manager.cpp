@@ -1954,14 +1954,18 @@ void MediaKeysManager::doPowerOffAction()
                 break;
             case POWER_INTER_ACTIVE:
             {
-                bool session = false;
-                if(sessionSettings->keys().contains(SESSION_WIN_KEY)) {
-                    session = sessionSettings->get(SESSION_WIN_KEY).toBool();
-                    if(session) {
-                        return;
+                if(UsdBaseClass::isPowerOff()) {
+                    executeCommand("ukui-session-tools"," --shutdown");
+                } else {
+                    bool session = false;
+                    if(sessionSettings->keys().contains(SESSION_WIN_KEY)) {
+                        session = sessionSettings->get(SESSION_WIN_KEY).toBool();
+                        if(session) {
+                            return;
+                        }
                     }
+                    executeCommand("ukui-session-tools","");
                 }
-                executeCommand("ukui-session-tools","");
                 break;
             }
             case POWER_SHUTDOWN:
