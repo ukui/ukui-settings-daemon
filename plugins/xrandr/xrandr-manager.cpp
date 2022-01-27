@@ -1543,16 +1543,22 @@ void XrandrManager::setScreenMode(QString modeName)
 {
     //检查当前屏幕数量，只有一个屏幕时不设置
     int screenConnectedCount = 0;
+    int modeValue = metaEnum.keyToValue(modeName.toLatin1().data());
     Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (true == output->isConnected()) {
             screenConnectedCount++;
         }
     }
+
     if(screenConnectedCount <= 1) {
-        return;
+        if (modeValue == UsdBaseClass::eScreenMode::cloneScreenMode ||
+                 modeValue == UsdBaseClass::eScreenMode::extendScreenMode) {
+            return;
+        }
     }
 
-    switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
+
+    switch (modeValue) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
 
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
