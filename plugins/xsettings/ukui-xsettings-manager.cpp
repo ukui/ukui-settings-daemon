@@ -310,7 +310,7 @@ static void setKwinMouseSize(int size) {
     mouseSettings->beginGroup("Mouse");
     mouseSettings->setValue("cursorSize", size);
     mouseSettings->endGroup();
-
+    mouseSettings->sync();
     mouseSettings->deleteLater();
 
     QDBusMessage message =
