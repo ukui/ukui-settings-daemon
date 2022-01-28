@@ -1,4 +1,14 @@
-ukui-settings-daemon (3.1.0-1.34) v101; urgency=medium
+ukui-settings-daemon (3.1.0-1.36) v101; urgency=medium
+
+  * BUG号：HZ 95808
+    【终端】鼠标大小设置中，在移动到终端标题栏大小会变化（主线同样存在）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Fri, 28 Jan 2022 14:11:44 +0800
+
+ukui-settings-daemon (3.1.0-1.35) v101; urgency=medium
 
   * BUG号：105291 【显示器】按下win+p后释放p不释放win，接着按下tab键，系统投屏弹窗显示在多任务视图窗口（必现）
            87053 【S】【PTOF】【显示】win+p打开系统投屏选择窗，该选择窗可被拖动，且使用触摸屏点击投屏选择框以外的区域无法将其关闭（必现）
