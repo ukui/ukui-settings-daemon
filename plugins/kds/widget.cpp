@@ -66,6 +66,7 @@ Widget::Widget(QWidget *parent) :
      } else {
          USD_LOG(LOG_ERR, "screensChangedSignalHandle");
      }
+
 }
 
 Widget::~Widget()
@@ -81,6 +82,7 @@ void Widget::screensParamChangedSignal(QString screensParam)
 void Widget::beginSetup()
 {
     setWindowFlags(Qt::FramelessWindowHint | Qt::WindowStaysOnTopHint);
+    this->setProperty("useStyleWindowManager", false);
 
     setAttribute(Qt::WA_TranslucentBackground, true);
 
@@ -106,6 +108,11 @@ void Widget::beginSetup()
     connect(QApplication::primaryScreen(), &QScreen::geometryChanged, this, &Widget::geometryChangedHandle);
 
     connect(XEventMonitor::instance(), SIGNAL(buttonPress(int,int)),this, SLOT(XkbButtonEvent(int,int)));
+    connect(KWindowSystem::self(), &KWindowSystem::activeWindowChanged, this,[&](WId activeWindowId) {
+        if (activeWindowId != this->winId()) {
+            close();
+        }
+    });
     XEventMonitor::instance()->start();
 }
 
@@ -193,16 +200,15 @@ void Widget::setupComponent()
 
     }
 
-    m_qssDefaultOrDark = ("QFrame#titleFrame{background: transparent;}"\
-                          "QFrame#bottomFrame{background: transparent; border: none;}"\
+    m_qssDefaultOrDark = ("QWidget#titleWidget{background: transparent;}"\
+                          "QWidget#bottomWidget{background: transparent; border: none;}"\
                           "QLabel#titleLabel{color: #FFFFFF;background: transparent; }"\
                           );
 
-    m_qssLight = ("QFrame#titleFrame{background: transparent; border: none;}"\
-                  "QFrame#bottomFrame{background: transparent; border: none; }"\
+    m_qssLight = ("QWidget#titleWidget{background: transparent; border: none;}"\
+                  "QWidget#bottomWidget{background: transparent; border: none; }"\
                   "QLabel#titleLabel{color: #232426;background: transparent;}"\
                   );
-
     /*跟随系统字体变化*/
     int fontSize = m_styleSettings->get("system-font-size").toInt();
     QFont font;
@@ -444,35 +450,9 @@ void Widget::keyPressEvent(QKeyEvent* event)
         break;
     case Qt::Key_Meta:
     case Qt::Key_Super_L:
-        m_superPresss = true;
-        close();
-        break;
-    case Qt::Key_Display:
-        nextSelectedOption();
-        break;
-
-    case Qt::Key_P:
-        if(m_superPresss) {
-            nextSelectedOption();
-
-        } else {
-            close();
-        }
         break;
     default:
         close();
-        break;
-    }
-}
-
-void Widget::keyReleaseEvent(QKeyEvent *event)
-{
-    switch (event->key())
-    {
-    case Qt::Key_Meta:
-        m_superPresss = false;
-        break;
-    default:
         break;
     }
 }

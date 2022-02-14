@@ -1,3 +1,22 @@
+/* -*- Mode: C++; indent-tabs-mode: nil; tab-width: 4 -*-
+ * -*- coding: utf-8 -*-
+ *
+ * Copyright (C) 2020 KylinSoft Co., Ltd.
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 #include "rfkillswitch.h"
 #include <QProcess>
 #include <QDebug>
@@ -320,7 +339,7 @@ int RfkillSwitch::getCameraDeviceEnable(){
 
     QString businfo = getCameraBusinfo();
     if (businfo.isEmpty()){
-        char * cmd = "lsusb -t | grep 'Driver=uvcvideo'";
+        const char cmd[] = "lsusb -t | grep 'Driver=uvcvideo'";
         char output[1024] = "\0";
 
         FILE * stream;
@@ -387,6 +406,101 @@ QString RfkillSwitch::toggleCameraDevice(QString businfo){
         system(cmd.toLatin1().data());
         return QString("binded");
     }
+}
+
+int RfkillSwitch::getCurrentBluetoothMode()
+{
+    struct rfkill_event event;
+    ssize_t len;
+    int fd;
+    int bls = 0, unbls = 0;
+
+    QList<int> status;
+
+    fd = open("/dev/rfkill", O_RDONLY);
+    if (fd < 0) {
+        qCritical("Can't open RFKILL control device");
+        return -1;
+    }
+
+    if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) {
+        qCritical("Can't set RFKILL control device to non-blocking");
+        close(fd);
+        return -1;
+    }
+
+    while (1) {
+        len = read(fd, &event, sizeof(event));
+        if (len < 0) {
+            if (errno == EAGAIN)
+                continue;
+            qWarning("Reading of RFKILL events failed");
+            break;
+        }
+
+        if (len != RFKILL_EVENT_SIZE_V1) {
+            qWarning("Wrong size of RFKILL event\n");
+            continue;
+        }
+
+//        printf("%u - %u: %u\n", event.idx, event.type, event.soft);
+        if (event.type != RFKILL_TYPE_BLUETOOTH)
+            continue;
+
+        status.append(event.soft ? 1 : 0);
+    }
+
+    close(fd);
+
+    if (status.length() == 0){
+        return -1;
+    }
+
+    for (int s : status){
+        s ? bls++ : unbls++;
+    }
+
+    if (bls == status.length()){ //block
+        return 0;
+    } else if (unbls == status.length()){ //unblock
+        return 1;
+    } else { //not block & not unblock
+        return 0;
+    }
+}
+
+QString RfkillSwitch::toggleBluetoothMode(bool enable)
+{
+    struct rfkill_event event;
+    int fd;
+    ssize_t len;
+
+    __u8 block;
+
+    fd = open("/dev/rfkill", O_RDWR);
+    if (fd < 0) {
+        return QString("Can't open RFKILL control device");
+    }
+
+    block = enable ? 0 : 1;
+
+    memset(&event, 0, sizeof(event));
+
+    event.op= RFKILL_OP_CHANGE_ALL;
+
+    event.type = RFKILL_TYPE_BLUETOOTH;
+
+    event.soft = block;
+
+    len = write(fd, &event, sizeof(event));
+
+    if (len < 0){
+        close(fd);
+        return QString("Failed to change RFKILL state");
+    }
+
+    close(fd);
+    return block ? QString("blocked") : QString("unblocked");
 }
 
 

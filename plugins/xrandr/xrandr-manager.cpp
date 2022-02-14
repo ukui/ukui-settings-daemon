@@ -26,7 +26,7 @@
 #include <QMessageBox>
 #include <QProcess>
 #include <QX11Info>
-
+#include <QtXml>
 
 #include "xrandr-manager.h"
 
@@ -115,6 +115,9 @@ XrandrManager::XrandrManager()
     } else {
         USD_LOG(LOG_ERR, "m_DbusRotation");
     }
+
+    connect(mDbus,&xrandrDbus::controlScreen,this,&XrandrManager::controlScreenMap);
+//    connect(mDbus,SIGNAL(xrandrDbus::controlScreen()),this,SLOT(controlScreenMap()));
 }
 
 void XrandrManager::getInitialConfig()
@@ -139,10 +142,17 @@ void XrandrManager::getInitialConfig()
 
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
+
+        if (mXrandrSetting->keys().contains("hadmate2kscreen")) {
+            if (mXrandrSetting->get("hadmate2kscreen").toBool() == false) {
+                mXrandrSetting->set("hadmate2kscreen", true);
+                mMonitoredConfig->copyMateConfig();
+            }
+        }
+
         monitorsInit();
 
         mDbus->mScreenMode = discernScreenMode();
-
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(mDbus->mScreenMode));
     });
 }
@@ -161,7 +171,8 @@ XrandrManager::~XrandrManager()
         delete mXsettings;
         mXsettings = nullptr;
     }
-
+    qDeleteAll(mTouchMapList);
+    mTouchMapList.clear();
     //  if(mLoginInter) {
     //     delete mLoginInter;
     //      mLoginInter = nullptr;
@@ -211,7 +222,6 @@ find_touchscreen_device(Display* display, XIDeviceInfo *dev)
             }
         }
     }
-
     return false;
 }
 
@@ -270,15 +280,14 @@ getTouchscreen(Display* display)
     return ts_devs;
 }
 
-bool checkMatch(int output_width,  int output_height,
+bool checkMatch(double output_width,  double output_height,
                 double input_width, double input_height)
 {
     double w_diff, h_diff;
 
-    w_diff = ABS (1 - ((double) output_width / input_width));
-    h_diff = ABS (1 - ((double) output_height / input_height));
-
-
+    w_diff = ABS (1 - (output_width / input_width));
+    h_diff = ABS (1 - (output_height / input_height));
+    USD_LOG(LOG_DEBUG,"w_diff--------%f,h_diff----------%f",w_diff,h_diff);
 
     if (w_diff < MAX_SIZE_MATCH_DIFF && h_diff < MAX_SIZE_MATCH_DIFF) {
         return true;
@@ -291,14 +300,47 @@ bool checkMatch(int output_width,  int output_height,
    更新触摸屏触点位置
 */
 
-void doAction (int input_name, char *output_name)
+void XrandrManager::doRemapAction (int input_name, char *output_name , bool isRemapFromFile)
 {
+    touchpadMap *map = new touchpadMap;
+    map->sMonitorName = QString(output_name);
+    map->sTouchId = input_name;
+    mTouchMapList.append(map);
     char buff[128] = "";
     sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_name, output_name);
     USD_LOG(LOG_DEBUG,"map touch-screen [%s]\n", buff);
     QProcess::execute(buff);
 }
 
+bool XrandrManager::checkScreenByName(QString screenName)
+{
+    Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (output->isConnected() && output->name() == screenName ) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool XrandrManager::checkMapTouchDeviceById(int id)
+{
+    Q_FOREACH (touchpadMap *map,mTouchMapList) {
+        if(map->sTouchId == id) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool XrandrManager::checkMapScreenByName(const QString name)
+{
+    Q_FOREACH (touchpadMap *map,mTouchMapList) {
+        if(map->sMonitorName == name) {
+            return true;
+        }
+    }
+    return false;
+}
 
 static int find_event_from_name(char *_name, char *_serial, char *_event)
 {
@@ -489,13 +531,15 @@ int getMapInfoListFromConfig(QString confPath,MapInfoFromFile* mapInfoList)
     }
     return mapNum;
 }
+
 /*
  *
  * 触摸设备映射方案：
  * 首先找出输出设备的尺寸，然后找到触摸设备的尺寸，最后如果尺寸一致，则为一一对应的关系，需要处理映射。
  *
  */
-void SetTouchscreenCursorRotation()
+
+void XrandrManager::SetTouchscreenCursorRotation()
 {
     int     event_base, error_base, major, minor;
     int     o;
@@ -539,9 +583,18 @@ void SetTouchscreenCursorRotation()
             int output_mm_height = output_info->mm_height;
 
             if (output_info->connection == 0) {
+
+                if(checkMapScreenByName(QString(output_info->name))) {
+                    continue;
+                }
+                USD_LOG(LOG_DEBUG,"output_info->name : %s ",output_info->name);
                 for ( l = ts_devs; l; l = l->next) {
                     TsInfo *info = (TsInfo *)l -> data;
-                    double width, height;
+
+                    if(checkMapTouchDeviceById(info->dev_info.deviceid)) {
+                        continue;
+                    }
+                    gint64 width, height;
                     QString deviceName = QString::fromLocal8Bit(info->dev_info.name);
                     QString ouputName = QString::fromLocal8Bit(output_info->name);
                     const char *udev_subsystems[] = {"input", NULL};
@@ -556,18 +609,40 @@ void SetTouchscreenCursorRotation()
                     //sp1的触摸板不一定有此属性，所以根据名字进行适配by sjh 2021年10月20日11:23:58
                     if ((udev_device && g_udev_device_has_property (udev_device,
                                                                    "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
-                        width = g_udev_device_get_property_as_double (udev_device,
+                        width = g_udev_device_get_property_as_uint64 (udev_device,
                                                                     "ID_INPUT_WIDTH_MM");
-                        height = g_udev_device_get_property_as_double (udev_device,
+                        height = g_udev_device_get_property_as_uint64 (udev_device,
                                                                      "ID_INPUT_HEIGHT_MM");
-
                         if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
-                            USD_LOG(LOG_DEBUG,".output_mm_width:%d  output_mm_height:%d  width:%d. height:%d",output_mm_width,output_mm_height,width,height);
-                            doAction(info->dev_info.deviceid,output_info->name);
+                            doRemapAction(info->dev_info.deviceid,output_info->name);
+                            break;
                         } else if (deviceName.toUpper().contains("TOUCHPAD") && ouputName == "eDP-1"){//触摸板只映射主屏幕
                             USD_LOG(LOG_DEBUG,".map touchpad.");
-                            doAction(info->dev_info.deviceid,output_info->name);
+                            doRemapAction(info->dev_info.deviceid,output_info->name);
+                            break;
                         }
+                    }
+                    g_clear_object (&udev_client);
+                }
+                /*屏幕尺寸与触摸设备对应不上且未映射，映射剩下的设备*/
+                for ( l = ts_devs; l; l = l->next) {
+                    TsInfo *info = (TsInfo *)l -> data;
+
+                    if(checkMapTouchDeviceById(info->dev_info.deviceid) || checkMapScreenByName(QString(output_info->name))) {
+                        continue;
+                    }
+                    QString deviceName = QString::fromLocal8Bit(info->dev_info.name);
+                    const char *udev_subsystems[] = {"input", NULL};
+
+                    GUdevDevice *udev_device;
+                    GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
+                    udev_device = g_udev_client_query_by_device_file (udev_client,
+                                                                      (const gchar *)info->input_node);
+
+                    USD_LOG(LOG_DEBUG,"Size correspondence error");
+                    if ((udev_device && g_udev_device_has_property (udev_device,
+                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
+                        doRemapAction(info->dev_info.deviceid,output_info->name);
                     }
                     g_clear_object (&udev_client);
                 }
@@ -581,12 +656,13 @@ void SetTouchscreenCursorRotation()
     g_list_free(ts_devs);
 }
 
-void remapFromConfig(QString confPath)
+void XrandrManager::remapFromConfig(QString mapPath)
 {
-    MapInfoFromFile mapInfoList[16];
+
+    MapInfoFromFile mapInfoList[64];
     Display *pDpy = XOpenDisplay(NULL);
     int deviceId = 0;
-    int mapNum = getMapInfoListFromConfig(confPath,mapInfoList);
+    int mapNum = getMapInfoListFromConfig(mapPath,mapInfoList);
     USD_LOG(LOG_DEBUG,"getMapInfoListFromConfig : %d",mapNum);
     if(mapNum < 1) {
         USD_LOG(LOG_DEBUG,"get map num error");
@@ -597,10 +673,14 @@ void remapFromConfig(QString confPath)
         int ret = find_touchId_from_name(pDpy, mapInfoList[i].sTouchName.toLatin1().data(),mapInfoList[i].sTouchSerial.toLatin1().data(), &deviceId);
         USD_LOG(LOG_DEBUG,"find_touchId_from_name : %d",deviceId);
         if(Success == ret){
-            doAction(deviceId,mapInfoList[i].sMonitorName.toLatin1().data());
+            //屏幕连接时进行映射
+            if(checkScreenByName(mapInfoList[i].sMonitorName)) {
+                doRemapAction(deviceId,mapInfoList[i].sMonitorName.toLatin1().data(),true);
+            }
         }
     }
 }
+
 
 
 void XrandrManager::orientationChangedProcess(Qt::ScreenOrientation orientation)
@@ -624,7 +704,8 @@ void XrandrManager::RotationChangedEvent(const QString &rotation)
     } else if  (angle_Value == "right") {
         value = 8;
     } else {
-        USD_LOG(LOG_DEBUG,"Find a error !!!");
+        USD_LOG(LOG_ERR,"Find a error !!!");
+        return ;
     }
 
     const KScreen::OutputList outputs = mMonitoredConfig->data()->outputs();
@@ -701,13 +782,14 @@ void XrandrManager::applyKnownConfig(bool state)
 
 void XrandrManager::autoRemapTouchscreen()
 {
+    qDeleteAll(mTouchMapList);
+    mTouchMapList.clear();
     QString configPath = QDir::homePath() +  MAP_CONFIG;
     QFileInfo file(configPath);
     if(file.exists()) {
         remapFromConfig(configPath);
-    } else {
-        SetTouchscreenCursorRotation();
     }
+    SetTouchscreenCursorRotation();
 }
 
 void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
@@ -742,13 +824,20 @@ void XrandrManager::sendScreenModeToDbus()
 
 void XrandrManager::applyConfig()
 {
-    connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
-            &KScreen::SetConfigOperation::finished,
-            this, [this]() {
-//        SetTouchscreenCursorRotation();
-        autoRemapTouchscreen();
-        sendScreenModeToDbus();
-    });
+    if (mMonitoredConfig->canBeApplied()) {
+        connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
+                &KScreen::SetConfigOperation::finished,
+                this, [this]() {
+            autoRemapTouchscreen();
+            sendScreenModeToDbus();
+        });
+    } else {
+        USD_LOG(LOG_ERR,"--|can't be apply|--");
+
+        Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            USD_LOG_SHOW_OUTPUT(output);
+        }
+    }
 }
 
 void XrandrManager::outputConnectedChanged()
@@ -758,24 +847,24 @@ void XrandrManager::outputConnectedChanged()
 
 void XrandrManager::outputAddedHandle(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::outputRemoved(int outputId)
 {
-     USD_LOG(LOG_DEBUG,".");
+//     USD_LOG(LOG_DEBUG,".");
 
 }
 
 void XrandrManager::primaryOutputChanged(const KScreen::OutputPtr &output)
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::primaryScreenChange()
 {
-    USD_LOG(LOG_DEBUG,".");
+//    USD_LOG(LOG_DEBUG,".");
 }
 
 void XrandrManager::callMethod(QRect geometry, QString name)
@@ -795,8 +884,7 @@ void XrandrManager::callMethod(QRect geometry, QString name)
 void XrandrManager::outputConnectedWithoutConfigFile(KScreen::Output *newOutput, char outputCount)
 {
     if (1 == outputCount) {//单屏接入时需要设置模式，主屏
-        newOutput->setCurrentModeId(newOutput->preferredModeId());
-        newOutput->setPrimary(true);
+        setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode));
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     }
@@ -878,7 +966,7 @@ int8_t XrandrManager::getCurrentMode()
     if (response.type() == QDBusMessage::ReplyMessage) {
         if(response.arguments().isEmpty() == false) {
             bool value = response.arguments().takeFirst().toBool();
-            USD_LOG(LOG_DEBUG, "get mode :%d", value);
+//            USD_LOG(LOG_DEBUG, "get mode :%d", value);
             return value;
         }
     }
@@ -888,17 +976,15 @@ int8_t XrandrManager::getCurrentMode()
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
-    USD_LOG_SHOW_OUTPUT(senderOutput);
+
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
-            USD_LOG(LOG_DEBUG,"reset output..");
-            USD_LOG_SHOW_OUTPUT(output);
             senderOutput->setEnabled(true);
 
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
-//            USD_LOG_SHOW_OUTPUT(output);
+
             break;
         }
     }
@@ -931,15 +1017,13 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
               setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
         }
     } else {//非intel项目无此接口
-         USD_LOG(LOG_DEBUG,"need to use config file");
+
         if (false == mMonitoredConfig->fileExists()) {
-            USD_LOG(LOG_DEBUG,"config %s is't exists.connect:%d.", mMonitoredConfig->filePath().toLatin1().data(),outputConnectCount);
             if (senderOutput->isConnected()) {
                 senderOutput->setEnabled(senderOutput->isConnected());
             }
             outputConnectedWithoutConfigFile(senderOutput, outputConnectCount);
         } else {
-            USD_LOG(LOG_DEBUG,"%s it...FILE:%s",senderOutput->isConnected()? "Enable":"Disable",mMonitoredConfig->filePath().toLatin1().data());
             if (outputConnectCount) {
                 std::unique_ptr<xrandrConfig> MonitoredConfig  = mMonitoredConfig->readFile(false);
                 if (MonitoredConfig!=nullptr) {
@@ -950,8 +1034,6 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
             }
         }
     }
-
-//    lightLastScreen();
     applyConfig();
 }
 
@@ -998,7 +1080,6 @@ QString XrandrManager::getScreesParam()
 void XrandrManager::monitorsInit()
 {
     char connectedOutputCount = 0;
-    char enableOutputCount = 0;
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
@@ -1016,17 +1097,15 @@ void XrandrManager::monitorsInit()
             connectedOutputCount++;
         }
 
-        //只负责插拔恢复
+
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-            USD_LOG_SHOW_OUTPUT(senderOutput);
             outputChangedHandle(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
             USD_LOG(LOG_DEBUG,"PrimaryChanged:%s",senderOutput->name().toLatin1().data());
 
             Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
@@ -1133,13 +1212,11 @@ void XrandrManager::monitorsInit()
 
             std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
 
-            if (MonitoredConfig == nullptr) {
-
+            if (MonitoredConfig == nullptr ) {
                 USD_LOG(LOG_DEBUG,"config a error");
                 setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
                 return;
             }
-
 
             mMonitoredConfig = std::move(MonitoredConfig);
         }
@@ -1147,6 +1224,7 @@ void XrandrManager::monitorsInit()
         applyConfig();
     } else {
         int foreachTimes = 0;
+
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
 
         for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
@@ -1155,6 +1233,7 @@ void XrandrManager::monitorsInit()
                 outputChangedHandle(output.data());
                 break;
             } else {
+
                 if (output->isConnected()){
                     foreachTimes++;
                 }
@@ -1170,6 +1249,7 @@ void XrandrManager::monitorsInit()
         mMonitoredConfig->writeFile(false);
     }
 }
+
 
 bool XrandrManager::checkPrimaryScreenIsSetable()
 {
@@ -1241,7 +1321,6 @@ void XrandrManager::TabletSettingsChanged(const bool tablemode)
 
 void XrandrManager::setScreenModeToClone()
 {
-    int rtResolution = 0;
     int bigestResolution = 0;
     bool hadFindFirstScreen = false;
 
@@ -1457,13 +1536,29 @@ void XrandrManager::setScreensParam(QString screensParam)
     applyConfig();
 }
 
-/* 
+/*
  * 设置显示模式
 */
 void XrandrManager::setScreenMode(QString modeName)
 {
+    //检查当前屏幕数量，只有一个屏幕时不设置
+    int screenConnectedCount = 0;
+    int modeValue = metaEnum.keyToValue(modeName.toLatin1().data());
+    Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (true == output->isConnected()) {
+            screenConnectedCount++;
+        }
+    }
 
-    switch (metaEnum.keyToValue(modeName.toLatin1().data())) {
+    if(screenConnectedCount <= 1) {
+        if (modeValue == UsdBaseClass::eScreenMode::cloneScreenMode ||
+                 modeValue == UsdBaseClass::eScreenMode::extendScreenMode) {
+            return;
+        }
+    }
+
+
+    switch (modeValue) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
 
         USD_LOG(LOG_DEBUG,"ready set mode to %s",modeName.toLatin1().data());
@@ -1561,6 +1656,12 @@ void XrandrManager::screensParamChangedSignal(QString param)
     USD_LOG(LOG_DEBUG,"param:%s",param.toLatin1().data());
 }
 
+void XrandrManager::controlScreenMap(const QString screenMap)
+{
+    USD_LOG(LOG_DEBUG,"controlScreenMap ...");
+    RotationChangedEvent(screenMap);
+}
+
 /**
  * @brief XrandrManager::StartXrandrIdleCb
  * 开始时间回调函数
@@ -1568,6 +1669,8 @@ void XrandrManager::screensParamChangedSignal(QString param)
 void XrandrManager::StartXrandrIdleCb()
 {
     mAcitveTime->stop();
+
+
 
     mSaveConfigTimer = new QTimer(this);
     connect(mSaveConfigTimer, SIGNAL(timeout()), this, SLOT(SaveConfigTimerHandle()));

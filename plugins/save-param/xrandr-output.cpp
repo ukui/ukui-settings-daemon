@@ -45,13 +45,6 @@ QString xrandrOutput::dirPath()
 
 QString xrandrOutput::globalFileName(const QString &hash)
 {
-//    const auto dir = dirPath();
-//    if (!QDir().mkpath(dir)) {
-//     USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
-//        return QString();
-//    }
-
-//    USD_LOG(LOG_DEBUG,":::::::::::::::::::::::::::::::::::::::::::::::::::::::::[%s],dir:[%s]",QString().toLatin1().data(), dirPath().toLatin1().data());
     return QString();//dir % hash;
 }
 
@@ -68,7 +61,6 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
     const QVariantMap modeInfo = info[QStringLiteral("mode")].toMap();
     const QVariantMap modeSize = modeInfo[QStringLiteral("size")].toMap();
     const QSize size = QSize(modeSize[QStringLiteral("width")].toInt(), modeSize[QStringLiteral("height")].toInt());
-    //qDebug() << "Finding a mode for" << size << "@" << modeInfo[QStringLiteral("refresh")].toFloat();
 
     const KScreen::ModeList modes = output->modes();
     KScreen::ModePtr matchingMode;
@@ -95,7 +87,6 @@ void xrandrOutput::readInGlobalPartFromInfo(KScreen::OutputPtr output, const QVa
     }
     if (!matchingMode) {
           USD_LOG(LOG_DEBUG,"Failed to get a preferred mode, falling back to biggest mode.");
-//        matchingMode = Generator::biggestMode(modes);
     }
     if (!matchingMode) {
         USD_LOG(LOG_DEBUG,"Failed to get biggest mode. Which means there are no modes. Turning off the screen.");
@@ -110,7 +101,6 @@ QVariantMap xrandrOutput::getGlobalData(KScreen::OutputPtr output)
 {
     QFile file(globalFileName(output->hashMd5()));
     if (!file.open(QIODevice::ReadOnly)) {
-//        USD_LOG(LOG_DEBUG, "Failed to open file %s" , file.fileName().toLatin1().data());
         return QVariantMap();
     }
     QJsonDocument parser;
@@ -121,7 +111,6 @@ bool xrandrOutput::readInGlobal(KScreen::OutputPtr output)
 {
     const QVariantMap info = getGlobalData(output);
     if (info.empty()) {
-//        USD_LOG(LOG_DEBUG,"can't get info...");
         // if info is empty, the global file does not exists, or is in an unreadable state
         return false;
     }
@@ -288,7 +277,7 @@ void xrandrOutput::readIn(KScreen::OutputPtr output, const QVariantMap &info)
 
 
     if (readInGlobal(output)) {
-//        USD_LOG(LOG_DEBUG,"out it....");
+        USD_LOG(LOG_DEBUG,"out it....");
         // output data read from global output file
         return;
     }

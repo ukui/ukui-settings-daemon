@@ -17,31 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BRIGHTTHREAD_H
-#define BRIGHTTHREAD_H
+#ifndef COLORINFO_H
+#define COLORINFO_H
 
-#include <QThread>
-#include <QMutex>
-class QGSettings;
+#include <QHash>
+#include <QVariant>
+#include <QString>
+#include <QDBusArgument>
 
-class BrightThread : public QThread
-{
-    Q_OBJECT
-public:
-    BrightThread(QObject *parent = nullptr, double bright = 100.0);
-//    BrightThread(QObject *parent = nullptr);
-    ~BrightThread();
-    void stopImmediately();
-
-protected:
-    void run();
-
-private:
-    double brightness;
-    double currentBrightness;
-    QGSettings *mpowerSettings;
-    bool m_isCanRun;
-    QMutex m_lock;
+struct ColorInfo {
+    QString arg;
+    QDBusVariant out;
 };
 
-#endif // BRIGHTTHREAD_H
+QDBusArgument &operator<<(QDBusArgument &argument, const ColorInfo &mystruct)
+{
+    argument.beginStructure();
+    argument << mystruct.arg << mystruct.out;
+    argument.endStructure();
+    return argument;
+}
+
+const QDBusArgument &operator>>(const QDBusArgument &argument, ColorInfo &mystruct)
+{
+    argument.beginStructure();
+    argument >> mystruct.arg >> mystruct.out;
+    argument.endStructure();
+    return argument;
+}
+
+Q_DECLARE_METATYPE(ColorInfo)
+
+#endif // COLORINFO_H

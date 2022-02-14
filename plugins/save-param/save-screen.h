@@ -17,31 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef BRIGHTTHREAD_H
-#define BRIGHTTHREAD_H
+#ifndef KDSWIDGET_H
+#define KDSWIDGET_H
 
-#include <QThread>
-#include <QMutex>
-class QGSettings;
+#include <KF5/KScreen/kscreen/output.h>
+#include <KF5/KScreen/kscreen/edid.h>
+#include <KF5/KScreen/kscreen/mode.h>
+#include <KF5/KScreen/kscreen/config.h>
+#include <KF5/KScreen/kscreen/getconfigoperation.h>
+#include <KF5/KScreen/kscreen/setconfigoperation.h>
+#include "xrandr-config.h"
 
-class BrightThread : public QThread
+
+class SaveScreenParam : QObject
 {
     Q_OBJECT
-public:
-    BrightThread(QObject *parent = nullptr, double bright = 100.0);
-//    BrightThread(QObject *parent = nullptr);
-    ~BrightThread();
-    void stopImmediately();
 
-protected:
-    void run();
+public:
+    explicit SaveScreenParam(QObject *parent = nullptr);
+    ~SaveScreenParam();
+
+    void getConfig();
 
 private:
-    double brightness;
-    double currentBrightness;
-    QGSettings *mpowerSettings;
-    bool m_isCanRun;
-    QMutex m_lock;
+    std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
 };
 
-#endif // BRIGHTTHREAD_H
+#endif // KDSWIDGET_H

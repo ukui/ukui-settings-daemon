@@ -27,7 +27,6 @@
 #include <QJsonDocument>
 #include <QDir>
 
-//#include <QHBoxLayout>
 #include <QtXml>
 
 #include "xrandr-config.h"
@@ -48,27 +47,6 @@ void xrandrConfig::setScreenMode(QString modeName)
 {
     mScreenMode = modeName;
     USD_LOG(LOG_DEBUG,"set mScreenMode to :%s",mScreenMode.toLatin1().data());
-}
-
-bool xrandrConfig::copyMateConfig()
-{
-    QString oldConfig = "/etc/usd/" % id();
-    QString newConfig = configsDirPath() % id();
-    if (QFile::exists(configsDirPath() % id()) == false) {
-        USD_LOG(LOG_DEBUG,".");
-        if (QFile::exists(oldConfig)) {
-            USD_LOG(LOG_DEBUG,".");
-            QFile::copy(oldConfig, configsDirPath() % id());
-            USD_LOG(LOG_DEBUG,"copy from %s to %s", oldConfig.toLatin1().data(), newConfig.toLatin1().data());
-        } else {
-            USD_LOG(LOG_DEBUG,".");
-            USD_LOG(LOG_DEBUG,"fail copy....%s ",oldConfig.toLatin1().data());
-        }
-    } else {
-        USD_LOG(LOG_DEBUG,"skip copy....%s ",oldConfig.toLatin1().data());
-    }
-
-    return true;
 }
 
 QString xrandrConfig::configsModeDirPath()
@@ -114,8 +92,6 @@ QString xrandrConfig::id() const
     }
     return mConfig->connectedOutputsHash();
 }
-
-
 
 bool xrandrConfig::fileExists() const
 {
@@ -285,8 +261,21 @@ bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
 
 bool xrandrConfig::writeFile(bool state)
 {
+    bool ret = 0;
+    QDir dir;
     mAddScreen = state;
-    return writeFile(filePath(), false);
+    writeFile(filePath(), false);
+
+    if (dir.exists("/etc/usd/") == false) {
+        dir.mkdir("/etc/usd/");
+        printf("mkdir.....\n");
+    }
+
+
+    ret = QFile::copy(filePath(), "/etc/usd/" % id());
+    USD_LOG(LOG_DEBUG,"go...%d",ret);
+
+    return true;
 }
 
 bool xrandrConfig::writeConfigAndBackupToModeDir()
@@ -331,6 +320,8 @@ QString xrandrConfig::getScreensParam()
 bool xrandrConfig::writeFile(const QString &filePath, bool state)
 {
     int screenConnectedCount = 0;
+    bool priState = false;
+
     if (id().isEmpty()) {
         USD_LOG(LOG_DEBUG,"id is empty!");
         return false;
@@ -346,7 +337,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
             continue;
         }
         screenConnectedCount++;
-        bool priState = false;
+
         if (state || mAddScreen){
             if (priName.compare(output->name()) == 0){
                 priState = true;
@@ -400,8 +391,9 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 //            USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),backFile.errorString().toLatin1().data());
         }
     }
+//    printf("save [%s] ok\n",);
+    USD_LOG(LOG_DEBUG,"write file:\n %s ok",filePath.toLatin1().data());
 
-//    USD_LOG(LOG_DEBUG,"write file:\n%s ok \n%s ok.",filePath.toLatin1().data(),mScreenMode == nullptr? "" : fileModeConfigPath().toLatin1().data());
     return true;
 }
 

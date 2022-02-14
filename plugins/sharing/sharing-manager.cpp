@@ -46,7 +46,7 @@ SharingManager::SharingManager()
     mDbus = new sharingDbus(this);
     new SharingAdaptor(mDbus);
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
-    if(sessionBus.registerService(USD_DBUS_NAME)){
+    if(sessionBus.registerService(USD_SHARING_DBUS_NAME)){
         sessionBus.registerObject(USD_SHARING_DBUS_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);

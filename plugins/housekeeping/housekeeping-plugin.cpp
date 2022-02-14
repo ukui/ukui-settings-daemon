@@ -77,7 +77,6 @@ bool HousekeepingPlugin::isTrialMode()
     }
 
     if (symbList.indexOf("boot=casper") != -1) {
-        printf("is Trial Mode\n");
         file.close();
         return true;
     }
@@ -90,9 +89,13 @@ bool HousekeepingPlugin::isTrialMode()
 
 void HousekeepingPlugin::activate()
 {
-    if (isTrialMode())
+    if (isTrialMode()) {
+        USD_LOG(LOG_DEBUG,"Housekeeping Manager Not Active");
         return;
+    }
     if (userName.compare("lightdm") != 0) {
+        USD_LOG(LOG_DEBUG,"Housekeeping Manager Is Start");
+
         mHouseManager->HousekeepingManagerStart();
     }
 }

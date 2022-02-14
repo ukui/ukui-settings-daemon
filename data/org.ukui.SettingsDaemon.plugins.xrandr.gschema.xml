@@ -82,5 +82,10 @@
       <summary>Whether the screen isClone or not</summary>
       <description>Use the switch to control whether the screen is clone or expand mode</description>
     </key>
+    <key name="hadmate2kscreen" type="b">
+      <default>false</default>
+      <summary>conver mate config to kscreen</summary>
+      <description>none</description>
+    </key>
   </schema>
 </schemalist>

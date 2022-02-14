@@ -57,6 +57,7 @@ const int VOLUMESTEP = 6;
 #define GPM_SETTINGS_SCHEMA		            "org.ukui.power-manager"
 #define GPM_SETTINGS_BRIGHTNESS_AC			"brightness-ac"
 
+
 typedef enum {
     POWER_SUSPEND = 1,
     POWER_SHUTDOWN = 2,
@@ -404,7 +405,15 @@ void MediaKeysManager::initShortcuts()
         connect(wlan, &QAction::triggered, this, [this]() {
             doAction(WLAN_KEY);
         });
-
+        /* POWEROFF */
+        QAction *logout2 = new QAction(this);
+        logout2->setObjectName(QStringLiteral("open shutdown interface"));
+        logout2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
+        KGlobalAccel::self()->setDefaultShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+        KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
+        connect(logout2, &QAction::triggered, this, [this]() {
+            doAction(POWER_OFF_KEY);
+        });
     }
 
     /*shutdown*/
@@ -414,7 +423,8 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setDefaultShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     KGlobalAccel::self()->setShortcut(powerDown, QList<QKeySequence>{Qt::Key_PowerDown});
     connect(powerDown, &QAction::triggered, this, [this]() {
-        doAction(POWER_KEY);
+        USD_LOG(LOG_DEBUG,"press key powerdown !");
+        doAction(POWER_DOWN_KEY);
     });
     /*TODO eject*/
     QAction *eject= new QAction(this);
@@ -451,16 +461,6 @@ void MediaKeysManager::initShortcuts()
     KGlobalAccel::self()->setShortcut(cal, QList<QKeySequence>{Qt::Key_Calculator});
     connect(cal, &QAction::triggered, this, [this]() {
         doAction(CALCULATOR_KEY);
-    });
-
-    /*settings*/
-    QAction *set= new QAction(this);
-    set->setObjectName(QStringLiteral("Open settings"));
-    set->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
-    KGlobalAccel::self()->setShortcut(set, QList<QKeySequence>{Qt::Key_Settings});
-    connect(set, &QAction::triggered, this, [this]() {
-        doAction(SETTINGS_KEY);
     });
 
     /*search*/
@@ -711,17 +711,6 @@ void MediaKeysManager::initShortcuts()
     connect(sideBar, &QAction::triggered, this, [this]() {
         doAction(UKUI_SIDEBAR);
     });
-
-    QAction *logout2 = new QAction(this);
-    logout2->setObjectName(QStringLiteral("open shutdown interface"));
-    logout2->setProperty("componentName", QStringLiteral(UKUI_DAEMON_NAME));
-    KGlobalAccel::self()->setDefaultShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
-    KGlobalAccel::self()->setShortcut(logout2, QList<QKeySequence>{Qt::Key_PowerOff});
-
-    connect(logout2, &QAction::triggered, this, [this]() {
-        doPowerOffAction();
-    });
-
 
     /*terminal2*/
     QAction *terminal2= new QAction(this);
@@ -979,7 +968,6 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         display =  QX11Info::display();
 
         xEvent * event = (xEvent *)data;
-//        int keyCode = event->u.u.detail;
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
@@ -1028,10 +1016,19 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
             xEventHandle(SCREENSAVER_KEY, event);
 
         } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
-            xEventHandle(TASKPANE_KEY, event);
+            xEventHandle(WINDOWSWITCH_KEY, event);
 
         } else if (eventKeysym == XKB_KEY_XF86Calculator) {
             xEventHandle(CALCULATOR_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+
+
+        } else if (eventKeysym == XKB_KEY_XF86Bluetooth) {
+            xEventHandle(BLUETOOTH_KEY, event);
+
+        } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
+            doAction(POWER_OFF_KEY);
 
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
@@ -1055,7 +1052,8 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
 
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
-           xEventHandleRelease(MUTE_KEY);
+            xEventHandleRelease(MUTE_KEY);
+
         } else if (eventKeysym == XKB_KEY_Print && mXEventMonitor->getShiftPressStatus()) {
             xEventHandleRelease(AREA_SCREENSHOT_KEY);
 
@@ -1087,10 +1085,16 @@ void MediaKeysManager::MMhandleRecordEventRelease(xEvent* data)
             xEventHandleRelease(SCREENSAVER_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86TaskPane) {
-            xEventHandleRelease(TASKPANE_KEY);
+            xEventHandleRelease(WINDOWSWITCH_KEY);
 
         } else if (eventKeysym == XKB_KEY_XF86Calculator) {
             xEventHandleRelease(CALCULATOR_KEY);
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+
+
+        } else if (eventKeysym == XKB_KEY_XF86Battery) {
+            xEventHandleRelease(BLUETOOTH_KEY);
 
         }
     }
@@ -1376,8 +1380,11 @@ bool MediaKeysManager::doAction(int type)
     case BRIGHT_DOWN_KEY:
         doBrightAction(type);
         break;
-    case POWER_KEY:
+    case POWER_DOWN_KEY:
         doShutdownAction();
+        break;
+    case POWER_OFF_KEY:
+        doPowerOffAction();
         break;
     case LOGOUT_KEY:
         doLogoutAction();
@@ -1498,8 +1505,8 @@ bool MediaKeysManager::doAction(int type)
     case CALCULATOR_KEY:
         doOpenKylinCalculator();
         break;
-    case TASKPANE_KEY:
-        doOpenTaskPane();
+    case BLUETOOTH_KEY:
+        doBluetoothAction();
         break;
     default:
         break;
@@ -1647,8 +1654,6 @@ void MediaKeysManager::doTouchpadAction(int state)
         touchpadSettings->set("touchpad-enabled",STATE_OFF);
     }
     mDeviceWindow->dialogShow();
-
-
 
     delete touchpadSettings;
 }
@@ -1948,10 +1953,22 @@ void MediaKeysManager::doPowerOffAction()
                 executeCommand("ukui-session-tools"," --hibernate");
                 break;
             case POWER_INTER_ACTIVE:
-                doAction(LOGOUT_KEY);
+            {
+                if(UsdBaseClass::isPowerOff()) {
+                    executeCommand("ukui-session-tools"," --shutdown");
+                } else {
+                    bool session = false;
+                    if(sessionSettings->keys().contains(SESSION_WIN_KEY)) {
+                        session = sessionSettings->get(SESSION_WIN_KEY).toBool();
+                        if(session) {
+                            return;
+                        }
+                    }
+                    executeCommand("ukui-session-tools","");
+                }
                 break;
+            }
             case POWER_SHUTDOWN:
-                //doAction(POWER_KEY);
                 executeCommand("ukui-session-tools"," --shutdown");
                 break;
             case POWER_SUSPEND:
@@ -2064,7 +2081,11 @@ void MediaKeysManager::doOnScreenKeyboardAction()
 
 void MediaKeysManager::doOpenTerminalAction()
 {
-    executeCommand("mate-terminal","");
+    if(UsdBaseClass::isTablet()) {
+        executeCommand("mate-terminal","");
+    } else {
+        executeCommand("x-terminal-emulator","");
+    }
 }
 
 void MediaKeysManager::doScreenshotAction(const QString pramater)
@@ -2137,9 +2158,15 @@ void MediaKeysManager::doFlightModeAction()
     mDeviceWindow->dialogShow();
 }
 
-void MediaKeysManager::doOpenTaskPane()
+void MediaKeysManager::doBluetoothAction()
 {
-    executeCommand("ukui-window-switch","--show-workspace");
+    int bluetoothState = RfkillSwitch::instance()->getCurrentBluetoothMode();
+    if(bluetoothState == -1) {
+        USD_LOG(LOG_ERR,"get bluetooth mode error");
+        return;
+    }
+    mDeviceWindow->setAction(bluetoothState?"ukui-bluetooth-on":"ukui-bluetooth-off");
+    mDeviceWindow->dialogShow();
 }
 
 void MediaKeysManager::doOpenKylinCalculator()
