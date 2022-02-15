@@ -28,6 +28,7 @@
 #include <QLayout>
 #include <QPixmap>
 #include <QIcon>
+#include <QPainterPath>
 #include <KWindowEffects>
 #include "usd_base_class.h"
 
