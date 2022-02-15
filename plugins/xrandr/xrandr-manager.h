@@ -119,6 +119,7 @@ public:
     void autoRemapTouchscreen();
     void remapFromConfig(QString mapPath);
     void SetTouchscreenCursorRotation();
+    void intel_SetTouchscreenCursorRotation();
     void doRemapAction (int input_name, char *output_name , bool isRemapFromFile = false);
     bool checkScreenByName(QString screenName);
     bool checkMapTouchDeviceById(int id);

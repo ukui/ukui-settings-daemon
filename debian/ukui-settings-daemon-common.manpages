@@ -1,3 +1,6 @@
 man/ukui-settings-daemon.1
 man/usd-locate-pointer.1
 man/touchpad-state.1
+man/save-param.1
+man/authoritydbus.1
+man/ukydisplayswitch.1

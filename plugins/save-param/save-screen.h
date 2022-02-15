@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
 #ifndef KDSWIDGET_H
 #define KDSWIDGET_H
 
