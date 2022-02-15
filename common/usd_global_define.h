@@ -41,6 +41,9 @@
 #define DBUS_XRANDR_GET_SCREEN_PARAM "getScreensParam"
 /*****/
 
+#define ORG_UKUI_STYLE "org.ukui.style"
+#define SYSTEM_FONT_SIZE "system-font-size"
+#define SYSTEM_FONT "system-font"
 
 /*Xorg shutkey name*/
 

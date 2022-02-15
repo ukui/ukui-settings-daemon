@@ -39,6 +39,7 @@
 #include <ldsm-trash-empty.h>
 #include <qhash.h>
 
+
 typedef struct
 {
     GUnixMountEntry *mount;

@@ -22,6 +22,7 @@
 #include "qtimer.h"
 #include "syslog.h"
 
+
 #define GIGABYTE                   1024 * 1024 * 1024
 
 #define CHECK_EVERY_X_SECONDS      120 * 1000
@@ -395,6 +396,7 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
                              path);
     g_free (name);
 
+//    dialog->show();
     response = dialog->exec();
     delete dialog;
     dialog = nullptr;

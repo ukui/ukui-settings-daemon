@@ -33,6 +33,7 @@
 #include <syslog.h>
 #include <glib.h>
 #include "clib-syslog.h"
+#include "usd_global_define.h"
 
 LdsmDialog::LdsmDialog(QWidget *parent)
     : QDialog(parent)
@@ -40,12 +41,14 @@ LdsmDialog::LdsmDialog(QWidget *parent)
 {
     ui->setupUi(this);
 }
+
 LdsmDialog::LdsmDialog(bool other_usable_partitions,bool other_partitions,bool display_baobab,bool has_trash,
                        long space_remaining,QString partition_name,QString mount_path,
                        QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::LdsmDialog)
 {
+
     ui->setupUi(this);
     this->other_usable_partitions=other_usable_partitions;
     this->other_partitions=other_partitions;
@@ -54,8 +57,19 @@ LdsmDialog::LdsmDialog(bool other_usable_partitions,bool other_partitions,bool d
     this->partition_name=partition_name;
     this->mount_path=mount_path;
     this->analyze_button=nullptr;
+
+    m_fontSetting = new QGSettings(ORG_UKUI_STYLE, QByteArray(), this);
+    connect(m_fontSetting, &QGSettings::changed,[=](QString key) {
+        USD_LOG(LOG_DEBUG,"font:%s",key.toLatin1().data());
+        if (key == SYSTEM_FONT_SIZE || key == SYSTEM_FONT) {
+            updateText();
+        }
+    });
+
     windowLayoutInit(display_baobab);
     allConnectEvent(display_baobab);
+
+
 }
 
 LdsmDialog::~LdsmDialog()
@@ -108,8 +122,7 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
     second_label->setWordWrap(true);
     second_label->setAlignment(Qt::AlignLeft);
 
-    font.setBold(true);
-    primary_label->setFont(font);
+
     primary_label->setText(getPrimaryText());
     second_label->setText(getSecondText());
     //gsettings set box
@@ -132,6 +145,8 @@ void LdsmDialog::windowLayoutInit(bool display_baobab)
         else
             analyze_button->setGeometry(dialog_width-215,dialog_height-40,100,30);
     }
+
+    updateText();
 }
 
 QString LdsmDialog::getPrimaryText()
@@ -221,6 +236,35 @@ void LdsmDialog::checkButtonIgnore()
 void LdsmDialog::checkButtonTrashEmpty()
 {
     done(LDSM_DIALOG_RESPONSE_EMPTY_TRASH);
+}
+
+void LdsmDialog::updateText()
+{
+    QFont font;
+    uint font_size ;
+
+    if (true == m_fontSetting->keys().contains(SYSTEM_FONT_SIZE)) {
+        font_size = m_fontSetting->get(SYSTEM_FONT_SIZE).toUInt();
+    } else {
+        font_size = 13;
+    }
+
+    if (true == m_fontSetting->keys().contains(SYSTEM_FONT)) {
+        font.setFamily(m_fontSetting->get(SYSTEM_FONT).toString());
+    }
+
+    font.setBold(true);
+    font.setPixelSize(font_size+2);
+    primary_label->setFont(font);
+
+    font.setBold(false);
+    font.setPixelSize(font_size);
+
+    second_label->setFont(font);
+    ignore_button->setFont(font);
+    ignore_button->setFont(font);
+    trash_empty->setFont(font);
+    ignore_check_button->setFont(font);
 }
 
 void LdsmDialog::checkButtonAnalyze()
