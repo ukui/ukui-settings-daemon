@@ -28,6 +28,7 @@
 #include <kwindowsystem.h>
 #include <QGraphicsEffect>
 #include <QPainter>
+#include <QPainterPath>
 #include <QStyleOption>
 #include <KWindowEffects>
 #include <QBitmap>
