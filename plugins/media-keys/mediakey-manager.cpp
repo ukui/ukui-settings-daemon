@@ -2104,7 +2104,7 @@ void MediaKeysManager::doOpenMonitor()
 }
 void MediaKeysManager::doOpenConnectionEditor()
 {
-    executeCommand("nm-connection-editor","");
+    executeCommand("kylin-nm --sw","");
 }
 
 void MediaKeysManager::doOpenUkuiSearchAction()
