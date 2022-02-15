@@ -302,10 +302,12 @@ bool checkMatch(double output_width,  double output_height,
 
 void XrandrManager::doRemapAction (int input_name, char *output_name , bool isRemapFromFile)
 {
-    touchpadMap *map = new touchpadMap;
-    map->sMonitorName = QString(output_name);
-    map->sTouchId = input_name;
-    mTouchMapList.append(map);
+    if(!UsdBaseClass::isTablet()) {
+        touchpadMap *map = new touchpadMap;
+        map->sMonitorName = QString(output_name);
+        map->sTouchId = input_name;
+        mTouchMapList.append(map);
+    }
     char buff[128] = "";
     sprintf(buff, "xinput --map-to-output \"%d\" \"%s\"", input_name, output_name);
     USD_LOG(LOG_DEBUG,"map touch-screen [%s]\n", buff);
@@ -615,6 +617,7 @@ void XrandrManager::SetTouchscreenCursorRotation()
                                                                      "ID_INPUT_HEIGHT_MM");
                         if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
                             doRemapAction(info->dev_info.deviceid,output_info->name);
+                            USD_LOG(LOG_DEBUG,".map checkMatch");
                             break;
                         } else if (deviceName.toUpper().contains("TOUCHPAD") && ouputName == "eDP-1"){//触摸板只映射主屏幕
                             USD_LOG(LOG_DEBUG,".map touchpad.");
@@ -643,6 +646,92 @@ void XrandrManager::SetTouchscreenCursorRotation()
                     if ((udev_device && g_udev_device_has_property (udev_device,
                                                                    "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
                         doRemapAction(info->dev_info.deviceid,output_info->name);
+                    }
+                    g_clear_object (&udev_client);
+                }
+            }
+        }
+    }else {
+        g_list_free(ts_devs);
+        fprintf(stderr, "xrandr extension too low\n");
+        return;
+    }
+    g_list_free(ts_devs);
+}
+
+void XrandrManager::intel_SetTouchscreenCursorRotation()
+{
+    int     event_base, error_base, major, minor;
+    int     o;
+    Window  root;
+    int     xscreen;
+    XRRScreenResources *res;
+    Display *dpy = QX11Info::display();
+
+    GList *ts_devs = NULL;
+
+    ts_devs = getTouchscreen (dpy);
+
+    if (!g_list_length (ts_devs)) {
+        fprintf(stdin, "No touchscreen find...\n");
+        return;
+    }
+
+    GList *l = NULL;
+
+    if (!XRRQueryExtension (dpy, &event_base, &error_base) ||
+        !XRRQueryVersion (dpy, &major, &minor)) {
+        fprintf (stderr, "RandR extension missing\n");
+        return;
+    }
+
+    xscreen = DefaultScreen (dpy);
+    root = RootWindow (dpy, xscreen);
+
+    if ( major >= 1 && minor >= 5) {
+        res = XRRGetScreenResources (dpy, root);
+        if (!res)
+          return;
+
+        for (o = 0; o < res->noutput; o++) {
+            XRROutputInfo *output_info = XRRGetOutputInfo (dpy, res, res->outputs[o]);
+            if (!output_info){
+                fprintf (stderr, "could not get output 0x%lx information\n", res->outputs[o]);
+                continue;
+            }
+            int output_mm_width = output_info->mm_width;
+            int output_mm_height = output_info->mm_height;
+
+            if (output_info->connection == 0) {
+                for ( l = ts_devs; l; l = l->next) {
+                    TsInfo *info = (TsInfo *)l -> data;
+                    double width, height;
+                    QString deviceName = QString::fromLocal8Bit(info->dev_info.name);
+                    QString ouputName = QString::fromLocal8Bit(output_info->name);
+                    const char *udev_subsystems[] = {"input", NULL};
+
+                    GUdevDevice *udev_device;
+                    GUdevClient *udev_client = g_udev_client_new (udev_subsystems);
+                    udev_device = g_udev_client_query_by_device_file (udev_client,
+                                                                      (const gchar *)info->input_node);
+
+                    USD_LOG(LOG_DEBUG,"%s(%d) %d %d had touch",info->dev_info.name,info->dev_info.deviceid,g_udev_device_has_property(udev_device,"ID_INPUT_WIDTH_MM"), g_udev_device_has_property(udev_device,"ID_INPUT_HEIGHT_MM"));
+
+                    //sp1的触摸板不一定有此属性，所以根据名字进行适配by sjh 2021年10月20日11:23:58
+                    if ((udev_device && g_udev_device_has_property (udev_device,
+                                                                   "ID_INPUT_WIDTH_MM")) || deviceName.toUpper().contains("TOUCHPAD")) {
+                        width = g_udev_device_get_property_as_double (udev_device,
+                                                                    "ID_INPUT_WIDTH_MM");
+                        height = g_udev_device_get_property_as_double (udev_device,
+                                                                     "ID_INPUT_HEIGHT_MM");
+
+                        if (checkMatch(output_mm_width, output_mm_height, width, height)) {//
+                            USD_LOG(LOG_DEBUG,".output_mm_width:%d  output_mm_height:%d  width:%d. height:%d",output_mm_width,output_mm_height,width,height);
+                            doRemapAction(info->dev_info.deviceid,output_info->name);
+                        } else if (deviceName.toUpper().contains("TOUCHPAD") && ouputName == "eDP-1"){//触摸板只映射主屏幕
+                            USD_LOG(LOG_DEBUG,".map touchpad.");
+                            doRemapAction(info->dev_info.deviceid,output_info->name);
+                        }
                     }
                     g_clear_object (&udev_client);
                 }
@@ -782,14 +871,18 @@ void XrandrManager::applyKnownConfig(bool state)
 
 void XrandrManager::autoRemapTouchscreen()
 {
-    qDeleteAll(mTouchMapList);
-    mTouchMapList.clear();
-    QString configPath = QDir::homePath() +  MAP_CONFIG;
-    QFileInfo file(configPath);
-    if(file.exists()) {
-        remapFromConfig(configPath);
+    if(UsdBaseClass::isTablet()) {
+        intel_SetTouchscreenCursorRotation();
+    } else {
+        qDeleteAll(mTouchMapList);
+        mTouchMapList.clear();
+        QString configPath = QDir::homePath() +  MAP_CONFIG;
+        QFileInfo file(configPath);
+        if(file.exists()) {
+            remapFromConfig(configPath);
+        }
+        SetTouchscreenCursorRotation();
     }
-    SetTouchscreenCursorRotation();
 }
 
 void XrandrManager::init_primary_screens (KScreen::ConfigPtr Config)
@@ -1556,7 +1649,6 @@ void XrandrManager::setScreenMode(QString modeName)
             return;
         }
     }
-
 
     switch (modeValue) {
     case UsdBaseClass::eScreenMode::cloneScreenMode:
