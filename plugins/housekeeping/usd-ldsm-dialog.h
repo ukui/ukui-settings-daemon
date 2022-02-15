@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QCheckBox>
 #include <QPushButton>
+#include <QGSettings/qgsettings.h>
 
 #define SETTINGS_SCHEMA "org.ukui.SettingsDaemon.plugins.housekeeping"
 #define SETTINGS_IGNORE_PATHS "ignore-paths"
@@ -57,8 +58,9 @@ private:
     QPushButton* trash_empty;
     QPushButton* ignore_button;
     QPushButton* analyze_button;
+    QDialog* m_dialog;
 
-
+    QGSettings* m_fontSetting;
     bool other_usable_partitions;
     bool other_partitions;
     bool has_trash;
@@ -73,7 +75,7 @@ public:
     void checkButtonIgnore ();
     void checkButtonAnalyze ();
     void checkButtonTrashEmpty();
-
+    void updateText();
 private:
     void windowLayoutInit(bool display_baobab);
     QString getPrimaryText();
