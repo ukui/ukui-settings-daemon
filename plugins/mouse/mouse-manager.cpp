@@ -275,10 +275,7 @@ bool query_device_had_property(XDeviceInfo *device_info,const char *property_nam
     }
 
     for (int k = 0; k < nProps; k++) {
-//        USD_LOG_SHOW_PARAM1(type_data[k]);
         if (Xdata == type_data[k]) {
-            USD_LOG(LOG_DEBUG,"find: props");
-            //USD_LOG_SHOW_PARAM1(type_data[k]);
             ret = true;
             goto END;
         }
@@ -493,10 +490,9 @@ void set_tap_to_click_synaptics (XDeviceInfo *device_info,
                                        PropModeReplace, data, nitems);
         }
 
-        if (rc == Success)
+        if (rc == Success) {
                 XFree (data);
-
-        USD_LOG(LOG_DEBUG,"...");
+        }
 
         XCloseDevice (display, device);
     } catch (int x) {
@@ -588,8 +584,6 @@ void MouseManager::SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
                     int one_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_ONE_FINGER_TAP).toInt();
                     int two_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_TWO_FINGER_TAP).toInt();
                     int three_finger_tap = settings_touchpad->get(KEY_TOUCHPAD_THREE_FINGER_TAP).toInt();
-
-                    USD_LOG_SHOW_PARAM1(left_handed);
                     set_tap_to_click_synaptics (device_info, tap, left_handed, one_finger_tap, two_finger_tap, three_finger_tap);
             }
 
@@ -598,9 +592,6 @@ void MouseManager::SetLeftHandedLegacyDriver (XDeviceInfo     *device_info,
                     return;
     } else {
             left_handed = mouse_left_handed;
-            USD_LOG(LOG_DEBUG,"SET IT");
-            USD_LOG_SHOW_PARAM1(left_handed);
-            //USD_LOG(LOG_DEBUG,".");
     }
 
     try {
@@ -642,9 +633,7 @@ void MouseManager::SetLeftHanded (XDeviceInfo  *device_info,
 {
     if (query_device_had_property (device_info, "libinput Left Handed Enabled")){
         set_left_handed_libinput (device_info, mouse_left_handed, touchpad_left_handed);
-        USD_LOG_SHOW_PARAM1(mouse_left_handed);
     } else {
-        USD_LOG_SHOW_PARAM1(touchpad_left_handed);
         SetLeftHandedLegacyDriver (device_info, mouse_left_handed, touchpad_left_handed);
     }
 }
@@ -657,15 +646,19 @@ void MouseManager::SetLeftHandedAll (bool mouse_left_handed,
     int i;
     Display * dpy = QX11Info::display();
     device_info = XListInputDevices (dpy, &n_devices);
-    if(!device_info){
-        qWarning("SetLeftHandedAll: device_info is null");
+
+    if (!device_info) {
+        USD_LOG(LOG_ERR,"SetLeftHandedAll: device_info is null");
         return;
     }
+
     for (i = 0; i < n_devices; i++) {
         SetLeftHanded (&device_info[i], mouse_left_handed, touchpad_left_handed);
     }
-    if (device_info != NULL)
+
+    if (device_info != NULL) {
         XFreeDeviceList (device_info);
+    }
 }
 
 void MouseManager::SetMotionLibinput (XDeviceInfo *device_info)
@@ -688,8 +681,10 @@ void MouseManager::SetMotionLibinput (XDeviceInfo *device_info)
     float motion_acceleration;
 
     float_type = property_from_name ("FLOAT");
-    if (!float_type)
+
+    if (!float_type) {
         return;
+    }
 
     prop = property_from_name ("libinput Accel Speed");
     if (!prop) {
@@ -875,7 +870,6 @@ void MouseManager::SetTouchpadMotionAccel(XDeviceInfo *device_info)
         rc = XGetDeviceProperty (dpy,device, prop, 0, 1, False, float_type, &type,
                                  &format, &nitems, &bytes_after, &data.c);
 
-        USD_LOG_SHOW_PARAM2(format,nitems)
         if (rc == Success && type == float_type && format == 32 && nitems >= 1) {
                 *(float *) data.l = accel;
                 XChangeDeviceProperty (dpy, device, prop, float_type, 32,
@@ -1166,7 +1160,6 @@ void MouseManager::MouseCallback (QString keys)
         bool mouse_left_handed = settings_mouse->get(keys).toBool();
         bool touchpad_left_handed = GetTouchpadHandedness (mouse_left_handed);
         SetLeftHandedAll (mouse_left_handed, touchpad_left_handed);
-        USD_LOG(LOG_DEBUG,"...............");
         SetTapToClickAll ();
     } else if ((keys.compare(QString::fromLocal8Bit(KEY_MOTION_ACCELERATION))==0) ||
                (keys.compare(QString::fromLocal8Bit(KEY_MOTION_THRESHOLD))==0) ||
@@ -1305,8 +1298,6 @@ set_tap_to_click(XDeviceInfo *device_info,  bool state,  bool left_handed,
     if (query_device_had_property(device_info,"Synaptics Tap Action")) {
         set_tap_to_click_synaptics (device_info, state, 0,
                                     one_finger_tap, two_finger_tap, three_finger_tap);
-        USD_LOG_SHOW_PARAM1(left_handed);
-        USD_LOG(LOG_DEBUG,"device name：%s",device_info->name);
     }
 
         if (property_from_name ("libinput Tapping Enabled"))
@@ -1771,7 +1762,6 @@ void MouseManager::TouchpadCallback (QString keys)
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_NATURAL_SCROLL)) == 0) {
         SetNaturalScrollAll ();                             //设置上移下滚或上移上滚
-        USD_LOG(LOG_DEBUG,"set %s",KEY_TOUCHPAD_NATURAL_SCROLL);
 
     } else if (keys.compare(QString::fromLocal8Bit(KEY_TOUCHPAD_ENABLED)) == 0) {
         SetTouchpadEnabledAll (settings_touchpad->get(keys).toBool());//设置触摸板开关
@@ -1839,7 +1829,6 @@ GdkFilterReturn devicepresence_filter (GdkXEvent *xevent,
     if (xev->type == xi_presence) {
             XDevicePresenceNotifyEvent *dpn = (XDevicePresenceNotifyEvent *) xev;
             if (dpn->devchange == DeviceEnabled) {
-                USD_LOG(LOG_DEBUG,"new add deviced ID  : %d",dpn->deviceid);
                 manager->SetMouseSettings ();
             } else if(dpn->devchange == DeviceRemoved) {
                 manager->SetTouchSettings();

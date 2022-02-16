@@ -23,6 +23,7 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
 {
     isPress = false;
     start(QThread::LowestPriority);
+    USD_LOG(LOG_DEBUG,"start xevent monitor!");
 }
 
 
@@ -30,7 +31,7 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
 void xEventMonitor::run()
 {
     Display* display = XOpenDisplay(0);
-
+    USD_LOG(LOG_DEBUG,"start xevent monitor init!");
     if (display == 0) {
         USD_LOG(LOG_DEBUG, "unable to open display\n");
         return;
@@ -71,7 +72,7 @@ void xEventMonitor::run()
         USD_LOG(LOG_DEBUG,"XRecordEnableContext() failed\n");
         return;
     }
-
+    USD_LOG(LOG_DEBUG,"xevent monitor init success!");
     XCloseDisplay(display);
     XCloseDisplay(display_datalink);
 }
