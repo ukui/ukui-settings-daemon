@@ -91,7 +91,7 @@ void ColorState::ColorStateSetTemperature(guint temperature)
     if(temperature > USD_COLOR_TEMPERATURE_MAX)
         temperature = USD_COLOR_TEMPERATURE_MAX;
     color_temperature = temperature;
-    USD_LOG(LOG_DEBUG,"color_temperature %d",color_temperature);
+//    USD_LOG(LOG_DEBUG,"color_temperature %d",color_temperature);
     SessionSetGammaForAllDevices (this);
 }
 
@@ -996,7 +996,7 @@ void ColorState::SessionDeviceAssignConnectCb (GObject *object,
     /* get the default profile for the device */
     profile = cd_device_get_default_profile (device);
     if (profile == NULL) {
-        qDebug ("%s has no default profile to set", cd_device_get_id (device));
+//        qDebug ("%s has no default profile to set", cd_device_get_id (device));
 
         /* the default output? */
         if (mate_rr_output_get_is_primary (output) &&
@@ -1075,7 +1075,7 @@ void ColorState::SessionProfileGammaFindDeviceCb (GObject *object,
         if (device != NULL)
                 g_object_unref (device);
 
-        USD_LOG(LOG_DEBUG,"set gamma over..");
+//        USD_LOG(LOG_DEBUG,"set gamma over..");
 }
 
 

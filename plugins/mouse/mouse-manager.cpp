@@ -255,7 +255,7 @@ bool query_device_had_property(XDeviceInfo *device_info,const char *property_nam
     bool ret = false;
     Display * display = GDK_DISPLAY_XDISPLAY(gdk_display_get_default());
     device = XOpenDevice (display, device_info->id);
-    USD_LOG(LOG_DEBUG,"device name：%s",device_info->name);
+//    USD_LOG(LOG_DEBUG,"device name：%s",device_info->name);
 
     if (device == NULL) {
         USD_LOG(LOG_DEBUG, "%s find %s had a error:can't open id(%d) device in XOpenDevice,type：%d",device_info->name, property_name,device_info->id,device_info->type);
