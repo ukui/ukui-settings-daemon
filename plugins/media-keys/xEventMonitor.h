@@ -64,8 +64,6 @@ Q_SIGNALS:
 
     void keyPress(xEvent *code);
     void keyRelease(xEvent *code);
-public Q_SLOTS:
-    void openDisplay();
 
 protected:
     bool filterWheelEvent(int detail);
