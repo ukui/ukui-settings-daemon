@@ -63,6 +63,8 @@ Depends: mate-desktop-common (>= 1.18),
          libglib2.0-bin,
          ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: kylin-display-switch
+Replaces: kylin-display-switch
 Description: daemon handling the UKUI session settings
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run
