@@ -20,6 +20,7 @@
 #include "ui_devicewindow.h"
 #include <QDebug>
 #include <QPainter>
+#include <QPainterPath>
 #include <QBitmap>
 #include <KWindowEffects>
 #include "clib-syslog.h"
