@@ -44,7 +44,7 @@ Build-Depends: debhelper-compat (=12),
 	       libkf5globalaccel-dev,
 	       libqt5x11extras5-dev,
 	       libukui-common-dev,
-Standards-Version: 4.5.0
+Standards-Version: 4.6.0.1
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
 Vcs-Git: https://github.com/ukui/ukui-settings-daemon.git

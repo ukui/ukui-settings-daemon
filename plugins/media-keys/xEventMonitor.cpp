@@ -23,6 +23,7 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
 {
     isPress = false;
     start(QThread::LowestPriority);
+    USD_LOG(LOG_DEBUG,"start xevent monitor!");
 }
 
 void xEventMonitor::run()
@@ -31,6 +32,7 @@ void xEventMonitor::run()
     while (!isOpenDisplay) {
 
         Display* display = XOpenDisplay(0);
+        USD_LOG(LOG_DEBUG,"start xevent monitor init!");
         if (display == 0) {
             USD_LOG(LOG_DEBUG, "unable to open display\n");
             continue;
@@ -82,11 +84,6 @@ void xEventMonitor::run()
         XCloseDisplay(display_datalink);
         msleep(500);
     }
-}
-
-void xEventMonitor::openDisplay()
-{
-
 }
 
 void xEventMonitor::callback(XPointer ptr, XRecordInterceptData* data)

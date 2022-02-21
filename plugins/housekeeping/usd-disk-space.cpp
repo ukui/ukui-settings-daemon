@@ -502,9 +502,9 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
         }
 
         free_space_check = (gint64) mount_info->buf.f_frsize * (gint64) mount_info->buf.f_bavail;
-        every_two_minutes_check = QString().sprintf("The volume \"%1\" has %s disk space remaining.",
-                                       g_format_size(free_space_check)).arg(g_unix_mount_guess_name(mount_info->mount));
-        printf("%s\n",every_two_minutes_check.toStdString().data());
+//        every_two_minutes_check = QString().sprintf("The volume \"%1\" has %s disk space remaining.",
+//                                       g_format_size(free_space_check)).arg(g_unix_mount_guess_name(mount_info->mount));
+//        printf("%s\n",every_two_minutes_check.toStdString().data());
     }
 }
 
