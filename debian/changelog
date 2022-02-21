@@ -1,7 +1,26 @@
+ukui-settings-daemon (3.1.0-1.38) v101; urgency=medium
+
+  * BUG号：106951 【触控笔】连接外显扩展模式下使用触控笔会出现偏移(必现)
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Mon, 21 Feb 2022 09:17:49 +0800
+
+ukui-settings-daemon (3.1.0-1.37) v101; urgency=medium
+
+  * BUG号：106966 【快捷键】重启后，热键F3\F4\F5\F6\F7无功能（偶现：目前两台机器各出现一次）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Sat, 19 Feb 2022 14:45:16 +0800
+
 ukui-settings-daemon (3.1.0-1.36) v101; urgency=medium
 
   * BUG号：HZ 95808
     【终端】鼠标大小设置中，在移动到终端标题栏大小会变化（主线同样存在）
+           106028 【镜像独有】【PTOF】【TM】【旋转】PC模式切换到平板模式开启自动旋转，旋转设备后使用触摸/触控笔概率会出现偏移(2/20 times 2/2 units)
   * 需求说明：无
   * 其他改动说明：无
   * 其他改动影响域：无

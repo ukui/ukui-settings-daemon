@@ -64,6 +64,8 @@ Q_SIGNALS:
 
     void keyPress(xEvent *code);
     void keyRelease(xEvent *code);
+public Q_SLOTS:
+    void openDisplay();
 
 protected:
     bool filterWheelEvent(int detail);
@@ -84,6 +86,8 @@ private:
 
 
     bool isPress;
+
+    bool isOpenDisplay = false;
 };
 
 #endif // XEVENTMONITOR_H
