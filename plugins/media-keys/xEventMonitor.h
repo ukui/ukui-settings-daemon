@@ -84,6 +84,8 @@ private:
 
 
     bool isPress;
+
+    bool isOpenDisplay = false;
 };
 
 #endif // XEVENTMONITOR_H

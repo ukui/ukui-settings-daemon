@@ -26,55 +26,64 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
     USD_LOG(LOG_DEBUG,"start xevent monitor!");
 }
 
-
-
 void xEventMonitor::run()
 {
-    Display* display = XOpenDisplay(0);
-    USD_LOG(LOG_DEBUG,"start xevent monitor init!");
-    if (display == 0) {
-        USD_LOG(LOG_DEBUG, "unable to open display\n");
-        return;
+
+    while (!isOpenDisplay) {
+
+        Display* display = XOpenDisplay(0);
+        USD_LOG(LOG_DEBUG,"start xevent monitor init!");
+        if (display == 0) {
+            USD_LOG(LOG_DEBUG, "unable to open display\n");
+            continue;
+        }
+
+        // Receive from ALL clients, including future clients.
+        XRecordClientSpec clients = XRecordAllClients;
+        XRecordRange* range = XRecordAllocRange();
+        if (range == 0) {
+            USD_LOG(LOG_DEBUG,"unable to allocate XRecordRange\n");
+            XCloseDisplay(display);
+            continue;
+        }
+
+        // Receive KeyPress, KeyRelease, ButtonPress, ButtonRelease and MotionNotify events.
+        memset(range, 0, sizeof(XRecordRange));
+        range->device_events.first = KeyPress;
+        range->device_events.last  = MotionNotify;
+
+        // And create the XRECORD context.
+        XRecordContext context = XRecordCreateContext(display, 0, &clients, 1, &range, 1);
+        if (context == 0) {
+            USD_LOG(LOG_DEBUG,"XRecordCreateContext failed\n");//fprintf(stderr, "XRecordCreateContext failed\n");
+            XFree(range);
+            XCloseDisplay(display);
+            continue;
+        }
+        XFree(range);
+
+        XSync(display, True);
+
+        Display* display_datalink = XOpenDisplay(0);
+        if (display_datalink == 0) {
+            USD_LOG(LOG_DEBUG,"unable to open second display\n");
+            XCloseDisplay(display);
+            continue;
+        }
+
+        if (!XRecordEnableContext(display_datalink, context, callback, (XPointer) this)) {
+            USD_LOG(LOG_DEBUG,"XRecordEnableContext() failed\n");
+            XCloseDisplay(display);
+            XCloseDisplay(display_datalink);
+            continue;
+        }
+
+        isOpenDisplay = true;
+
+        XCloseDisplay(display);
+        XCloseDisplay(display_datalink);
+        msleep(500);
     }
-
-    // Receive from ALL clients, including future clients.
-    XRecordClientSpec clients = XRecordAllClients;
-    XRecordRange* range = XRecordAllocRange();
-    if (range == 0) {
-         USD_LOG(LOG_DEBUG,"unable to allocate XRecordRange\n");
-        return;
-    }
-
-    // Receive KeyPress, KeyRelease, ButtonPress, ButtonRelease and MotionNotify events.
-    memset(range, 0, sizeof(XRecordRange));
-    range->device_events.first = KeyPress;
-    range->device_events.last  = MotionNotify;
-
-    // And create the XRECORD context.
-    XRecordContext context = XRecordCreateContext(display, 0, &clients, 1, &range, 1);
-    if (context == 0) {
-        USD_LOG(LOG_DEBUG,"XRecordCreateContext failed\n");//fprintf(stderr, "XRecordCreateContext failed\n");
-        return;
-    }
-    XFree(range);
-
-    XSync(display, True);
-
-    Display* display_datalink = XOpenDisplay(0);
-    if (display_datalink == 0) {
-//        fprintf(stderr, "unable to open second display\n");
-        USD_LOG(LOG_DEBUG,"unable to open second display\n");
-        return;
-    }
-
-    if (!XRecordEnableContext(display_datalink, context, callback, (XPointer) this)) {
-//        fprintf(stderr, "XRecordEnableContext() failed\n");
-        USD_LOG(LOG_DEBUG,"XRecordEnableContext() failed\n");
-        return;
-    }
-    USD_LOG(LOG_DEBUG,"xevent monitor init success!");
-    XCloseDisplay(display);
-    XCloseDisplay(display_datalink);
 }
 
 void xEventMonitor::callback(XPointer ptr, XRecordInterceptData* data)
