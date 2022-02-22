@@ -1,3 +1,21 @@
+ukui-settings-daemon (3.1.0-1.40) v101; urgency=medium
+
+  * BUG号：107432 【快捷键】升级后，快捷键及功能热键全部失效（2/2units）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 22 Feb 2022 13:56:34 +0800
+
+ukui-settings-daemon (3.1.0-1.39) v101; urgency=medium
+
+  * BUG号：107101 【控制面板】【显示器】连接外接显示器，拓展模式下，在平板触控，触摸映射到了拓展屏上（必现）
+  * 需求说明：无
+  * 其他改动说明：无
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 22 Feb 2022 13:37:39 +0800
+
 ukui-settings-daemon (3.1.0-1.38) v101; urgency=medium
 
   * BUG号：106951 【触控笔】连接外显扩展模式下使用触控笔会出现偏移(必现)
