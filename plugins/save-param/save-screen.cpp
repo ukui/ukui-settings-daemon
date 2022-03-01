@@ -56,6 +56,7 @@ void SaveScreenParam::getConfig(){
             }
             m_MonitoredConfig = nullptr;
         }
+
         m_MonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         m_MonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
         if (isSet()) {
@@ -75,17 +76,15 @@ void SaveScreenParam::getConfig(){
 void SaveScreenParam::readConfigAndSet()
 {
     if (m_MonitoredConfig->lightdmFileExists()) {
-//        USD_LOG(LOG_DEBUG,"read  config:%s.",m_MonitoredConfig->filePath().toLatin1().data());
-
         std::unique_ptr<xrandrConfig> MonitoredConfig = m_MonitoredConfig->readFile(false);
 
         if (MonitoredConfig == nullptr ) {
             USD_LOG(LOG_DEBUG,"config a error");
+            exit(0);
             return;
         }
 
         m_MonitoredConfig = std::move(MonitoredConfig);
-
 
         if (m_MonitoredConfig->canBeApplied()) {
             connect(new KScreen::SetConfigOperation(m_MonitoredConfig->data()),
@@ -100,6 +99,7 @@ void SaveScreenParam::readConfigAndSet()
             Q_FOREACH (const KScreen::OutputPtr &output, m_MonitoredConfig->data()->outputs()) {
                 USD_LOG_SHOW_OUTPUT(output);
             }
+            exit(0);
         }
     }
 }
