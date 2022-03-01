@@ -21,6 +21,7 @@
 #ifndef KDSWIDGET_H
 #define KDSWIDGET_H
 
+#include <QObject>
 #include <KF5/KScreen/kscreen/output.h>
 #include <KF5/KScreen/kscreen/edid.h>
 #include <KF5/KScreen/kscreen/mode.h>
@@ -30,17 +31,44 @@
 #include "xrandr-config.h"
 
 
-class SaveScreenParam : QObject
+class SaveScreenParam :  public QObject
 {
     Q_OBJECT
 
+//    Q_PROPERTY(bool isSet READ isSet WRITE setIsSet )
+//    Q_PROPERTY(bool isGet READ isGet WRITE setIsGet )
+
 public:
-    explicit SaveScreenParam(QObject *parent = nullptr);
+
+    explicit SaveScreenParam(QObject *parent = nullptr) ;
     ~SaveScreenParam();
+    void setIsSet(bool value)
+    {
+        m_isSet = value;
+    }
+
+    void setIsGet(bool value)
+    {
+        m_isGet = value;
+    }
+
+    bool isSet() const
+    {
+        return m_isSet;
+    }
+
+    bool isGet() const
+    {
+        return m_isGet;
+    }
 
     void getConfig();
 
+    void readConfigAndSet();
 private:
+    bool m_isSet;
+    bool m_isGet;
+
     std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
 };
 
