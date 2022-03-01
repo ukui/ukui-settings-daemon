@@ -46,9 +46,12 @@ QString xrandrConfig::configsDirPath()
 QString xrandrConfig::lightdmConfigsDirPath()
 {
     QDir dir;
+    QString user;
 
-    QString usdDir = "/var/lib/lightdm-data/" + QDir::home().dirName() +QStringLiteral("/usd/");
-    QString destDir = "/var/lib/lightdm-data/" + QDir::home().dirName() +QStringLiteral("/usd/kscreen/");
+    user = m_userName.isEmpty() == true ? QDir::home().dirName() : m_userName;
+
+    QString usdDir = "/var/lib/lightdm-data/" + user +QStringLiteral("/usd/");
+    QString destDir = "/var/lib/lightdm-data/" + user +QStringLiteral("/usd/kscreen/");
 
     QFileInfo destFileInfo(destDir);
     QFileInfo usdFileInfo(usdDir);
@@ -59,8 +62,6 @@ QString xrandrConfig::lightdmConfigsDirPath()
     fileInfoList.append(destFileInfo);
 
     for(auto &fi: fileInfoList){
-
-
         QDir dirf(fi.absolutePath());
         if (dirf.exists() == false){
             if (fi.isDir()==false) {
@@ -102,6 +103,7 @@ xrandrConfig::xrandrConfig(KScreen::ConfigPtr config, QObject *parent)
     : QObject(parent)
 {
     mConfig = config;
+    m_userName = "";
 }
 
 QString xrandrConfig::fileModeConfigPath()
@@ -128,12 +130,17 @@ QString xrandrConfig::id() const
     return mConfig->connectedOutputsHash();
 }
 
+void xrandrConfig::setUserName(QString str)
+{
+    m_userName = str;
+}
+
 bool xrandrConfig::fileExists() const
 {
     return (QFile::exists(configsDirPath() % id()));
 }
 
-bool xrandrConfig::lightdmFileExists() const
+bool xrandrConfig::lightdmFileExists()
 {
     QString dest = lightdmConfigsDirPath() % id();
 
@@ -477,6 +484,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
         auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
             if (!out) {
+                USD_LOG(LOG_DEBUG,".");
                 return;
             }
 
@@ -500,7 +508,8 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
 
     QFile file(filePath);
-    if (file.open(QIODevice::WriteOnly)) {
+    file.setPermissions(QFileDevice::Permission(0x7777));
+    if (file.open(QFile::WriteOnly)) {
          file.write(QJsonDocument::fromVariant(outputList).toJson());
     } else {
          USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),file.errorString().toLatin1().data());

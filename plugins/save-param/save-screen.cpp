@@ -34,6 +34,11 @@
 SaveScreenParam::SaveScreenParam(QObject *parent): QObject(parent)
 {
     Q_UNUSED(parent);
+
+    m_userName = "";
+
+    m_isGet = false;
+    m_isSet = false;
 }
 
 SaveScreenParam::~SaveScreenParam()
@@ -46,6 +51,7 @@ SaveScreenParam::~SaveScreenParam()
 void SaveScreenParam::getConfig(){
     QObject::connect(new KScreen::GetConfigOperation(), &KScreen::GetConfigOperation::finished,
                      [&](KScreen::ConfigOperation *op) {
+
         if (m_MonitoredConfig) {
             if (m_MonitoredConfig->data()) {
                 KScreen::ConfigMonitor::instance()->removeConfig(m_MonitoredConfig->data());
@@ -59,11 +65,17 @@ void SaveScreenParam::getConfig(){
 
         m_MonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         m_MonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
-        if (isSet()) {
-            USD_LOG_SHOW_PARAM1(m_isSet);
+
+        if (false == m_userName.isEmpty()) {
+            USD_LOG(LOG_DEBUG,".");
+            m_MonitoredConfig->setUserName(m_userName);
+            readConfigAndSet();
+        }
+        else if (isSet()) {
+            USD_LOG(LOG_DEBUG,".");
             readConfigAndSet();
         } else if (isGet()) {
-            USD_LOG_SHOW_PARAM1(m_isGet);
+            USD_LOG(LOG_DEBUG,".");
             m_MonitoredConfig->writeFileForLightDM(false);
             exit(0);
         } else {
@@ -73,19 +85,24 @@ void SaveScreenParam::getConfig(){
     });
 }
 
+void SaveScreenParam::setUserName(QString str)
+{
+    m_userName = str;
+    USD_LOG_SHOW_PARAMS(m_userName.toLatin1().data());
+}
+
 void SaveScreenParam::readConfigAndSet()
 {
     if (m_MonitoredConfig->lightdmFileExists()) {
-        std::unique_ptr<xrandrConfig> MonitoredConfig = m_MonitoredConfig->readFile(false);
+        std::unique_ptr<xrandrConfig> monitoredConfig = m_MonitoredConfig->readFile(false);
 
-        if (MonitoredConfig == nullptr ) {
+        if (monitoredConfig == nullptr ) {
             USD_LOG(LOG_DEBUG,"config a error");
             exit(0);
             return;
         }
 
-        m_MonitoredConfig = std::move(MonitoredConfig);
-
+        m_MonitoredConfig = std::move(monitoredConfig);
         if (m_MonitoredConfig->canBeApplied()) {
             connect(new KScreen::SetConfigOperation(m_MonitoredConfig->data()),
                     &KScreen::SetConfigOperation::finished,
@@ -95,12 +112,10 @@ void SaveScreenParam::readConfigAndSet()
             });
         } else {
             USD_LOG(LOG_ERR,"--|can't be apply|--");
-
-            Q_FOREACH (const KScreen::OutputPtr &output, m_MonitoredConfig->data()->outputs()) {
-                USD_LOG_SHOW_OUTPUT(output);
-            }
             exit(0);
         }
+    } else {
+         exit(0);
     }
 }
 

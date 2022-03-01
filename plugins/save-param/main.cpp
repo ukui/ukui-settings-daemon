@@ -19,6 +19,8 @@
  */
 
 #include <QApplication>
+#include <QCommandLineParser>
+
 #include "save-screen.h"
 #include "clib-syslog.h"
 
@@ -47,11 +49,47 @@ static void parse_args (int argc, char *argv[])
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    parse_args(argc, argv);
+    QApplication::setApplicationName("save-param");
+    QApplication::setApplicationVersion("1.0.0");
+
+    QCommandLineParser parser;
+    parser.setApplicationDescription(QApplication::translate("main", "Qt"));
+    parser.addHelpOption();  // 添加帮助选项 （"-h" 或 "--help"）
+    parser.addVersionOption();  // 添加版本选项 ("-v" 或 "--version")
+    parser.setSingleDashWordOptionMode(QCommandLineParser::ParseAsLongOptions);
+
+    QCommandLineOption setOption(QStringList() << "s" << "set",
+                                       QApplication::translate("main", "Get the display parameters of the current user and save them to the lightdm user directory"));
+    parser.addOption(setOption);
+    QCommandLineOption getOption(QStringList() << "g" << "get",
+                                       QApplication::translate("main", "Get the display parameters of the current user and save them to the user directory of lightdm"));
+
+    parser.addOption(getOption);
+
+    QCommandLineOption userOption(QStringList() << "u" << "user",
+                                       QApplication::translate("main", "Get the display parameters saved by the user in the lightdm personal folder and set them"),
+                                       QApplication::translate("main", "user"), "");
+
+    parser.addOption(userOption);
+
+    parser.setApplicationDescription(QGuiApplication::translate("main", "Qt"));  // 设置应用程序描述信息
+
+
+    parser.process(app);
+
     SaveScreenParam saveParam;
 
-    saveParam.setIsGet(g_isGet);
-    saveParam.setIsSet(g_isSet);
+    if(parser.isSet(setOption)) {
+        USD_LOG(LOG_DEBUG,".");
+        saveParam.setIsSet(true);
+    } else if (parser.isSet(getOption)) {
+        USD_LOG(LOG_DEBUG,".");
+        saveParam.setIsGet(true);
+    } else if (parser.isSet(userOption)){
+        QString user = parser.value(userOption);
+        saveParam.setUserName(user);
+        USD_LOG(LOG_DEBUG,"userOption..user:%s.",user.toLatin1().data());
+    }
 
     saveParam.getConfig();
     return app.exec();

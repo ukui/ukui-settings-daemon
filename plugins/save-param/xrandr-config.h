@@ -42,8 +42,9 @@ public:
 
     QString id() const;
 
+    void setUserName(QString str);
     bool fileExists() const;
-    bool lightdmFileExists() const;
+    bool lightdmFileExists();
     bool fileScreenModeExists(QString screenMode);
 
     std::unique_ptr<xrandrConfig> readFile(bool isUseModeDirConfig);
@@ -80,10 +81,10 @@ private:
 
     bool canBeApplied(KScreen::ConfigPtr config) const;
     static QString configsDirPath();
-    static QString lightdmConfigsDirPath();
+    QString lightdmConfigsDirPath();
     QString configsModeDirPath();
     static QString sleepDirPath();
-
+    QString m_userName;
 
     KScreen::ConfigPtr mConfig;
     KScreen::Config::ValidityFlags mValidityFlags;

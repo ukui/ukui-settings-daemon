@@ -64,10 +64,14 @@ public:
 
     void getConfig();
 
+    void setUserName(QString str);
+
     void readConfigAndSet();
 private:
     bool m_isSet;
     bool m_isGet;
+
+    QString m_userName;
 
     std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
 };
