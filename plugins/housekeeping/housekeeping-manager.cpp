@@ -59,9 +59,14 @@ HousekeepingManager::HousekeepingManager()
     mDisk = new DIskSpace();
     settings = new QGSettings(THUMB_CACHE_SCHEMA);
     long_term_handler = new QTimer(this);
-    connect(long_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup()));
+
     short_term_handler = new QTimer(this);
-    connect(short_term_handler, SIGNAL(timeout()), this, SLOT(do_cleanup_once()));
+
+    connect(long_term_handler, &QTimer::timeout,
+            this, &HousekeepingManager::do_cleanup);
+    connect(short_term_handler, &QTimer::timeout,
+            this, &HousekeepingManager::do_cleanup_once);
+
 }
 
 /*
@@ -231,10 +236,10 @@ bool HousekeepingManager::HousekeepingManagerStart()
 {
     mDisk->UsdLdsmSetup(false);
 
-    connect (settings,
-             SIGNAL(changed(QString)),
-             this,
-             SLOT(settings_changed_callback(QString)));
+    connect (settings, &QGSettings::changed,
+                this,&HousekeepingManager::settings_changed_callback);
+
+
     /* Clean once, a few minutes after start-up */
     do_cleanup_soon();
 

@@ -21,7 +21,7 @@
 #define HOUSEKEEPINGMANAGER_H
 
 #include <QObject>
-#include <QGSettings>
+#include <QGSettings/qgsettings.h>
 #include <QApplication>
 
 
@@ -33,7 +33,7 @@
 class HousekeepingManager : public QObject
 {
     Q_OBJECT
-// private:
+
 public:
     HousekeepingManager();
     HousekeepingManager(HousekeepingManager&)=delete;
@@ -42,7 +42,7 @@ public:
     bool HousekeepingManagerStart();
     void HousekeepingManagerStop();
 
-public Q_SLOTS:
+public:
     void settings_changed_callback(QString);
     void do_cleanup_soon();
     void purge_thumbnail_cache ();
