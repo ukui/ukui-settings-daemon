@@ -28,6 +28,7 @@
 #include <QX11Info>
 #include <QtXml>
 
+#include "mateouput.h"
 #include "xrandr-manager.h"
 
 #include <QOrientationReading>
@@ -342,6 +343,88 @@ bool XrandrManager::checkMapScreenByName(const QString name)
         }
     }
     return false;
+}
+/*
+ * 通过ouput的pnpId和monitors.xml中的ventor以及接口类型（VGA,HDMI）进行匹配
+ *
+*/
+bool XrandrManager::readMateToKscreen()
+{
+
+    int xmlErrColumn;
+    int xmlErrLine;
+
+    QDomNode n;
+    QDomElement root;
+    QDomDocument doc;
+
+    QString xmlErrMsg;
+    QString homePath = getenv("HOME");
+    QString monitorFile = homePath+"/.config/monitors.xml";
+
+    QList<MateConfig> mateConfigList;
+    QFile file(monitorFile);
+
+    if(!file.open(QIODevice::ReadOnly)){
+        USD_LOG(LOG_ERR,"%s can't be read...",monitorFile.toLatin1().data());
+        return false;
+    }
+
+    if(!doc.setContent(&file,&xmlErrMsg,&xmlErrLine, &xmlErrColumn))
+    {
+        USD_LOG(LOG_DEBUG,"read %s to doc failed errmsg:%s at %d.%d",monitorFile.toLatin1().data(),xmlErrMsg.toLatin1().data(),xmlErrLine,xmlErrColumn);
+        file.close();
+        return false;
+    }
+
+    XmlFileTag.clear();
+    mIntDate.clear();
+
+    root=doc.documentElement(); //返回根节点
+    n=root.firstChild();
+
+    while(!n.isNull()) {
+
+        if(n.isElement()){
+            MateConfig mateConfig;
+            QDomElement e =n.toElement();
+            QDomNodeList list=e.childNodes();
+            //从configuration中遍历出对应的显示组合与output中进行匹配，匹配通过后即进行处理。
+            if (e.isElement()) {
+               USD_LOG_SHOW_PARAMS(e.tagName().toLatin1().data());
+            }
+
+            for (int i=0;i<list.count();i++) {
+                QDomNode node=list.at(i);
+
+
+                if (node.isElement()) {
+
+                    if (node.toElement().tagName() == "clone") {
+                        mateConfig.m_clone = node.toElement().text();
+                        continue;
+                    }
+
+                    QDomNodeList e2 = node.childNodes();
+                    if (node.toElement().tagName() == "output") {
+                        XrandrMateOuput mateOutput;
+
+                        if (node.toElement().text().isEmpty()) {
+                            continue;
+                        }
+
+                        for(int j=0;j<e2.count();j++){
+                            QDomNode node2 = e2.at(j);
+                            mateOutput.setProperty(node2.toElement().tagName().toLatin1().data(),node2.toElement().text());
+//                            USD_LOG_SHOW_PARAMS(mateOutput.property(node2.toElement().tagName().toLatin1().data()).toString().toLatin1().data());
+                        }
+                    }
+                }
+            }
+        }
+        n = n.nextSibling();
+    }
+
 }
 
 static int find_event_from_name(char *_name, char *_serial, char *_event)
@@ -1172,6 +1255,7 @@ QString XrandrManager::getScreesParam()
 
 void XrandrManager::monitorsInit()
 {
+
     char connectedOutputCount = 0;
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
@@ -1182,12 +1266,15 @@ void XrandrManager::monitorsInit()
     }
 
     mConfig = std::move(mMonitoredConfig->data());
-
+    readMateToKscreen();
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
         USD_LOG_SHOW_OUTPUT(output);
 
         if (output->isConnected()){
             connectedOutputCount++;
+            USD_LOG_SHOW_PARAMS(output->edid()->serial().toLatin1().data());
+            USD_LOG_SHOW_PARAMS(output->edid()->vendor().toLatin1().data());
+            USD_LOG_SHOW_PARAMS(output->edid()->pnpId().toLatin1().data());//匹配pnpID与mate进行对比
         }
 
 
@@ -1339,6 +1426,9 @@ void XrandrManager::monitorsInit()
 
             }
         }
+
+
+
         mMonitoredConfig->writeFile(false);
     }
 }
@@ -1403,12 +1493,12 @@ bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode e
 
 void XrandrManager::TabletSettingsChanged(const bool tablemode)
 {
-    if(tablemode)
-    {
+    if(tablemode) {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
     }
+
     USD_LOG(LOG_DEBUG,"recv mode changed:%d", tablemode);
 }
 

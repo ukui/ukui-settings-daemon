@@ -124,6 +124,7 @@ public:
     bool checkScreenByName(QString screenName);
     bool checkMapTouchDeviceById(int id);
     bool checkMapScreenByName(const QString screenName);
+    bool readMateToKscreen();
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();
@@ -145,6 +146,10 @@ Q_SIGNALS:
     // DBus
     void outputConnected(const QString &outputName);
     void unknownOutputConnected(const QString &outputName);
+
+protected:
+    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
+    QMultiMap<QString, int>     mIntDate;
 
 private:
 

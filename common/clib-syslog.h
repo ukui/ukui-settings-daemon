@@ -40,6 +40,10 @@ extern "C" {
 
 #include<time.h>
 
+#define USD_LOG_IN_SYSLOG(logLevel,...) {\
+   syslog_info(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
+}
+
 #define USD_LOG(logLevel,...) {\
    syslog_to_self_dir(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }

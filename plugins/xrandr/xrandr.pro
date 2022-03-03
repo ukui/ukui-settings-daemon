@@ -32,6 +32,7 @@ SOURCES += \
     xrandr-plugin.cpp
 
 HEADERS += \
+    mateouput.h \
     xrandr-adaptor.h \
     xrandr-config.h \
     xrandr-dbus.h \
