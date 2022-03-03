@@ -20,9 +20,10 @@
 #define DISKSPACE_H
 
 #include <QObject>
-//#include <QApplication>
-#include <QGSettings>
 
+#include <QApplication>
+#include <QGSettings/qgsettings.h>
+#include "usd-ldsm-dialog.h"
 #include "config.h"
 
 #include <sys/statvfs.h>
@@ -37,10 +38,8 @@
 #include <gtk/gtk.h>
 
 #include <ldsm-trash-empty.h>
-#include "usd-ldsm-dialog.h"
 
 #include <qhash.h>
-class QGSettings;
 typedef struct
 {
     GUnixMountEntry *mount;
@@ -68,9 +67,9 @@ public:
                                 bool       other_usable_volumes);
     static void ldsm_mounts_changed (GObject  *monitor,gpointer  data,DIskSpace *disk);
 
-public Q_SLOTS:
-    void usdLdsmUpdateConfig(QString);
+    bool ldsmGetIgnorePath(const gchar *path);
     bool ldsm_check_all_mounts();
+    void usdLdsmUpdateConfig(QString);
 
 private:
     void cleanNotifyHash();

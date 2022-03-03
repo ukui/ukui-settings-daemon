@@ -19,16 +19,45 @@
 
 #include <QString>
 #include <QFile>
+#include <QProcess>
 #include "housekeeping-plugin.h"
 #include "clib-syslog.h"
 
 PluginInterface     *HousekeepingPlugin::mInstance=nullptr;
 
+QString getCurrentUserName()
+{
+    QString name;
+    if (name.isEmpty()){
+        QStringList envList = QProcess::systemEnvironment();
+        for(const QString& env : envList){
+            if(env.startsWith("USERNAME")){
+                QStringList strList = env.split('=');
+                if(strList.size() > 2){
+                    name = strList[1];
+                }
+            }
+        }
+    }
+    if(!name.isEmpty())
+        return name;
+    QProcess process;
+    process.start("whoami", QStringList());
+    process.waitForFinished();
+    name = QString::fromLocal8Bit(process.readAllStandardOutput()).trimmed();
+    return name.isEmpty() ? QString("User") : name;
+}
+
+
 HousekeepingPlugin::HousekeepingPlugin()
 {
-    mHouseManager = new HousekeepingManager();
-    if(!mHouseManager)
-        syslog(LOG_ERR,"Unable to start Housekeeping Manager!");
+    userName = getCurrentUserName();
+    if(userName.compare("lightdm") != 0){
+        mHouseManager = new HousekeepingManager();
+        if(!mHouseManager)
+            syslog(LOG_ERR,"Unable to start Housekeeping Manager!");
+    }
+
 }
 
 HousekeepingPlugin::~HousekeepingPlugin()
@@ -62,7 +91,11 @@ void HousekeepingPlugin::activate()
 {
     if(isTrialMode())
         return;
-    mHouseManager->HousekeepingManagerStart();
+
+    if(userName.compare("lightdm") != 0){
+        mHouseManager->HousekeepingManagerStart();
+    }
+
 }
 
 PluginInterface *HousekeepingPlugin::getInstance()
@@ -76,7 +109,10 @@ void HousekeepingPlugin::deactivate()
 {
     if(isTrialMode())
         return;
-    mHouseManager->HousekeepingManagerStop();
+
+    if(mHouseManager)
+            mHouseManager->HousekeepingManagerStop();
+
 }
 
 PluginInterface *createSettingsPlugin()

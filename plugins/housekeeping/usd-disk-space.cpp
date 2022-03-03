@@ -42,26 +42,31 @@ DIskSpace::DIskSpace()
 
     ldsm_timeout_cb = new QTimer();
     trash_empty=new LdsmTrashEmpty();
-    connect(ldsm_timeout_cb, SIGNAL(timeout()), this, SLOT(ldsm_check_all_mounts()));
+    ldsm_notified_hash=NULL;
+    ldsm_monitor = NULL;
+    free_percent_notify = 0.05;
+    free_percent_notify_again = 0.01;
+    free_size_gb_no_notify = 2;
+    min_notify_period = 10;
+    ignore_paths = NULL;
+    done = FALSE;
+
+    connect(ldsm_timeout_cb, &QTimer::timeout,
+            this, &DIskSpace::ldsm_check_all_mounts);
+
     ldsm_timeout_cb->start();
-    this->ldsm_notified_hash=NULL;
-    this->ldsm_monitor = NULL;
-    this->free_percent_notify = 0.05;
-    this->free_percent_notify_again = 0.01;
-    this->free_size_gb_no_notify = 2;
-    this->min_notify_period = 10;
-    this->ignore_paths = NULL;
-    this->done = FALSE;
+
 
     if (QGSettings::isSchemaInstalled(SETTINGS_HOUSEKEEPING_SCHEMA)) {
         settings = new QGSettings(SETTINGS_HOUSEKEEPING_SCHEMA);
     }
-    this->dialog = NULL;
+    this->dialog = nullptr;
 }
 
 DIskSpace::~DIskSpace()
 {
     delete trash_empty;
+    delete settings;
 }
 
 static gint
@@ -94,16 +99,17 @@ void DIskSpace::usdLdsmGetConfig()
     free_percent_notify =settings->get(SETTINGS_FREE_PC_NOTIFY_KEY).toDouble();
     if (free_percent_notify >= 1 || free_percent_notify < 0) {
         /* FIXME define min and max in gschema! */
-        g_warning ("Invalid configuration of free_percent_notify: %f\n" \
-                   "Using sensible default", free_percent_notify);
+        qWarning ("housekeeping: Invalid configuration of free_percent_notify: %f\n" \
+                           "Using sensible default", free_percent_notify);
+
         free_percent_notify = 0.05;
     }
     // 取得第二次提醒的百分比时机
     free_percent_notify_again = settings->get(SETTINGS_FREE_PC_NOTIFY_AGAIN_KEY).toDouble();
     if (free_percent_notify_again >= 1 || free_percent_notify_again < 0) {
         /* FIXME define min and max in gschema! */
-        g_warning ("Invalid configuration of free_percent_notify_again: %f\n" \
-                   "Using sensible default\n", free_percent_notify_again);
+        qWarning ("housekeeping: Invalid configuration of free_percent_notify_again: %f\n" \
+                           "Using sensible default\n", free_percent_notify_again);
         free_percent_notify_again = 0.01;
     }
 
@@ -116,14 +122,6 @@ void DIskSpace::usdLdsmGetConfig()
         g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
         g_slist_free (ignore_paths);
         ignore_paths = NULL;
-    }
-
-    // 取得清理忽略的目录
-    //settings_list =settings->getStrv(SETTINGS_IGNORE_PATHS);
-    QVariantList ignoreList = settings->choices(SETTINGS_IGNORE_PATHS);
-    QVariantList::const_iterator it;
-    for (it = ignoreList.constBegin(); it != ignoreList.constEnd(); ++it) {
-        m_notified_hash.remove((*it).toString().toLatin1().data());
     }
 }
 
@@ -173,7 +171,7 @@ bool DIskSpace::ldsm_mount_should_ignore (GUnixMountEntry *mount)
     const gchar *fs, *device, *path;
 
     path = g_unix_mount_get_mount_path (mount);
-    if (DIskSpace::ldsm_mount_is_user_ignore (path))
+    if (ldsm_mount_is_user_ignore (path))
         return TRUE;
 
     /* This is borrowed from GLib and used as a way to determine
@@ -399,30 +397,30 @@ bool DIskSpace::ldsm_notify_for_mount (LdsmMountInfo *mount,
 
     response = dialog->exec();
     delete dialog;
-    dialog = NULL;
+    dialog = nullptr;
 
     switch (response) {
     case GTK_RESPONSE_CANCEL:
-        retval = FALSE;
+        retval = false;
         break;
     case LDSM_DIALOG_RESPONSE_ANALYZE:
-        retval = FALSE;
+        retval = false;
         ldsm_analyze_path (path);
         break;
     case LDSM_DIALOG_RESPONSE_EMPTY_TRASH:
-        retval = FALSE;
+        retval = false;
         trash_empty->usdLdsmTrashEmpty();//调清空回收站dialog
         break;
     case GTK_RESPONSE_NONE:
     case GTK_RESPONSE_DELETE_EVENT:
-        retval = TRUE;
+        retval = true;
         break;
     case LDSM_DIALOG_IGNORE:
-        retval = TRUE;
+        retval = true;
         break;
     default:
         //g_assert_not_reached ();
-        retval = FALSE;
+        retval = false;
     }
     free (path);
     return retval;
@@ -509,6 +507,18 @@ void DIskSpace::ldsm_maybe_warn_mounts (GList *mounts,
     }
 }
 
+bool DIskSpace::ldsmGetIgnorePath(const gchar *path)
+{
+    // 取得清理忽略的目录
+    QStringList ignoreList = settings->get(SETTINGS_IGNORE_PATHS).toStringList();
+    for (QString it : ignoreList) {
+        if (it.compare(path) == 0)
+            return true;
+    }
+    return false;
+}
+
+
 bool DIskSpace::ldsm_check_all_mounts ()
 {
     GList *mounts;
@@ -547,8 +557,15 @@ bool DIskSpace::ldsm_check_all_mounts ()
         path = g_unix_mount_get_mount_path (mount);
 
         if (g_strcmp0 (path, "/boot/efi") == 0 ||
-            g_strcmp0 (path, "/boot") == 0 )
+                g_strcmp0 (path, "/boot") == 0 ){
+            ldsm_free_mount_info (mount_info);
             continue;
+        }
+
+        if (ldsmGetIgnorePath(path)){
+            ldsm_free_mount_info (mount_info);
+            continue;
+        }
 
         if (g_unix_mount_is_readonly (mount)) {
             ldsm_free_mount_info (mount_info);
@@ -620,7 +637,8 @@ void DIskSpace::UsdLdsmSetup(bool check_now)
         //return;
     }
     usdLdsmGetConfig();
-    connect(settings,SIGNAL(changed(QString)),this,SLOT(usdLdsmUpdateConfig(QString)));
+    connect(settings, &QGSettings::changed,
+            this,    &DIskSpace::usdLdsmUpdateConfig);
 #if GLIB_CHECK_VERSION (2, 44, 0)
     ldsm_monitor = g_unix_mount_monitor_get ();
 #else
@@ -655,12 +673,7 @@ void DIskSpace::UsdLdsmClean()
     if (settings) {
         g_object_unref (settings);
     }
-    /*
-    if (dialog) {
-        delete dialog;
-        dialog = NULL;
-    }
-*/
+
     if (ignore_paths) {
         g_slist_foreach (ignore_paths, (GFunc) g_free, NULL);
         g_slist_free (ignore_paths);
