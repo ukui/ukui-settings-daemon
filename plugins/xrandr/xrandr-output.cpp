@@ -365,7 +365,7 @@ void xrandrOutput::readInOutputs(KScreen::ConfigPtr config, const QVariantList &
             //output->setPos(replicationSource->pos());
             //output->setLogicalSize(replicationSource->logicalSize());
         } else {
-            output->setLogicalSize(QSizeF());
+            output->setExplicitLogicalSize(QSizeF());
         }
     }
 
