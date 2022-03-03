@@ -52,6 +52,7 @@ const QStringList busNames ={"org.mpris.MediaPlayer2.audacious",
                              "org.mpris.MediaPlayer2.gmusicbrowser",
                              "org.mpris.MediaPlayer2.spotify",
                              "org.mpris.MediaPlayer2.KylinVideo",
+                             "org.mpris.MediaPlayer2.KylinMusic",
                             };
 
 MprisManager* MprisManager::mMprisManager = nullptr;
