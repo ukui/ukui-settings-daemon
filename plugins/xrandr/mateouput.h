@@ -1,6 +1,7 @@
 #ifndef MATEOUPUT_H
 #define MATEOUPUT_H
 #include <QObject>
+#include <QDebug>
 #include <QList>
 #include "clib-syslog.h"
 
@@ -20,6 +21,15 @@ Q_OBJECT
     Q_PROPERTY(QString y READ gety WRITE sety)
     Q_PROPERTY(QString rotation READ getrotation WRITE setrotation)
     Q_PROPERTY(QString primary READ getprimary WRITE setprimary)
+public:
+
+    XrandrMateOuput(){
+//        qDebug()<<"**********************************88" <<"new";
+    }
+
+    ~XrandrMateOuput(){
+//        qDebug()<<"**********************************88" <<"delete";
+    }
 
 private:
 
@@ -39,7 +49,7 @@ private:
 class MateConfig{
 public:
     QString m_clone;
-    QList<XrandrMateOuput> m_outputList;
+    QList<XrandrMateOuput*> m_outputList;
 };
 
 #endif // MATEOUPUT_H
