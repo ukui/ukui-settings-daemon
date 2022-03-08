@@ -219,7 +219,7 @@ void MprisManager::keyPressed(QString application,QString operation)
         return;
 
     if(mPlayerQuque->isEmpty()) {
-         USD_LOG(LOG_DEBUG,".");
+         USD_LOG(LOG_DEBUG,"need't send msg");
         return;
     }
 
@@ -235,7 +235,7 @@ void MprisManager::keyPressed(QString application,QString operation)
         mprisKey = "Stop";
 
     if(mprisKey.isNull()) {
-        USD_LOG(LOG_DEBUG,".");
+        USD_LOG(LOG_DEBUG,"error op [%s]!",operation.toLatin1().data());
        return;
     }
 
@@ -245,7 +245,7 @@ void MprisManager::keyPressed(QString application,QString operation)
     /* create a dbus method call by QDBusMessage, the @mprisName is a member of @busNames
      * 通过QDBusMessage的方式创建一个dbus方法调用，@mprisName 来自于 @busNames
      */
-    USD_LOG(LOG_DEBUG,"mprisHead:%s mpriName:%s",mprisHead.toLatin1().data(),mprisName.toLatin1().data());
+
     playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKey);
     response = QDBusConnection::sessionBus().call(playerMsg);
 
