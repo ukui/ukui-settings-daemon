@@ -87,10 +87,6 @@ public:
     void turnWifiOff();
     void turnWifiOn();
 
-    QString getCameraBusinfo();
-    int getCameraDeviceEnable();
-    QString toggleCameraDevice(QString businfo);
-
     int getCurrentBluetoothMode();
     QString toggleBluetoothMode(bool enable);
 

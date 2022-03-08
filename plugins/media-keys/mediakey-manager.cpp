@@ -2207,32 +2207,25 @@ void MediaKeysManager::doWebcamAction()
                            "org.ukui.authority.interface", \
                            QDBusConnection::systemBus());
 
-    QDBusReply<QString> reply = iface->call("getCameraBusinfo");
-    if (reply.isValid()){
-        QString businfo = reply.value();
-        QDBusReply<QString> reply2 = iface->call("toggleCameraDevice", businfo);
+    QDBusReply<QString> reply2 = iface->call("toggleCameraDevice");
 
-        if (reply2.isValid()){
-            QString result = reply2.value();
+    if (reply2.isValid()){
+        QString result = reply2.value();
 
-            if (result == QString("binded")){
-                mDeviceWindow->setAction("ukui-camera-on");
-                iface->call("setCameraKeyboardLight", false);
-            } else if (result == QString("unbinded")){
-                mDeviceWindow->setAction("ukui-camera-off");
+        if (result == QString("binded")){
+            mDeviceWindow->setAction("ukui-camera-on");
+            iface->call("setCameraKeyboardLight", false);
+        } else if (result == QString("unbinded")){
+            mDeviceWindow->setAction("ukui-camera-off");
 
-                iface->call("setCameraKeyboardLight", true);
-            } else {
-                USD_LOG(LOG_DEBUG,"toggleCameraDevice result %s", result.toLatin1().data());
-            }
-            mDeviceWindow->dialogShow();
-
+            iface->call("setCameraKeyboardLight", true);
         } else {
-            USD_LOG(LOG_ERR,"Toggle Camera device Failed!");
+            USD_LOG(LOG_DEBUG,"toggleCameraDevice result %s", result.toLatin1().data());
         }
+        mDeviceWindow->dialogShow();
 
     } else {
-        USD_LOG(LOG_ERR,"Get Camera Businfo Failed!");
+        USD_LOG(LOG_ERR,"Toggle Camera device Failed!");
     }
     delete iface;
 }
