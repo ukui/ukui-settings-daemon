@@ -37,7 +37,7 @@ public slots:
 
     Q_SCRIPTABLE QString getCameraBusinfo();
     Q_SCRIPTABLE int getCameraDeviceEnable();
-    Q_SCRIPTABLE QString toggleCameraDevice(QString businfo);
+    Q_SCRIPTABLE QString toggleCameraDevice();
     Q_SCRIPTABLE int setCameraKeyboardLight(bool lightup);
 
 signals:
