@@ -130,9 +130,8 @@ int AuthorityService::getCameraDeviceEnable()
     return isExists;
 }
 
-QString AuthorityService::toggleCameraDevice(QString businfo)
+QString AuthorityService::toggleCameraDevice()
 {
-
     QString path = QString("/sys/bus/usb/drivers/usb/");
 
     int status = getCameraDeviceEnable();
@@ -141,6 +140,7 @@ QString AuthorityService::toggleCameraDevice(QString businfo)
         return QString("Camera Device Not Exists!");
     }
 
+    QString businfo = getCameraBusinfo();
     if (status){
         QString cmd = QString("echo '%1' > %2/unbind").arg(businfo).arg(path);
         system(cmd.toLatin1().data());

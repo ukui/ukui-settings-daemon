@@ -1,3 +1,22 @@
+ukui-settings-daemon (3.1.0-1.43) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：修复dbus提权的安全问题
+  * 其他改动影响域：无
+
+ -- sundagao <sundagao@kylinos.cn>  Tue, 08 Mar 2022 10:14:38 +0800
+
+ukui-settings-daemon (3.1.0-1.41) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：无
+  * 其他改动说明：功耗问题
+  * 其他改动影响域：无
+
+
+ -- sundagao <sundagao@kylinos.cn>  Thu, 03 Mar 2022 15:49:00 +0800
+
 ukui-settings-daemon (3.1.0-1.40) v101; urgency=medium
 
   * BUG号：107432 【快捷键】升级后，快捷键及功能热键全部失效（2/2units）

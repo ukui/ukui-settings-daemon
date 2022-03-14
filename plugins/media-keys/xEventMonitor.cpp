@@ -18,6 +18,7 @@
  */
 #include "xEventMonitor.h"
 
+#define MAX_OPENDISPLAY_COUNT 10
 
 xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
 {
@@ -28,9 +29,14 @@ xEventMonitor::xEventMonitor(QObject *parent) : QThread(parent)
 
 void xEventMonitor::run()
 {
-
+    int count = 0;
     while (!isOpenDisplay) {
-
+        if(MAX_OPENDISPLAY_COUNT <= count) {
+            USD_LOG(LOG_DEBUG,"unable to open display and opendisplay is 10 times");
+            break;
+        }
+        msleep(500*count);
+        ++count;
         Display* display = XOpenDisplay(0);
         USD_LOG(LOG_DEBUG,"start xevent monitor init!");
         if (display == 0) {
@@ -82,7 +88,6 @@ void xEventMonitor::run()
 
         XCloseDisplay(display);
         XCloseDisplay(display_datalink);
-        msleep(500);
     }
 }
 
