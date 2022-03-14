@@ -72,6 +72,11 @@ int main(int argc, char *argv[])
 
     parser.addOption(userOption);
 
+    QCommandLineOption cloneOption(QStringList() << "c" << "clone",
+                                       QApplication::translate("main", "Set the screen to clone mode"));
+
+    parser.addOption(cloneOption);
+
     parser.setApplicationDescription(QGuiApplication::translate("main", "Qt"));  // 设置应用程序描述信息
 
 
@@ -80,17 +85,20 @@ int main(int argc, char *argv[])
     SaveScreenParam saveParam;
 
     if(parser.isSet(setOption)) {
-        USD_LOG(LOG_DEBUG,".");
+        SYS_LOG(LOG_DEBUG,".");
         saveParam.setIsSet(true);
     } else if (parser.isSet(getOption)) {
-        USD_LOG(LOG_DEBUG,".");
+        SYS_LOG(LOG_DEBUG,".");
         saveParam.setIsGet(true);
     } else if (parser.isSet(userOption)){
         QString user = parser.value(userOption);
         saveParam.setUserName(user);
-        USD_LOG(LOG_DEBUG,"userOption..user:%s.",user.toLatin1().data());
+        saveParam.setUserConfigParam();
+    } else if (parser.isSet(cloneOption)){
+        saveParam.setClone();
     }
 
+//    saveParam.setClone();
     saveParam.getConfig();
     return app.exec();
 }

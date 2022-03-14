@@ -27,7 +27,7 @@ CONFIG += C++11
 
 PKGCONFIG += mate-desktop-2.0 \
 
-PKGCONFIG += glib-2.0  gio-2.0 libxklavier x11 xrandr xtst atk gdk-3.0 gtk+-3.0 xi
+PKGCONFIG += glib-2.0  gio-2.0 libxklavier x11 xrandr xtst atk gdk-3.0 gtk+-3.0 xi xrandr
 
 
 # You can also make your code fail to compile if you use deprecated APIs.

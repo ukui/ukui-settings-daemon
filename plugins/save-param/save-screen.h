@@ -28,8 +28,14 @@
 #include <KF5/KScreen/kscreen/config.h>
 #include <KF5/KScreen/kscreen/getconfigoperation.h>
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
-#include "xrandr-config.h"
 
+#include "xrandr-config.h"
+#include "xrandrouput.h"
+
+extern "C"{
+#include <glib.h>
+#include <X11/extensions/Xrandr.h>
+}
 
 class SaveScreenParam :  public QObject
 {
@@ -64,16 +70,44 @@ public:
 
     void getConfig();
 
+    void setClone();
+
+    void setUserConfigParam();
+
     void setUserName(QString str);
 
+    void setScreenSize();
+
     void readConfigAndSet();
+    //kscreen 接口目前废弃
+    void readConfigAndSetBak();
 private:
     bool m_isSet;
     bool m_isGet;
+    int	m_screen;
+    QString m_KscreenConfigFile;
+    char   *m_pDisplayName = NULL;
+
+    Display	*m_pDpy;
+    Window	m_rootWindow;
+    XRRScreenResources  *m_pScreenRes;
 
     QString m_userName;
-
     std::unique_ptr<xrandrConfig> m_MonitoredConfig = nullptr;
+
+private:
+    OutputsConfig m_kscreenConfigParam;
+    void getRootWindows();
+    void getScreen();
+    bool initXparam();
+
+    int crtcDisable();
+    int crtcApply();
+
+    RRMode getModeId(XRROutputInfo	*outputInfo, UsdOuputProperty *kscreenOutputParam);
+    QString getConfigFileName();
+    QString getScreenParamFromConfigName(QString configFileName);
+
 };
 
 #endif // KDSWIDGET_H
