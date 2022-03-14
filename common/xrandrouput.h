@@ -8,7 +8,7 @@
 #define DEFINE_QSTRING(var) QString var; QString get##var(){return var;} void set##var(QString e){var = e;}
 //#define DEFINE_QSTRING(var) QString get##var(){return var;} void set##var(QString e){e = var;}
 
-class XrandrMateOuput : public QObject{
+class UsdOuputProperty : public QObject{
 Q_OBJECT
     Q_PROPERTY(QString name READ getname WRITE setname)
     Q_PROPERTY(QString vendor READ getvendor WRITE setvendor)
@@ -23,14 +23,22 @@ Q_OBJECT
     Q_PROPERTY(QString primary READ getprimary WRITE setprimary)
 public:
 
-    XrandrMateOuput(){
+    UsdOuputProperty(){
 //        qDebug()<<"**********************************88" <<"new";
     }
 
-    ~XrandrMateOuput(){
+    ~UsdOuputProperty(){
 //        qDebug()<<"**********************************88" <<"delete";
     }
 
+    void showAllElement(){
+        USD_LOG_SHOW_PARAMS(name.toLatin1().data());
+        USD_LOG_SHOW_PARAMS(width.toLatin1().data());
+        USD_LOG_SHOW_PARAMS(height.toLatin1().data());
+        USD_LOG_SHOW_PARAMS(x.toLatin1().data());
+        USD_LOG_SHOW_PARAMS(y.toLatin1().data());
+        USD_LOG_SHOW_PARAMS(rate.toLatin1().data());
+    }
 private:
 
     DEFINE_QSTRING(name)
@@ -46,10 +54,13 @@ private:
     DEFINE_QSTRING(primary)
 };
 
-class MateConfig{
+class OutputsConfig{
 public:
     QString m_clone;
-    QList<XrandrMateOuput*> m_outputList;
+    int m_screenWidth = 0;
+    int m_screenHeight = 0;
+
+    QList<UsdOuputProperty*> m_outputList;
 };
 
 #endif // MATEOUPUT_H
