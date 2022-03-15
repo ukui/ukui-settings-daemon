@@ -44,7 +44,7 @@
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
 #include <usd_base_class.h>
 
-#include "mateouput.h"
+#include "xrandrouput.h"
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
@@ -127,7 +127,7 @@ public:
     bool checkMapTouchDeviceById(int id);
     bool checkMapScreenByName(const QString screenName);
     bool readMateToKscreen(char monitorsCount,QMap<QString, QString> &monitorsName);
-    int getMateConfigParam(XrandrMateOuput *mateOutput, QString param);
+    int getMateConfigParam(UsdOuputProperty *mateOutput, QString param);
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();

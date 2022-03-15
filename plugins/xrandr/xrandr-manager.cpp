@@ -28,7 +28,6 @@
 #include <QX11Info>
 #include <QtXml>
 
-#include "mateouput.h"
 #include "xrandr-manager.h"
 
 #include <QOrientationReading>
@@ -86,6 +85,8 @@ XrandrManager::XrandrManager()
         sessionBus.registerObject(DBUS_XRANDR_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
+    } else {
+        USD_LOG(LOG_ERR, "register dbus error");
     }
 
     mUkccDbus = new QDBusInterface("org.ukui.ukcc.session",
@@ -359,7 +360,7 @@ bool XrandrManager::readMateToKscreen(char monitorsCount,QMap<QString, QString> 
     QString homePath = getenv("HOME");
     QString monitorFile = homePath+"/.config/monitors.xml";
 
-    MateConfig monitorsConfig;
+    OutputsConfig monitorsConfig;
 
     QFile file(monitorFile);
 
@@ -401,7 +402,7 @@ bool XrandrManager::readMateToKscreen(char monitorsCount,QMap<QString, QString> 
 
             /*a configuration have 4 outputs*/
             for (int i=0;i<list.count();i++) {
-                XrandrMateOuput *mateOutput;
+                UsdOuputProperty *mateOutput;
                 QDomNode node=list.at(i);
                 QDomNodeList e2 = node.childNodes();
 
@@ -425,7 +426,7 @@ bool XrandrManager::readMateToKscreen(char monitorsCount,QMap<QString, QString> 
                         continue;
                     }
 
-                    mateOutput = new XrandrMateOuput();
+                    mateOutput = new UsdOuputProperty();
                     mateOutput->setProperty("name", node.toElement().attribute("name"));
 
                     for (int j=0;j<e2.count();j++) {
@@ -562,7 +563,7 @@ FINISH:
     return ret;
 }
 
-int XrandrManager::getMateConfigParam(XrandrMateOuput *mateOutput, QString param)
+int XrandrManager::getMateConfigParam(UsdOuputProperty *mateOutput, QString param)
 {
     bool isOk;
     int ret;
@@ -1387,8 +1388,13 @@ void XrandrManager::SaveConfigTimerHandle()
         mIsApplyConfigWhenSave = false;
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode));
     } else {
+        QProcess subProcess;
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
         mMonitoredConfig->writeFile(true);
+        QString usdSaveParam = "save-param -g";
+        USD_LOG(LOG_DEBUG,"save param in lightdm-data.");
+        subProcess.start(usdSaveParam);
+        subProcess.waitForFinished();
 //        SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
         autoRemapTouchscreen();
         sendScreenModeToDbus();

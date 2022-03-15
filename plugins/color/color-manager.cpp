@@ -180,7 +180,7 @@ void ColorManager::PollSmoothDestroy ()
 
 void ColorManager::NightLightSetTemperatureInternal (double temperature)
 {
-    if (ABS (cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA) {
+    if (ABS(cached_temperature - temperature) <= USD_TEMPERATURE_MAX_DELTA) {
 //        USD_LOG(LOG_DEBUG,"set night light %f error ABS:%f delta:%f", temperature,ABS (cached_temperature - temperature),USD_TEMPERATURE_MAX_DELTA);
         return;
     }
@@ -465,7 +465,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     if (manager->forced) {
         temperature = manager->settings->get(COLOR_KEY_TEMPERATURE).toUInt();
         manager->NightLightSetTemperature (temperature);
-        USD_LOG(LOG_DEBUG,"set color to :%d",temperature);
+//        USD_LOG(LOG_DEBUG,"set color to :%d",temperature);
         return;
     }
 
@@ -499,7 +499,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     }
 
     if(!manager->settings->get(COLOR_KEY_ENABLED).toBool()){
-        USD_LOG(LOG_DEBUG, "stop it..");
+//        USD_LOG(LOG_DEBUG, "stop it..");
         manager->NightLightSetActive (false);
         return;
     }
@@ -507,7 +507,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
     if(manager->settings->get(COLOR_KEY_ALLDAY).toBool()){
         temperature = manager->settings->get(COLOR_KEY_TEMPERATURE).toUInt();
         manager->NightLightSetTemperature (temperature);
-        USD_LOG(LOG_DEBUG,"COLOR_KEY_ALLDAY temperature:%d",temperature);
+//        USD_LOG(LOG_DEBUG,"COLOR_KEY_ALLDAY temperature:%d",temperature);
         return;
     }
 
@@ -613,7 +613,7 @@ void ColorManager::NightLightRecheck(ColorManager *manager)
 //         temp_smeared, temperature);
     manager->NightLightSetActive (true);
     manager->NightLightSetTemperature (temp_smeared);
-    USD_LOG(LOG_DEBUG,"set temp :%d",temp_smeared);
+//    USD_LOG(LOG_DEBUG,"set temp :%d",temp_smeared);
 }
 
 void ColorManager::OnLocationNotify(GClueSimple *simple,
