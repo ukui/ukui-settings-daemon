@@ -118,6 +118,7 @@ void SaveScreenParam::setScreenSize()
         double dpi = (25.4 * DisplayHeight(m_pDpy, screenInt)) / DisplayHeightMM(m_pDpy,screenInt);
         fb_width_mm = (25.4 * m_kscreenConfigParam.m_screenWidth) /dpi;
         fb_height_mm = (25.4 * m_kscreenConfigParam.m_screenHeight) /dpi;
+        //dpi = Dot Per Inch，一英寸是2.54cm即25.4mm
         XRRSetScreenSize(m_pDpy, m_rootWindow, m_kscreenConfigParam.m_screenWidth, m_kscreenConfigParam.m_screenHeight,
                         fb_width_mm, fb_height_mm);
 
@@ -208,7 +209,9 @@ void SaveScreenParam::readConfigAndSet()
 //    }
 
     setScreenSize();
+
     XRRSetOutputPrimary(m_pDpy, m_rootWindow, None);
+
     for (tempInt = 0; tempInt < m_pScreenRes->ncrtc; tempInt++) {
         RRMode monitorMode = 0;
         XRRCrtcInfo *crtcInfo = XRRGetCrtcInfo(m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt]);
@@ -249,7 +252,7 @@ void SaveScreenParam::readConfigAndSet()
             RRMode mode：模式
             Rotation rotation：角度
             RROutput *outputs：输出设备的ID地址
-            int noutputs：貌似固定为1
+            int noutputs：crtc中的outputs数量
            */
            ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
                                    kscreenOutputParam->property("x").toInt(), kscreenOutputParam->property("y").toInt(), monitorMode, RR_Rotate_0, crtcInfo->outputs, crtcInfo->noutput);
