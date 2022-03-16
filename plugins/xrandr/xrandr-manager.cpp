@@ -46,6 +46,7 @@ extern "C"{
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
 #include <libudev.h>
+
 }
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
@@ -74,7 +75,6 @@ XrandrManager::XrandrManager()
     mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
 
     KScreen::Log::instance();
-
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 
@@ -1149,7 +1149,10 @@ void XrandrManager::sendScreenModeToDbus()
 
 void XrandrManager::applyConfig()
 {
+
     if (mMonitoredConfig->canBeApplied()) {
+//        m_saveScreenParam->disableCrtc();
+        disableCrtc();
         connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
                 &KScreen::SetConfigOperation::finished,
                 this, [this]() {
@@ -2013,6 +2016,53 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 {
     USD_LOG(LOG_DEBUG,"controlScreenMap ...");
     RotationChangedEvent(screenMap);
+}
+
+void XrandrManager::disableCrtc()
+{
+    int tempInt;
+
+    Display	*m_pDpy;
+    Window	m_rootWindow;
+    XRRScreenResources  *m_pScreenRes;
+    int m_screen;
+    m_pDpy = XOpenDisplay (NULL);
+    if (m_pDpy == NULL) {
+        USD_LOG(LOG_DEBUG,"XOpenDisplay fail...");
+        return ;
+    }
+
+    m_screen = DefaultScreen(m_pDpy);
+    if (m_screen >= ScreenCount (m_pDpy)) {
+        USD_LOG(LOG_DEBUG,"Invalid screen number %d (display has %d)",m_screen, ScreenCount(m_pDpy));
+        return ;
+    }
+
+    m_rootWindow = RootWindow(m_pDpy, m_screen);
+
+    m_pScreenRes = XRRGetScreenResources(m_pDpy, m_rootWindow);
+    if (NULL == m_pScreenRes) {
+        USD_LOG(LOG_DEBUG,"could not get screen resources",m_screen, ScreenCount(m_pDpy));
+        return ;
+    }
+
+    if (m_pScreenRes->noutput == 0) {
+        USD_LOG(LOG_DEBUG, "noutput is 0!!");
+        return ;
+    }
+
+    USD_LOG(LOG_DEBUG,"initXparam success");
+
+    for (tempInt = 0; tempInt < m_pScreenRes->ncrtc; tempInt++) {
+        int ret = 0;
+        ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
+                                0, 0, None, RR_Rotate_0, NULL, 0);
+        if (ret != RRSetConfigSuccess) {
+            USD_LOG(LOG_ERR,"disable crtc:%d error! ");
+        }
+    }
+    XCloseDisplay(m_pDpy);
+    USD_LOG(LOG_DEBUG,"disable crtc  success");
 }
 
 /**

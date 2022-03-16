@@ -27,25 +27,6 @@
 bool g_isGet = false;
 bool g_isSet = false;
 
-static void parse_args (int argc, char *argv[])
-{
-    if (argc == 1) return;
-
-    for (int i = 1; i < argc; ++i) {
-        if (0 == QString::compare(QString(argv[i]).trimmed(), QString("--get"))) {
-            g_isGet = true;
-        } else if (0 == QString::compare(QString(argv[i]).trimmed(), QString("--set"))) {
-            g_isSet = true;
-        } else {
-            if (argc > 1) {
-//                print_help();
-                USD_LOG(LOG_DEBUG, " Unsupported command line arguments: '%s'", argv[i]);
-                exit(0);
-            }
-        }
-    }
-}
-
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);

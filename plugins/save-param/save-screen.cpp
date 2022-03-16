@@ -45,6 +45,7 @@ SaveScreenParam::SaveScreenParam(QObject *parent): QObject(parent)
 SaveScreenParam::~SaveScreenParam()
 {
     XCloseDisplay(m_pDpy);
+    USD_LOG(LOG_DEBUG,".....");
 }
 
 void SaveScreenParam::getConfig(){
@@ -68,11 +69,9 @@ void SaveScreenParam::getConfig(){
         if (false == m_userName.isEmpty()) {
             USD_LOG(LOG_DEBUG,".");
             m_MonitoredConfig->setUserName(m_userName);
-            readConfigAndSet();
         }
         else if (isSet()) {
             SYS_LOG(LOG_DEBUG,".");
-            readConfigAndSet();
         } else if (isGet()) {
             SYS_LOG(LOG_DEBUG,".");
             m_MonitoredConfig->writeFileForLightDM(false);
@@ -87,7 +86,7 @@ void SaveScreenParam::getConfig(){
 void SaveScreenParam::setClone()
 {
     initXparam();
-    readConfigAndSet();
+//    readConfigAndSet();
     exit(0);
 }
 
@@ -97,7 +96,7 @@ void SaveScreenParam::setUserConfigParam()
         exit(0);
     }
 
-    readConfigAndSet();
+    readKscreenConfigAndSetItWithX(getKscreenConfigFullPathInLightDM());
     exit(0);
 }
 
@@ -127,20 +126,20 @@ void SaveScreenParam::setScreenSize()
     }
 }
 
-void SaveScreenParam::readConfigAndSet()
+void SaveScreenParam::readKscreenConfigAndSetItWithX(QString kscreenConfigName)
 {
     int ret;
     int tempInt;
-    int tempCircle;
-    bool hadFindFirstOutput = false;
-    QFile file;
-    QString configFullPath = "";
 
-    if (m_KscreenConfigFile.isEmpty()) {
+    QFile file;
+    QJsonDocument parser;
+    QVariantList outputsInfo;
+    QString configFullPath = kscreenConfigName;
+
+    if (configFullPath.isEmpty()) {
         return;
     }
 
-    configFullPath = QString("/var/lib/lightdm-data/%1/usd/kscreen/%2").arg(m_userName).arg(m_KscreenConfigFile);
     file.setFileName(configFullPath);
 
     if (!file.open(QIODevice::ReadOnly)) {
@@ -149,8 +148,8 @@ void SaveScreenParam::readConfigAndSet()
     }
 
     SYS_LOG(LOG_DEBUG,"open %s's screen config>%s ok...",m_userName.toLatin1().data(),configFullPath.toLatin1().data());
-    QJsonDocument parser;
-    QVariantList outputsInfo = parser.fromJson(file.readAll()).toVariant().toList();
+
+    outputsInfo = parser.fromJson(file.readAll()).toVariant().toList();
 
     SYS_LOG(LOG_DEBUG,"%dx%d",DisplayWidth(m_pDpy, DefaultScreen (m_pDpy)),DisplayHeight(m_pDpy, DefaultScreen (m_pDpy)));
     SYS_LOG(LOG_DEBUG,"%dmmx%dmm",DisplayWidthMM(m_pDpy, DefaultScreen (m_pDpy)),DisplayHeightMM(m_pDpy, DefaultScreen (m_pDpy)));
@@ -195,7 +194,6 @@ void SaveScreenParam::readConfigAndSet()
     SYS_LOG(LOG_DEBUG,"%dx%d",DisplayWidth(m_pDpy, DefaultScreen (m_pDpy)),DisplayHeight(m_pDpy, DefaultScreen (m_pDpy)));
     SYS_LOG(LOG_DEBUG,"%dmmx%dmm",DisplayWidthMM(m_pDpy, DefaultScreen (m_pDpy)),DisplayHeightMM(m_pDpy, DefaultScreen (m_pDpy)));
 
-
 //    XGrabServer(m_pDpy);
 //所谓crtc ，就是一个显示规则：规定了某个显示器的显示模式，显示器名称，显示方位
     //停止所有输出，避免调整分辨率，刷新率，方向时产生花屏的情况
@@ -208,7 +206,7 @@ void SaveScreenParam::readConfigAndSet()
 //        }
 //    }
 
-    setScreenSize();
+
 
     XRRSetOutputPrimary(m_pDpy, m_rootWindow, None);
 
@@ -269,7 +267,7 @@ void SaveScreenParam::readConfigAndSet()
            }
         }
     }
-
+    setScreenSize();
 return;
 
 #if 0
@@ -390,6 +388,25 @@ return;
 #endif
 }
 
+void SaveScreenParam::disableCrtc()
+{
+    int tempInt = 0;
+
+    if (false == initXparam()) {
+        return;
+    }
+
+    for (tempInt = 0; tempInt < m_pScreenRes->ncrtc; tempInt++) {
+        int ret = 0;
+        ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
+                                0, 0, None, RR_Rotate_0, NULL, 0);
+        if (ret != RRSetConfigSuccess) {
+            SYS_LOG(LOG_ERR,"disable crtc:%d error! ");
+        }
+    }
+
+}
+
 void SaveScreenParam::readConfigAndSetBak()
 {
     if (m_MonitoredConfig->lightdmFileExists()) {
@@ -428,26 +445,13 @@ void SaveScreenParam::getScreen()
 //    m_res = XRRGetScreenResourcesCurrent (m_dpy, root);
 }
 
-bool SaveScreenParam::initXparam()
+int SaveScreenParam::initXparam()
 {
-    int             actualFormat;
-    int             tempInt;
-    uchar           *prop;
-
-    Atom            tempAtom;
-    Atom            actualType;
-
-    ulong           nitems;
-    ulong           bytesAfter;
-    QStringList     outputsHashList;
-
     m_pDpy = XOpenDisplay (m_pDisplayName);
     if (m_pDpy == NULL) {
         SYS_LOG(LOG_DEBUG,"XOpenDisplay fail...");
         return false;
     }
-
-    tempAtom = XInternAtom (m_pDpy, "EDID", false);
 
     m_screen = DefaultScreen(m_pDpy);
     if (m_screen >= ScreenCount (m_pDpy)) {
@@ -464,10 +468,29 @@ bool SaveScreenParam::initXparam()
     }
 
     if (m_pScreenRes->noutput == 0) {
-        SYS_LOG(LOG_DEBUG,"noutput is 0!!");
+        SYS_LOG(LOG_DEBUG, "noutput is 0!!");
         return false;
     }
 
+    SYS_LOG(LOG_DEBUG,"initXparam success");
+    return true;
+}
+
+QString SaveScreenParam::getKscreenConfigFullPathInLightDM()
+{
+    int             actualFormat;
+    int             tempInt;
+
+    uchar           *prop;
+
+    Atom            tempAtom;
+    Atom            actualType;
+
+    ulong           nitems;
+    ulong           bytesAfter;
+    QStringList     outputsHashList;
+
+    tempAtom = XInternAtom (m_pDpy, "EDID", false);
     for (tempInt = 0; tempInt < m_pScreenRes->noutput; tempInt++) {
        XRRGetOutputProperty(m_pDpy, m_pScreenRes->outputs[tempInt], tempAtom,
                  0, 100, False, False,
@@ -487,7 +510,7 @@ bool SaveScreenParam::initXparam()
 
     if (outputsHashList.count() == 0) {
         SYS_LOG(LOG_DEBUG,"outputsHashList is empty");
-        return false;
+        return "";
     }
 
     std::sort(outputsHashList.begin(), outputsHashList.end());
@@ -495,19 +518,16 @@ bool SaveScreenParam::initXparam()
                                                QCryptographicHash::Md5);
 
     m_KscreenConfigFile = QString::fromLatin1(configHash.toHex());
-    SYS_LOG(LOG_DEBUG,"initXparam success");
-    return true;
+
+    if (m_userName.isEmpty()) {
+        return "";
+    }
+
+    return QString("/var/lib/lightdm-data/%1/usd/kscreen/%2").arg(m_userName).arg(QString::fromLatin1(configHash.toHex()));
 }
 
-int SaveScreenParam::crtcDisable()
-{
 
-}
 
-int SaveScreenParam::crtcApply()
-{
-
-}
 
 //所有显示器的模式都放在一起，需要甄别出需要的显示器，避免A取到B的模式。需要判断那个显示器支持那些模式
 RRMode SaveScreenParam::getModeId(XRROutputInfo	*outputInfo,UsdOuputProperty *kscreenOutputParam)
@@ -552,90 +572,7 @@ RRMode SaveScreenParam::getModeId(XRROutputInfo	*outputInfo,UsdOuputProperty *ks
 
     return ret;
 }
-//crct和output是分开的，但是设置时是需要同时设置进去
-QString SaveScreenParam::getConfigFileName()
-{
-    int             actualFormat;
-    int             tempInt;
-    int             tempCircle;
-    uchar           *prop;
 
-    Atom            tempAtom;
-    Atom            actualType;
-
-    ulong           nitems;
-    ulong           bytesAfter;
-    QStringList     outputsHashList;
-    m_pDpy = XOpenDisplay (m_pDisplayName);
-
-    if (m_pDpy == NULL) {
-        SYS_LOG(LOG_ERR,"XOpenDisplay fail...");
-        return "";
-    }
-    tempAtom = XInternAtom (m_pDpy, "EDID", false);
-
-    m_screen = DefaultScreen(m_pDpy);
-    if (m_screen >= ScreenCount (m_pDpy)) {
-        XCloseDisplay(m_pDpy);
-        SYS_LOG(LOG_ERR,"Invalid screen number %d (display has %d)",m_screen, ScreenCount(m_pDpy));
-        return "";
-    }
-
-    m_rootWindow = RootWindow(m_pDpy, m_screen);
-
-    m_pScreenRes = XRRGetScreenResourcesCurrent (m_pDpy, m_rootWindow);
-    if (NULL == m_pScreenRes) {
-        XCloseDisplay(m_pDpy);
-        SYS_LOG(LOG_ERR,"could not get screen resources",m_screen, ScreenCount(m_pDpy));
-        return "";
-    }
-
-    for (tempInt = 0; tempInt < m_pScreenRes->noutput; tempInt++) {
-//       XRROutputInfo	*outputInfo = XRRGetOutputInfo(m_pDpy, m_pScreenRes, m_pScreenRes->outputs[tempInt]);
-
-       XRRGetOutputProperty(m_pDpy, m_pScreenRes->outputs[tempInt], tempAtom,
-                 0, 100, False, False,
-                 AnyPropertyType,
-                 &actualType, &actualFormat,
-                 &nitems, &bytesAfter, &prop);
-
-       if (nitems == 0) {
-           continue;
-       }
-/*
-       for (tempCircle = 0; tempCircle < nitems; tempCircle++) {
-            if (tempCircle != 0 && tempCircle %16 ==0) {
-                printf("\r\n");
-            }
-            printf("%02x",prop[tempCircle]);
-       }
-*/
-       QCryptographicHash hash(QCryptographicHash::Md5);
-       hash.addData(reinterpret_cast<const char *>(prop), nitems);
-       QString checksum = QString::fromLatin1(hash.result().toHex());
-       USD_LOG_SHOW_PARAMS(checksum.toLatin1().data());
-       outputsHashList.append(checksum);
-    }
-
-
-    if (outputsHashList.count() == 0) {
-        return "";
-    }
-
-    std::sort(outputsHashList.begin(), outputsHashList.end());
-    const auto configHash = QCryptographicHash::hash(outputsHashList.join(QString()).toLatin1(),
-                                               QCryptographicHash::Md5);
-
-    QString configHashQStr = QString::fromLatin1(configHash.toHex());
-    USD_LOG_SHOW_PARAMS(configHashQStr.toLatin1().data());
-
-    return configHashQStr;
-}
-
-QString SaveScreenParam::getScreenParamFromConfigName(QString configFileName)
-{
-
-}
 
 
 

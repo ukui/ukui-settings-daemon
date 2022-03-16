@@ -33,8 +33,9 @@
 #include "xrandrouput.h"
 
 extern "C"{
-#include <glib.h>
+//#include <glib.h>
 #include <X11/extensions/Xrandr.h>
+
 }
 
 class SaveScreenParam :  public QObject
@@ -78,9 +79,12 @@ public:
 
     void setScreenSize();
 
-    void readConfigAndSet();
+    void readKscreenConfigAndSetItWithX(QString kscreenConfigName = "");
+
+    void disableCrtc();
     //kscreen 接口目前废弃
     void readConfigAndSetBak();
+
 private:
     bool m_isSet;
     bool m_isGet;
@@ -99,14 +103,9 @@ private:
     OutputsConfig m_kscreenConfigParam;
     void getRootWindows();
     void getScreen();
-    bool initXparam();
-
-    int crtcDisable();
-    int crtcApply();
-
+    int initXparam();
     RRMode getModeId(XRROutputInfo	*outputInfo, UsdOuputProperty *kscreenOutputParam);
-    QString getConfigFileName();
-    QString getScreenParamFromConfigName(QString configFileName);
+    QString getKscreenConfigFullPathInLightDM();
 
 };
 

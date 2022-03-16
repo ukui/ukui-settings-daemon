@@ -51,6 +51,8 @@
 #include "usd_base_class.h"
 #include "usd_global_define.h"
 
+
+
 #define SAVE_CONFIG_TIME 800
 
 typedef struct _MapInfoFromFile
@@ -155,7 +157,7 @@ protected:
     QMultiMap<QString, int>     mIntDate;
 
 private:
-
+    void disableCrtc();
     QList<touchpadMap*>    mTouchMapList; //存储已映射的关系
     Q_INVOKABLE void getInitialConfig();
     QDBusInterface        *t_DbusTableMode;
@@ -167,7 +169,6 @@ private:
     QTimer                *mApplyConfigTimer = nullptr;
     QGSettings            *mXrandrSetting = nullptr;
     QGSettings            *mXsettings = nullptr;
-
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
     QDBusInterface        *mUkccDbus;
