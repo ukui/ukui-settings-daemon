@@ -282,7 +282,6 @@ void VolumeWindow::setVolumeLevel(int level)
 {
     double percentage;
 
-    mVolumeBar->reset();
     mIconName.clear();
     mVolumeLevel = level;
 
