@@ -43,11 +43,15 @@
 #include <KF5/KScreen/kscreen/getconfigoperation.h>
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
 #include <usd_base_class.h>
+
+#include "xrandrouput.h"
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"
 #include "usd_base_class.h"
 #include "usd_global_define.h"
+
+
 
 #define SAVE_CONFIG_TIME 800
 
@@ -124,6 +128,8 @@ public:
     bool checkScreenByName(QString screenName);
     bool checkMapTouchDeviceById(int id);
     bool checkMapScreenByName(const QString screenName);
+    bool readMateToKscreen(char monitorsCount,QMap<QString, QString> &monitorsName);
+    int getMateConfigParam(UsdOuputProperty *mateOutput, QString param);
 public Q_SLOTS:
     void TabletSettingsChanged(const bool tablemode);
     void configChanged();
@@ -146,8 +152,12 @@ Q_SIGNALS:
     void outputConnected(const QString &outputName);
     void unknownOutputConnected(const QString &outputName);
 
-private:
+protected:
+    QMultiMap<QString, QString> XmlFileTag; //存放标签的属性值
+    QMultiMap<QString, int>     mIntDate;
 
+private:
+    void disableCrtc();
     QList<touchpadMap*>    mTouchMapList; //存储已映射的关系
     Q_INVOKABLE void getInitialConfig();
     QDBusInterface        *t_DbusTableMode;
@@ -159,7 +169,6 @@ private:
     QTimer                *mApplyConfigTimer = nullptr;
     QGSettings            *mXrandrSetting = nullptr;
     QGSettings            *mXsettings = nullptr;
-
     double                 mScale = 1.0;
     QDBusInterface        *mLoginInter;
     QDBusInterface        *mUkccDbus;

@@ -26,7 +26,7 @@
 #include <QRect>
 #include <QJsonDocument>
 #include <QDir>
-
+#include <QDebug>
 #include <QtXml>
 
 #include "xrandr-config.h"
@@ -43,11 +43,47 @@ QString xrandrConfig::configsDirPath()
     return dirPath % mConfigsDirName;
 }
 
+QString xrandrConfig::lightdmConfigsDirPath()
+{
+    QDir dir;
+    QString user;
+
+    user = m_userName.isEmpty() == true ? QDir::home().dirName() : m_userName;
+
+    QString usdDir = "/var/lib/lightdm-data/" + user +QStringLiteral("/usd/");
+    QString destDir = "/var/lib/lightdm-data/" + user +QStringLiteral("/usd/kscreen/");
+
+    QFileInfo destFileInfo(destDir);
+    QFileInfo usdFileInfo(usdDir);
+
+    QList<QFileInfo> fileInfoList;
+
+    fileInfoList.append(usdFileInfo);
+    fileInfoList.append(destFileInfo);
+
+    for(auto &fi: fileInfoList){
+        QDir dirf(fi.absolutePath());
+        if (dirf.exists() == false){
+            if (fi.isDir()==false) {
+                USD_LOG(LOG_DEBUG,"remove FILE %s...", fi.absolutePath().toLatin1().data());
+                QFile::remove(fi.absolutePath());
+            }
+
+            USD_LOG(LOG_DEBUG,"create DIR %s...", fi.absolutePath().toLatin1().data());
+            dirf.mkdir(fi.absolutePath());
+        }
+    }
+
+    return destDir;
+}
+
 void xrandrConfig::setScreenMode(QString modeName)
 {
     mScreenMode = modeName;
     USD_LOG(LOG_DEBUG,"set mScreenMode to :%s",mScreenMode.toLatin1().data());
 }
+
+
 
 QString xrandrConfig::configsModeDirPath()
 {
@@ -67,6 +103,7 @@ xrandrConfig::xrandrConfig(KScreen::ConfigPtr config, QObject *parent)
     : QObject(parent)
 {
     mConfig = config;
+    m_userName = "";
 }
 
 QString xrandrConfig::fileModeConfigPath()
@@ -93,9 +130,21 @@ QString xrandrConfig::id() const
     return mConfig->connectedOutputsHash();
 }
 
+void xrandrConfig::setUserName(QString str)
+{
+    m_userName = str;
+}
+
 bool xrandrConfig::fileExists() const
 {
     return (QFile::exists(configsDirPath() % id()));
+}
+
+bool xrandrConfig::lightdmFileExists()
+{
+    QString dest = lightdmConfigsDirPath() % id();
+
+    return (QFile::exists(dest));
 }
 
 bool xrandrConfig::fileScreenModeExists(QString screenMode)
@@ -124,7 +173,7 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(bool isUseModeDirConfig)
             }
         }
     }
-    return readFile(id(), isUseModeDirConfig);
+    return readLightdmFile(id(), isUseModeDirConfig);
 }
 
 std::unique_ptr<xrandrConfig> xrandrConfig::readOpenLidFile()
@@ -249,6 +298,80 @@ std::unique_ptr<xrandrConfig> xrandrConfig::readFile(const QString &fileName, bo
     return config;
 }
 
+std::unique_ptr<xrandrConfig> xrandrConfig::readLightdmFile(const QString &fileName, bool state)
+{
+    int enabledOutputsCount = 0;
+
+    if (!mConfig) {
+        USD_LOG(LOG_ERR,"config is nullptr...");
+        return nullptr;
+    }
+
+    std::unique_ptr<xrandrConfig> config = std::unique_ptr<xrandrConfig>(new xrandrConfig(mConfig->clone()));
+    config->setValidityFlags(mValidityFlags);
+    QFile file;
+    if(!state){
+
+         file.setFileName(lightdmConfigsDirPath() % fileName);
+
+        if (!file.open(QIODevice::ReadOnly)) {
+            USD_LOG(LOG_ERR,"%s config is nullptr...",file.fileName().toLatin1().data());
+            return nullptr;
+        }
+
+    } else {
+        if (QFile::exists(configsModeDirPath())) {
+            file.setFileName(configsModeDirPath() % fileName);
+        }
+
+        if (!file.open(QIODevice::ReadOnly)) {
+             USD_LOG(LOG_ERR,"config is nullptr...%s",file.fileName().toLatin1().data());
+            return nullptr;
+        }
+    }
+    QJsonDocument parser;
+    QVariantList outputs = parser.fromJson(file.readAll()).toVariant().toList();
+    xrandrOutput::readInOutputs(config->data(), outputs);
+
+    QSize screenSize;
+
+    for (const auto &output : config->data()->outputs()) {
+
+        if (output->isEnabled()) {
+            enabledOutputsCount++;
+        }
+
+        if (!output->isConnected()) {
+            continue;
+        }
+        if (1 == outputs.count() && (0 != output->pos().x() || 0 != output->pos().y())) {
+            const QPoint pos(0,0);
+            output->setPos(std::move(pos));
+        }
+
+        const QRect geom = output->geometry();
+        if (geom.x() + geom.width() > screenSize.width()) {
+            screenSize.setWidth(geom.x() + geom.width());
+        }
+
+        if (geom.y() + geom.height() > screenSize.height()) {
+            screenSize.setHeight(geom.y() + geom.height());
+        }
+      }
+
+    config->data()->screen()->setCurrentSize(screenSize);
+
+    if (!canBeApplied(config->data())) {
+        config->data()->screen()->setMaxActiveOutputsCount(enabledOutputsCount);
+
+        if (!canBeApplied(config->data())) {
+            return nullptr;
+        }
+    }
+
+    return config;
+}
+
 bool xrandrConfig::canBeApplied() const
 {
     return canBeApplied(mConfig);
@@ -257,6 +380,13 @@ bool xrandrConfig::canBeApplied() const
 bool xrandrConfig::canBeApplied(KScreen::ConfigPtr config) const
 {
     return KScreen::Config::canBeApplied(config, mValidityFlags);
+}
+
+bool xrandrConfig::writeFileForLightDM(bool state)
+{
+    QString dest = lightdmConfigsDirPath() % id();
+    writeFile(dest, false);
+    return true;
 }
 
 bool xrandrConfig::writeFile(bool state)
@@ -268,12 +398,13 @@ bool xrandrConfig::writeFile(bool state)
 
     if (dir.exists("/etc/usd/") == false) {
         dir.mkdir("/etc/usd/");
-        printf("mkdir.....\n");
+        USD_LOG(LOG_DEBUG,"mkdir /etc/usd/");
     }
 
-
-    ret = QFile::copy(filePath(), "/etc/usd/" % id());
-    USD_LOG(LOG_DEBUG,"go...%d",ret);
+    QString dest = "/etc/usd/" % id();
+    writeFile(dest, false);
+//    ret = QFile::copy(filePath(), "/etc/usd/" % id());
+//    USD_LOG(LOG_DEBUG,"copy :%s --->>>%s ret:%d",filePath().toLatin1().data() , dest.toLatin1().data(),ret);
 
     return true;
 }
@@ -353,6 +484,7 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
         auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
             if (!out) {
+                USD_LOG(LOG_DEBUG,".");
                 return;
             }
 
@@ -376,7 +508,8 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
 
 
     QFile file(filePath);
-    if (file.open(QIODevice::WriteOnly)) {
+    file.setPermissions(QFileDevice::Permission(0x7777));
+    if (file.open(QFile::WriteOnly)) {
          file.write(QJsonDocument::fromVariant(outputList).toJson());
     } else {
          USD_LOG(LOG_DEBUG,"write file [%s] fail.cuz:%s.",file.fileName().toLatin1().data(),file.errorString().toLatin1().data());

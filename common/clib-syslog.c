@@ -36,7 +36,7 @@ void syslog_init(const char *category, int facility)
 //LOG_DEBUG,最低级
 void syslog_info(int logLevel, const char *moduleName, const char *fileName, const char *functionName, int line, const char* fmt, ...)
 {
-    if (logLevel > LOG_LEVEL) return;
+    //if (logLevel > LOG_LEVEL) return;
     static char hadInit=0;
     char buf[2048] = {0};
     char *logLevelstr = NULL;
@@ -84,9 +84,8 @@ void syslog_info(int logLevel, const char *moduleName, const char *fileName, con
     snprintf(buf, sizeof buf - 1, "%s [%s] %s->%s %s line:%-5d ", logLevelstr, sysCategory, moduleName,fileName, functionName, line);
     tagLen = strlen(buf);
     vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
-
+    syslog(logLevel,"%s",buf);
     printf ("%s\n",buf);
-
     closelog();
     va_end(para);
 }

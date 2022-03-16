@@ -46,6 +46,7 @@ extern "C"{
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
 #include <libudev.h>
+
 }
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
@@ -74,7 +75,6 @@ XrandrManager::XrandrManager()
     mScale = mXsettings->get(XSETTINGS_KEY_SCALING).toDouble();
 
     KScreen::Log::instance();
-
     mDbus = new xrandrDbus(this);
     mXrandrSetting = new QGSettings(SETTINGS_XRANDR_SCHEMAS);
 
@@ -85,6 +85,8 @@ XrandrManager::XrandrManager()
         sessionBus.registerObject(DBUS_XRANDR_PATH,
                                   mDbus,
                                   QDBusConnection::ExportAllContents);
+    } else {
+        USD_LOG(LOG_ERR, "register dbus error");
     }
 
     mUkccDbus = new QDBusInterface("org.ukui.ukcc.session",
@@ -143,12 +145,7 @@ void XrandrManager::getInitialConfig()
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
 
-        if (mXrandrSetting->keys().contains("hadmate2kscreen")) {
-            if (mXrandrSetting->get("hadmate2kscreen").toBool() == false) {
-                mXrandrSetting->set("hadmate2kscreen", true);
-                mMonitoredConfig->copyMateConfig();
-            }
-        }
+
 
         monitorsInit();
 
@@ -342,6 +339,241 @@ bool XrandrManager::checkMapScreenByName(const QString name)
         }
     }
     return false;
+}
+/*
+ * 通过ouput的pnpId和monitors.xml中的ventor以及接口类型（VGA,HDMI）进行匹配
+ *
+*/
+bool XrandrManager::readMateToKscreen(char monitorsCount,QMap<QString, QString> &monitorsName)
+{
+    bool ret = false;
+    int xmlErrColumn = 0;
+    int xmlErrLine = 0;
+    int xmlOutputCount = 0;//xml单个配置组合的屏幕数目
+    int matchCount = 0;//硬件接口与ventor匹配的数目。
+
+    QDomNode n;
+    QDomElement root;
+    QDomDocument doc;
+
+    QString xmlErrMsg;
+    QString homePath = getenv("HOME");
+    QString monitorFile = homePath+"/.config/monitors.xml";
+
+    OutputsConfig monitorsConfig;
+
+    QFile file(monitorFile);
+
+    if (monitorsCount < 1) {
+        USD_LOG(LOG_DEBUG, "skip this function...");
+        return false;
+    }
+
+    USD_LOG_SHOW_PARAM1(monitorsCount);
+    if(!file.open(QIODevice::ReadOnly)){
+        USD_LOG(LOG_ERR,"%s can't be read...",monitorFile.toLatin1().data());
+        return false;
+    }
+
+    if(!doc.setContent(&file,&xmlErrMsg,&xmlErrLine, &xmlErrColumn))
+    {
+        USD_LOG(LOG_DEBUG,"read %s to doc failed errmsg:%s at %d.%d",monitorFile.toLatin1().data(),xmlErrMsg.toLatin1().data(),xmlErrLine,xmlErrColumn);
+        file.close();
+        return false;
+    }
+
+    XmlFileTag.clear();
+    mIntDate.clear();
+
+    root=doc.documentElement();
+    n=root.firstChild();
+
+    while(!n.isNull()) {
+        matchCount = 0;
+        xmlOutputCount = 0;
+
+        if(n.isElement()){
+            QDomElement e =n.toElement();
+            QDomNodeList list=e.childNodes();
+
+            if (e.isElement() == false) {
+               goto NEXT_NODE;//goto next config
+            }
+
+            /*a configuration have 4 outputs*/
+            for (int i=0;i<list.count();i++) {
+                UsdOuputProperty *mateOutput;
+                QDomNode node=list.at(i);
+                QDomNodeList e2 = node.childNodes();
+
+                if (node.isElement()) {
+
+                    if (node.toElement().tagName() == "clone") {
+                        monitorsConfig.m_clone = node.toElement().text();
+                        continue;
+                    }
+
+                    if (node.toElement().tagName() != "output") {
+                        continue;
+                    }
+
+                    if (node.toElement().text().isEmpty()) {
+                        continue;
+                    }
+
+                    if (false == monitorsName.keys().contains(node.toElement().attribute("name"))) {
+                        USD_LOG_SHOW_PARAMS(node.toElement().attribute("name").toLatin1().data());
+                        continue;
+                    }
+
+                    mateOutput = new UsdOuputProperty();
+                    mateOutput->setProperty("name", node.toElement().attribute("name"));
+
+                    for (int j=0;j<e2.count();j++) {
+                        QDomNode node2 = e2.at(j);
+                        mateOutput->setProperty(node2.toElement().tagName().toLatin1().data(),node2.toElement().text());
+                    }
+
+                    //多个屏幕组合，需要考虑包含的情况
+                    if (monitorsName[mateOutput->property("name").toString()] == mateOutput->property("vendor").toString()) {
+                        matchCount++;
+                    }
+
+                }
+                xmlOutputCount++;
+                monitorsConfig.m_outputList.append(mateOutput);
+            }
+
+            //monitors.xml内的其中一个configuration屏幕数目与识别数目一致，并且与接口识别出的vendor数目三者一致时才可进行设置。
+            if (matchCount != monitorsCount || xmlOutputCount != matchCount) {
+                if (monitorsConfig.m_outputList.count()>0) {
+                    qDeleteAll(monitorsConfig.m_outputList);
+                    monitorsConfig.m_outputList.clear();
+                }
+               goto NEXT_NODE;//goto next config
+            }
+
+            if (monitorsConfig.m_clone == "yes") {
+                setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
+                ret = true;
+                goto FINISH;
+            }
+
+            for (const KScreen::OutputPtr &output: mConfig->outputs()) {
+                if (false == output->isConnected()) {
+                    continue;
+                }
+
+                for (int k = 0; k < monitorsConfig.m_outputList.count(); k++) {
+                    if (output->name() != monitorsConfig.m_outputList[k]->property("name").toString()) {
+                        continue;
+                    }
+
+                    bool modeSetOk = false;
+                    int x;
+                    int y;
+                    int width;
+                    int height;
+                    int rate;
+                    int rotationInt;
+
+                    QString primary;
+                    QString rotation;
+
+                    width = getMateConfigParam(monitorsConfig.m_outputList[k], "width");
+                    if (width < 0) {
+                        return false;
+                    }
+
+                    height = getMateConfigParam(monitorsConfig.m_outputList[k], "height");
+                    if (height < 0) {
+                        return false;
+                    }
+
+                    x = getMateConfigParam(monitorsConfig.m_outputList[k], "x");
+                    if (x < 0) {
+                        return false;
+                    }
+
+                    y = getMateConfigParam(monitorsConfig.m_outputList[k], "y");
+                    if (y < 0) {
+                        return false;
+                    }
+
+                    rate = getMateConfigParam(monitorsConfig.m_outputList[k], "rate");
+                    if (y < 0) {
+                        return false;
+                    }
+
+                    primary = monitorsConfig.m_outputList[k]->property("primary").toString();
+                    rotation = monitorsConfig.m_outputList[k]->property("rotation").toString();
+
+                    if (primary == "yes") {
+                        output->setPrimary(true);
+                    }
+                    else {
+                        output->setPrimary(false);
+                    }
+
+                    if (rotation == "left") {
+                        rotationInt = 2;
+                    } else if (rotation == "upside_down") {
+                        rotationInt = 4;
+                    } else if  (rotation == "right") {
+                        rotationInt = 8;
+                    } else {
+                        rotationInt = 1;
+                    }
+
+                    output->setRotation(static_cast<KScreen::Output::Rotation>(rotationInt));
+
+                    Q_FOREACH (auto mode, output->modes()) {
+                        if(mode->size().width() != width && mode->size().height() != height) {
+                            continue;
+                        }
+                        if (fabs(mode->refreshRate() - rate) > 2) {
+                            continue;
+                        }
+                        output->setCurrentModeId(mode->id());
+                        output->setPos(QPoint(x,y));
+                        modeSetOk = true;
+                        break;
+                    }
+
+                    if (modeSetOk == false) {
+                        ret = false;
+                        goto FINISH;
+                    }
+                }
+            }
+
+            applyConfig();
+            ret = true;
+            goto FINISH;
+        }
+NEXT_NODE:
+        n = n.nextSibling();
+        qDeleteAll(monitorsConfig.m_outputList);
+        monitorsConfig.m_outputList.clear();
+    }
+
+FINISH:
+    qDeleteAll(monitorsConfig.m_outputList);
+    monitorsConfig.m_outputList.clear();
+    return ret;
+}
+
+int XrandrManager::getMateConfigParam(UsdOuputProperty *mateOutput, QString param)
+{
+    bool isOk;
+    int ret;
+
+    ret = mateOutput->property(param.toLatin1().data()).toInt(&isOk);
+
+    if (false == isOk) {
+        return -1;
+    }
+    return ret;
 }
 
 static int find_event_from_name(char *_name, char *_serial, char *_event)
@@ -917,7 +1149,10 @@ void XrandrManager::sendScreenModeToDbus()
 
 void XrandrManager::applyConfig()
 {
+
     if (mMonitoredConfig->canBeApplied()) {
+//        m_saveScreenParam->disableCrtc();
+        disableCrtc();
         connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
                 &KScreen::SetConfigOperation::finished,
                 this, [this]() {
@@ -1156,13 +1391,17 @@ void XrandrManager::SaveConfigTimerHandle()
         mIsApplyConfigWhenSave = false;
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::firstScreenMode));
     } else {
+        QProcess subProcess;
         mMonitoredConfig->setScreenMode(metaEnum.valueToKey(discernScreenMode()));
         mMonitoredConfig->writeFile(true);
+        QString usdSaveParam = "save-param -g";
+        USD_LOG(LOG_DEBUG,"save param in lightdm-data.");
+        subProcess.start(usdSaveParam);
+        subProcess.waitForFinished();
 //        SetTouchscreenCursorRotation();//When other app chenge screen'param usd must remap touch device
         autoRemapTouchscreen();
         sendScreenModeToDbus();
     }
-
 }
 
 QString XrandrManager::getScreesParam()
@@ -1172,7 +1411,9 @@ QString XrandrManager::getScreesParam()
 
 void XrandrManager::monitorsInit()
 {
+
     char connectedOutputCount = 0;
+    QMap<QString, QString> monitorsNameList;
     if (mConfig) {
         KScreen::ConfigMonitor::instance()->removeConfig(mConfig);
         for (const KScreen::OutputPtr &output : mConfig->outputs()) {
@@ -1180,7 +1421,7 @@ void XrandrManager::monitorsInit()
         }
         mConfig->disconnect(this);
     }
-
+    USD_LOG(LOG_DEBUG, "...");
     mConfig = std::move(mMonitoredConfig->data());
 
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
@@ -1188,6 +1429,9 @@ void XrandrManager::monitorsInit()
 
         if (output->isConnected()){
             connectedOutputCount++;
+            USD_LOG_SHOW_PARAMS(output->name().toLatin1().data());
+            USD_LOG_SHOW_PARAMS(output->edid()->pnpId().toLatin1().data());
+            monitorsNameList.insert(output->name(),output->edid()->pnpId());
         }
 
 
@@ -1278,6 +1522,8 @@ void XrandrManager::monitorsInit()
         });
     }
 
+
+
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
     //connect(mConfig.data(), &KScreen::Config::outputAdded,
     //        this, &XrandrManager::outputAddedHandle);
@@ -1318,6 +1564,17 @@ void XrandrManager::monitorsInit()
     } else {
         int foreachTimes = 0;
 
+        if (mXrandrSetting->keys().contains("hadmate2kscreen")) {
+            if (mXrandrSetting->get("hadmate2kscreen").toBool() == false) {
+                mXrandrSetting->set("hadmate2kscreen", true);
+
+                if (readMateToKscreen(connectedOutputCount, monitorsNameList)) {
+                    USD_LOG(LOG_DEBUG,"convert mate ok...");
+                    return;
+                }
+            }
+        }
+
         USD_LOG(LOG_DEBUG,"creat a config:%s.",mMonitoredConfig->filePath().toLatin1().data());
 
         for (const KScreen::OutputPtr &output: mMonitoredConfig->data()->outputs()) {
@@ -1339,6 +1596,9 @@ void XrandrManager::monitorsInit()
 
             }
         }
+
+
+
         mMonitoredConfig->writeFile(false);
     }
 }
@@ -1403,12 +1663,12 @@ bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode e
 
 void XrandrManager::TabletSettingsChanged(const bool tablemode)
 {
-    if(tablemode)
-    {
+    if(tablemode) {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     } else {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::extendScreenMode));
     }
+
     USD_LOG(LOG_DEBUG,"recv mode changed:%d", tablemode);
 }
 
@@ -1442,20 +1702,21 @@ void XrandrManager::setScreenModeToClone()
         }
 
         output->setEnabled(true);
+        output->setPos(QPoint(0,0));
+        output->setRotation(static_cast<KScreen::Output::Rotation>(1));
 
         if (false == hadFindFirstScreen) {
             hadFindFirstScreen = true;
             primaryOutput = output;
             continue;
         }
-
+        output->setPos(QPoint(0,0));
         secondScreen = output->name().toLatin1().data();
         //遍历模式找出最大分辨率的克隆模式
         Q_FOREACH (auto primaryMode, primaryOutput->modes()) {
             Q_FOREACH (auto newOutputMode, output->modes()) {
 
                 primaryOutput->setPos(QPoint(0,0));
-                output->setPos(QPoint(0,0));
                 bigestResolution = primarySize.width()*primarySize.height();
 
                 if (primaryMode->size() == newOutputMode->size()) {
@@ -1594,6 +1855,9 @@ void XrandrManager::setScreenModeToExtend()
             output->setEnabled(false);
             continue;
         }
+
+        output->setEnabled(true);
+        output->setRotation(static_cast<KScreen::Output::Rotation>(1));
 
         Q_FOREACH (auto Mode, output->modes()){
             if (Mode->size().width()*Mode->size().height() > screenSize) {
@@ -1752,6 +2016,53 @@ void XrandrManager::controlScreenMap(const QString screenMap)
 {
     USD_LOG(LOG_DEBUG,"controlScreenMap ...");
     RotationChangedEvent(screenMap);
+}
+
+void XrandrManager::disableCrtc()
+{
+    int tempInt;
+
+    Display	*m_pDpy;
+    Window	m_rootWindow;
+    XRRScreenResources  *m_pScreenRes;
+    int m_screen;
+    m_pDpy = XOpenDisplay (NULL);
+    if (m_pDpy == NULL) {
+        USD_LOG(LOG_DEBUG,"XOpenDisplay fail...");
+        return ;
+    }
+
+    m_screen = DefaultScreen(m_pDpy);
+    if (m_screen >= ScreenCount (m_pDpy)) {
+        USD_LOG(LOG_DEBUG,"Invalid screen number %d (display has %d)",m_screen, ScreenCount(m_pDpy));
+        return ;
+    }
+
+    m_rootWindow = RootWindow(m_pDpy, m_screen);
+
+    m_pScreenRes = XRRGetScreenResources(m_pDpy, m_rootWindow);
+    if (NULL == m_pScreenRes) {
+        USD_LOG(LOG_DEBUG,"could not get screen resources",m_screen, ScreenCount(m_pDpy));
+        return ;
+    }
+
+    if (m_pScreenRes->noutput == 0) {
+        USD_LOG(LOG_DEBUG, "noutput is 0!!");
+        return ;
+    }
+
+    USD_LOG(LOG_DEBUG,"initXparam success");
+
+    for (tempInt = 0; tempInt < m_pScreenRes->ncrtc; tempInt++) {
+        int ret = 0;
+        ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
+                                0, 0, None, RR_Rotate_0, NULL, 0);
+        if (ret != RRSetConfigSuccess) {
+            USD_LOG(LOG_ERR,"disable crtc:%d error! ");
+        }
+    }
+    XCloseDisplay(m_pDpy);
+    USD_LOG(LOG_DEBUG,"disable crtc  success");
 }
 
 /**
