@@ -85,8 +85,7 @@ void syslog_info(int logLevel, const char *moduleName, const char *fileName, con
     tagLen = strlen(buf);
     vsnprintf(buf + tagLen, sizeof buf - 1 - tagLen, (const char*)fmt, para);
     syslog(logLevel,"%s",buf);
-    printf ("【】%s\n",buf);
-
+    printf ("%s\n",buf);
     closelog();
     va_end(para);
 }

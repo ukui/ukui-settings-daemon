@@ -40,7 +40,7 @@ extern "C" {
 
 #include<time.h>
 
-#define USD_LOG_IN_SYSLOG(logLevel,...) {\
+#define SYS_LOG(logLevel,...) {\
    syslog_info(logLevel, MODULE_NAME, __FILE__, __func__, __LINE__, ##__VA_ARGS__);\
 }
 
@@ -62,6 +62,14 @@ extern "C" {
 #define USD_LOG_SHOW_PARAM2(a,b) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a,a,#b, b)
 #define USD_LOG_SHOW_PARAM3(a,b,c) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
 #define USD_LOG_SHOW_PARAM4(a,b,c,d) USD_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
+
+
+#define SYS_LOG_SHOW_PARAM1(a) SYS_LOG(LOG_DEBUG,"%s : %d",#a,a)
+#define SYS_LOG_SHOW_PARAMS(a) SYS_LOG(LOG_DEBUG,"%s : %s",#a,a)
+#define SYS_LOG_SHOW_PARAM2(a,b) SYS_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a,a,#b, b)
+#define SYS_LOG_SHOW_PARAM3(a,b,c) SYS_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c)
+#define SYS_LOG_SHOW_PARAM4(a,b,c,d) SYS_LOG(LOG_DEBUG,"%s : %d,%s : %d",#a, a, #b, b, #c, c, #d, d)
+
 
 #define USD_LOG_SHOW_PARAM2F(a,b) USD_LOG(LOG_DEBUG,"%s : %f,%s : %f",#a,a,#b, b)
 #define CHECK_PROJECT(A) ifdef A
