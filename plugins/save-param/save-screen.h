@@ -38,6 +38,12 @@ extern "C"{
 
 }
 
+typedef struct tag_X11OutputInfo{
+    XID outputId;
+    XRROutputInfo *outputInfo;
+    XRRModeInfo	*modes;
+}X11OutputInfo;
+
 class SaveScreenParam :  public QObject
 {
     Q_OBJECT

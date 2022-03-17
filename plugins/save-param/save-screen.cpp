@@ -85,9 +85,98 @@ void SaveScreenParam::getConfig(){
 
 void SaveScreenParam::setClone()
 {
-    initXparam();
-//    readConfigAndSet();
-    exit(0);
+    int ret = 0;
+    int tempInt = 0;
+    int outputSize = 0;
+
+    bool hadFindPrimary = false;
+
+    RRMode primaryMaxModeId;
+    RRMode secondaryMaxModeId;
+
+    RROutput primaryOutputId;
+    XRROutputInfo *primaryOutputInfo;
+    RROutput primaryScreen;
+    QMap<RROutput, RRMode> cloneMode;
+    //遍历设备
+
+    for (tempInt = 0; tempInt < m_pScreenRes->noutput; tempInt++) {
+
+        XRROutputInfo *secondaryOutputInfo = XRRGetOutputInfo (m_pDpy, m_pScreenRes, m_pScreenRes->outputs[tempInt]);
+        if (secondaryOutputInfo->connection != RR_Connected) {
+            continue;
+        }
+
+        if (false == hadFindPrimary) {
+            hadFindPrimary = true;
+            primaryScreen = true;
+            primaryOutputInfo = secondaryOutputInfo;
+            primaryOutputId = m_pScreenRes->outputs[tempInt];
+            continue;
+        }
+
+        for (int primaryOutputModeCircle = 0; primaryOutputModeCircle < primaryOutputInfo->nmode; primaryOutputModeCircle++) {
+            //从所有模式list中逐个找出输出设备的分辨率
+            for (int modeCircle = 0; modeCircle < primaryOutputInfo->nmode; modeCircle++) {
+                for (int m = 0; m < m_pScreenRes->nmode; m++) {
+                    XRRModeInfo *mode = &m_pScreenRes->modes[m];
+
+                    if (primaryOutputInfo->modes[primaryOutputModeCircle] == mode->id) {//该模式属于主屏的模式，
+                        for (int secondaryModeCircle = 0; secondaryModeCircle < secondaryOutputInfo->nmode; secondaryModeCircle++) {
+                            for (int n = 0; n < m_pScreenRes->nmode; n++) {
+
+                                XRRModeInfo *nmode = &m_pScreenRes->modes[n];
+                                if (secondaryOutputInfo->modes[secondaryModeCircle] != nmode->id) {
+                                    continue;
+                                }
+
+                                //匹配到相同分辨率
+                                if (mode->width != nmode->width || mode->height != nmode->height){
+                                    continue;
+                                }
+
+                                if (mode->width * mode->height > outputSize) {
+                                    outputSize = mode->width * mode->height;
+                                    primaryMaxModeId = mode->id;
+                                    secondaryMaxModeId = nmode->id;
+                                    SYS_LOG(LOG_DEBUG,"primaryOutputInfo:%s mode %s,secondaryMaxModeId %s mode %s",
+                                            primaryOutputInfo->name, mode->name, secondaryOutputInfo->name, nmode->name);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        if (0 == cloneMode.count()) {
+//            SYS_LOG(LOG_DEBUG,"output:%s mode %s",primaryOutputInfo->name, mode->name);
+            cloneMode.insert(primaryOutputId, primaryMaxModeId);
+            SYS_LOG(LOG_DEBUG,"add primaryOutputId %d  %d", primaryOutputId, primaryMaxModeId);
+        }
+        cloneMode.insert(m_pScreenRes->outputs[tempInt], secondaryMaxModeId);
+        SYS_LOG(LOG_DEBUG,"add secondaryMaxMode %d  %d", m_pScreenRes->outputs[tempInt], secondaryMaxModeId);
+    }
+    qDebug()<<cloneMode;
+    //单屏
+    if (0 == cloneMode.count()) {
+
+    } else {
+        for (tempInt = 0; tempInt < m_pScreenRes->ncrtc; tempInt++) {
+            XRRCrtcInfo *crtcInfo = XRRGetCrtcInfo(m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt]);
+
+            if (cloneMode.keys().contains(crtcInfo->outputs[0])) {
+                ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
+                                        0, 0, cloneMode[crtcInfo->outputs[0]], RR_Rotate_0, crtcInfo->outputs, crtcInfo->noutput);
+
+                if (ret != RRSetConfigSuccess) {
+                     SYS_LOG(LOG_ERR," RRSetConfigFail.%d %d .", crtcInfo->outputs[0], cloneMode[crtcInfo->outputs[0]]);
+                } else {
+                     SYS_LOG(LOG_ERR," RRSetConfigSuccess.%d %d .", crtcInfo->outputs[0], cloneMode[crtcInfo->outputs[0]]);
+                }
+            }
+
+        }
+    }
 }
 
 void SaveScreenParam::setUserConfigParam()
@@ -130,19 +219,21 @@ void SaveScreenParam::readKscreenConfigAndSetItWithX(QString kscreenConfigName)
 {
     int ret;
     int tempInt;
-
+    int rotationAngle;
     QFile file;
     QJsonDocument parser;
     QVariantList outputsInfo;
     QString configFullPath = kscreenConfigName;
 
     if (configFullPath.isEmpty()) {
+        setClone();
         return;
     }
 
     file.setFileName(configFullPath);
 
     if (!file.open(QIODevice::ReadOnly)) {
+        setClone();
         SYS_LOG(LOG_DEBUG,"can't open %s's screen config>%s",m_userName.toLatin1().data(),configFullPath.toLatin1().data());
         return;
     }
@@ -173,14 +264,25 @@ void SaveScreenParam::readKscreenConfigAndSetItWithX(QString kscreenConfigName)
         outputProperty->setProperty("rotation", info[QStringLiteral("rotation")].toString());
         outputProperty->setProperty("rate", modeInfo[QStringLiteral("refresh")].toString());
 
-        if (outputProperty->property("width").toInt() + outputProperty->property("x").toInt() > m_kscreenConfigParam.m_screenWidth) {
-            m_kscreenConfigParam.m_screenWidth = outputProperty->property("width").toInt() + outputProperty->property("x").toInt();
-        }
+        if (outputProperty->property("rotation").toString() == "8" ||
+                outputProperty->property("rotation").toString() == "2") {
+            if (outputProperty->property("height").toInt() + outputProperty->property("x").toInt() > m_kscreenConfigParam.m_screenWidth) {
+                m_kscreenConfigParam.m_screenWidth = outputProperty->property("height").toInt() + outputProperty->property("x").toInt();
+            }
 
-        if (outputProperty->property("height").toInt() + outputProperty->property("y").toInt() > m_kscreenConfigParam.m_screenHeight) {
-            m_kscreenConfigParam.m_screenHeight = outputProperty->property("height").toInt() + outputProperty->property("y").toInt();
+            if (outputProperty->property("width").toInt() + outputProperty->property("y").toInt() > m_kscreenConfigParam.m_screenHeight) {
+                m_kscreenConfigParam.m_screenHeight = outputProperty->property("width").toInt() + outputProperty->property("y").toInt();
+            }
         }
+        else{
+            if (outputProperty->property("width").toInt() + outputProperty->property("x").toInt() > m_kscreenConfigParam.m_screenWidth) {
+                m_kscreenConfigParam.m_screenWidth = outputProperty->property("width").toInt() + outputProperty->property("x").toInt();
+            }
 
+            if (outputProperty->property("height").toInt() + outputProperty->property("y").toInt() > m_kscreenConfigParam.m_screenHeight) {
+                m_kscreenConfigParam.m_screenHeight = outputProperty->property("height").toInt() + outputProperty->property("y").toInt();
+            }
+        }
         m_kscreenConfigParam.m_outputList.append(outputProperty);
 //        USD_LOG_SHOW_PARAMS(outputProperty->property("name").toString().toLatin1().data());
 //        USD_LOG_SHOW_PARAMS(outputProperty->property("x").toString().toLatin1().data());
@@ -252,8 +354,10 @@ void SaveScreenParam::readKscreenConfigAndSetItWithX(QString kscreenConfigName)
             RROutput *outputs：输出设备的ID地址
             int noutputs：crtc中的outputs数量
            */
+           rotationAngle = kscreenOutputParam->property("rotation").toInt();
+           SYS_LOG(LOG_DEBUG,"rotation:%d",rotationAngle);
            ret = XRRSetCrtcConfig (m_pDpy, m_pScreenRes, m_pScreenRes->crtcs[tempInt], CurrentTime,
-                                   kscreenOutputParam->property("x").toInt(), kscreenOutputParam->property("y").toInt(), monitorMode, RR_Rotate_0, crtcInfo->outputs, crtcInfo->noutput);
+                                   kscreenOutputParam->property("x").toInt(), kscreenOutputParam->property("y").toInt(), monitorMode, rotationAngle, crtcInfo->outputs, crtcInfo->noutput);
 
            if (kscreenOutputParam->property("primary").toString() == "true") {
                XRRSetOutputPrimary(m_pDpy, m_rootWindow, crtcInfo->outputs[0]);
@@ -525,9 +629,6 @@ QString SaveScreenParam::getKscreenConfigFullPathInLightDM()
 
     return QString("/var/lib/lightdm-data/%1/usd/kscreen/%2").arg(m_userName).arg(QString::fromLatin1(configHash.toHex()));
 }
-
-
-
 
 //所有显示器的模式都放在一起，需要甄别出需要的显示器，避免A取到B的模式。需要判断那个显示器支持那些模式
 RRMode SaveScreenParam::getModeId(XRROutputInfo	*outputInfo,UsdOuputProperty *kscreenOutputParam)
