@@ -1151,8 +1151,7 @@ void XrandrManager::applyConfig()
 {
 
     if (mMonitoredConfig->canBeApplied()) {
-//        m_saveScreenParam->disableCrtc();
-        disableCrtc();
+//        disableCrtc();
         connect(new KScreen::SetConfigOperation(mMonitoredConfig->data()),
                 &KScreen::SetConfigOperation::finished,
                 this, [this]() {
@@ -1305,14 +1304,11 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
 
-
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
         if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
             senderOutput->setEnabled(true);
-
             mMonitoredConfig->data()->removeOutput(output->id());
             mMonitoredConfig->data()->addOutput(senderOutput->clone());
-
             break;
         }
     }
@@ -1411,7 +1407,6 @@ QString XrandrManager::getScreesParam()
 
 void XrandrManager::monitorsInit()
 {
-
     char connectedOutputCount = 0;
     QMap<QString, QString> monitorsNameList;
     if (mConfig) {
@@ -1421,7 +1416,7 @@ void XrandrManager::monitorsInit()
         }
         mConfig->disconnect(this);
     }
-    USD_LOG(LOG_DEBUG, "...");
+
     mConfig = std::move(mMonitoredConfig->data());
 
     for (const KScreen::OutputPtr &output: mConfig->outputs()) {
@@ -1434,12 +1429,21 @@ void XrandrManager::monitorsInit()
             monitorsNameList.insert(output->name(),output->edid()->pnpId());
         }
 
-
-        connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
+        connect(output.data(), &KScreen::Output::isConnectedChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             outputChangedHandle(senderOutput);
+            USD_LOG_SHOW_OUTPUT(senderOutput);
+            USD_LOG(LOG_DEBUG,"isConnectedChanged");
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
+
+//        connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
+//            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+//            USD_LOG(LOG_DEBUG,"outputChanged");
+//            outputChangedHandle(senderOutput);
+//            USD_LOG_SHOW_OUTPUT(senderOutput);
+//            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
+//        });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1451,6 +1455,7 @@ void XrandrManager::monitorsInit()
                     break;
                 }
             }
+
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
@@ -1517,12 +1522,10 @@ void XrandrManager::monitorsInit()
                     break;
                 }
             }
-            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
 
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
     }
-
-
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);
     //connect(mConfig.data(), &KScreen::Config::outputAdded,
@@ -1596,9 +1599,6 @@ void XrandrManager::monitorsInit()
 
             }
         }
-
-
-
         mMonitoredConfig->writeFile(false);
     }
 }
@@ -1907,10 +1907,14 @@ void XrandrManager::setScreenMode(QString modeName)
         }
     }
 
+    if(screenConnectedCount == 0) {
+        return;
+    }
+
     if(screenConnectedCount <= 1) {
         if (modeValue == UsdBaseClass::eScreenMode::cloneScreenMode ||
                  modeValue == UsdBaseClass::eScreenMode::extendScreenMode) {
-            return;
+            modeValue = UsdBaseClass::eScreenMode::firstScreenMode;
         }
     }
 
