@@ -26,7 +26,7 @@
 #include <QDir>
 #include <QtXml>
 
-#include "xrandrouput.h"
+#include "xrandroutput.h"
 #include "save-screen.h"
 #include "clib-syslog.h"
 

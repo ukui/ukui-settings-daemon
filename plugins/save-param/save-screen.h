@@ -30,7 +30,7 @@
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
 
 #include "xrandr-config.h"
-#include "xrandrouput.h"
+#include "xrandroutput.h"
 
 extern "C"{
 //#include <glib.h>

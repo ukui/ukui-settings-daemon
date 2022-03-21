@@ -44,7 +44,7 @@
 #include <KF5/KScreen/kscreen/setconfigoperation.h>
 #include <usd_base_class.h>
 
-#include "xrandrouput.h"
+#include "xrandroutput.h"
 #include "xrandr-dbus.h"
 #include "xrandr-adaptor.h"
 #include "xrandr-config.h"

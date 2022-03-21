@@ -35,7 +35,7 @@ HEADERS += \
         $$PWD/ukui-input-helper.h       \
         $$PWD/ukui-keygrab.h            \
         $$PWD/config.h \
-        $$PWD/xrandrouput.h
+        $$PWD/xrandroutput.h
 
 RESOURCES += \
     $$PWD/ukui_icon.qrc
