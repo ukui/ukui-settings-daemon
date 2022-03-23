@@ -1293,22 +1293,22 @@ int8_t XrandrManager::getCurrentMode()
     if (response.type() == QDBusMessage::ReplyMessage) {
         if(response.arguments().isEmpty() == false) {
             bool value = response.arguments().takeFirst().toBool();
-//            USD_LOG(LOG_DEBUG, "get mode :%d", value);
             return value;
         }
     }
 
     return -1;
 }
+
 void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
 {
     char outputConnectCount = 0;
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
-        if (output->name()==senderOutput->name() && output->hash()!=senderOutput->hash()) {
+        if (output->name()==senderOutput->name()) {
             senderOutput->setEnabled(true);
             mMonitoredConfig->data()->removeOutput(output->id());
-            mMonitoredConfig->data()->addOutput(senderOutput->clone());
+            mMonitoredConfig->data()->addOutput(senderOutput->clone());//?????
             break;
         }
     }
@@ -1317,11 +1317,7 @@ void XrandrManager::outputChangedHandle(KScreen::Output *senderOutput)
         if (output->name()==senderOutput->name()) {//这里只设置connect，enbale由配置设置。
             output->setEnabled(senderOutput->isConnected());
             output->setConnected(senderOutput->isConnected());
-
-            if (0 == output->modes().count()) {
-                output->setModes(senderOutput->modes());
-            }
-
+            output->setModes(senderOutput->modes());
        }
 
         if (output->isConnected()) {
@@ -1377,10 +1373,8 @@ void XrandrManager::SaveConfigTimerHandle()
         if (0 == enableScreenCount) {//When user disable last one connected screen USD must enable the screen.
             mIsApplyConfigWhenSave = true;
             mSaveConfigTimer->start(SAVE_CONFIG_TIME*5);
-
             return;
         }
-
     }
 
     if (mIsApplyConfigWhenSave) {
@@ -1437,13 +1431,13 @@ void XrandrManager::monitorsInit()
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
         });
 
-//        connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
-//            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
-//            USD_LOG(LOG_DEBUG,"outputChanged");
-//            outputChangedHandle(senderOutput);
-//            USD_LOG_SHOW_OUTPUT(senderOutput);
-//            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-//        });
+        connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
+            KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
+            USD_LOG(LOG_DEBUG,"outputChanged");
+            outputChangedHandle(senderOutput);
+            USD_LOG_SHOW_OUTPUT(senderOutput);
+            mSaveConfigTimer->start(SAVE_CONFIG_TIME);
+        });
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
