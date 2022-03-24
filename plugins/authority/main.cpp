@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
     a.setOrganizationName("Kylin Team");
 
     QDBusConnection systemBus = QDBusConnection::systemBus();
-    if (systemBus.registerService("org.ukui.authority")){
+    if (systemBus.registerService("com.settings.daemon.qt.systemdbus")){
         systemBus.registerObject("/", new AuthorityService(),
                                  QDBusConnection::ExportAllSlots | QDBusConnection::ExportAllSignals
                                  );

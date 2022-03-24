@@ -21,9 +21,9 @@ DESTDIR = .
 
 target.source += $$TARGET
 target.path = /usr/bin
-service.files += conf/org.ukui.authority.service
+service.files += conf/com.settings.daemon.qt.systemdbus.service
 service.path = /usr/share/dbus-1/system-services/
-conffile.files += conf/org.ukui.authority.conf
+conffile.files += conf/com.settings.daemon.qt.systemdbus.conf
 conffile.path = /etc/dbus-1/system.d/
 
 
@@ -44,3 +44,7 @@ SOURCES += \
 
 HEADERS += \
     authorityservice.h
+
+DISTFILES += \
+    conf/com.settings.daemon.qt.systemdbus.conf \
+    conf/com.settings.daemon.qt.systemdbus.service

@@ -28,7 +28,7 @@
 class AuthorityService : public QObject
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.ukui.authority.interface")
+    Q_CLASSINFO("D-Bus Interface","com.settings.daemon.interface")
 
 public:
     explicit AuthorityService(QObject *parent = nullptr);
