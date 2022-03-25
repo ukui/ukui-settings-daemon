@@ -18,7 +18,6 @@
  */
 
 #include "authorityservice.h"
-
 extern "C" {
 
 #include <linux/types.h>

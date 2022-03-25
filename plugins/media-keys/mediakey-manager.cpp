@@ -1030,6 +1030,9 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86PowerOff) {
             doAction(POWER_OFF_KEY);
 
+        } else if (eventKeysym == XKB_KEY_XF86Messenger) {
+            doAction(UKUI_SIDEBAR);
+
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -2202,9 +2205,9 @@ void MediaKeysManager::doUrlAction(const QString scheme)
 void MediaKeysManager::doWebcamAction()
 {
 
-    QDBusInterface *iface = new QDBusInterface("org.ukui.authority", \
+    QDBusInterface *iface = new QDBusInterface("com.settings.daemon.qt.systemdbus", \
                            "/", \
-                           "org.ukui.authority.interface", \
+                           "com.settings.daemon.interface", \
                            QDBusConnection::systemBus());
 
     QDBusReply<QString> reply2 = iface->call("toggleCameraDevice");
@@ -2217,7 +2220,6 @@ void MediaKeysManager::doWebcamAction()
             iface->call("setCameraKeyboardLight", false);
         } else if (result == QString("unbinded")){
             mDeviceWindow->setAction("ukui-camera-off");
-
             iface->call("setCameraKeyboardLight", true);
         } else {
             USD_LOG(LOG_DEBUG,"toggleCameraDevice result %s", result.toLatin1().data());

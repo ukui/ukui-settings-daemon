@@ -361,14 +361,12 @@ bool xrandrConfig::writeFile(const QString &filePath, bool state)
         info[QStringLiteral("enabled")] = output->isEnabled();
 
         auto setOutputConfigInfo = [&info](const KScreen::OutputPtr &out) {
-            if (!out) {
-                return;
+            if (out) {
+                QVariantMap pos;
+                pos[QStringLiteral("x")] = out->pos().x();
+                pos[QStringLiteral("y")] = out->pos().y();
+                info[QStringLiteral("pos")] = pos;
             }
-
-            QVariantMap pos;
-            pos[QStringLiteral("x")] = out->pos().x();
-            pos[QStringLiteral("y")] = out->pos().y();
-            info[QStringLiteral("pos")] = pos;
         };
         setOutputConfigInfo(output->isEnabled() ? output : nullptr);
 
