@@ -45,7 +45,23 @@
 #define SYSTEM_FONT_SIZE "system-font-size"
 #define SYSTEM_FONT "system-font"
 
+
+//dbus 配置
+#define GNOME_SESSION_MANAGER               "org.gnome.SessionManager.Presence"
+#define SESSION_MANAGER_PATH                "/org/gnome/SessionManager/Presence"
+
+
+//auto-brightness gsettings
+#define SETTINGS_AUTO_BRIGHTNESS_SCHEMAS "org.ukui.SettingsDaemon.plugins.auto-brightness"
+#define AUTO_BRIGHTNESS_KEY              "auto-brightness"
+#define HAD_SENSOR_KEY              "have-sensor"
+#define DEBUG_MODE_KEY                  "debug-mode"
+#define DEBUG_LUX_KEY                   "debug-lux"
 /*Xorg shutkey name*/
+
+//session
+#define SESSION_BUSY    0
+#define SESSION_IDLE    3
 
 #define LEFT_SHIFT 0x32
 #define LEFT_CTRL   0x25

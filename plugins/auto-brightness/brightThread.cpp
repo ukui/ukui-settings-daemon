@@ -18,81 +18,98 @@
  */
 
 #include "brightThread.h"
-#include <QGSettings/QGSettings>
 #include <QByteArray>
 #include <QDebug>
 #include <QMutexLocker>
+#include <QDBusInterface>
+#include <QApplication>
+
+
+#include "QGSettings/qgsettings.h"
 
 extern "C"{
 #include <math.h>
 #include <unistd.h>
+#include "clib-syslog.h"
 }
 
 #define SETTINGS_POWER_MANAGER  "org.ukui.power-manager"
+#define AUTOBRIGHTNESS_GSETTING_SCHEMA  "org.ukui.SettingsDaemon.plugins.auto-brightness"
 #define BRIGHTNESS_AC           "brightness-ac"
+#define DELAYMS                 "delayms"
+//空闲模式不进行亮度处理
 
-BrightThread::BrightThread(QObject *parent, double bright) : QThread(parent), brightness(bright)
-//BrightThread::BrightThread(QObject *parent) : QThread(parent)
+BrightThread::BrightThread(QObject *parent)
 {
-    QByteArray id(SETTINGS_POWER_MANAGER);
-    if(QGSettings::isSchemaInstalled(id))
-        mpowerSettings = new QGSettings(SETTINGS_POWER_MANAGER);
-    currentBrightness = mpowerSettings->get(BRIGHTNESS_AC).toDouble();
-}
+    bool ret = false;
+    m_powerSettings = new QGSettings(SETTINGS_POWER_MANAGER);
 
-void BrightThread::run(){
-    m_isCanRun = true;
+    if (nullptr == m_powerSettings) {
+        USD_LOG(LOG_DEBUG,"can't find %s", SETTINGS_POWER_MANAGER);
+    }
 
-    if(qAbs(brightness - currentBrightness) <= 0.01){
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+    m_brightnessSettings = new QGSettings(AUTOBRIGHTNESS_GSETTING_SCHEMA);
+    if (nullptr == m_brightnessSettings) {
         return;
     }
-    if(brightness > currentBrightness){
-        int interval = round(brightness-currentBrightness);
-        double step = (brightness-currentBrightness)/interval;
-        qDebug("需要调节%d次", interval);
-        for(int i=1; i<=interval; i++){
-//            qDebug() << "子线程ID：" << QThread::currentThreadId() << "m_isCanEun = " << m_isCanRun;
-            {
-                QMutexLocker locker(&m_lock);
-                if(!m_isCanRun){
-//                    qDebug() << QThread::currentThreadId() << "被终止";
-                    return;
-                }
-            }
-            mpowerSettings->set(BRIGHTNESS_AC, currentBrightness + i * step);
-            usleep(50000);
-        }
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+
+    m_delayms = m_brightnessSettings->get(DELAYMS).toInt(&ret);
+    if (false == ret) {
+        USD_LOG(LOG_DEBUG,"can't find delayms");
+        m_delayms = 30;
     }
-    else{
-        int interval = round(currentBrightness-brightness);
-        double step = (currentBrightness-brightness)/interval;
-        qDebug("需要调节%d次", interval);
-        for(int i=1; i<=interval; i++){
-//            qDebug() << "子线程ID：" << QThread::currentThreadId() << "m_isCanEun = " << m_isCanRun;
-            {
-                QMutexLocker locker(&m_lock);
-                if(!m_isCanRun){
-//                    qDebug() << QThread::currentThreadId() << "被终止";
-                    return;
-                }
-            }
-            mpowerSettings->set(BRIGHTNESS_AC, currentBrightness - i * step);
-            usleep(50000);
-        }
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+    USD_LOG_SHOW_PARAM1(m_delayms);
+}
+
+
+void BrightThread::run(){
+    int currentBrightnessValue;
+    if (nullptr == m_powerSettings) {
+        return;
     }
-    qDebug() << "brightness = " << brightness;
+
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC)) {
+        return;
+    }
+
+    currentBrightnessValue = m_powerSettings->get(BRIGHTNESS_AC).toInt();
+    USD_LOG(LOG_DEBUG,"start set brightness");
+
+    while(currentBrightnessValue != m_destBrightness) {
+        if (currentBrightnessValue>m_destBrightness){
+            currentBrightnessValue--;
+        } else {
+            currentBrightnessValue++;
+        }
+
+        m_powerSettings->set(BRIGHTNESS_AC,currentBrightnessValue);
+        m_powerSettings->apply();
+        msleep(m_delayms);//30 ms效果较好。
+    }
+    USD_LOG(LOG_DEBUG,"set brightness over");
 }
 
 void BrightThread::stopImmediately(){
-    QMutexLocker locker(&m_lock);
-    m_isCanRun = false;
+
+}
+
+
+void BrightThread::setBrightness(int brightness)
+{
+    m_destBrightness = brightness;
+}
+
+int BrightThread::getRealTimeBrightness()
+{
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC)) {
+       return -1;
+    }
+
+    return m_powerSettings->get(BRIGHTNESS_AC).toInt();
 }
 
 BrightThread::~BrightThread()
 {
-    if(mpowerSettings)
-        delete mpowerSettings;
+    if(m_powerSettings)
+        delete m_powerSettings;
 }

@@ -1,0 +1,39 @@
+<schemalist>
+  <schema gettext-domain="ukui-settings-daemon" id="org.ukui.SettingsDaemon.plugins.auto-brightness" path="/org/ukui/settings-daemon/plugins/auto-brightness/">
+    <key name="active" type="b">
+      <default>true</default>
+      <summary>Activation of this plugin</summary>
+      <description>Whether this plugin would be activated by ukui-settings-daemon or not</description>
+    </key>
+    <key name="priority" type="i">
+      <default>11</default>
+      <summary>Priority to use for this plugin</summary>
+      <description>Priority to use for this plugin in ukui-settings-daemon startup queue</description>
+    </key>
+    <key name="auto-brightness" type="b">
+      <default>true</default>
+      <summary>Activation of this plugin</summary>
+      <description>Whether this plugin would be activated by ukui-settings-daemon or not(ep or ukui-power-manager would usd it)</description>
+    </key>
+    <key name="have-sensor" type="b">
+      <default>false</default>
+      <summary>Activation of this sensor</summary>
+      <description>Store whether the luminance sensor is included and provide it to the eye protection center for use</description>
+    </key>
+    <key name="delayms" type="i">
+      <default>30</default>
+      <summary>Adjust the interval of brightness</summary>
+      <description>Adjust the interval of brightness</description>
+    </key>
+    <key name="debug-mode" type="b">
+      <default>false</default>
+      <summary>Debug mode</summary>
+      <description>Set the key to true, and then you can set 'debug-lux' to test the brightness</description>
+    </key>
+    <key name="debug-lux" type="i">
+      <default>100</default>
+      <summary>Debug lux</summary>
+      <description>Simulate the lumen value to test the mechanism of automatic backlight</description>
+    </key>
+  </schema>
+</schemalist>

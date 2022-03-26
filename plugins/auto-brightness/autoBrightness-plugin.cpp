@@ -25,7 +25,7 @@ AutoBrightnessPlugin::AutoBrightnessPlugin()
 {
     qDebug("AutoBrightness Plugin initializing");
     if(nullptr == mAutoBrightnessManager)
-        mAutoBrightnessManager = AutoBrightnessManager::AutoBrightnessManagerNew();
+        mAutoBrightnessManager = AutoBrightnessManager::autoBrightnessManagerNew();
 }
 
 AutoBrightnessPlugin::~AutoBrightnessPlugin()
@@ -40,7 +40,7 @@ void AutoBrightnessPlugin::activate()
 {
     USD_LOG(LOG_DEBUG,"Activating AutoBrightness plugins");
     bool res;
-    res = mAutoBrightnessManager->AutoBrightnessManagerStart();
+    res = mAutoBrightnessManager->autoBrightnessManagerStart();
     if(!res)
         USD_LOG(LOG_ERR,"Unable to start AutoBrightness manager");
 }
@@ -56,7 +56,7 @@ PluginInterface *AutoBrightnessPlugin::getInstance()
 void AutoBrightnessPlugin::deactivate()
 {
     qDebug("Deactivating AutoBrightness plugin");
-    mAutoBrightnessManager->AutoBrightnessManagerStop();
+    mAutoBrightnessManager->autoBrightnessManagerStop();
 }
 
 PluginInterface *createSettingsPlugin()

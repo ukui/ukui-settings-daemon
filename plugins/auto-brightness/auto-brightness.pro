@@ -1,10 +1,10 @@
 QT += gui widgets x11extras dbus sensors KConfigCore KConfigGui
-
+TARGET = auto-brightness
 TEMPLATE = lib
 
 CONFIG += c++11 plugin link_pkgconfig
 
-DEFINES += TABLETMODE_LIBRARY QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"backGround\\\"
+DEFINES += TABLETMODE_LIBRARY QT_DEPRECATED_WARNINGS MODULE_NAME=\\\"auto-brightness\\\"
 
 
 
@@ -17,6 +17,8 @@ INCLUDEPATH += \
 PKGCONFIG += \
             xrandr x11 \
             glib-2.0
+
+
 
 SOURCES += \
     autoBrightness-manager.cpp \

@@ -22,24 +22,27 @@
 
 #include <QThread>
 #include <QMutex>
-class QGSettings;
+#include "QGSettings/qgsettings.h"
 
 class BrightThread : public QThread
 {
     Q_OBJECT
 public:
-    BrightThread(QObject *parent = nullptr, double bright = 100.0);
-//    BrightThread(QObject *parent = nullptr);
+    BrightThread(QObject *parent = nullptr);
     ~BrightThread();
     void stopImmediately();
-
+    void setBrightness(int brightness);
+    int  getRealTimeBrightness();
 protected:
     void run();
 
 private:
     double brightness;
     double currentBrightness;
-    QGSettings *mpowerSettings;
+    int m_destBrightness;
+    int m_delayms;
+    QGSettings *m_powerSettings;
+    QGSettings *m_brightnessSettings;
     bool m_isCanRun;
     QMutex m_lock;
 };

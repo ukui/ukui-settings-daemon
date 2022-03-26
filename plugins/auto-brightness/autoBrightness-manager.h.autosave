@@ -48,6 +48,7 @@ public Q_SLOTS:
     void sensorActiveChangedSlot();
     void gsettingsChangedSlot(QString key);
     void idleModeChangeSlot(quint32 mode);
+    
 private:
     void setEnabled(bool enabled);
     void enableSensorAndSetGsettings(bool state);
