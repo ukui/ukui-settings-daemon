@@ -44,9 +44,7 @@ AutoBrightnessManager *AutoBrightnessManager::m_AutoBrightnessManager = nullptr;
 AutoBrightnessManager::AutoBrightnessManager() :
     m_Enabled(false)
   , m_brightnessThread(NULL)
-  , m_PreLux(10.f)
 {
-    m_Enabled = false;
     m_Sensor = new QLightSensor(this);
     m_AutoBrightnessSettings  = new QGSettings(SETTINGS_AUTO_BRIGHTNESS_SCHEMAS);
     m_brightnessThread = new BrightThread();
