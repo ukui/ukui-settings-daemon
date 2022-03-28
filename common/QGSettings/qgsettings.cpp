@@ -53,12 +53,26 @@ void QGSettingsPrivate::settingChanged(GSettings *, const gchar *key, gpointer u
     QMetaObject::invokeMethod(self, "changed", Qt::AutoConnection, Q_ARG(QString, key));
 }
 
+static bool is_item_in_schema (const gchar* const* items, const QByteArray & item)
+{
+    while (*items) {
+       if (g_strcmp0 (*items++, item) == 0) {
+           return true;
+       }
+    }
+    return false;
+}
 
 QGSettings::QGSettings(const QByteArray &schemaId, const QByteArray &path, QObject *parent) : QObject(parent)
 {
     mPriv = new QGSettingsPrivate;
     mPriv->schemaId = schemaId;
     mPriv->path = path;
+
+    if (false == is_item_in_schema (g_settings_list_schemas(), schemaId)){
+        mPriv->settings = nullptr;
+        return;
+    }
 
     if (mPriv->path.isEmpty()) {
         mPriv->settings = g_settings_new(mPriv->schemaId.constData());
@@ -83,6 +97,9 @@ QGSettings::~QGSettings()
 QVariant QGSettings::get(const QString &key) const
 {
     gchar *gkey = unqtify_name(key);
+    if (mPriv->settings == nullptr) {
+        return -1;
+    }
     GVariant *value = g_settings_get_value(mPriv->settings, gkey);
     if( NULL == value) {
         USD_LOG(LOG_DEBUG,"g_settings_get_value is faild");
@@ -97,6 +114,10 @@ QVariant QGSettings::get(const QString &key) const
 
 void QGSettings::set(const QString &key, const QVariant &value)
 {
+    if (mPriv->settings == nullptr) {
+        return;
+    }
+
     if (!trySet(key, value))
         qWarning("unable to set key '%s' to value '%s'", key.toUtf8().constData(), value.toString().toUtf8().constData());
 }
@@ -105,6 +126,7 @@ bool QGSettings::trySet(const QString &key, const QVariant &value)
 {
     gchar *gkey = unqtify_name(key);
     bool success = false;
+
 
     /* fetch current value to find out the exact type */
     GVariant *cur = g_settings_get_value(mPriv->settings, gkey);
@@ -121,12 +143,18 @@ bool QGSettings::trySet(const QString &key, const QVariant &value)
 
 void QGSettings::setEnum(const QString& key,int value)
 {
+    if (mPriv->settings == nullptr) {
+        return ;
+    }
     g_settings_set_enum (mPriv->settings,key.toLatin1().data(),value);
 }
 
 int QGSettings::getEnum(const QString& key)
 {
     int enumNum;
+    if (mPriv->settings == nullptr) {
+        return -1;
+    }
     enumNum = g_settings_get_enum (mPriv->settings,key.toLatin1().data());
     return enumNum;
 }

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include <QApplication>
 #include <QDebug>
 #include <QDBusConnection>
@@ -41,7 +42,7 @@ extern "C"{
 
 AutoBrightnessManager *AutoBrightnessManager::m_autoBrightnessManager = nullptr;
 //如果开启自动背光，系统由空闲进入忙时，电源管理不进行亮度处理，由usd的光感模式处理
-AutoBrightnessManager::AutoBrightnessManager() :
+AutoBrightnessManager::AutoBrightnessManager():
     m_enabled(false)
   , m_brightnessThread(NULL)
   ,m_userIntervene(false)
@@ -49,7 +50,6 @@ AutoBrightnessManager::AutoBrightnessManager() :
     m_lightSensor = new QLightSensor(this);
     m_autoBrightnessSettings  = new QGSettings(AUTO_BRIGHTNESS_SCHEMA);
     m_powerManagerSettings = new QGSettings(POWER_MANAGER_SCHEMA);
-
     m_lightSensor->start();//预先读取一次，为了确保sensor存在，取到后直接关闭。
 }
 
@@ -90,8 +90,8 @@ void AutoBrightnessManager::sensorReadingChangedSlot()
 {
     QLightReading * lightReading = m_lightSensor->reading();
     if (nullptr == lightReading || false == m_lightSensor->isActive()) {
-        USD_LOG(LOG_DEBUG,"lux read error....");
-        return ;
+        USD_LOG(LOG_DEBUG, "lux read error....");
+        return;
     }
 
     qreal realTimeLux = lightReading->lux();
