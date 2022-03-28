@@ -41,25 +41,25 @@ public:
     static AutoBrightnessManager *autoBrightnessManagerNew();
     bool autoBrightnessManagerStart();
     void autoBrightnessManagerStop();
-
+    void setEnabled(bool enabled);
 
 public Q_SLOTS:
-    void sensorReadingChangedSlot();
-    void sensorActiveChangedSlot();
-    void gsettingsChangedSlot(QString key);
-    void idleModeChangeSlot(quint32 mode);
-private:
-    void setEnabled(bool enabled);
-    void enableSensorAndSetGsettings(bool state);
-    void adjustBrightnessWithLux(qreal lux);
-private:
-    bool m_Enabled = false;
+    void autoBrightnessUpdateState();
+    void autoBrightnessRefresh();
+    void autoBrightnessSettingsChanged(QString);
+    void idleModeChangeSlot(int mode);
 
+private:
+    void setAutoGsetings(bool state);
+
+private:
+    bool                            m_Enabled;
+
+    static AutoBrightnessManager    *m_AutoBrightnessManager;
+    QDBusInterface                  *m_sessionDbus;
     QGSettings                      *m_AutoBrightnessSettings;
     QLightSensor                    *m_Sensor;
-    KSharedConfig::Ptr              m_Config;
-    BrightThread                    *m_brightnessThread;
-    static AutoBrightnessManager    *m_AutoBrightnessManager;
+    BrightThread                    *m_currentRunLocalThread;
 };
 
 #endif // AUTOBRIGHTNESSMANAGER_H
