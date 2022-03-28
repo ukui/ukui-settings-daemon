@@ -37,16 +37,12 @@ protected:
     void run();
 
 private:
-
-
-    int m_delayms;
-    bool m_exit;
     int m_destBrightness;
-
-    QMutex m_lock;
+    int m_delayms;
     QGSettings *m_powerSettings;
     QGSettings *m_brightnessSettings;
-
+    bool m_isCanRun;
+    QMutex m_lock;
 };
 
 #endif // BRIGHTTHREAD_H

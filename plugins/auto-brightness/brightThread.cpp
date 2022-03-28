@@ -39,8 +39,7 @@ extern "C"{
 #define DELAYMS                 "delayms"
 //空闲模式不进行亮度处理
 
-BrightThread::BrightThread(QObject *parent) :
-    m_exit(false)
+BrightThread::BrightThread(QObject *parent)
 {
     bool ret = false;
     m_powerSettings = new QGSettings(SETTINGS_POWER_MANAGER);
@@ -75,12 +74,8 @@ void BrightThread::run(){
 
     currentBrightnessValue = m_powerSettings->get(BRIGHTNESS_AC).toInt();
     USD_LOG(LOG_DEBUG,"start set brightness");
-    m_exit = false;
+
     while(currentBrightnessValue != m_destBrightness) {
-        if (m_exit) {
-            USD_LOG(LOG_DEBUG,"stop set brightness");
-            break;
-        }
         if (currentBrightnessValue>m_destBrightness){
             currentBrightnessValue--;
         } else {
@@ -92,7 +87,6 @@ void BrightThread::run(){
         msleep(m_delayms);//30 ms效果较好。
     }
     USD_LOG(LOG_DEBUG,"set brightness over");
-
 }
 
 void BrightThread::stopImmediately(){
