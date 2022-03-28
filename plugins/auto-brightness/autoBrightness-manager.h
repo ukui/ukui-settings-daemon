@@ -48,21 +48,26 @@ public Q_SLOTS:
     void sensorActiveChangedSlot();
     void gsettingsChangedSlot(QString key);
     void idleModeChangeSlot(quint32 mode);
+    void powerManagerSchemaChangedSlot(QString key);
+    void brightnessThreadFinishedSlot();
 private:
     void setEnabled(bool enabled);
     void enableSensorAndSetGsettings(bool state);
     void adjustBrightnessWithLux(qreal lux);
+
+    //设置背光前先断开powerManager的信号，待设置成功后再进行链接。避免自己设置的回调。
+    void connectPowerManagerSchema(bool state);
 private:
     bool m_enableAutoBrightness;
     bool m_hadSensor;
+    bool m_userIntervene;//暂时仅仅做记录或者调试模式使用，暂未复杂的用法，只是用户调整亮度后在下次空闲前不再调整亮度。
+    bool m_enabled;
 
-    bool m_Enabled = false;
-
-    QGSettings                      *m_AutoBrightnessSettings;
-    QLightSensor                    *m_Sensor;
-    KSharedConfig::Ptr               m_Config;
+    QGSettings                      *m_autoBrightnessSettings;
+    QGSettings                      *m_powerManagerSettings;
+    QLightSensor                    *m_lightSensor;
     BrightThread                    *m_brightnessThread;
-    static AutoBrightnessManager    *m_AutoBrightnessManager;
+    static AutoBrightnessManager    *m_autoBrightnessManager;
 };
 
 #endif // AUTOBRIGHTNESSMANAGER_H

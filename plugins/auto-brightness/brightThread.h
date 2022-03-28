@@ -41,7 +41,7 @@ private:
     int m_delayms;
     QGSettings *m_powerSettings;
     QGSettings *m_brightnessSettings;
-    bool m_isCanRun;
+    bool m_stop;
     QMutex m_lock;
 };
 

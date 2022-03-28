@@ -39,62 +39,58 @@ extern "C"{
 #define BRIGHTNESS_100_UP_LIMIT 9999999
 
 
-AutoBrightnessManager *AutoBrightnessManager::m_AutoBrightnessManager = nullptr;
+AutoBrightnessManager *AutoBrightnessManager::m_autoBrightnessManager = nullptr;
 //如果开启自动背光，系统由空闲进入忙时，电源管理不进行亮度处理，由usd的光感模式处理
 AutoBrightnessManager::AutoBrightnessManager() :
-    m_Enabled(false)
+    m_enabled(false)
   , m_brightnessThread(NULL)
+  ,m_userIntervene(false)
 {
-    m_Sensor = new QLightSensor(this);
-    m_AutoBrightnessSettings  = new QGSettings(SETTINGS_AUTO_BRIGHTNESS_SCHEMAS);
-    m_brightnessThread = new BrightThread();
+    m_lightSensor = new QLightSensor(this);
+    m_autoBrightnessSettings  = new QGSettings(AUTO_BRIGHTNESS_SCHEMA);
+    m_powerManagerSettings = new QGSettings(POWER_MANAGER_SCHEMA);
 
-    //进入空闲时，停止传感器采集，退出空闲时根据auto-brightness的键值决定是否开启传感器采集，并直接设置亮度。（auto-brightness为true时退出空闲模式代替电源管理调节亮度）
-    QDBusConnection::sessionBus().connect(
-        QString(),
-        QString(SESSION_MANAGER_PATH),
-        GNOME_SESSION_MANAGER,
-        "StatusChanged",
-        this,
-        SLOT(idleModeChangeSlot(quint32)));
-
-    m_Sensor->start();
+    m_lightSensor->start();//预先读取一次，为了确保sensor存在，取到后直接关闭。
 }
 
 AutoBrightnessManager::~AutoBrightnessManager()
 {
-    if (m_AutoBrightnessManager) {
-        delete m_AutoBrightnessManager;
+    if (m_autoBrightnessManager) {
+        delete m_autoBrightnessManager;
     }
 
-    if (m_Sensor) {
-        delete m_Sensor;
+    if (m_lightSensor) {
+        delete m_lightSensor;
     }
 
-    if (m_AutoBrightnessSettings) {
-        delete m_AutoBrightnessSettings;
+    if (m_autoBrightnessSettings) {
+        delete m_autoBrightnessSettings;
     }
 
     if (m_brightnessThread) {
         m_brightnessThread->stopImmediately();
         m_brightnessThread->deleteLater();
     }
+
+    if (m_powerManagerSettings) {
+        m_powerManagerSettings->deleteLater();
+    }
 }
 
 AutoBrightnessManager *AutoBrightnessManager::autoBrightnessManagerNew()
 {
-    if (nullptr == m_AutoBrightnessManager) {
-        m_AutoBrightnessManager = new AutoBrightnessManager();
+    if (nullptr == m_autoBrightnessManager) {
+        m_autoBrightnessManager = new AutoBrightnessManager();
     }
 
-    return m_AutoBrightnessManager;
+    return m_autoBrightnessManager;
 }
 
 void AutoBrightnessManager::sensorReadingChangedSlot()
 {
-    QLightReading * lightReading = m_Sensor->reading();
-    if (nullptr == lightReading) {
-        USD_LOG(LOG_DEBUG,"read error....");
+    QLightReading * lightReading = m_lightSensor->reading();
+    if (nullptr == lightReading || false == m_lightSensor->isActive()) {
+        USD_LOG(LOG_DEBUG,"lux read error....");
         return ;
     }
 
@@ -104,25 +100,29 @@ void AutoBrightnessManager::sensorReadingChangedSlot()
 
 void AutoBrightnessManager::sensorActiveChangedSlot()
 {
+    USD_LOG_SHOW_PARAM1(m_lightSensor->isActive());
     sensorReadingChangedSlot();
 }
 
 void AutoBrightnessManager::setEnabled(bool enabled)
 {
-    if(m_Enabled == enabled) {
+    if (m_enabled == enabled) {
         return;
     }
 
-    m_Enabled = enabled;
+    m_enabled = enabled;
 
-    if (m_Enabled) {
-        m_Sensor->start();
+    if (m_enabled) {
+        m_lightSensor->setActive(true);
+        m_lightSensor->start();
         sensorActiveChangedSlot();
     } else {
         if (m_brightnessThread) {
             m_brightnessThread->stopImmediately();
         }
-        m_Sensor->stop();
+
+        m_lightSensor->setActive(false);
+        m_lightSensor->stop();
     }
 }
 
@@ -131,15 +131,19 @@ void AutoBrightnessManager::gsettingsChangedSlot(QString key)
     int debugLux = 0;
 
     if (key == AUTO_BRIGHTNESS_KEY) {
-        m_enableAutoBrightness = m_AutoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
+        m_enableAutoBrightness = m_autoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
         enableSensorAndSetGsettings(m_enableAutoBrightness);
     } else if (key == DEBUG_LUX_KEY) {
-        if (m_AutoBrightnessSettings->get(DEBUG_MODE_KEY).toBool()) {
-            debugLux = m_AutoBrightnessSettings->get(DEBUG_LUX_KEY).toInt();
+        if (m_autoBrightnessSettings->get(DEBUG_MODE_KEY).toBool()) {
+            if (m_userIntervene) {
+                return;
+            }
+
+            debugLux = m_autoBrightnessSettings->get(DEBUG_LUX_KEY).toInt();
             adjustBrightnessWithLux(debugLux);
         }
     } else if (key == DEBUG_MODE_KEY) {//开启调试就要禁用自动
-        m_enableAutoBrightness =!(m_AutoBrightnessSettings->get(DEBUG_MODE_KEY).toBool());
+        m_enableAutoBrightness =!(m_autoBrightnessSettings->get(DEBUG_MODE_KEY).toBool());
         enableSensorAndSetGsettings(m_enableAutoBrightness);
     }
 }
@@ -147,18 +151,31 @@ void AutoBrightnessManager::gsettingsChangedSlot(QString key)
 void AutoBrightnessManager::idleModeChangeSlot(quint32 mode)
 {
 
-    USD_LOG_SHOW_PARAM1(mode);
-    USD_LOG(LOG_DEBUG,"get session mode");
-
     if (m_enableAutoBrightness == false) {
+        USD_LOG_SHOW_PARAM1(m_enableAutoBrightness);
         return;
     }
 
     if (mode == SESSION_BUSY) {
-        setEnabled(false);//尽量操作硬件停止向上层发送数据，减少系统开销。
+        setEnabled(true);//尽量操作硬件停止向上层发送数据，减少系统开销。
     } else if (mode == SESSION_IDLE) {
-        setEnabled(true);
+        m_userIntervene = false; //用户干预后空闲模式才进行恢复自动控制
+        setEnabled(false);
     }
+}
+
+void AutoBrightnessManager::powerManagerSchemaChangedSlot(QString key)
+{
+    if (key == BRIGHTNESS_AC_KEY) {
+        m_userIntervene = true;
+        setEnabled(false);
+    }
+}
+
+void AutoBrightnessManager::brightnessThreadFinishedSlot()
+{
+    USD_LOG(LOG_DEBUG,"brightness had finished...");
+    connectPowerManagerSchema(true);
 }
 
 void AutoBrightnessManager::enableSensorAndSetGsettings(bool state)
@@ -178,6 +195,7 @@ void AutoBrightnessManager::adjustBrightnessWithLux(qreal realTimeLux)
         return;
     }
 
+    connectPowerManagerSchema(false);
     if(realTimeLux >= BRIGHTNESS_40_LOW_LIMIT && realTimeLux < BRIGHTNESS_40_UP_LIMIT) {
         //40%
         m_brightnessThread->setBrightness(40);
@@ -198,8 +216,16 @@ void AutoBrightnessManager::adjustBrightnessWithLux(qreal realTimeLux)
         //100%
         m_brightnessThread->setBrightness(100);
     }
-
     m_brightnessThread->start();
+}
+
+void AutoBrightnessManager::connectPowerManagerSchema(bool state)
+{
+    if (state) {
+         connect(m_powerManagerSettings, SIGNAL(changed(QString)), this, SLOT(powerManagerSchemaChangedSlot(QString)));
+    } else {
+         disconnect(m_powerManagerSettings, SIGNAL(changed(QString)), this, SLOT(powerManagerSchemaChangedSlot(QString)));
+    }
 }
 
 bool AutoBrightnessManager::autoBrightnessManagerStart()
@@ -208,34 +234,49 @@ bool AutoBrightnessManager::autoBrightnessManagerStart()
 
     USD_LOG(LOG_DEBUG, "AutoBrightnessManager Start");
 
-    m_enableAutoBrightness = m_AutoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
-    m_hadSensor = m_AutoBrightnessSettings->get(HAD_SENSOR_KEY).toBool();
+    m_enableAutoBrightness = m_autoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
+    m_hadSensor = m_autoBrightnessSettings->get(HAD_SENSOR_KEY).toBool();
 
-    QLightReading * lightReading = m_Sensor->reading();
+    QLightReading * lightReading = m_lightSensor->reading();
 
     if (nullptr == lightReading) {
         readSensorDataSuccess = false;
     }
 
     if (m_hadSensor != readSensorDataSuccess) {//如果读不到传感器的值就认为没有传感器,读到则为有传感器，该值提供给护眼中心使用。
-        m_AutoBrightnessSettings->set(HAD_SENSOR_KEY, readSensorDataSuccess);
+        m_autoBrightnessSettings->set(HAD_SENSOR_KEY, readSensorDataSuccess);
     }
 
-    m_Sensor->stop();//stop为了停止为上一次读取而设置的start
+    m_lightSensor->stop();//读取数据后即可停止，为了节省开销。
 
     if (false == readSensorDataSuccess) {
         if (m_enableAutoBrightness == true) {
-            m_AutoBrightnessSettings->set(AUTO_BRIGHTNESS_KEY, false);
+            m_autoBrightnessSettings->set(AUTO_BRIGHTNESS_KEY, false);
         }
+
         USD_LOG(LOG_DEBUG, "can't find lux sensor...");
         return true;
     }
 
-    USD_LOG(LOG_DEBUG, "find lux sensor...");
+    USD_LOG(LOG_DEBUG, "find lux sensor AutoBrightness:%d", m_enableAutoBrightness);
+    //进入空闲时，停止传感器采集，退出空闲时根据auto-brightness的键值决定是否开启传感器采集，并直接设置亮度。（auto-brightness为true时退出空闲模式代替电源管理调节亮度）
+    QDBusConnection::sessionBus().connect(
+        QString(),
+        QString(SESSION_MANAGER_PATH),
+        GNOME_SESSION_MANAGER,
+        "StatusChanged",
+        this,
+        SLOT(idleModeChangeSlot(quint32)));
 
-    connect(m_Sensor, SIGNAL(readingChanged()), this, SLOT(sensorReadingChangedSlot()));
-    connect(m_Sensor, SIGNAL(activeChanged()), this, SLOT(sensorActiveChangedSlot()));
-    connect(m_AutoBrightnessSettings, SIGNAL(changed(QString)), this, SLOT(gsettingsChangedSlot(QString)));
+    m_lightSensor->setActive(true);
+    m_lightSensor->start();//
+    m_brightnessThread = new BrightThread();
+
+    connect(m_lightSensor, SIGNAL(readingChanged()), this, SLOT(sensorReadingChangedSlot()));
+    connect(m_lightSensor, SIGNAL(activeChanged()), this, SLOT(sensorActiveChangedSlot()));
+    connect(m_autoBrightnessSettings, SIGNAL(changed(QString)), this, SLOT(gsettingsChangedSlot(QString)));
+    connect(m_brightnessThread, SIGNAL(finished()), this, SLOT(brightnessThreadFinishedSlot()));
+    connectPowerManagerSchema(true);
 
     enableSensorAndSetGsettings(m_enableAutoBrightness);
     return true;

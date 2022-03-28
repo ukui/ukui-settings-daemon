@@ -58,7 +58,7 @@ LdsmDialog::LdsmDialog(bool other_usable_partitions,bool other_partitions,bool d
     this->mount_path=mount_path;
     this->analyze_button=nullptr;
 
-    m_fontSetting = new QGSettings(ORG_UKUI_STYLE, QByteArray(), this);
+    m_fontSetting = new QGSettings(UKUI_STYLE_SCHEMA, QByteArray(), this);
     connect(m_fontSetting, &QGSettings::changed,[=](QString key) {
         USD_LOG(LOG_DEBUG,"font:%s",key.toLatin1().data());
         if (key == SYSTEM_FONT_SIZE || key == SYSTEM_FONT) {

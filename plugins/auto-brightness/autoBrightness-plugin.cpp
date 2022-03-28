@@ -16,47 +16,57 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+
+#include "clib-syslog.h"
 #include "autoBrightness-plugin.h"
 
-PluginInterface *AutoBrightnessPlugin::mInstance       = nullptr;
-AutoBrightnessManager *AutoBrightnessPlugin::mAutoBrightnessManager = nullptr;
+PluginInterface *AutoBrightnessPlugin::m_instance       = nullptr;
+AutoBrightnessManager *AutoBrightnessPlugin::m_autoBrightnessManager = nullptr;
 
 AutoBrightnessPlugin::AutoBrightnessPlugin()
 {
-    qDebug("AutoBrightness Plugin initializing");
-    if(nullptr == mAutoBrightnessManager)
-        mAutoBrightnessManager = AutoBrightnessManager::autoBrightnessManagerNew();
+    USD_LOG(LOG_DEBUG,"AutoBrightness Plugin initializing");
+    if(nullptr == m_autoBrightnessManager)
+        m_autoBrightnessManager = AutoBrightnessManager::autoBrightnessManagerNew();
 }
 
 AutoBrightnessPlugin::~AutoBrightnessPlugin()
 {
-    if(mAutoBrightnessManager)
-        delete mAutoBrightnessManager;
-    if(mInstance)
-        delete mInstance;
+    if(m_autoBrightnessManager) {
+        delete m_autoBrightnessManager;
+    }
+
+    if(m_instance) {
+        delete m_instance;
+    }
 }
 
 void AutoBrightnessPlugin::activate()
 {
-    USD_LOG(LOG_DEBUG,"Activating AutoBrightness plugins");
     bool res;
-    res = mAutoBrightnessManager->autoBrightnessManagerStart();
-    if(!res)
+
+    USD_LOG(LOG_DEBUG,"Activating AutoBrightness plugins");
+    res = m_autoBrightnessManager->autoBrightnessManagerStart();
+
+    if(!res) {
         USD_LOG(LOG_ERR,"Unable to start AutoBrightness manager");
+    }
 }
 
 PluginInterface *AutoBrightnessPlugin::getInstance()
 {
-    if(nullptr == mInstance)
-        mInstance = new AutoBrightnessPlugin();
+    if(nullptr == m_instance) {
+        m_instance = new AutoBrightnessPlugin();
+    }
 
-    return mInstance;
+    return m_instance;
 }
 
 void AutoBrightnessPlugin::deactivate()
 {
-    qDebug("Deactivating AutoBrightness plugin");
-    mAutoBrightnessManager->autoBrightnessManagerStop();
+    USD_LOG(LOG_DEBUG, "Deactivating AutoBrightness plugin");
+    m_autoBrightnessManager->autoBrightnessManagerStop();
 }
 
 PluginInterface *createSettingsPlugin()

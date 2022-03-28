@@ -38,9 +38,8 @@ public:
     virtual void deactivate();
 
 private:
-    static AutoBrightnessManager    *mAutoBrightnessManager;
-    static PluginInterface      *mInstance;
-    BrightThread* thread;
+    static AutoBrightnessManager    *m_autoBrightnessManager;
+    static PluginInterface      *m_instance;
 };
 extern "C" Q_DECL_EXPORT PluginInterface *createSettingsPlugin();
 

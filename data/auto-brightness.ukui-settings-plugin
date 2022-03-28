@@ -1,0 +1,10 @@
+[UKUI Settings Plugin]
+Module=auto-brightness
+IAge=0
+Name=Auto-Brightness-Manager
+Name[zh_CN]=亮度管理
+Description=auto-brightness plugin
+Authors=Chen XiaoHui
+Copyright=Copyright (C) 2022 KylinSoft Co., Ltd.
+Website=
+

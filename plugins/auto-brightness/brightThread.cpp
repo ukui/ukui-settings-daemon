@@ -24,7 +24,7 @@
 #include <QDBusInterface>
 #include <QApplication>
 
-
+#include "usd_global_define.h"
 #include "QGSettings/qgsettings.h"
 
 extern "C"{
@@ -33,56 +33,62 @@ extern "C"{
 #include "clib-syslog.h"
 }
 
-#define SETTINGS_POWER_MANAGER  "org.ukui.power-manager"
-#define AUTOBRIGHTNESS_GSETTING_SCHEMA  "org.ukui.SettingsDaemon.plugins.auto-brightness"
-#define BRIGHTNESS_AC           "brightness-ac"
-#define DELAYMS                 "delayms"
 //空闲模式不进行亮度处理
 
-BrightThread::BrightThread(QObject *parent)
+BrightThread::BrightThread(QObject *parent):
+    m_stop(false)
 {
     bool ret = false;
-    m_powerSettings = new QGSettings(SETTINGS_POWER_MANAGER);
+    m_powerSettings = new QGSettings(POWER_MANAGER_SCHEMA);
 
     if (nullptr == m_powerSettings) {
-        USD_LOG(LOG_DEBUG,"can't find %s", SETTINGS_POWER_MANAGER);
+        USD_LOG(LOG_DEBUG,"can't find %s", POWER_MANAGER_SCHEMA);
     }
 
-    m_brightnessSettings = new QGSettings(AUTOBRIGHTNESS_GSETTING_SCHEMA);
+    m_brightnessSettings = new QGSettings(AUTO_BRIGHTNESS_SCHEMA);
     if (nullptr == m_brightnessSettings) {
         return;
     }
 
-    m_delayms = m_brightnessSettings->get(DELAYMS).toInt(&ret);
+    m_delayms = m_brightnessSettings->get(DELAYMS_KEY).toInt(&ret);
+
     if (false == ret) {
         USD_LOG(LOG_DEBUG,"can't find delayms");
         m_delayms = 30;
     }
+
     USD_LOG_SHOW_PARAM1(m_delayms);
 }
 
 
 void BrightThread::run(){
     int currentBrightnessValue;
+
     if (nullptr == m_powerSettings) {
         return;
     }
 
-    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC)) {
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC_KEY)) {
         return;
     }
 
-    currentBrightnessValue = m_powerSettings->get(BRIGHTNESS_AC).toInt();
+    currentBrightnessValue = m_powerSettings->get(BRIGHTNESS_AC_KEY).toInt();
     USD_LOG(LOG_DEBUG,"start set brightness");
 
+    m_stop = false;
     while(currentBrightnessValue != m_destBrightness) {
+
+        if (m_stop) {
+            return;
+        }
+
         if (currentBrightnessValue>m_destBrightness){
             currentBrightnessValue--;
         } else {
             currentBrightnessValue++;
         }
 
-        m_powerSettings->set(BRIGHTNESS_AC,currentBrightnessValue);
+        m_powerSettings->set(BRIGHTNESS_AC_KEY,currentBrightnessValue);
         m_powerSettings->apply();
         msleep(m_delayms);//30 ms效果较好。
     }
@@ -90,7 +96,7 @@ void BrightThread::run(){
 }
 
 void BrightThread::stopImmediately(){
-
+    m_stop = true;
 }
 
 
@@ -101,15 +107,20 @@ void BrightThread::setBrightness(int brightness)
 
 int BrightThread::getRealTimeBrightness()
 {
-    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC)) {
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC_KEY)) {
        return -1;
     }
 
-    return m_powerSettings->get(BRIGHTNESS_AC).toInt();
+    return m_powerSettings->get(BRIGHTNESS_AC_KEY).toInt();
 }
 
 BrightThread::~BrightThread()
 {
-    if(m_powerSettings)
+    if (m_powerSettings) {
         delete m_powerSettings;
+    }
+
+    if (m_brightnessSettings) {
+        delete m_brightnessSettings;
+    }
 }

@@ -25,38 +25,45 @@
 
 
 /*com.kylin.statusmanager.interface*/
-#define DBUS_STATUSMANAGER_NAME "com.kylin.statusmanager.interface"
-#define DBUS_STATUSMANAGER_PATH "/"
-#define DBUS_STATUSMANAGER_INTERFACE "com.kylin.statusmanager.interface"
-#define DBUS_STATUSMANAGER_GET_MODE  "get_current_tabletmode"
-#define DBUS_STATUSMANAGER_GET_ROTATION "get_current_rotation"
+#define DBUS_STATUSMANAGER_NAME             "com.kylin.statusmanager.interface"
+#define DBUS_STATUSMANAGER_PATH             "/"
+#define DBUS_STATUSMANAGER_INTERFACE        "com.kylin.statusmanager.interface"
+#define DBUS_STATUSMANAGER_GET_MODE         "get_current_tabletmode"
+#define DBUS_STATUSMANAGER_GET_ROTATION     "get_current_rotation"
 /*****/
 
 /*org.ukui.SettingsDaemon.xrandr*/
-#define DBUS_XRANDR_NAME "org.ukui.SettingsDaemon"
-#define DBUS_XRANDR_PATH "/org/ukui/SettingsDaemon/xrandr"
-#define DBUS_XRANDR_INTERFACE "org.ukui.SettingsDaemon.xrandr"
-#define DBUS_XRANDR_GET_MODE  "getScreenMode"
-#define DBUS_XRANDR_SET_MODE "setScreenMode"
-#define DBUS_XRANDR_GET_SCREEN_PARAM "getScreensParam"
+#define DBUS_XRANDR_NAME                    "org.ukui.SettingsDaemon"
+#define DBUS_XRANDR_PATH                    "/org/ukui/SettingsDaemon/xrandr"
+#define DBUS_XRANDR_INTERFACE               "org.ukui.SettingsDaemon.xrandr"
+#define DBUS_XRANDR_GET_MODE                "getScreenMode"
+#define DBUS_XRANDR_SET_MODE                "setScreenMode"
+#define DBUS_XRANDR_GET_SCREEN_PARAM        "getScreensParam"
 /*****/
-
-#define ORG_UKUI_STYLE "org.ukui.style"
-#define SYSTEM_FONT_SIZE "system-font-size"
-#define SYSTEM_FONT "system-font"
 
 
 //dbus 配置
 #define GNOME_SESSION_MANAGER               "org.gnome.SessionManager.Presence"
 #define SESSION_MANAGER_PATH                "/org/gnome/SessionManager/Presence"
 
+//gsettings
+
+
+//ukui.style
+#define UKUI_STYLE_SCHEMA                   "org.ukui.style"
+#define SYSTEM_FONT_SIZE                    "system-font-size"
+#define SYSTEM_FONT                         "system-font"
 
 //auto-brightness gsettings
-#define SETTINGS_AUTO_BRIGHTNESS_SCHEMAS "org.ukui.SettingsDaemon.plugins.auto-brightness"
-#define AUTO_BRIGHTNESS_KEY              "auto-brightness"
-#define HAD_SENSOR_KEY              "have-sensor"
-#define DEBUG_MODE_KEY                  "debug-mode"
-#define DEBUG_LUX_KEY                   "debug-lux"
+#define AUTO_BRIGHTNESS_SCHEMA              "org.ukui.SettingsDaemon.plugins.auto-brightness"
+#define AUTO_BRIGHTNESS_KEY                 "auto-brightness"
+#define HAD_SENSOR_KEY                      "have-sensor"
+#define DEBUG_MODE_KEY                      "debug-mode"
+#define DEBUG_LUX_KEY                       "debug-lux"
+#define DELAYMS_KEY                         "delayms"
+
+#define POWER_MANAGER_SCHEMA                "org.ukui.power-manager"
+#define BRIGHTNESS_AC_KEY                   "brightness-ac"
 /*Xorg shutkey name*/
 
 //session
