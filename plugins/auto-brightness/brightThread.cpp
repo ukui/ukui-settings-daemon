@@ -60,7 +60,9 @@ BrightThread::BrightThread(QObject *parent):
     USD_LOG_SHOW_PARAM1(m_delayms);
 }
 
-
+//待电源管理优化内部处理。
+//需要电源管理重新建立一个设置背光的接口，包含目标亮度与设置时间,以及设置完毕的signal与实时亮度的dbus，signal。usd调用接口传递设置间隔和目标亮度给电源管理，有电源管理进行线性处理，
+//其他组件要想同步线性曲线，就监控实时亮度的dbus上的signal。
 void BrightThread::run(){
     int currentBrightnessValue;
 
@@ -88,7 +90,7 @@ void BrightThread::run(){
             currentBrightnessValue++;
         }
 
-        m_powerSettings->set(BRIGHTNESS_AC_KEY,currentBrightnessValue);
+        m_powerSettings->set(BRIGHTNESS_AC_KEY, currentBrightnessValue);
         m_powerSettings->apply();
         msleep(m_delayms);//30 ms效果较好。
     }

@@ -57,14 +57,17 @@ AutoBrightnessManager::~AutoBrightnessManager()
 {
     if (m_autoBrightnessManager) {
         delete m_autoBrightnessManager;
+        m_autoBrightnessManager = nullptr;
     }
 
     if (m_lightSensor) {
         delete m_lightSensor;
+        m_lightSensor = nullptr;
     }
 
     if (m_autoBrightnessSettings) {
         delete m_autoBrightnessSettings;
+        m_autoBrightnessSettings = nullptr;
     }
 
     if (m_brightnessThread) {
@@ -194,6 +197,8 @@ void AutoBrightnessManager::adjustBrightnessWithLux(qreal realTimeLux)
         USD_LOG(LOG_DEBUG,"get brightness error");
         return;
     }
+
+    m_brightnessThread->stopImmediately();
 
     connectPowerManagerSchema(false);
     if(realTimeLux >= BRIGHTNESS_40_LOW_LIMIT && realTimeLux < BRIGHTNESS_40_UP_LIMIT) {
