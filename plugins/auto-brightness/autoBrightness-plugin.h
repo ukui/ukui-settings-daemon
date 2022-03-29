@@ -22,6 +22,8 @@
 #include "plugin-interface.h"
 #include "autoBrightness-manager.h"
 #include "clib-syslog.h"
+#include "brightThread.h"
+
 class AutoBrightnessPlugin : public PluginInterface
 {
 private:
@@ -36,8 +38,8 @@ public:
     virtual void deactivate();
 
 private:
-    static AutoBrightnessManager    *mAutoBrightnessManager;
-    static PluginInterface      *mInstance;
+    static AutoBrightnessManager    *m_autoBrightnessManager;
+    static PluginInterface      *m_instance;
 };
 extern "C" Q_DECL_EXPORT PluginInterface *createSettingsPlugin();
 

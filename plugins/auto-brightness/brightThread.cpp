@@ -18,81 +18,111 @@
  */
 
 #include "brightThread.h"
-#include <QGSettings/QGSettings>
 #include <QByteArray>
 #include <QDebug>
 #include <QMutexLocker>
+#include <QDBusInterface>
+#include <QApplication>
+
+#include "usd_global_define.h"
+#include "QGSettings/qgsettings.h"
 
 extern "C"{
 #include <math.h>
 #include <unistd.h>
+#include "clib-syslog.h"
 }
 
-#define SETTINGS_POWER_MANAGER  "org.ukui.power-manager"
-#define BRIGHTNESS_AC           "brightness-ac"
+//空闲模式不进行亮度处理
 
-BrightThread::BrightThread(QObject *parent, double bright) : QThread(parent), brightness(bright)
-//BrightThread::BrightThread(QObject *parent) : QThread(parent)
+BrightThread::BrightThread(QObject *parent):
+    m_stop(false)
 {
-    QByteArray id(SETTINGS_POWER_MANAGER);
-    if(QGSettings::isSchemaInstalled(id))
-        mpowerSettings = new QGSettings(SETTINGS_POWER_MANAGER);
-    currentBrightness = mpowerSettings->get(BRIGHTNESS_AC).toDouble();
-}
+    bool ret = false;
+    m_powerSettings = new QGSettings(POWER_MANAGER_SCHEMA);
 
-void BrightThread::run(){
-    m_isCanRun = true;
+    if (nullptr == m_powerSettings) {
+        USD_LOG(LOG_DEBUG,"can't find %s", POWER_MANAGER_SCHEMA);
+    }
 
-    if(qAbs(brightness - currentBrightness) <= 0.01){
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+    m_brightnessSettings = new QGSettings(AUTO_BRIGHTNESS_SCHEMA);
+    if (nullptr == m_brightnessSettings) {
         return;
     }
-    if(brightness > currentBrightness){
-        int interval = round(brightness-currentBrightness);
-        double step = (brightness-currentBrightness)/interval;
-        qDebug("需要调节%d次", interval);
-        for(int i=1; i<=interval; i++){
-//            qDebug() << "子线程ID：" << QThread::currentThreadId() << "m_isCanEun = " << m_isCanRun;
-            {
-                QMutexLocker locker(&m_lock);
-                if(!m_isCanRun){
-//                    qDebug() << QThread::currentThreadId() << "被终止";
-                    return;
-                }
-            }
-            mpowerSettings->set(BRIGHTNESS_AC, currentBrightness + i * step);
-            usleep(50000);
-        }
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+
+    m_delayms = m_brightnessSettings->get(DELAYMS_KEY).toInt(&ret);
+
+    if (false == ret) {
+        USD_LOG(LOG_DEBUG,"can't find delayms");
+        m_delayms = 30;
     }
-    else{
-        int interval = round(currentBrightness-brightness);
-        double step = (currentBrightness-brightness)/interval;
-        qDebug("需要调节%d次", interval);
-        for(int i=1; i<=interval; i++){
-//            qDebug() << "子线程ID：" << QThread::currentThreadId() << "m_isCanEun = " << m_isCanRun;
-            {
-                QMutexLocker locker(&m_lock);
-                if(!m_isCanRun){
-//                    qDebug() << QThread::currentThreadId() << "被终止";
-                    return;
-                }
-            }
-            mpowerSettings->set(BRIGHTNESS_AC, currentBrightness - i * step);
-            usleep(50000);
-        }
-        mpowerSettings->set(BRIGHTNESS_AC, brightness);
+
+    USD_LOG_SHOW_PARAM1(m_delayms);
+}
+
+//待电源管理优化内部处理。
+//需要电源管理重新建立一个设置背光的接口，包含目标亮度与设置时间,以及设置完毕的signal与实时亮度的dbus，signal。usd调用接口传递设置间隔和目标亮度给电源管理，有电源管理进行线性处理，
+//其他组件要想同步线性曲线，就监控实时亮度的dbus上的signal。
+void BrightThread::run(){
+    int currentBrightnessValue;
+
+    if (nullptr == m_powerSettings) {
+        return;
     }
-    qDebug() << "brightness = " << brightness;
+
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC_KEY)) {
+        return;
+    }
+
+    currentBrightnessValue = m_powerSettings->get(BRIGHTNESS_AC_KEY).toInt();
+    USD_LOG(LOG_DEBUG,"start set brightness");
+
+    m_stop = false;
+    while(currentBrightnessValue != m_destBrightness) {
+
+        if (m_stop) {
+            return;
+        }
+
+        if (currentBrightnessValue>m_destBrightness){
+            currentBrightnessValue--;
+        } else {
+            currentBrightnessValue++;
+        }
+
+        m_powerSettings->set(BRIGHTNESS_AC_KEY, currentBrightnessValue);
+        m_powerSettings->apply();
+        msleep(m_delayms);//30 ms效果较好。
+    }
+    USD_LOG(LOG_DEBUG,"set brightness over");
 }
 
 void BrightThread::stopImmediately(){
-    QMutexLocker locker(&m_lock);
-    m_isCanRun = false;
+    m_stop = true;
+}
+
+
+void BrightThread::setBrightness(int brightness)
+{
+    m_destBrightness = brightness;
+}
+
+int BrightThread::getRealTimeBrightness()
+{
+    if (false == m_powerSettings->keys().contains(BRIGHTNESS_AC_KEY)) {
+       return -1;
+    }
+
+    return m_powerSettings->get(BRIGHTNESS_AC_KEY).toInt();
 }
 
 BrightThread::~BrightThread()
 {
-    if(mpowerSettings)
-        delete mpowerSettings;
+    if (m_powerSettings) {
+        delete m_powerSettings;
+    }
+
+    if (m_brightnessSettings) {
+        delete m_brightnessSettings;
+    }
 }

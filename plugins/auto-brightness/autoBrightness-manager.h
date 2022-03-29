@@ -23,7 +23,9 @@
 #include <QLightSensor>
 #include <QLightReading>
 #include <KSharedConfig>
+#include <QDBusInterface>
 #include <QGSettings/qgsettings.h>
+
 #include "brightThread.h"
 
 class AutoBrightnessManager : public QObject
@@ -36,25 +38,36 @@ private:
 
 public:
     ~AutoBrightnessManager();
-    static AutoBrightnessManager *AutoBrightnessManagerNew();
-    bool AutoBrightnessManagerStart();
-    void AutoBrightnessManagerStop();
-    void SetEnabled(bool enabled);
+    static AutoBrightnessManager *autoBrightnessManagerNew();
+    bool autoBrightnessManagerStart();
+    void autoBrightnessManagerStop();
+
 
 public Q_SLOTS:
-    void AutoBrightnessUpdateState();
-    void onLocalThreadDestroy(QObject* obj);
-    void AutoBrightnessRefresh();
-    void AutoBrightnessSettingsChanged(QString);
-
+    void sensorReadingChangedSlot();
+    void sensorActiveChangedSlot();
+    void gsettingsChangedSlot(QString key);
+    void idleModeChangeSlot(quint32 mode);
+    void powerManagerSchemaChangedSlot(QString key);
+    void brightnessThreadFinishedSlot();
 private:
-    bool mEnabled;
-    double mPreLux;
-    QGSettings   *mAutoBrightnessSettings;
-    static AutoBrightnessManager *mAutoBrightnessManager;
-    QLightSensor       *mSensor;
-    KSharedConfig::Ptr        mConfig;
-    BrightThread * m_currentRunLocalThread;
+    void setEnabled(bool enabled);
+    void enableSensorAndSetGsettings(bool state);
+    void adjustBrightnessWithLux(qreal lux);
+
+    //设置背光前先断开powerManager的信号，待设置成功后再进行链接。避免自己设置的回调。
+    void connectPowerManagerSchema(bool state);
+private:
+    bool m_enableAutoBrightness;
+    bool m_hadSensor;
+    bool m_userIntervene;//暂时仅仅做记录或者调试模式使用，暂未复杂的用法，只是用户调整亮度后在下次空闲前不再调整亮度。
+    bool m_enabled;
+
+    QGSettings                      *m_autoBrightnessSettings;
+    QGSettings                      *m_powerManagerSettings;
+    QLightSensor                    *m_lightSensor;
+    BrightThread                    *m_brightnessThread;
+    static AutoBrightnessManager    *m_autoBrightnessManager;
 };
 
 #endif // AUTOBRIGHTNESSMANAGER_H
