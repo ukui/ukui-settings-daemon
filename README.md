@@ -1306,5 +1306,11 @@ KeybindingsPlugin::deactivate
 
 设置底层系统主题变量，设定了一些光标等ui事件的gdk主题。
 
+## 代码统计
+
+wc -l `find ./ -name "*.c";find -name "*.h";find -name "*.cpp"`
+整理前：39196
+wc -c `find ./ -name "*.c";find -name "*.h";find -name "*.cpp"`
+整理前：1242208
 
 
