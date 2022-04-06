@@ -35,12 +35,12 @@ PKGCONFIG += glib-2.0  gio-2.0 libxklavier x11 xrandr xtst atk gdk-3.0 gtk+-3.0 
 # You can also select to disable deprecated APIs only up to a certain version of Qt.
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
-target.source += $$TARGET
-target.path = /usr/bin
+target_sp.files += $$TARGET
+target_sp.path = /usr/bin
 
 
 INSTALLS +=  \
-            target
+            target_sp
 
 SOURCES += \
     save-screen.cpp \
