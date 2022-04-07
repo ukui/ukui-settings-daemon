@@ -255,16 +255,31 @@ void LdsmDialog::updateText()
 
     font.setBold(true);
     font.setPixelSize(font_size+2);
-    primary_label->setFont(font);
+
+    if (primary_label != nullptr) {
+        primary_label->setFont(font);
+    }
 
     font.setBold(false);
     font.setPixelSize(font_size);
 
-    second_label->setFont(font);
-    ignore_button->setFont(font);
-    ignore_button->setFont(font);
-    trash_empty->setFont(font);
-    ignore_check_button->setFont(font);
+    if (second_label != nullptr) {
+        second_label->setFont(font);
+    }
+
+    if (ignore_button != nullptr) {
+        ignore_button->setFont(font);
+    }
+
+    if (this->has_trash) {
+        if (trash_empty != nullptr)  {
+            trash_empty->setFont(font);
+        }
+    }
+
+    if (ignore_check_button) {
+        ignore_check_button->setFont(font);
+    }
 }
 
 void LdsmDialog::checkButtonAnalyze()
