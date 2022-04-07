@@ -985,11 +985,6 @@ void XrandrManager::remapFromConfig(QString mapPath)
     int deviceId = 0;
     int mapNum = getMapInfoListFromConfig(mapPath,mapInfoList);
     USD_LOG(LOG_DEBUG,"getMapInfoListFromConfig : %d",mapNum);
-    if(mapNum < 1) {
-        USD_LOG(LOG_DEBUG,"get map num error");
-        SetTouchscreenCursorRotation();
-        return;
-    }
     for (int i = 0; i < mapNum; ++i) {
         int ret = find_touchId_from_name(pDpy, mapInfoList[i].sTouchName.toLatin1().data(),mapInfoList[i].sTouchSerial.toLatin1().data(), &deviceId);
         USD_LOG(LOG_DEBUG,"find_touchId_from_name : %d",deviceId);
@@ -1000,6 +995,7 @@ void XrandrManager::remapFromConfig(QString mapPath)
             }
         }
     }
+    XCloseDisplay(pDpy);
 }
 
 

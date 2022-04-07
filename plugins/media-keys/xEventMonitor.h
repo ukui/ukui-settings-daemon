@@ -56,7 +56,7 @@ public:
     bool getCtrlPressStatus();
     bool getAltPressStatus();
     bool getShiftPressStatus();
-
+    void setBrightnessEnable(bool enable);
 Q_SIGNALS:
     void buttonPress(int x, int y);
     void buttonDrag(int x, int y);
@@ -85,6 +85,7 @@ private:
 
     bool isPress;
 
+    bool isKeyEnable;
     bool isOpenDisplay = false;
 };
 

@@ -90,7 +90,6 @@ void xEventMonitor::run()
         XCloseDisplay(display_datalink);
     }
 }
-
 void xEventMonitor::callback(XPointer ptr, XRecordInterceptData* data)
 {
     ((xEventMonitor *) ptr)->handleRecordEvent(data);
@@ -117,6 +116,11 @@ bool xEventMonitor::getShiftPressStatus()
     return shiftPress_l | shiftPress_r;
 }
 
+void xEventMonitor::setBrightnessEnable(bool enable)
+{
+    isKeyEnable = enable;
+}
+
 void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
 {
     int eventKeysym;
@@ -124,10 +128,9 @@ void xEventMonitor::handleRecordEvent(XRecordInterceptData* data)
     if (data->category == XRecordFromServer) {
         xEvent * event = (xEvent *)data->data;
 
-        if (event->u.u.type!=KeyPress && event->u.u.type!=KeyRelease){
+        if (event->u.u.type!=KeyPress && event->u.u.type!=KeyRelease ||isKeyEnable == false){
             goto ERR;
         }
-
 
         switch (event->u.u.type) {
         case KeyPress:

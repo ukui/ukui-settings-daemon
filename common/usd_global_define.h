@@ -41,6 +41,11 @@
 #define DBUS_XRANDR_GET_SCREEN_PARAM        "getScreensParam"
 /*****/
 
+/*com.control.center.qt.systemdbus*/
+#define DBUS_CONTROL_CENTER_NAME            "com.control.center.qt.systemdbus"
+#define DBUS_CONTROL_CENTER_PATH            "/"
+#define DBUS_CONTROL_CENTER_INTERFACE       "com.control.center.interface"
+/*****/
 
 //dbus 配置
 #define GNOME_SESSION_MANAGER               "org.gnome.SessionManager.Presence"
