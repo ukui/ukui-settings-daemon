@@ -225,9 +225,9 @@ void MprisManager::keyPressed(QString application,QString operation)
     }
 
     if("Play" == operation)
-        mprisKey = "PlayPause";
+        mprisKey = "KvPlayPause";
     else if("Pause" == operation)
-        mprisKey = "Pause";
+        mprisKey = "KvPlayPause";
     else if("Previous" == operation)
         mprisKey = "Previous";
     else if("Next" == operation)
