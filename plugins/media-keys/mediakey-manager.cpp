@@ -1708,11 +1708,10 @@ void MediaKeysManager::doMicSoundAction()
 
 QString getEdidHash(int outputId)
 {
-    QDBusInterface* dbusEdid = new QDBusInterface("org.kde.KScreen",
+    QDBusInterface dbusEdid("org.kde.KScreen",
             "/backend",
-            "org.kde.kscreen.Backend",
-            QDBusConnection::sessionBus());
-    QDBusReply<QByteArray> replyEdid = dbusEdid->call("getEdid",outputId);
+            "org.kde.kscreen.Backend");
+    QDBusReply<QByteArray> replyEdid = dbusEdid.call("getEdid",outputId);
     const quint8 *edidData = reinterpret_cast<const quint8 *>(replyEdid.value().constData());
     QCryptographicHash hash(QCryptographicHash::Md5);
     hash.reset();
