@@ -210,6 +210,7 @@ void MprisManager::serviceUnregisteredSlot(const QString& service)
 void MprisManager::keyPressed(QString application,QString operation)
 {
     QString mprisKey = nullptr;
+    QString mprisKeyTmp = nullptr;
     QString mprisHead,mprisName;
     QDBusMessage playerMsg,response;
 
@@ -224,20 +225,21 @@ void MprisManager::keyPressed(QString application,QString operation)
         return;
     }
 
-    if("Play" == operation)
-        mprisKey = "KvPlayPause";
-    else if("Pause" == operation)
-        mprisKey = "KvPlayPause";
-    else if("Previous" == operation)
+    if ("Play" == operation) {
+        mprisKey = "PlayPause";
+        mprisKeyTmp = "KvPlayPause";
+    } else if("Pause" == operation) {
+        mprisKey = "Pause";
+        mprisKeyTmp = "KvPlayPause";
+    } else if("Previous" == operation) {
         mprisKey = "Previous";
-    else if("Next" == operation)
+    } else if("Next" == operation) {
         mprisKey = "Next";
-    else if("Stop" == operation)
+    } else if("Stop" == operation) {
         mprisKey = "Stop";
-
+    }
     if(mprisKey.isNull()) {
-        USD_LOG(LOG_DEBUG,"error op [%s]!",operation.toLatin1().data());
-       return;
+        return;
     }
 
     mprisHead = mPlayerQuque->head();
@@ -246,12 +248,19 @@ void MprisManager::keyPressed(QString application,QString operation)
     /* create a dbus method call by QDBusMessage, the @mprisName is a member of @busNames
      * 通过QDBusMessage的方式创建一个dbus方法调用，@mprisName 来自于 @busNames
      */
-
+    USD_LOG(LOG_DEBUG,"mprisHead:%s mpriName:%s.",mprisHead.toLatin1().data(),mprisName.toLatin1().data());
     playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKey);
     response = QDBusConnection::sessionBus().call(playerMsg);
 
     if(response.type() == QDBusMessage::ErrorMessage) {
         USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+    }
+    if(!mprisKeyTmp.isEmpty()) {
+        playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKeyTmp);
+        response = QDBusConnection::sessionBus().call(playerMsg);
+        if(response.type() == QDBusMessage::ErrorMessage) {
+            USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+        }
     }
 }
 
