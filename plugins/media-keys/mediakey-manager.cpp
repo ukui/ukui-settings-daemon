@@ -21,6 +21,8 @@
 #include "eggaccelerators.h"
 
 #include <KF5/KGlobalAccel/KGlobalAccel>
+#include <QCryptographicHash>
+#include <QDBusPendingReply>
 
 #include "clib-syslog.h"
 #include "rfkillswitch.h"
@@ -77,8 +79,8 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
     mSettings = new QGSettings(MEDIAKEY_SCHEMA);
     pointSettings = new QGSettings(POINTER_SCHEMA);
     sessionSettings = new QGSettings(SESSION_SCHEMA);
-
-
+    m_isNoteBook = UsdBaseClass::isNotebook();
+    m_prevPrimaryOutputId = 0;
     gdk_init(NULL,NULL);
     //session bus 会话总线
     QDBusConnection sessionBus = QDBusConnection::sessionBus();
@@ -88,6 +90,10 @@ MediaKeysManager::MediaKeysManager(QObject* parent):QObject(parent)
     }
 
     mXEventMonitor = new xEventMonitor(this);
+    m_dbusControlCenter = new QDBusInterface(DBUS_CONTROL_CENTER_NAME,
+                                   DBUS_CONTROL_CENTER_PATH,
+                                   DBUS_CONTROL_CENTER_INTERFACE,
+                                   QDBusConnection::systemBus());
 }
 
 MediaKeysManager::~MediaKeysManager()
@@ -240,7 +246,7 @@ bool MediaKeysManager::mediaKeysStart(GError*)
 
     initShortcuts();
     initXeventMonitor();
-
+    getConfigMonitor();
     mDbusScreensaveMessage = QDBusMessage::createMethodCall("org.ukui.ScreenSaver",
                                                             "/",
                                                             "org.ukui.ScreenSaver",
@@ -268,6 +274,28 @@ int8_t MediaKeysManager::getCurrentMode()
 
     return -1;
 }
+
+void MediaKeysManager::getConfigMonitor()
+{
+    if (m_config) {
+        KScreen::ConfigMonitor::instance()->removeConfig(m_config);
+        for (const KScreen::OutputPtr &output : m_config->outputs()) {
+            output->disconnect(this);
+        }
+        m_config->disconnect(this);
+    }
+
+    connect(new KScreen::GetConfigOperation, &KScreen::GetConfigOperation::finished,
+            this,[this](KScreen::ConfigOperation* op) {
+        if(op->hasError()) {
+            USD_LOG(LOG_ERR,"error getConfigMonitor :%s",op->errorString().toLatin1().data());
+            return;
+        }
+        m_config = qobject_cast<KScreen::GetConfigOperation*> (op)->config();
+        KScreen::ConfigMonitor::instance()->addConfig(m_config);
+    });
+}
+
 
 void MediaKeysManager::initShortcuts()
 {
@@ -342,6 +370,7 @@ void MediaKeysManager::initShortcuts()
         KGlobalAccel::self()->setDefaultShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
         KGlobalAccel::self()->setShortcut(volumeUp, QList<QKeySequence>{Qt::Key_VolumeUp});
         connect(volumeUp, &QAction::triggered, this, [this]() {
+
             doAction(VOLUME_UP_KEY);
         });
 
@@ -969,7 +998,6 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
 
         xEvent * event = (xEvent *)data;
         eventKeysym =XkbKeycodeToKeysym(display, event->u.u.detail, 0, 0);
-
         if (eventKeysym == XKB_KEY_XF86AudioMute) {
            xEventHandle(MUTE_KEY, event);
 
@@ -1033,6 +1061,8 @@ void MediaKeysManager::MMhandleRecordEvent(xEvent* data)
         } else if (eventKeysym == XKB_KEY_XF86Messenger) {
             doAction(UKUI_SIDEBAR);
 
+        } else if (eventKeysym == XKB_KEY_XF86Mail) {
+            doAction(EMAIL_KEY);
         } else if(true == mXEventMonitor->getCtrlPressStatus()) {
             if (pointSettings) {
                 QStringList QGsettingskeys = pointSettings->keys();
@@ -1401,7 +1431,7 @@ bool MediaKeysManager::doAction(int type)
         doSearchAction();
         break;
     case EMAIL_KEY:
-        doUrlAction("mailto");
+        doOpenEvolutionAction();
         break;
     case SCREENSAVER_KEY:
     case SCREENSAVER_KEY_2:
@@ -1676,29 +1706,80 @@ void MediaKeysManager::doMicSoundAction()
 
 }
 
+QString getEdidHash(int outputId)
+{
+    QDBusInterface dbusEdid("org.kde.KScreen",
+            "/backend",
+            "org.kde.kscreen.Backend");
+    QDBusReply<QByteArray> replyEdid = dbusEdid.call("getEdid",outputId);
+    const quint8 *edidData = reinterpret_cast<const quint8 *>(replyEdid.value().constData());
+    QCryptographicHash hash(QCryptographicHash::Md5);
+    hash.reset();
+    hash.addData(reinterpret_cast<const char *>(edidData), 128);
+    return QString::fromLatin1(hash.result().toHex());
+}
+
 void MediaKeysManager::doBrightAction(int type)
 {
-    int brightValue;
-    QGSettings* settings = new QGSettings(GPM_SETTINGS_SCHEMA);
-    switch (type){
-    case BRIGHT_UP_KEY:
-        brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() + STEP_BRIGHTNESS;
-        if(brightValue >= MAX_BRIGHTNESS){
-            brightValue = MAX_BRIGHTNESS;
+    mXEventMonitor->setBrightnessEnable(false);
+    if(m_isNoteBook) {
+        int brightValue;
+        QGSettings* settings = new QGSettings(GPM_SETTINGS_SCHEMA);
+        switch (type){
+        case BRIGHT_UP_KEY:
+            brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() + STEP_BRIGHTNESS;
+            if(brightValue >= MAX_BRIGHTNESS){
+                brightValue = MAX_BRIGHTNESS;
+            }
+            break;
+        case BRIGHT_DOWN_KEY:
+            brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() - STEP_BRIGHTNESS;
+            if(brightValue <= STEP_BRIGHTNESS){
+                brightValue = STEP_BRIGHTNESS;
+            }
+            break;
         }
-        break;
-    case BRIGHT_DOWN_KEY:
-        brightValue = settings->get(GPM_SETTINGS_BRIGHTNESS_AC).toInt() - STEP_BRIGHTNESS;
-        if(brightValue <= STEP_BRIGHTNESS){
-            brightValue = STEP_BRIGHTNESS;
+        settings->set(GPM_SETTINGS_BRIGHTNESS_AC,brightValue);
+        mVolumeWindow->setBrightIcon("display-brightness-symbolic");
+        mVolumeWindow->setBrightValue(brightValue);
+        mVolumeWindow->dialogBrightShow();
+        delete settings;
+    } else if (!m_isNoteBook && m_config->primaryOutput()) {
+        //Recalculate edithash when the primary screen ID changes
+        if(m_prevPrimaryOutputId != m_config->primaryOutput()->id()) {
+            m_prevPrimaryOutputId = m_config->primaryOutput()->id();
+            m_edidHash = getEdidHash(m_config->primaryOutput()->id());
         }
-        break;
+
+        int brightValue;
+        QDBusReply<int> reply = m_dbusControlCenter->call("getDisplayBrightness",m_edidHash);
+        if(reply.isValid()){
+            brightValue = reply.value();
+        } else {
+            USD_LOG(LOG_DEBUG,"getDisplayBrightness reply is not calid");
+            return;
+        }
+        switch (type){
+        case BRIGHT_UP_KEY:
+            brightValue += STEP_BRIGHTNESS;
+            if(brightValue >= MAX_BRIGHTNESS){
+                brightValue = MAX_BRIGHTNESS;
+            }
+            break;
+        case BRIGHT_DOWN_KEY:
+            brightValue -= STEP_BRIGHTNESS;
+            if(brightValue <= STEP_BRIGHTNESS){
+                brightValue = STEP_BRIGHTNESS;
+            }
+            break;
+        }
+        QDBusPendingReply<> replyEmpty = m_dbusControlCenter->call("setDisplayBrightness",QString::number(brightValue),m_edidHash);
+        replyEmpty.waitForFinished();
+        mVolumeWindow->setBrightIcon("display-brightness-symbolic");
+        mVolumeWindow->setBrightValue(brightValue);
+        mVolumeWindow->dialogBrightShow();
     }
-    settings->set(GPM_SETTINGS_BRIGHTNESS_AC,brightValue);
-    mVolumeWindow->setBrightIcon("display-brightness-symbolic");
-    mVolumeWindow->setBrightValue(brightValue);
-    mVolumeWindow->dialogBrightShow();
-    delete settings;
+    mXEventMonitor->setBrightnessEnable(true);
 }
 
 void MediaKeysManager::doSoundActionALSA(int keyType)
@@ -2129,6 +2210,11 @@ void MediaKeysManager::doOpenUkuiSearchAction()
 void MediaKeysManager::doOpenKdsAction()
 {
      executeCommand("ukydisplayswitch","");
+}
+
+void MediaKeysManager::doOpenEvolutionAction()
+{
+    executeCommand("evolution","");
 }
 
 void MediaKeysManager::doWlanAction()

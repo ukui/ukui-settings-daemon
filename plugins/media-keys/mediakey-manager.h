@@ -33,6 +33,13 @@
 #include <QDBusReply>
 #include <QDebug>
 
+#include <KF5/KScreen/kscreen/config.h>
+#include <KF5/KScreen/kscreen/log.h>
+#include <KF5/KScreen/kscreen/output.h>
+#include <KF5/KScreen/kscreen/edid.h>
+#include <KF5/KScreen/kscreen/configmonitor.h>
+#include <KF5/KScreen/kscreen/getconfigoperation.h>
+
 #include "volumewindow.h"
 #include "devicewindow.h"
 #include "acme.h"
@@ -98,6 +105,7 @@ private:
     bool doAction(int);
 
     void initShortcuts();
+    void getConfigMonitor();
     /******************Functional class function(功能类函数)****************/
     void doTouchpadAction(int);
     void doSoundAction(int);
@@ -136,6 +144,8 @@ private:
     void doFlightModeAction();
     void doOpenKylinCalculator();
     void doBluetoothAction();
+    void doOpenEvolutionAction();
+
 
     /******************Function for DBus(DBus相关处理函数)******************************/
     bool findMediaPlayerByApplication(const QString&);
@@ -176,6 +186,9 @@ private:
     pulseAudioManager *mpulseAudioManager;
     static MediaKeysManager* mManager;
     QDBusMessage      mDbusScreensaveMessage;
+    QDBusInterface*   m_dbusControlCenter;
+
+    KScreen::ConfigPtr m_config;
 
     QTimer            *mTimer;
     QGSettings        *mSettings;
@@ -199,6 +212,10 @@ private:
     QList<MediaPlayer*> mediaPlayers;   //all opened media player(vlc,audacious) 已经打开的媒体播放器列表(vlc,audacious)
     int                power_state = 4;
     bool               m_ctrlFlag = false;
+
+    bool               m_isNoteBook;
+    int                m_prevPrimaryOutputId;
+    QString            m_edidHash;
 
     xEventHandleHadRelase(MUTE_KEY);
     xEventHandleHadRelase(AREA_SCREENSHOT_KEY);

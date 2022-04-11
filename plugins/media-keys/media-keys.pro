@@ -13,6 +13,8 @@ PKGCONFIG += \
     gio-2.0 \
     gtk+-3.0 \
     gsettings-qt \
+    kscreen2    \
+
    # libmatemixer
 
 LIBS += \

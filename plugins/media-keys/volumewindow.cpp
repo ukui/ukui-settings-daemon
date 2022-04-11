@@ -131,7 +131,6 @@ void VolumeWindow::geometryChangedHandle()
     int width = QApplication::primaryScreen()->size().width();
     int height = QApplication::primaryScreen()->size().height();
 
-    USD_LOG(LOG_DEBUG,"getchangehandle....%dx%d at(%d,%d)",width,height,x,y);
     priScreenChanged(x,y,width,height);
 }
 
