@@ -2232,6 +2232,7 @@ void MediaKeysManager::doWlanAction()
         mDeviceWindow->setAction("ukui-wifi-off");
     }
     mDeviceWindow->dialogShow();
+    Q_EMIT airModeStateChanged(wlanState);
 }
 
 void MediaKeysManager::doFlightModeAction()
