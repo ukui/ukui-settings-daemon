@@ -2232,7 +2232,6 @@ void MediaKeysManager::doWlanAction()
         mDeviceWindow->setAction("ukui-wifi-off");
     }
     mDeviceWindow->dialogShow();
-    Q_EMIT airModeStateChanged(wlanState);
 }
 
 void MediaKeysManager::doFlightModeAction()
@@ -2246,7 +2245,7 @@ void MediaKeysManager::doFlightModeAction()
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
-    Q_EMIT airModeStateChanged(flightState? 1: 0);
+    Q_EMIT airModeStateChanged(flightState? true: false);
 }
 
 void MediaKeysManager::doBluetoothAction()
