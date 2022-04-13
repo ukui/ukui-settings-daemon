@@ -199,7 +199,7 @@ void checkLogDir(const char *dir, char *logFileName){
 //    printf("HOME is %s \n", getenv("HOME"));
     snprintf(logDir,sizeof(logDir),"%s/.log/%s/",path,dir);
 
-     if (0 != access(logDir,F_OK)){
+   if (0 != access(logDir,F_OK)){
         CreateDir(logDir);
    }else{
 //        printf("dir %s exist\n", logDir);
@@ -341,7 +341,7 @@ REWRITE:
          }
     }
 
-    printf("%s",logMsg);
+//    printf("%s",logMsg);
 
     fflush(lockfp);
     ulock(fd);

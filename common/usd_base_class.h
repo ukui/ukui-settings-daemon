@@ -59,6 +59,8 @@ public:
     static bool readPowerOffConfig();
 
     static bool isPowerOff();
+
+    static bool isTrialModeByPopen();
 };
 
 #endif // USDBASECLASS_H
