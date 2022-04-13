@@ -61,7 +61,6 @@ private Q_SLOTS:
     void serviceRegisteredSlot(const QString&);
     void serviceUnregisteredSlot(const QString&);
     void keyPressed(QString,QString);
-
 private:
     static MprisManager   *mMprisManager;
     QDBusServiceWatcher   *mDbusWatcher;
