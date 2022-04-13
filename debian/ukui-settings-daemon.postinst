@@ -21,13 +21,4 @@ fi
 
 glib-compile-schemas /usr/share/glib-2.0/schemas/
 
-echo "DISPLAY=" $dpy
-if  [  "$dpy" != ""  ]  ;then
-save-param & 
-echo "run it"
-else
-echo "skip it"
-fi
-
-
 #DEBHELPER#
