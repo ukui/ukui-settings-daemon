@@ -1653,6 +1653,17 @@ bool XrandrManager::readAndApplyScreenModeFromConfig(UsdBaseClass::eScreenMode e
 
 void XrandrManager::TabletSettingsChanged(const bool tablemode)
 {
+    int screenConnectedCount = 0;
+
+    Q_FOREACH (const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+        if (true == output->isConnected()) {
+            screenConnectedCount++;
+        }
+    }
+
+    if (screenConnectedCount<2) {
+        return;
+    }
     if(tablemode) {
         setScreenMode(metaEnum.key(UsdBaseClass::eScreenMode::cloneScreenMode));
     } else {
