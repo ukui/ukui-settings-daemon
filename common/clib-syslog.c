@@ -164,7 +164,7 @@ int CreateDir(const char *sPathName)
           if(DirName[i]=='/')
           {
               DirName[i] = 0;
-              if ( 0 != access(DirName, F_OK))
+              if (0 < access(DirName, F_OK))
               {
                   if(mkdir(DirName, 0755)==-1)
                   {
