@@ -1,4 +1,4 @@
-ukui-settings-daemon (3.1.0-1.45.1) v101; urgency=medium
+ukui-settings-daemon (3.1.2-1.1) v101; urgency=medium
 
   * BUG号：99663 【UKUI V3.1】【侧边栏】快捷键设置飞行模式侧边栏没有同步变化
   * 	   99639 【UKUI V3.1】【侧边栏】飞行模式用户之间存在隔离
