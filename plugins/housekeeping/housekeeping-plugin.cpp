@@ -19,6 +19,7 @@
 #include <QString>
 #include <QFile>
 #include <QProcess>
+#include <QDBusInterface>
 #include "usd_base_class.h"
 #include "housekeeping-plugin.h"
 #include "clib-syslog.h"
@@ -92,10 +93,17 @@ bool HousekeepingPlugin::isTrialMode()
 
 void HousekeepingPlugin::activate()
 {
-    if (UsdBaseClass::isTrialModeByPopen()) {
-        USD_LOG(LOG_DEBUG,"Housekeeping Manager Not Active");
-        return;
+    int isTrialMode = false;
+    QDBusInterface iface("com.settings.daemon.qt.systemdbus", \
+                           "/", \
+                           "com.settings.daemon.interface", \
+                           QDBusConnection::systemBus());
+    isTrialMode = iface.call("isTrialMode");
+    if (isTrialMode) {
+         USD_LOG_SHOW_PARAM1(isTrialMode);
+         return;
     }
+
     if (userName.compare("lightdm") != 0) {
         USD_LOG(LOG_DEBUG,"Housekeeping Manager Is Start");
 

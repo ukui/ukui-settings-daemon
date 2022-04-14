@@ -167,3 +167,32 @@ int AuthorityService::setCameraKeyboardLight(bool lightup)
 
     return 1;
 }
+
+int AuthorityService::isTrialMode()
+{
+    static int ret = 0xff;
+    char *pAck = NULL;
+    char CmdAck[256] = "";
+    FILE * pPipe;
+
+    if (ret != 0xff) {
+        return ret;
+    }
+
+    pPipe = popen("cat /proc/cmdline","r");
+
+    if (pPipe) {
+        pAck = fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
+        if (strstr(CmdAck, "boot=casper") > 0) {
+            ret = true;
+        } else{
+            ret = false;
+        }
+
+        pclose(pPipe);
+    } else {
+        return false;
+    }
+
+    return ret;
+}

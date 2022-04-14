@@ -172,7 +172,7 @@ bool UsdBaseClass::isTrialModeByPopen()
         return ret;
     }
 
-    pPipe = popen("cat /prop/cmdline","r");
+    pPipe = popen("cat /proc/cmdline","r");
 
     if (pPipe) {
         pAck = fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
@@ -183,6 +183,8 @@ bool UsdBaseClass::isTrialModeByPopen()
         }
 
         pclose(pPipe);
+    } else {
+        return false;
     }
 
     return ret;
