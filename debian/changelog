@@ -1,3 +1,14 @@
+ukui-settings-daemon (3.1.0-1.45) v101; urgency=medium
+
+  * BUG号：99663 【UKUI V3.1】【侧边栏】快捷键设置飞行模式侧边栏没有同步变化
+  * 	   99639 【UKUI V3.1】【侧边栏】飞行模式用户之间存在隔离
+  * 需求说明：
+  * 其他改动说明：固定缺省拓展模式主屏为edp,优化多媒体快捷键的停止播放按键,增加判断试用模式的popen方法，替换之前的打开文件方案，/prop/cmdline无法被当做普通文件打开
+  * 其他改动影响域：笔记本缺省拓展模式的主屏设置，试用模式的判断方式（housekeeping），多媒体按键的优化
+
+
+ -- sunjunhao <sunjunhao@kylinos.cn>  Thu, 14 Apr 2022 08:27:24 +0800
+
 ukui-settings-daemon (3.1.0-1.44) v101; urgency=medium
 
   * BUG号：无
