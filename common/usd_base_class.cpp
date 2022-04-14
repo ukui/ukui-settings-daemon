@@ -160,3 +160,30 @@ bool UsdBaseClass::isPowerOff()
     }
     return false;
 }
+
+bool UsdBaseClass::isTrialModeByPopen()
+{
+    static int ret = 0xff;
+    char *pAck = NULL;
+    char CmdAck[256] = "";
+    FILE * pPipe;
+
+    if (ret != 0xff) {
+        return ret;
+    }
+
+    pPipe = popen("cat /prop/cmdline","r");
+
+    if (pPipe) {
+        pAck = fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
+        if (strstr(CmdAck, "boot=casper") > 0) {
+            ret = true;
+        } else{
+            ret = false;
+        }
+
+        pclose(pPipe);
+    }
+
+    return ret;
+}

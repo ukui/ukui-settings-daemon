@@ -1825,6 +1825,8 @@ void XrandrManager::setScreenModeToExtend()
     int primaryX = 0;
     int screenSize = 0;
     int singleMaxWidth = 0;
+    float refreshRate = 0.0;
+    bool hadFindPrimay = false;
 
     if (false == checkPrimaryScreenIsSetable()) {
         return;
@@ -1835,39 +1837,104 @@ void XrandrManager::setScreenModeToExtend()
     }
 
     Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
-        screenSize = 0;
-        singleMaxWidth = 0;
-        USD_LOG_SHOW_OUTPUT(output);
 
-        if (output->isConnected()){
+            if (!output->isConnected()){
+                continue;
+            }
+
+            if (hadFindPrimay) {
+                output->setPrimary(false);
+                continue;
+            }
+
+            if (!output->name().contains("eDP")) {//考虑   pnZXECRB项目中内屏为 DisplayPort-0
+                output->setPrimary(false);
+                continue;
+            }
+
+            hadFindPrimay = true;
+
+            output->setPrimary(true);
             output->setEnabled(true);
-        } else {
-            output->setEnabled(false);
-            continue;
-        }
+            output->setRotation(static_cast<KScreen::Output::Rotation>(1));
 
-        output->setEnabled(true);
-        output->setRotation(static_cast<KScreen::Output::Rotation>(1));
+            screenSize = 0;
+            refreshRate = 0.0;
 
-        Q_FOREACH (auto Mode, output->modes()){
-            if (Mode->size().width()*Mode->size().height() > screenSize) {
+            Q_FOREACH (auto Mode, output->modes()){
+                if (Mode->size().width()*Mode->size().height() < screenSize){
+                    continue;
+                } else if (Mode->size().width()*Mode->size().height() == screenSize) {
+                    if (Mode->refreshRate() <= refreshRate) {
+                        continue;
+                    }
+                }
+
+                refreshRate = Mode->refreshRate();
                 screenSize = Mode->size().width()*Mode->size().height();
                 output->setCurrentModeId(Mode->id());
                 if (Mode->size().width() > singleMaxWidth) {
                     singleMaxWidth = Mode->size().width();
                 }
             }
-         }
 
-        if (UsdBaseClass::isTablet()) {
-            output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
+            output->setPos(QPoint(0,0));
+            primaryX += singleMaxWidth;
+            USD_LOG_SHOW_OUTPUT(output);
         }
 
-         output->setPos(QPoint(primaryX,0));
-         primaryX += singleMaxWidth;
 
-         USD_LOG_SHOW_OUTPUT(output);
-     }
+
+    Q_FOREACH(const KScreen::OutputPtr &output, mMonitoredConfig->data()->outputs()) {
+            screenSize = 0;
+            refreshRate = 0.0;
+            singleMaxWidth = 0;
+
+            if (output->isConnected()){
+                output->setEnabled(true);
+            } else {
+                output->setEnabled(false);
+                continue;
+            }
+
+            if (!hadFindPrimay) {
+                output->setPrimary(true);
+                hadFindPrimay = true;
+            } else {
+                if (output->isPrimary()){
+                    continue;
+                }
+            }
+
+            output->setEnabled(true);
+            output->setRotation(static_cast<KScreen::Output::Rotation>(1));
+
+            Q_FOREACH (auto Mode, output->modes()){
+                if (Mode->size().width()*Mode->size().height() < screenSize){
+                    continue;
+                } else if (Mode->size().width()*Mode->size().height() == screenSize) {
+                    if (Mode->refreshRate() <= refreshRate) {
+                        continue;
+                    }
+                }
+
+                refreshRate = Mode->refreshRate();
+                screenSize = Mode->size().width()*Mode->size().height();
+                output->setCurrentModeId(Mode->id());
+                if (Mode->size().width() > singleMaxWidth) {
+                    singleMaxWidth = Mode->size().width();
+                }
+             }
+
+            if (UsdBaseClass::isTablet()) {
+                output->setRotation(static_cast<KScreen::Output::Rotation>(getCurrentRotation()));
+            }
+
+             output->setPos(QPoint(primaryX,0));
+             primaryX += singleMaxWidth;
+             USD_LOG_SHOW_OUTPUT(output);
+         }
+
     applyConfig();
 }
 

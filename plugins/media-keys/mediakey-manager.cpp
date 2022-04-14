@@ -2245,6 +2245,7 @@ void MediaKeysManager::doFlightModeAction()
 
     mDeviceWindow->setAction(flightState?"ukui-airplane-on":"ukui-airplane-off");
     mDeviceWindow->dialogShow();
+    Q_EMIT airModeStateChanged(flightState? true: false);
 }
 
 void MediaKeysManager::doBluetoothAction()

@@ -181,7 +181,7 @@ Q_SIGNALS:
      *  同时，mpris插件会connect这个signal
     */
     void MediaPlayerKeyPressed(QString application,QString operation);
-
+    void airModeStateChanged(int enable);
 private:
     pulseAudioManager *mpulseAudioManager;
     static MediaKeysManager* mManager;

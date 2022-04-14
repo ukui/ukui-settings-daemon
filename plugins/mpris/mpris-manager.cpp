@@ -117,7 +117,6 @@ bool MprisManager::MprisManagerStart (GError **error)
      */
     connect(mDbusInterface,SIGNAL(MediaPlayerKeyPressed(QString,QString)),
             this,SLOT(keyPressed(QString,QString)));
-//    connect(mDbusInterface, &QDBusInterface::)
 
     return true;
 }
@@ -254,14 +253,15 @@ void MprisManager::keyPressed(QString application,QString operation)
 
     if(response.type() == QDBusMessage::ErrorMessage) {
         USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
-    }
-    if(!mprisKeyTmp.isEmpty()) {
-        playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKeyTmp);
-        response = QDBusConnection::sessionBus().call(playerMsg);
-        if(response.type() == QDBusMessage::ErrorMessage) {
-            USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+        if(!mprisKeyTmp.isEmpty()) {
+            playerMsg = QDBusMessage::createMethodCall(mprisName,MPRIS_OBJECT_PATH,MPRIS_INTERFACE,mprisKeyTmp);
+            response = QDBusConnection::sessionBus().call(playerMsg);
+            if(response.type() == QDBusMessage::ErrorMessage) {
+                USD_LOG(LOG_ERR,"error: %s",response.errorMessage().toLatin1().data());
+            }
         }
     }
 }
+
 
 

@@ -19,6 +19,7 @@
 #include <QString>
 #include <QFile>
 #include <QProcess>
+#include "usd_base_class.h"
 #include "housekeeping-plugin.h"
 #include "clib-syslog.h"
 
@@ -87,9 +88,11 @@ bool HousekeepingPlugin::isTrialMode()
     return false;
 }
 
+
+
 void HousekeepingPlugin::activate()
 {
-    if (isTrialMode()) {
+    if (UsdBaseClass::isTrialModeByPopen()) {
         USD_LOG(LOG_DEBUG,"Housekeeping Manager Not Active");
         return;
     }
