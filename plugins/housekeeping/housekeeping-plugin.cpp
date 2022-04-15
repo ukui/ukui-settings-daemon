@@ -20,6 +20,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QDBusInterface>
+#include <QDBusReply>
 #include "usd_base_class.h"
 #include "housekeeping-plugin.h"
 #include "clib-syslog.h"
@@ -95,13 +96,16 @@ void HousekeepingPlugin::activate()
 {
     int isTrialMode = false;
     QDBusInterface iface("com.settings.daemon.qt.systemdbus", \
-                           "/", \
-                           "com.settings.daemon.interface", \
-                           QDBusConnection::systemBus());
-    isTrialMode = iface.call("isTrialMode");
-    if (isTrialMode) {
-         USD_LOG_SHOW_PARAM1(isTrialMode);
-         return;
+                         "/", \
+                         "com.settings.daemon.interface", \
+                         QDBusConnection::systemBus());
+    QDBusReply<int> reply = iface.call("isTrialMode");
+
+    if (reply.isValid()) {//试用模式直接退出
+        if (reply.value()) {
+            USD_LOG_SHOW_PARAM1(isTrialMode);
+            return;
+        }
     }
 
     if (userName.compare("lightdm") != 0) {
