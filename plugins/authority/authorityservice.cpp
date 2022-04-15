@@ -183,7 +183,7 @@ int AuthorityService::isTrialMode()
 
     if (pPipe) {
         pAck = fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
-        if (strstr(CmdAck, "boot=casper") > 0) {
+        if (strstr(CmdAck, "boot=casper")) {
             ret = true;
         } else{
             ret = false;
