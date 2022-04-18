@@ -54,7 +54,7 @@ private:
     void setEnabled(bool enabled);
     void enableSensorAndSetGsettings(bool state);
     void adjustBrightnessWithLux(qreal lux);
-
+    void enableDynamicBright();
     //设置背光前先断开powerManager的信号，待设置成功后再进行链接。避免自己设置的回调。
     void connectPowerManagerSchema(bool state);
 private:

@@ -196,3 +196,27 @@ int AuthorityService::isTrialMode()
 
     return ret;
 }
+
+int AuthorityService::setDynamicBrightness(bool state)
+{
+    int ret = false;
+    char CmdAck[256] = "";
+    FILE * pPipe;
+
+    if (state) {
+        pPipe = popen("gpioset gpiochip0 179=1","r");
+    } else {
+        pPipe = popen("gpioset gpiochip0 179=0","r");
+    }
+
+    if (pPipe) {
+        fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
+        if (strnlen(CmdAck, 255) == 0) {
+            ret = true;//有返回数据就是异常
+        }
+
+        pclose(pPipe);
+    }
+
+    return ret;
+}

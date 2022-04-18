@@ -21,6 +21,7 @@
 #include <QDebug>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include "usd_base_class.h"
 #include "usd_global_define.h"
 #include "autoBrightness-manager.h"
 
@@ -136,7 +137,9 @@ void AutoBrightnessManager::gsettingsChangedSlot(QString key)
     if (key == AUTO_BRIGHTNESS_KEY) {
         m_enableAutoBrightness = m_autoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
         enableSensorAndSetGsettings(m_enableAutoBrightness);
-    } else if (key == DEBUG_LUX_KEY) {
+    } else if (key == DYNAMIC_BRIGHTNESS_KEY){
+        enableDynamicBright();
+    }else if (key == DEBUG_LUX_KEY) {
         if (m_autoBrightnessSettings->get(DEBUG_MODE_KEY).toBool()) {
             if (m_userIntervene) {
                 return;
@@ -224,6 +227,17 @@ void AutoBrightnessManager::adjustBrightnessWithLux(qreal realTimeLux)
     m_brightnessThread->start();
 }
 
+void AutoBrightnessManager::enableDynamicBright()
+{
+    bool dynamicState = m_autoBrightnessSettings->get(DYNAMIC_BRIGHTNESS_KEY).toBool();
+
+    if (dynamicState) {
+
+    } else {
+
+    }
+}
+
 void AutoBrightnessManager::connectPowerManagerSchema(bool state)
 {
     if (state) {
@@ -236,6 +250,10 @@ void AutoBrightnessManager::connectPowerManagerSchema(bool state)
 bool AutoBrightnessManager::autoBrightnessManagerStart()
 {
     bool readSensorDataSuccess = true;
+
+    if (!UsdBaseClass::isTablet()) {
+        return false;
+    }
 
     USD_LOG(LOG_DEBUG, "AutoBrightnessManager Start");
 
@@ -274,16 +292,16 @@ bool AutoBrightnessManager::autoBrightnessManagerStart()
         SLOT(idleModeChangeSlot(quint32)));
 
     m_lightSensor->setActive(true);
-    m_lightSensor->start();//
     m_brightnessThread = new BrightThread();
+    enableSensorAndSetGsettings(m_enableAutoBrightness);
 
     connect(m_lightSensor, SIGNAL(readingChanged()), this, SLOT(sensorReadingChangedSlot()));
     connect(m_lightSensor, SIGNAL(activeChanged()), this, SLOT(sensorActiveChangedSlot()));
     connect(m_autoBrightnessSettings, SIGNAL(changed(QString)), this, SLOT(gsettingsChangedSlot(QString)));
     connect(m_brightnessThread, SIGNAL(finished()), this, SLOT(brightnessThreadFinishedSlot()));
-    connectPowerManagerSchema(true);
+    connectPowerManagerSchema(m_enableAutoBrightness);
 
-    enableSensorAndSetGsettings(m_enableAutoBrightness);
+
     return true;
 }
 
