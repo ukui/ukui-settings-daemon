@@ -21,6 +21,8 @@
 #include <QDebug>
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusReply>
+
 #include "usd_base_class.h"
 #include "usd_global_define.h"
 #include "autoBrightness-manager.h"
@@ -138,7 +140,7 @@ void AutoBrightnessManager::gsettingsChangedSlot(QString key)
         m_enableAutoBrightness = m_autoBrightnessSettings->get(AUTO_BRIGHTNESS_KEY).toBool();
         enableSensorAndSetGsettings(m_enableAutoBrightness);
     } else if (key == DYNAMIC_BRIGHTNESS_KEY){
-        enableDynamicBright();
+        enableDynamicBrightness();
     }else if (key == DEBUG_LUX_KEY) {
         if (m_autoBrightnessSettings->get(DEBUG_MODE_KEY).toBool()) {
             if (m_userIntervene) {
@@ -156,7 +158,6 @@ void AutoBrightnessManager::gsettingsChangedSlot(QString key)
 
 void AutoBrightnessManager::idleModeChangeSlot(quint32 mode)
 {
-
     if (m_enableAutoBrightness == false) {
         USD_LOG_SHOW_PARAM1(m_enableAutoBrightness);
         return;
@@ -227,14 +228,18 @@ void AutoBrightnessManager::adjustBrightnessWithLux(qreal realTimeLux)
     m_brightnessThread->start();
 }
 
-void AutoBrightnessManager::enableDynamicBright()
+void AutoBrightnessManager::enableDynamicBrightness()
 {
     bool dynamicState = m_autoBrightnessSettings->get(DYNAMIC_BRIGHTNESS_KEY).toBool();
 
-    if (dynamicState) {
+    QDBusInterface iface("com.settings.daemon.qt.systemdbus", \
+                         "/", \
+                         "com.settings.daemon.interface", \
+                         QDBusConnection::systemBus());
+    QDBusReply<int> reply = iface.call("setDynamicBrightness", dynamicState);
 
-    } else {
-
+    if(reply.isValid()) {
+        USD_LOG_SHOW_PARAM1(reply.value());
     }
 }
 
@@ -300,7 +305,7 @@ bool AutoBrightnessManager::autoBrightnessManagerStart()
     connect(m_autoBrightnessSettings, SIGNAL(changed(QString)), this, SLOT(gsettingsChangedSlot(QString)));
     connect(m_brightnessThread, SIGNAL(finished()), this, SLOT(brightnessThreadFinishedSlot()));
     connectPowerManagerSchema(m_enableAutoBrightness);
-
+    enableDynamicBrightness();
 
     return true;
 }

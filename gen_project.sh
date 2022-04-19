@@ -89,34 +89,3 @@ else
 	echo "生成 $project_name 版本完成 :$dest_project_name " 
 fi
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

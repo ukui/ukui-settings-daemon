@@ -208,7 +208,7 @@ int AuthorityService::setDynamicBrightness(bool state)
     } else {
         pPipe = popen("gpioset gpiochip0 179=0","r");
     }
-
+    //todo 需要读取设置
     if (pPipe) {
         fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
         if (strnlen(CmdAck, 255) == 0) {

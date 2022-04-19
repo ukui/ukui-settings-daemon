@@ -295,7 +295,7 @@ REWRITE:
         fd = open(logFileName, O_TRUNC|O_RDWR);
     }
     else {
-        fd = open(logFileName, O_RDWR | O_CREAT | O_APPEND, S_IRUSR | S_IWUSR);
+        fd = open(logFileName, O_RDWR | O_APPEND, S_IRUSR | S_IWUSR);//去掉 | O_CREAT，不再进行创建
     }
 
     if(fd <= 0) {
