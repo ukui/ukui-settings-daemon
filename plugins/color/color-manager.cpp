@@ -395,7 +395,7 @@ bool ColorManager::ReadKwinColorTempConfig()
         USD_LOG(LOG_DEBUG,"can't find key:%s", HAD_READ_KWIN);
         return false;
     }
-
+    return false;
     QDBusInterface colorIft("org.ukui.KWin",
                             "/ColorCorrect",
                             "org.ukui.kwin.ColorCorrect",
