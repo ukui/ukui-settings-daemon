@@ -3,10 +3,9 @@ CONFIG += c++11 no_keywords link_pkgconfig x11extras debug
 CONFIG -= app_bundle
 
 INCLUDEPATH += -I $$PWD/
+LIBS += -lukui-com4cxx
 
 PLUGIN_INSTALL_DIRS = $$[QT_INSTALL_LIBS]/ukui-settings-daemon
-
-DEFINES += USD_master
 
 EXTRA_CFLAGS +=-Wno-date-time
 
@@ -35,4 +34,8 @@ HEADERS += \
         $$PWD/eggaccelerators.h         \
         $$PWD/ukui-input-helper.h       \
         $$PWD/ukui-keygrab.h            \
-        $$PWD/config.h
+        $$PWD/config.h \
+        $$PWD/xrandroutput.h
+
+RESOURCES += \
+    $$PWD/ukui_icon.qrc

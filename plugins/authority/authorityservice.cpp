@@ -167,3 +167,56 @@ int AuthorityService::setCameraKeyboardLight(bool lightup)
 
     return 1;
 }
+
+int AuthorityService::isTrialMode()
+{
+    static int ret = 0xff;
+    char *pAck = NULL;
+    char CmdAck[256] = "";
+    FILE * pPipe;
+
+    if (ret != 0xff) {
+        return ret;
+    }
+
+    pPipe = popen("cat /proc/cmdline","r");
+
+    if (pPipe) {
+        pAck = fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
+        if (strstr(CmdAck, "boot=casper")) {
+            ret = true;
+        } else{
+            ret = false;
+        }
+
+        pclose(pPipe);
+    } else {
+        return false;
+    }
+
+    return ret;
+}
+
+int AuthorityService::setDynamicBrightness(bool state)
+{
+    int ret = false;
+    char CmdAck[256] = "";
+    FILE * pPipe;
+
+    if (state) {
+        pPipe = popen("gpioset gpiochip0 179=1","r");
+    } else {
+        pPipe = popen("gpioset gpiochip0 179=0","r");
+    }
+    //todo 需要读取设置
+    if (pPipe) {
+        fgets(CmdAck, sizeof(CmdAck)-1, pPipe);
+        if (strnlen(CmdAck, 255) == 0) {
+            ret = true;//有返回数据就是异常
+        }
+
+        pclose(pPipe);
+    }
+
+    return ret;
+}

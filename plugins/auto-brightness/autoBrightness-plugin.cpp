@@ -45,7 +45,6 @@ AutoBrightnessPlugin::~AutoBrightnessPlugin()
 void AutoBrightnessPlugin::activate()
 {
     bool res;
-
     USD_LOG(LOG_DEBUG,"Activating AutoBrightness plugins");
     res = m_autoBrightnessManager->autoBrightnessManagerStart();
 

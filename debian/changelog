@@ -1,4 +1,71 @@
-ukui-settings-daemon (3.1.0-1.45.1) v101; urgency=medium
+ukui-settings-daemon (3.1.0-1.49) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：79112 动态背光控制功能集成Intel提供的patch，提供接口(需要mv版本的硬件支持)
+  * 其他改动说明：优化编译
+  * 其他改动影响域：无
+
+ -- sunjunhao <sunjunhao@kylinos.cn>  Tue, 19 Apr 2022 19:00:48 +0800
+
+ukui-settings-daemon (3.1.2-1.3) jammy; urgency=medium
+
+  * BUG号：无
+  * 需求说明：
+  * 其他改动说明：优化编译
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 17:07:56 +0800
+ 
+ukui-settings-daemon (3.1.0-1.48) jammy; urgency=medium
+
+  * BUG号：114902 【护眼中心】手动调整亮度后，重启智能调节开关后，亮度会先增加1，然后进行自动调节（必现）
+  * 114779 【护眼中心】【usd】短暂遮挡传感器，背光亮度会停留在53/短暂增大亮度，背光亮度会停留在63
+  * 115161 【peony】【平板模式】竖屏平板模式下关闭自动旋转，将屏幕变为横屏再变为竖屏，平板桌面显示异常
+  * 需求说明：
+  * 其他改动说明：
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 11:36:50 +0800
+ 
+ukui-settings-daemon (3.1.0-1.46) v101; urgency=medium
+
+  * BUG号：114902 【护眼中心】手动调整亮度后，重启智能调节开关后，亮度会先增加1，然后进行自动调节（必现）
+  * 114779 【护眼中心】【usd】短暂遮挡传感器，背光亮度会停留在53/短暂增大亮度，背光亮度会停留在63
+  * 115161 【peony】【平板模式】竖屏平板模式下关闭自动旋转，将屏幕变为横屏再变为竖屏，平板桌面显示异常
+  * 需求说明：
+  * 其他改动说明：
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 11:36:50 +0800
+ 
+ukui-settings-daemon (3.1.2-1.3) jammy; urgency=medium
+
+  * BUG号：无
+  * 需求说明：
+  * 其他改动说明：优化编译
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 11:36:50 +0800
+ 
+ukui-settings-daemon (3.1.0-1.45) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：
+  * 其他改动说明：删除postinst文件的无效命令
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 11:36:50 +0800
+ 
+ukui-settings-daemon (3.1.2-1.2) v101; urgency=medium
+
+  * BUG号：无
+  * 需求说明：
+  * 其他改动说明：去掉save-param功能
+  * 其他改动影响域：无
+  
+ -- sunjunhao <sunjunhao@kylinos.cn>  Fri, 15 Apr 2022 11:36:50 +0800
+
+ukui-settings-daemon (3.1.2-1.1) v101; urgency=medium
 
   * BUG号：99663 【UKUI V3.1】【侧边栏】快捷键设置飞行模式侧边栏没有同步变化
   * 	   99639 【UKUI V3.1】【侧边栏】飞行模式用户之间存在隔离

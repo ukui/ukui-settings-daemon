@@ -13,7 +13,12 @@
     <key name="auto-brightness" type="b">
       <default>true</default>
       <summary>Activation of this plugin</summary>
-      <description>Whether this plugin would be activated by ukui-settings-daemon or not(ep or ukui-power-manager would usd it)</description>
+      <description>Adjust the backlight of the monitor according to the brightness sensor</description>
+    </key>
+    <key name="dynamic-brightness" type="b">
+      <default>true</default>
+      <summary>Activation of this plugin</summary>
+      <description>Dynamically adjust the backlight of the monitor according to what is displayed</description>
     </key>
     <key name="have-sensor" type="b">
       <default>false</default>

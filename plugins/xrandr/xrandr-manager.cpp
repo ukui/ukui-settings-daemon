@@ -46,7 +46,6 @@ extern "C"{
 #include <gudev/gudev.h>
 #include "clib-syslog.h"
 #include <libudev.h>
-
 }
 
 #define SETTINGS_XRANDR_SCHEMAS     "org.ukui.SettingsDaemon.plugins.xrandr"
@@ -60,13 +59,11 @@ extern "C"{
 #define MAP_CONFIG "/.config/touchcfg.ini"
 #define MONITOR_NULL_SERIAL "kydefault"
 
-
 unsigned char *getDeviceNode (XIDeviceInfo devinfo);
 typedef struct
 {
     unsigned char *input_node;
     XIDeviceInfo dev_info;
-
 }TsInfo;
 
 XrandrManager::XrandrManager()
@@ -170,10 +167,6 @@ XrandrManager::~XrandrManager()
     }
     qDeleteAll(mTouchMapList);
     mTouchMapList.clear();
-    //  if(mLoginInter) {
-    //     delete mLoginInter;
-    //      mLoginInter = nullptr;
-    //  }
 }
 
 bool XrandrManager::XrandrManagerStart()
@@ -1541,7 +1534,7 @@ void XrandrManager::monitorsInit()
                 }
             }
         } else {
-
+            int needSetParamWhenStartup = false;
             std::unique_ptr<xrandrConfig> MonitoredConfig = mMonitoredConfig->readFile(false);
 
             if (MonitoredConfig == nullptr ) {
@@ -1551,9 +1544,31 @@ void XrandrManager::monitorsInit()
             }
 
             mMonitoredConfig = std::move(MonitoredConfig);
-        }
+            Q_FOREACH (const KScreen::OutputPtr &oldOutput, mConfig->outputs()) {
+                if (!oldOutput->isConnected()) {
+                    continue;
+                }
 
-        applyConfig();
+                if (needSetParamWhenStartup) {
+                    break;
+                }
+
+                Q_FOREACH(const KScreen::OutputPtr &output,mMonitoredConfig->data()->outputs()) {
+                    if(oldOutput->name() == output->name()) {
+                        if(oldOutput->currentModeId() != output->currentModeId() || oldOutput->pos() != output->pos()
+                                || oldOutput->scale() != output->scale() || oldOutput->rotation() != output->rotation() || oldOutput->isEnabled() != output->isEnabled()){
+                            needSetParamWhenStartup = true;
+                            USD_LOG_SHOW_OUTPUT(output);
+                        }
+                    }
+                }
+            }
+
+            if (needSetParamWhenStartup) {
+                applyConfig();
+            }
+
+        }
     } else {
         int foreachTimes = 0;
 

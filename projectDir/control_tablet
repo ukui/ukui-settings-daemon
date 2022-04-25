@@ -35,7 +35,16 @@ Build-Depends: debhelper-compat (=12),
                libimlib2-dev,
                xserver-xorg-dev,
                libgudev-1.0-dev,
-Standards-Version: 4.5.0
+ 	       libxcb1-dev,
+               libxcb-util-dev,
+               libx11-dev,
+               libkf5windowsystem-dev,
+               libkf5screen-dev,
+               libxkbcommon-dev,
+	       libkf5globalaccel-dev,
+	       libqt5x11extras5-dev,
+	       libukui-common-dev,
+Standards-Version: 4.6.0.1
 Rules-Requires-Root: no
 Homepage: http://www.ukui.org/
 Vcs-Git: https://github.com/ukui/ukui-settings-daemon.git
@@ -46,13 +55,17 @@ Package: ukui-settings-daemon
 Architecture: any
 Depends: mate-desktop-common (>= 1.18),
          ukui-settings-daemon-common (= ${source:Version}),
+         colord,
          imwheel,
          ukui-polkit,
          x11-xserver-utils,
          xserver-xorg-input-synaptics [!s390x],
          libglib2.0-bin,
+         gpiod,
          ${misc:Depends},
          ${shlibs:Depends},
+Conflicts: kylin-display-switch
+Replaces: kylin-display-switch
 Description: daemon handling the UKUI session settings
  This package contains the daemon which is responsible for setting the
  various parameters of a UKUI session and the applications that run

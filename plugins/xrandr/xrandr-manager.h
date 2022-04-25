@@ -93,13 +93,11 @@ public:
     void doApplyConfig(std::unique_ptr<xrandrConfig> config);
     void refreshConfig();
 
-
     UsdBaseClass::eScreenMode discernScreenMode();
 
     void saveCurrentConfig();
     void setMonitorForChanges(bool enabled);
     static void printScreenApplyFailReason(KScreen::ConfigPtr KsData);
-
 
     void orientationChangedProcess(Qt::ScreenOrientation orientation);
     void init_primary_screens(KScreen::ConfigPtr config);

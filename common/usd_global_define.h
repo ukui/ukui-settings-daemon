@@ -62,6 +62,7 @@
 //auto-brightness gsettings
 #define AUTO_BRIGHTNESS_SCHEMA              "org.ukui.SettingsDaemon.plugins.auto-brightness"
 #define AUTO_BRIGHTNESS_KEY                 "auto-brightness"
+#define DYNAMIC_BRIGHTNESS_KEY              "dynamic-brightness"
 #define HAD_SENSOR_KEY                      "have-sensor"
 #define DEBUG_MODE_KEY                      "debug-mode"
 #define DEBUG_LUX_KEY                       "debug-lux"
