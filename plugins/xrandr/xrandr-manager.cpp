@@ -145,8 +145,6 @@ void XrandrManager::getInitialConfig()
         mMonitoredConfig = std::unique_ptr<xrandrConfig>(new xrandrConfig(qobject_cast<KScreen::GetConfigOperation*>(op)->config()));
         mMonitoredConfig->setValidityFlags(KScreen::Config::ValidityFlag::RequireAtLeastOneEnabledScreen);
 
-
-
         monitorsInit();
 
         mDbus->mScreenMode = discernScreenMode();
@@ -1425,7 +1423,7 @@ void XrandrManager::monitorsInit()
             USD_LOG_SHOW_OUTPUT(senderOutput);
             USD_LOG(LOG_DEBUG,"isConnectedChanged");
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::outputChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1433,7 +1431,7 @@ void XrandrManager::monitorsInit()
             outputChangedHandle(senderOutput);
             USD_LOG_SHOW_OUTPUT(senderOutput);
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::isPrimaryChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1460,19 +1458,19 @@ void XrandrManager::monitorsInit()
                 }
             }
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::sizeChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"sizeChanged:%s",senderOutput->name().toLatin1().data());
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::clonesChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
             USD_LOG(LOG_DEBUG,"clonesChanged:%s",senderOutput->name().toLatin1().data());
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::rotationChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1486,7 +1484,7 @@ void XrandrManager::monitorsInit()
 
             USD_LOG(LOG_DEBUG,"rotationChanged:%s",senderOutput->name().toLatin1().data());
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::currentModeIdChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1501,7 +1499,7 @@ void XrandrManager::monitorsInit()
             }
 
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
 
         connect(output.data(), &KScreen::Output::isEnabledChanged, this, [this](){
             KScreen::Output *senderOutput = static_cast<KScreen::Output*> (sender());
@@ -1514,7 +1512,7 @@ void XrandrManager::monitorsInit()
             }
 
             mSaveConfigTimer->start(SAVE_CONFIG_TIME);
-        });
+        },Qt::QueuedConnection);
     }
 
     KScreen::ConfigMonitor::instance()->addConfig(mConfig);

@@ -41,6 +41,7 @@ public:
     int stop();
 
     void sendSessionDbus();
+    void setKwinMouseSize(int size);
 
     //gboolean setup_xsettings_managers (ukuiXSettingsManager *manager);
     XsettingsManager **pManagers;

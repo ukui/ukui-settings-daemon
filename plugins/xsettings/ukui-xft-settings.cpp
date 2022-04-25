@@ -249,8 +249,10 @@ void UkuiXftSettings::xft_settings_get (ukuiXSettingsManager *manager)
     this->scaled_dpi = dpi * scale * 1024;
 
     cursor_theme = g_settings_get_string (mouse_gsettings, CURSOR_THEME_KEY);
-    cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY);
+    cursor_size = g_settings_get_int (mouse_gsettings, CURSOR_SIZE_KEY) * scale;
     rgba = "rgb";
+
+    manager->setKwinMouseSize(cursor_size);
 
     if (rgba_order) {
         int i;
@@ -389,6 +391,7 @@ void UkuiXftSettings::xft_settings_set_xresources ()
                 "top_left_arrow", "top_left_corner"  , "top_right_corner", "top_side"   ,
                 "top_tee"       , "ul_angle"         , "ur_angle"        , "watch"     ,
                 "xterm"         , "h_double_arrow"   , "v_double_arrow"  , "left_ptr_help",
+                "ibeam", "text",
                 NULL};
 
     if (strlen (tmpCursorTheme) > 0 ) {

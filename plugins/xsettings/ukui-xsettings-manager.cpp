@@ -303,7 +303,7 @@ find_translation_entry (GSettings *gsettings, const char *key)
     return NULL;
 }
 
-static void setKwinMouseSize(int size) {
+void ukuiXSettingsManager::setKwinMouseSize(int size) {
     QString filename = QDir::homePath() + "/.config/kcminputrc";
 
     QSettings *mouseSettings = new QSettings(filename, QSettings::IniFormat);
@@ -338,12 +338,12 @@ xsettings_callback (GSettings             *gsettings,
     if (g_str_equal (key, CURSOR_THEME_KEY)||
             g_str_equal (key, CURSOR_SIZE_KEY )) {
         xft_callback (NULL, key, manager);
-         USD_LOG(LOG_ERR," key=%s",key);
-        if (g_str_equal (key, CURSOR_SIZE_KEY)) {
-            setKwinMouseSize(g_settings_get_int (gsettings, key));
+        USD_LOG(LOG_ERR," key=%s",key);
+//        if (g_str_equal (key, CURSOR_SIZE_KEY)) {
 
-            USD_LOG_SHOW_PARAM1(g_settings_get_int (gsettings, key));
-        }
+
+//            USD_LOG_SHOW_PARAM1(g_settings_get_int (gsettings, key));
+//        }
         return;
     }
 
